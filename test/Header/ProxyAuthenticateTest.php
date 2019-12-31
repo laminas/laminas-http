@@ -1,16 +1,14 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Http
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
-use Zend\Http\Header\ProxyAuthenticate;
+use Laminas\Http\Header\ProxyAuthenticate;
 
 class ProxyAuthenticateTest extends \PHPUnit_Framework_TestCase
 {
@@ -18,8 +16,8 @@ class ProxyAuthenticateTest extends \PHPUnit_Framework_TestCase
     public function testProxyAuthenticateFromStringCreatesValidProxyAuthenticateHeader()
     {
         $proxyAuthenticateHeader = ProxyAuthenticate::fromString('Proxy-Authenticate: xxx');
-        $this->assertInstanceOf('Zend\Http\Header\HeaderInterface', $proxyAuthenticateHeader);
-        $this->assertInstanceOf('Zend\Http\Header\ProxyAuthenticate', $proxyAuthenticateHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\HeaderInterface', $proxyAuthenticateHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\ProxyAuthenticate', $proxyAuthenticateHeader);
     }
 
     public function testProxyAuthenticateGetFieldNameReturnsHeaderName()
