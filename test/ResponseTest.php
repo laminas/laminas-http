@@ -1,15 +1,14 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http;
+namespace LaminasTest\Http;
 
-use Zend\Http\Response;
+use Laminas\Http\Response;
 
 class ResponseTest extends \PHPUnit_Framework_TestCase
 {
@@ -35,16 +34,16 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     public function testResponseUsesHeadersContainerByDefault()
     {
         $response = new Response();
-        $this->assertInstanceOf('Zend\Http\Headers', $response->getHeaders());
+        $this->assertInstanceOf('Laminas\Http\Headers', $response->getHeaders());
     }
 
     public function testRequestCanSetHeaders()
     {
         $response = new Response();
-        $headers = new \Zend\Http\Headers();
+        $headers = new \Laminas\Http\Headers();
 
         $ret = $response->setHeaders($headers);
-        $this->assertInstanceOf('Zend\Http\Response', $ret);
+        $this->assertInstanceOf('Laminas\Http\Response', $ret);
         $this->assertSame($headers, $response->getHeaders());
     }
 
@@ -59,7 +58,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     public function testResponseSetStatusCodeThrowsExceptionOnInvalidCode()
     {
         $response = new Response;
-        $this->setExpectedException('Zend\Http\Exception\InvalidArgumentException', 'Invalid status code');
+        $this->setExpectedException('Laminas\Http\Exception\InvalidArgumentException', 'Invalid status code');
         $response->setStatusCode(606);
     }
 
@@ -82,7 +81,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     {
         $response = new Response;
         $this->setExpectedException(
-            'Zend\Http\Exception\InvalidArgumentException',
+            'Laminas\Http\Exception\InvalidArgumentException',
             'Invalid status code provided: "foo"'
         );
         $response->setStatusCode('foo');
@@ -140,9 +139,9 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
      * and trailer. Unfortunately some buggy servers (read: IIS) send those and
      * we need to support them.
      *
-     * @link http://framework.zend.com/issues/browse/ZF-6040
+     * @link https://getlaminas.org/issues/browse/Laminas-6040
      */
-    public function testNonStandardDeflateResponseZF6040()
+    public function testNonStandardDeflateResponseLaminas6040()
     {
         $this->markTestSkipped('Not correctly handling non-RFC complient "deflate" responses');
         $response_text = file_get_contents(__DIR__ . '/_files/response_deflate_iis');
@@ -165,7 +164,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('c0cc9d44790fa2a58078059bab1902a9', md5($res->getContent()));
     }
 
-    public function testChunkedResponseCaseInsensitiveZF5438()
+    public function testChunkedResponseCaseInsensitiveLaminas5438()
     {
         $response_text = file_get_contents(__DIR__ . '/_files/response_chunked_case');
 
@@ -223,7 +222,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @group ZF-5520
+     * @group Laminas-5520
      */
     public function test302LocationHeaderMatches()
     {
@@ -333,7 +332,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Make sure a response with some leading whitespace in the response body
-     * does not get modified (see ZF-1924)
+     * does not get modified (see Laminas-1924)
      *
      */
     public function testLeadingWhitespaceBody()
@@ -378,7 +377,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, $headers->count());
 
         $header = $headers->get('fake');
-        $this->assertInstanceOf('Zend\Http\Header\GenericHeader', $header);
+        $this->assertInstanceOf('Laminas\Http\Header\GenericHeader', $header);
         $this->assertEquals('Fake', $header->getFieldName());
         $this->assertEquals('foo-bar', $header->getFieldValue());
     }
@@ -389,7 +388,7 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
      */
     public function testPreventsCRLFAttackWhenDeserializing()
     {
-        $this->setExpectedException('Zend\Http\Exception\RuntimeException');
+        $this->setExpectedException('Laminas\Http\Exception\RuntimeException');
         $response = Response::fromString(
             "HTTP/1.1 200 OK\r\nAllow: POST\r\nX-Foo: This\ris\r\n\r\nCRLF\nInjection"
         );
