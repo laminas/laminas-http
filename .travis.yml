@@ -1,5 +1,3 @@
-sudo: false
-
 language: php
 
 branches:
@@ -12,15 +10,15 @@ cache:
     - $HOME/.composer/cache
     - vendor
     - $HOME/.local
-    - zf-mkdoc-theme
+    - laminas-mkdoc-theme
 
 env:
   global:
-    - TESTS_ZEND_HTTP_CLIENT_ONLINE=true
-    - SITE_URL: https://zendframework.github.io/zend-http
+    - TESTS_LAMINAS_HTTP_CLIENT_ONLINE=true
+    - SITE_URL: https://docs.laminas.dev/laminas-http
     - GH_USER_NAME: "Matthew Weier O'Phinney"
     - GH_USER_EMAIL: matthew@weierophinney.net
-    - GH_REF: github.com/zendframework/zend-http.git
+    - GH_REF: github.com/laminas/laminas-http.git
     - secure: "dla3bBhLgsNCSTFaQJF41P56GoNTDOlZA4OGdu14xsTdtcbncPtZ33oojsxXH5XtdB7bYTpMTx7IC+2FEIrWvfbtaFSdOBoriZz+DuvZKCaD/M56H3q3gAumuXvLBH/R+14uFLNRViztP/6uUUVvwRGSnYub2byaX5xTWRelzQjU15p6l8DA7N7RB9hWeZq+41RhpH3DBZOFHpsy+ezy/GWu005CVdSkBG4p5wHW9hs7LBFqn+kN0Qa1zjX3G+p/Gn28+ro1FF5T8TK/hbI/0hDnVJUjSOUXi5VcsOFcnJ50XZBa42PYI6/P6zSI7uuqQzlsefGXslsnYcsmagmACACrnH0nHJB29jlIGzRLOSGpFzOLDjDjlSCOHwZjeLF6tGeEtBQMp+VNnM3GQb5YEaXEmvvt+m+LEvm8mD2w4A47yydYP6AoLBlGpEEORfqUAhSLOJLoXuGAb90wEe4mIRIJegqQQihWppIMWIVXS2kdGSwzA/WnAuyAKywUiXgCcxsW6Aa8DZl1vTgeBA2MkwsBB3IhAweRVaJHnv4ijVWTN0BrAd0naPB+8XzcXgbtpsoRl+Z5RFAFCJQ+nJucdFMkKyr1DotfspyhnbRw4gOZufjCzTQaox8/DbPS0dmb1Zbzb1t80uqPQmMwdtek4Ovm7IVX2iRW3pluS9PWg5Q="
 
 matrix:
@@ -40,7 +38,6 @@ matrix:
     - php: hhvm
 
 notifications:
-  irc: "irc.freenode.org#zftalk.dev"
   email: false
 
 before_install:
@@ -55,10 +52,10 @@ script:
   - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then ./vendor/bin/phpunit --coverage-clover clover.xml ; fi
   - if [[ $EXECUTE_TEST_COVERALLS != 'true' ]]; then ./vendor/bin/phpunit ; fi
   - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then ./vendor/bin/php-cs-fixer fix -v --diff --dry-run ; fi
-  - if [[ $DEPLOY_DOCS == "true" && "$TRAVIS_TEST_RESULT" == "0" ]]; then wget -O theme-installer.sh "https://raw.githubusercontent.com/zendframework/zf-mkdoc-theme/master/theme-installer.sh" ; chmod 755 theme-installer.sh ; ./theme-installer.sh ; fi
+  - if [[ $DEPLOY_DOCS == "true" && "$TRAVIS_TEST_RESULT" == "0" ]]; then wget -O theme-installer.sh "https://raw.githubusercontent.com/laminas/laminas-mkdoc-theme/master/theme-installer.sh" ; chmod 755 theme-installer.sh ; ./theme-installer.sh ; fi
 
 after_success:
-  - if [[ $DEPLOY_DOCS == "true" ]]; then echo "Preparing to build and deploy documentation" ; ./zf-mkdoc-theme/deploy.sh ; echo "Completed deploying documentation" ; fi
+  - if [[ $DEPLOY_DOCS == "true" ]]; then echo "Preparing to build and deploy documentation" ; ./laminas-mkdoc-theme/deploy.sh ; echo "Completed deploying documentation" ; fi
 
 after_script:
   - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then ./vendor/bin/coveralls ; fi

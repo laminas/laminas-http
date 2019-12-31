@@ -1,22 +1,21 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Client;
+namespace LaminasTest\Http\Client;
 
-use Zend\Http\ClientStatic as HTTPClient;
-use Zend\Http\Client;
+use Laminas\Http\Client;
+use Laminas\Http\ClientStatic as HTTPClient;
 
 /**
- * This are the test for the prototype of Zend\Http\Client
+ * This are the test for the prototype of Laminas\Http\Client
  *
- * @group      Zend\Http
- * @group      Zend\Http\Client
+ * @group      Laminas\Http
+ * @group      Laminas\Http\Client
  */
 class StaticClientTest extends \PHPUnit_Framework_TestCase
 {
@@ -32,15 +31,15 @@ class StaticClientTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        if (getenv('TESTS_ZEND_HTTP_CLIENT_BASEURI')
-            && (getenv('TESTS_ZEND_HTTP_CLIENT_BASEURI') != false)) {
-            $this->baseuri = getenv('TESTS_ZEND_HTTP_CLIENT_BASEURI');
+        if (getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI')
+            && (getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI') != false)) {
+            $this->baseuri = getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI');
             if (substr($this->baseuri, -1) != '/') {
                 $this->baseuri .= '/';
             }
         } else {
             // Skip tests
-            $this->markTestSkipped("Zend_Http_Client dynamic tests are not enabled in phpunit.xml");
+            $this->markTestSkipped("Laminas_Http_Client dynamic tests are not enabled in phpunit.xml");
         }
     }
 
@@ -147,7 +146,7 @@ class StaticClientTest extends \PHPUnit_Framework_TestCase
 
         HTTPClient::get($testUri, [], [], null, $config);
 
-        $reflectedClass = new \ReflectionClass('Zend\Http\ClientStatic');
+        $reflectedClass = new \ReflectionClass('Laminas\Http\ClientStatic');
         $property = $reflectedClass->getProperty('client');
         $property->setAccessible(true);
         $client = $property->getValue();
@@ -172,7 +171,7 @@ class StaticClientTest extends \PHPUnit_Framework_TestCase
 
         HTTPClient::post($testUri, ['foo' => 'bar'], [], null, $config);
 
-        $reflectedClass = new \ReflectionClass('Zend\Http\ClientStatic');
+        $reflectedClass = new \ReflectionClass('Laminas\Http\ClientStatic');
         $property = $reflectedClass->getProperty('client');
         $property->setAccessible(true);
         $client = $property->getValue();
