@@ -1,23 +1,22 @@
 {
-    "name": "zendframework/zend-http",
+    "name": "laminas/laminas-http",
     "description": "provides an easy interface for performing Hyper-Text Transfer Protocol (HTTP) requests",
     "license": "BSD-3-Clause",
     "keywords": [
-        "zf2",
+        "laminas",
         "http"
     ],
-    "homepage": "https://github.com/zendframework/zend-http",
-    "autoload": {
-        "psr-4": {
-            "Zend\\Http\\": "src/"
-        }
+    "homepage": "https://laminas.dev",
+    "support": {
+        "docs": "https://docs.laminas.dev/laminas-http/",
+        "issues": "https://github.com/laminas/laminas-http/issues",
+        "source": "https://github.com/laminas/laminas-http",
+        "rss": "https://github.com/laminas/laminas-http/releases.atom",
+        "chat": "https://laminas.dev/chat",
+        "forum": "https://discourse.laminas.dev"
     },
-    "require": {
-        "php": ">=5.3.23",
-        "zendframework/zend-loader": "self.version",
-        "zendframework/zend-stdlib": "self.version",
-        "zendframework/zend-uri": "self.version",
-        "zendframework/zend-validator": "self.version"
+    "config": {
+        "sort-packages": true
     },
     "extra": {
         "branch-alias": {
@@ -25,14 +24,30 @@
             "dev-develop": "2.5-dev"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "ZendTest\\Http\\": "test/"
-        }
+    "require": {
+        "php": ">=5.3.23",
+        "laminas/laminas-loader": "self.version",
+        "laminas/laminas-stdlib": "self.version",
+        "laminas/laminas-uri": "self.version",
+        "laminas/laminas-validator": "self.version",
+        "laminas/laminas-zendframework-bridge": "^1.0"
     },
     "require-dev": {
         "fabpot/php-cs-fixer": "1.7.*",
-        "satooshi/php-coveralls": "dev-master",
-        "phpunit/PHPUnit": "~4.0"
+        "phpunit/phpunit": "~4.0",
+        "satooshi/php-coveralls": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Laminas\\Http\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "LaminasTest\\Http\\": "test/"
+        }
+    },
+    "replace": {
+        "zendframework/zend-http": "self.version"
     }
 }

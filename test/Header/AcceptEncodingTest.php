@@ -1,23 +1,22 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
-use Zend\Http\Header\AcceptEncoding;
+use Laminas\Http\Header\AcceptEncoding;
 
 class AcceptEncodingTest extends \PHPUnit_Framework_TestCase
 {
     public function testAcceptEncodingFromStringCreatesValidAcceptEncodingHeader()
     {
         $acceptEncodingHeader = AcceptEncoding::fromString('Accept-Encoding: xxx');
-        $this->assertInstanceOf('Zend\Http\Header\HeaderInterface', $acceptEncodingHeader);
-        $this->assertInstanceOf('Zend\Http\Header\AcceptEncoding', $acceptEncodingHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\HeaderInterface', $acceptEncodingHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\AcceptEncoding', $acceptEncodingHeader);
     }
 
     public function testAcceptEncodingGetFieldNameReturnsHeaderName()
@@ -82,7 +81,7 @@ class AcceptEncodingTest extends \PHPUnit_Framework_TestCase
      */
     public function testPreventsCRLFAttackViaFromString()
     {
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException');
         $header = AcceptEncoding::fromString("Accept-Encoding: compress\r\n\r\nevilContent");
     }
 
@@ -93,7 +92,7 @@ class AcceptEncodingTest extends \PHPUnit_Framework_TestCase
     public function testPreventsCRLFAttackViaSetters()
     {
         $header = new AcceptEncoding();
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException', 'valid type');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException', 'valid type');
         $header->addEncoding("\nc\rom\r\npress");
     }
 }
