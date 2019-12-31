@@ -1,6 +1,6 @@
 # The Request Class
 
-`Zend\Http\Request` is responsible for providing a fluent API that allows a
+`Laminas\Http\Request` is responsible for providing a fluent API that allows a
 developer to interact with all the various parts of an HTTP request.
 
 A typical HTTP request looks like this:
@@ -24,10 +24,10 @@ specification of a HTTP request can be found in
 
 Request objects can either be created from the provided `fromString()` factory,
 or, if you wish to have a completely empty object to start with, by
-manually instantiating the `Zend\Http\Request` class with no parameters.
+manually instantiating the `Laminas\Http\Request` class with no parameters.
 
 ```php
-use Zend\Http\Request;
+use Laminas\Http\Request;
 
 $request = Request::fromString(<<<EOS
 POST /foo HTTP/1.1
@@ -60,19 +60,19 @@ The following table details available methods, their signatures, and a brief
 description. Note that the following references refer to the following
 fully qualified class names and/or namespaces:
 
-- `HeaderInterface`: `Zend\Http\Header\HeaderInterface`
-- `Headers`: `Zend\Http\Headers`
-- `Header`: `Zend\Http\Header`
-- `Parameters`: `Zend\Stdlib\ParametersInterface`
-- `Request`: `Zend\Http\Request`
-- `Uri`: `Zend\Uri\Http`
+- `HeaderInterface`: `Laminas\Http\Header\HeaderInterface`
+- `Headers`: `Laminas\Http\Headers`
+- `Header`: `Laminas\Http\Header`
+- `Parameters`: `Laminas\Stdlib\ParametersInterface`
+- `Request`: `Laminas\Http\Request`
+- `Uri`: `Laminas\Uri\Http`
 
 Method signature                                                            | Description
 --------------------------------------------------------------------------- | -----------
 `static fromString(string $string) : Request`                               | A factory that produces a `Request` object from a well-formed HTTP request message string.
 `setMethod(string $method) : self`                                          | Set the method for this request.
 `getMethod() : string`                                                      | Return the method for this request.
-`setUri(string|Uri $uri) : self`                                            | Set the URI/URL for this request; this can be a string or an instance of `Zend\Uri\Http`.
+`setUri(string|Uri $uri) : self`                                            | Set the URI/URL for this request; this can be a string or an instance of `Laminas\Uri\Http`.
 `getUri() : Uri`                                                            | Return the URI for this request object.
 `getUriString() : string`                                                   | Return the URI for this request object as a string.
 `setVersion(string $version) : self`                                        | Set the HTTP version for this object, one of 1.0 or 1.1 (`Request::VERSION_10`, `Request::VERSION_11`).
@@ -110,13 +110,13 @@ Method signature                                                            | De
 ### Generating a Request object from a string
 
 ```php
-use Zend\Http\Request;
+use Laminas\Http\Request;
 
 $string = "GET /foo HTTP/1.1\r\n\r\nSome Content";
 $request = Request::fromString($string);
 
 $request->getMethod();    // returns Request::METHOD_GET
-$request->getUri();       // returns Zend\Uri\Http object
+$request->getUri();       // returns Laminas\Uri\Http object
 $request->getUriString(); // returns '/foo'
 $request->getVersion();   // returns Request::VERSION_11 or '1.1'
 $request->getContent();   // returns 'Some Content'
@@ -125,8 +125,8 @@ $request->getContent();   // returns 'Some Content'
 ### Retrieving and setting headers
 
 ```php
-use Zend\Http\Request;
-use Zend\Http\Header\Cookie;
+use Laminas\Http\Request;
+use Laminas\Http\Header\Cookie;
 
 $request = new Request();
 $request->getHeaders()->get('Content-Type'); // return content type
@@ -139,7 +139,7 @@ foreach ($request->getHeaders() as $header) {
 ### Retrieving and setting GET and POST values
 
 ```php
-use Zend\Http\Request;
+use Laminas\Http\Request;
 
 $request = new Request();
 
@@ -154,7 +154,7 @@ $request->getQuery()->offsetGet('bar'); // returns 'Bar value'
 ### Generating a formatted HTTP Request from a Request object
 
 ```php
-use Zend\Http\Request;
+use Laminas\Http\Request;
 
 $request = new Request();
 $request->setMethod(Request::METHOD_POST);

@@ -1,26 +1,27 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-http for the canonical source repository
- * @copyright Copyright (c) 2005-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-http/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Client;
+namespace LaminasTest\Http\Client;
 
-use Zend\Http\Client;
-use Zend\Http\Client\Adapter\Proxy;
-use Zend\Http\Client\Adapter\Socket;
+use Laminas\Http\Client;
+use Laminas\Http\Client\Adapter\Proxy;
+use Laminas\Http\Client\Adapter\Socket;
 
 /**
- * Zend_Http_Client_Adapter_Proxy test suite.
+ * Laminas_Http_Client_Adapter_Proxy test suite.
  *
- * In order to run, TESTS_ZEND_HTTP_CLIENT_HTTP_PROXY must point to a working
- * proxy server, which can access TESTS_ZEND_HTTP_CLIENT_BASEURI.
+ * In order to run, TESTS_LAMINAS_HTTP_CLIENT_HTTP_PROXY must point to a working
+ * proxy server, which can access TESTS_LAMINAS_HTTP_CLIENT_BASEURI.
  *
  * See phpunit.xml.dist for more information.
  *
- * @group      Zend_Http
- * @group      Zend_Http_Client
+ * @group      Laminas_Http
+ * @group      Laminas_Http_Client
  */
 class ProxyAdapterTest extends SocketTest
 {
@@ -34,10 +35,10 @@ class ProxyAdapterTest extends SocketTest
      */
     protected function setUp()
     {
-        if (getenv('TESTS_ZEND_HTTP_CLIENT_HTTP_PROXY')
-            && filter_var(getenv('TESTS_ZEND_HTTP_CLIENT_BASEURI'), FILTER_VALIDATE_BOOLEAN)
+        if (getenv('TESTS_LAMINAS_HTTP_CLIENT_HTTP_PROXY')
+            && filter_var(getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI'), FILTER_VALIDATE_BOOLEAN)
         ) {
-            list($host, $port) = explode(':', getenv('TESTS_ZEND_HTTP_CLIENT_HTTP_PROXY'), 2);
+            list($host, $port) = explode(':', getenv('TESTS_LAMINAS_HTTP_CLIENT_HTTP_PROXY'), 2);
 
             if (! $host) {
                 $this->markTestSkipped('No valid proxy host name or address specified.');
@@ -61,16 +62,16 @@ class ProxyAdapterTest extends SocketTest
 
             $user = '';
             $pass = '';
-            if (getenv('TESTS_ZEND_HTTP_CLIENT_HTTP_PROXY_USER')
-                && getenv('TESTS_ZEND_HTTP_CLIENT_HTTP_PROXY_USER')
+            if (getenv('TESTS_LAMINAS_HTTP_CLIENT_HTTP_PROXY_USER')
+                && getenv('TESTS_LAMINAS_HTTP_CLIENT_HTTP_PROXY_USER')
             ) {
-                $user = getenv('TESTS_ZEND_HTTP_CLIENT_HTTP_PROXY_USER');
+                $user = getenv('TESTS_LAMINAS_HTTP_CLIENT_HTTP_PROXY_USER');
             }
 
-            if (getenv('TESTS_ZEND_HTTP_CLIENT_HTTP_PROXY_PASS')
-                && getenv('TESTS_ZEND_HTTP_CLIENT_HTTP_PROXY_PASS')
+            if (getenv('TESTS_LAMINAS_HTTP_CLIENT_HTTP_PROXY_PASS')
+                && getenv('TESTS_LAMINAS_HTTP_CLIENT_HTTP_PROXY_PASS')
             ) {
-                $pass = getenv('TESTS_ZEND_HTTP_CLIENT_HTTP_PROXY_PASS');
+                $pass = getenv('TESTS_LAMINAS_HTTP_CLIENT_HTTP_PROXY_PASS');
             }
 
             $this->config = [
@@ -100,7 +101,7 @@ class ProxyAdapterTest extends SocketTest
         ]);
 
         $this->client->setUri($this->baseuri . 'testGetLastRequest.php');
-        $res = $this->client->setMethod(\Zend\Http\Request::METHOD_TRACE)->send();
+        $res = $this->client->setMethod(\Laminas\Http\Request::METHOD_TRACE)->send();
         if ($res->getStatusCode() == 405 || $res->getStatusCode() == 501) {
             $this->markTestSkipped('Server does not allow the TRACE method');
         }

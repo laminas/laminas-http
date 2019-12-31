@@ -1,6 +1,6 @@
 docs_dir: docs/book
 site_dir: docs/html
-pages:
+nav:
     - index.md
     - Intro: intro.md
     - Reference:
@@ -13,7 +13,6 @@ pages:
             - "Static Client": client/static.md
             - "Cookie Persistence": client/cookies.md
             - Advanced: client/advanced.md
-site_name: zend-http
-site_description: zend-http
-repo_url: 'https://github.com/zendframework/zend-http'
-copyright: 'Copyright (c) 2005-2018 <a href="https://www.zend.com/">Zend Technologies USA Inc.</a>'
+site_name: laminas-http
+site_description: laminas-http
+repo_url: 'https://github.com/laminas/laminas-http'
