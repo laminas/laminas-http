@@ -1,28 +1,26 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Http
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Http\Client\Adapter;
+namespace Laminas\Http\Client\Adapter;
 
+use Laminas\Http\Client;
+use Laminas\Http\Client\Adapter\AdapterInterface as HttpAdapter;
+use Laminas\Http\Client\Adapter\Exception as AdapterException;
+use Laminas\Http\Request;
+use Laminas\Stdlib\ArrayUtils;
 use Traversable;
-use Zend\Http\Client;
-use Zend\Http\Client\Adapter\AdapterInterface as HttpAdapter;
-use Zend\Http\Client\Adapter\Exception as AdapterException;
-use Zend\Http\Request;
-use Zend\Stdlib\ArrayUtils;
 
 /**
- * An adapter class for Zend\Http\Client based on the curl extension.
+ * An adapter class for Laminas\Http\Client based on the curl extension.
  * Curl requires libcurl. See for full requirements the PHP manual: http://php.net/curl
  *
- * @category   Zend
- * @package    Zend_Http
+ * @category   Laminas
+ * @package    Laminas_Http
  * @subpackage Client_Adapter
  */
 class Curl implements HttpAdapter, StreamInterface
@@ -79,7 +77,7 @@ class Curl implements HttpAdapter, StreamInterface
     public function __construct()
     {
         if (!extension_loaded('curl')) {
-            throw new AdapterException\InitializationException('cURL extension has to be loaded to use this Zend\Http\Client adapter');
+            throw new AdapterException\InitializationException('cURL extension has to be loaded to use this Laminas\Http\Client adapter');
         }
         $this->invalidOverwritableCurlOptions = array(
             CURLOPT_HTTPGET,
@@ -221,7 +219,7 @@ class Curl implements HttpAdapter, StreamInterface
         }
 
         if ($secure !== false) {
-            // Behave the same like Zend\Http\Adapter\Socket on SSL options.
+            // Behave the same like Laminas\Http\Adapter\Socket on SSL options.
             if (isset($this->config['sslcert'])) {
                 curl_setopt($this->curl, CURLOPT_SSLCERT, $this->config['sslcert']);
             }
@@ -238,7 +236,7 @@ class Curl implements HttpAdapter, StreamInterface
      * Send request to the remote server
      *
      * @param  string        $method
-     * @param  \Zend\Uri\Uri $uri
+     * @param  \Laminas\Uri\Uri $uri
      * @param  float         $httpVersion
      * @param  array         $headers
      * @param  string        $body
@@ -423,7 +421,7 @@ class Curl implements HttpAdapter, StreamInterface
             throw new AdapterException\RuntimeException("Error in cURL request: " . curl_error($this->curl));
         }
 
-        // cURL automatically decodes chunked-messages, this means we have to disallow the Zend\Http\Response to do it again
+        // cURL automatically decodes chunked-messages, this means we have to disallow the Laminas\Http\Response to do it again
         if (stripos($this->response, "Transfer-Encoding: chunked\r\n")) {
             $this->response = str_ireplace("Transfer-Encoding: chunked\r\n", '', $this->response);
         }

@@ -1,31 +1,29 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Http
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Http\Client\Adapter;
+namespace Laminas\Http\Client\Adapter;
 
-use Zend\Http\Client;
-use Zend\Http\Client\Adapter\Exception as AdapterException;
-use Zend\Http\Response;
-use Zend\Stdlib\ErrorHandler;
+use Laminas\Http\Client;
+use Laminas\Http\Client\Adapter\Exception as AdapterException;
+use Laminas\Http\Response;
+use Laminas\Stdlib\ErrorHandler;
 
 /**
- * HTTP Proxy-supporting Zend_Http_Client adapter class, based on the default
+ * HTTP Proxy-supporting Laminas_Http_Client adapter class, based on the default
  * socket based adapter.
  *
  * Should be used if proxy HTTP access is required. If no proxy is set, will
- * fall back to Zend_Http_Client_Adapter_Socket behavior. Just like the
+ * fall back to Laminas_Http_Client_Adapter_Socket behavior. Just like the
  * default Socket adapter, this adapter does not require any special extensions
  * installed.
  *
- * @category   Zend
- * @package    Zend_Http
+ * @category   Laminas
+ * @package    Laminas_Http
  * @subpackage Client_Adapter
  */
 class Proxy extends Socket
@@ -112,7 +110,7 @@ class Proxy extends Socket
      * Send request to the proxy server
      *
      * @param string        $method
-     * @param \Zend\Uri\Uri $uri
+     * @param \Laminas\Uri\Uri $uri
      * @param string        $httpVer
      * @param array         $headers
      * @param string        $body

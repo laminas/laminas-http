@@ -1,26 +1,24 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Http
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Http;
+namespace Laminas\Http;
 
-use Zend\Stdlib\Parameters;
-use Zend\Stdlib\ParametersInterface;
-use Zend\Stdlib\RequestInterface;
-use Zend\Uri\Exception as UriException;
-use Zend\Uri\Http as HttpUri;
+use Laminas\Stdlib\Parameters;
+use Laminas\Stdlib\ParametersInterface;
+use Laminas\Stdlib\RequestInterface;
+use Laminas\Uri\Exception as UriException;
+use Laminas\Uri\Http as HttpUri;
 
 /**
  * HTTP Request
  *
- * @category  Zend
- * @package   Zend_Http
+ * @category  Laminas
+ * @package   Laminas_Http
  * @link      http://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html#sec5
  */
 class Request extends AbstractMessage implements RequestInterface
@@ -157,7 +155,7 @@ class Request extends AbstractMessage implements RequestInterface
     }
 
     /**
-     * Set the URI/URL for this request, this can be a string or an instance of Zend\Uri\Http
+     * Set the URI/URL for this request, this can be a string or an instance of Laminas\Uri\Http
      *
      * @throws Exception\InvalidArgumentException
      * @param string|HttpUri $uri
@@ -177,7 +175,7 @@ class Request extends AbstractMessage implements RequestInterface
             }
         } elseif (!($uri instanceof HttpUri)) {
             throw new Exception\InvalidArgumentException(
-                'URI must be an instance of Zend\Uri\Http or a string'
+                'URI must be an instance of Laminas\Uri\Http or a string'
             );
         }
         $this->uri = $uri;
@@ -215,7 +213,7 @@ class Request extends AbstractMessage implements RequestInterface
      * Provide an alternate Parameter Container implementation for query parameters in this object,
      * (this is NOT the primary API for value setting, for that see getQuery())
      *
-     * @param \Zend\Stdlib\ParametersInterface $query
+     * @param \Laminas\Stdlib\ParametersInterface $query
      * @return Request
      */
     public function setQuery(ParametersInterface $query)
@@ -229,7 +227,7 @@ class Request extends AbstractMessage implements RequestInterface
      *
      * @param string|null           $name            Parameter name to retrieve, or null to get the whole container.
      * @param mixed|null            $default         Default value to use when the parameter is missing.
-     * @return \Zend\Stdlib\ParametersInterface|mixed
+     * @return \Laminas\Stdlib\ParametersInterface|mixed
      */
     public function getQuery($name = null, $default = null)
     {
@@ -248,7 +246,7 @@ class Request extends AbstractMessage implements RequestInterface
      * Provide an alternate Parameter Container implementation for post parameters in this object,
      * (this is NOT the primary API for value setting, for that see getPost())
      *
-     * @param \Zend\Stdlib\ParametersInterface $post
+     * @param \Laminas\Stdlib\ParametersInterface $post
      * @return Request
      */
     public function setPost(ParametersInterface $post)
@@ -262,7 +260,7 @@ class Request extends AbstractMessage implements RequestInterface
      *
      * @param string|null           $name            Parameter name to retrieve, or null to get the whole container.
      * @param mixed|null            $default         Default value to use when the parameter is missing.
-     * @return \Zend\Stdlib\ParametersInterface|mixed
+     * @return \Laminas\Stdlib\ParametersInterface|mixed
      */
     public function getPost($name = null, $default = null)
     {
@@ -324,10 +322,10 @@ class Request extends AbstractMessage implements RequestInterface
     /**
      * Return the header container responsible for headers or all headers of a certain name/type
      *
-     * @see \Zend\Http\Headers::get()
+     * @see \Laminas\Http\Headers::get()
      * @param string|null           $name            Header name to retrieve, or null to get the whole container.
      * @param mixed|null            $default         Default value to use when the requested header is missing.
-     * @return \Zend\Http\Headers|bool|\Zend\Http\Header\HeaderInterface|\ArrayIterator
+     * @return \Laminas\Http\Headers|bool|\Laminas\Http\Header\HeaderInterface|\ArrayIterator
      */
     public function getHeaders($name = null, $default = false)
     {
@@ -353,7 +351,7 @@ class Request extends AbstractMessage implements RequestInterface
      * @see Request::getHeaders()
      * @param string|null           $name            Header name to retrieve, or null to get the whole container.
      * @param mixed|null            $default         Default value to use when the requested header is missing.
-     * @return \Zend\Http\Headers|bool|\Zend\Http\Header\HeaderInterface|\ArrayIterator
+     * @return \Laminas\Http\Headers|bool|\Laminas\Http\Header\HeaderInterface|\ArrayIterator
      */
     public function getHeader($name, $default = false)
     {
