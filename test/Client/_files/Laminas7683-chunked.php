@@ -6,11 +6,6 @@
  * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace Laminas\Http\Client\Exception;
-
-use Laminas\Http\Exception;
-
-class InvalidArgumentException extends Exception\InvalidArgumentException implements
-    ExceptionInterface
-{
-}
+// intentional use of case-insensitive header name
+header('Transfer-encoding: chunked');
+header('content-encoding: gzip');

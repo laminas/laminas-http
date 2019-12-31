@@ -1,27 +1,27 @@
 # Client Cookies
 
-`Zend\Http\Cookies` can be used with `Zend\Http\Client` to manage sending
+`Laminas\Http\Cookies` can be used with `Laminas\Http\Client` to manage sending
 cookies in the request and setting cookies from the response; it is populated
 from the `Set-Cookie` headers obtained from a client response, and then used to
 populate the `Cookie` headers for a client request. This is highly useful in
 cases where you need to maintain a user session over consecutive HTTP requests,
 automatically sending the session ID cookies when required. Additionally, the
-`Zend\Http\Cookies` object can be serialized and stored in `$_SESSION` when
+`Laminas\Http\Cookies` object can be serialized and stored in `$_SESSION` when
 needed.
 
-`Zend\Http\Client` already provides methods for managing cookies for requests;
-`Zend\Http\Cookies` manages the parsing of `Set-Cookie` headers returned in the
+`Laminas\Http\Client` already provides methods for managing cookies for requests;
+`Laminas\Http\Cookies` manages the parsing of `Set-Cookie` headers returned in the
 response, and allows persisting them. Additionally, `Cookies` can return a
 subset of cookies that match the current request, ensuring you are only sending
 relevant cookies.
 
 ## Usage
 
-`Cookies` is an extension of `Zend\Http\Headers`, and inherits its methods. It
+`Cookies` is an extension of `Laminas\Http\Headers`, and inherits its methods. It
 can be instantiated without any arguments.
 
 ```php
-use Zend\Http\Cookies;
+use Laminas\Http\Cookies;
 
 $cookies = new Cookies();
 ```
@@ -60,7 +60,7 @@ allows us to send only those relevant to a given request.
 ## Serializing and caching cookies
 
 To cache cookies &mdash; e.g., to store in `$_SESSION`, or between job
-invocations &mdash; you will need to serialize them. `Zend\Http\Cookies`
+invocations &mdash; you will need to serialize them. `Laminas\Http\Cookies`
 provides this functionality via the `getAllCookies()` method.
 
 If your cache storage allows array structures, use the `COOKIE_STRING_ARRAY` constant:
@@ -79,8 +79,8 @@ When you retrieve the value later, you can test its type to determine how to
 deserialize the values:
 
 ```php
-use Zend\Http\Cookies;
-use Zend\Http\Headers;
+use Laminas\Http\Cookies;
+use Laminas\Http\Headers;
 
 $cookies = new Cookies();
 
@@ -97,7 +97,7 @@ if (is_array($cachedCookies)) {
 
 ## Public methods
 
-Besides the methods demonstrated in the examples, `Zend\Http\Cookies` defines the following:
+Besides the methods demonstrated in the examples, `Laminas\Http\Cookies` defines the following:
 
 Method signature                                                    | Description
 ------------------------------------------------------------------- | -----------

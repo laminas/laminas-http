@@ -1,22 +1,23 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-http for the canonical source repository
- * @copyright Copyright (c) 2005-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-http/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Client;
+namespace LaminasTest\Http\Client;
 
-use Zend\Config\Config;
-use Zend\Http\Client;
-use Zend\Http\Client\Adapter;
-use Zend\Http\Client\Adapter\Curl;
-use Zend\Http\Client\Adapter\Exception\InvalidArgumentException;
-use Zend\Http\Client\Adapter\Exception\RuntimeException;
-use Zend\Http\Client\Adapter\Exception\TimeoutException;
+use Laminas\Config\Config;
+use Laminas\Http\Client;
+use Laminas\Http\Client\Adapter;
+use Laminas\Http\Client\Adapter\Curl;
+use Laminas\Http\Client\Adapter\Exception\InvalidArgumentException;
+use Laminas\Http\Client\Adapter\Exception\RuntimeException;
+use Laminas\Http\Client\Adapter\Exception\TimeoutException;
 
 /**
- * This Testsuite includes all Zend_Http_Client that require a working web
+ * This Testsuite includes all Laminas_Http_Client that require a working web
  * server to perform. It was designed to be extendable, so that several
  * test suites could be run against several servers, with different client
  * adapters and configurations.
@@ -28,8 +29,8 @@ use Zend\Http\Client\Adapter\Exception\TimeoutException;
  * You can also set the proper constand in your test configuration file to
  * point to the right place.
  *
- * @group      Zend_Http
- * @group      Zend_Http_Client
+ * @group      Laminas_Http
+ * @group      Laminas_Http_Client
  */
 class CurlTest extends CommonHttpTests
 {
@@ -76,11 +77,11 @@ class CurlTest extends CommonHttpTests
     }
 
     /**
-     * Test that a Zend_Config object can be used to set configuration
+     * Test that a Laminas_Config object can be used to set configuration
      *
-     * @link http://framework.zend.com/issues/browse/ZF-5577
+     * @link https://getlaminas.org/issues/browse/Laminas-5577
      */
-    public function testConfigSetAsZendConfig()
+    public function testConfigSetAsLaminasConfig()
     {
         $config = new Config([
             'timeout'  => 400,
@@ -112,7 +113,7 @@ class CurlTest extends CommonHttpTests
         $adapter = new Adapter\Curl();
         $adapter->setOptions(['timeout' => $timeout]);
 
-        $adapter->connect('http://framework.zend.com');
+        $adapter->connect('https://getlaminas.org');
     }
 
     public function testThrowInvalidArgumentExceptionOnNonIntegerAndNonNumericStringTimeout()
@@ -123,7 +124,7 @@ class CurlTest extends CommonHttpTests
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('integer or numeric string expected, got string');
 
-        $adapter->connect('http://framework.zend.com');
+        $adapter->connect('https://getlaminas.org');
     }
 
     /**
@@ -186,7 +187,7 @@ class CurlTest extends CommonHttpTests
      * but start with a POST request that sends data then the location ping-pong will lead to an
      * Content-Length: x\r\n GET request of the client that the server won't answer because no content is sent.
      *
-     * Set CURLOPT_FOLLOWLOCATION = false for this type of request and let the Zend_Http_Client handle redirects
+     * Set CURLOPT_FOLLOWLOCATION = false for this type of request and let the Laminas_Http_Client handle redirects
      * in his own loop.
      */
     public function testRedirectPostToGetWithCurlFollowLocationOptionLeadsToTimeout()
@@ -214,8 +215,8 @@ class CurlTest extends CommonHttpTests
     }
 
     /**
-     * @group ZF-3758
-     * @link http://framework.zend.com/issues/browse/ZF-3758
+     * @group Laminas-3758
+     * @link https://getlaminas.org/issues/browse/Laminas-3758
      */
     public function testPutFileContentWithHttpClient()
     {
@@ -234,8 +235,8 @@ class CurlTest extends CommonHttpTests
     }
 
     /**
-     * @group ZF-3758
-     * @link http://framework.zend.com/issues/browse/ZF-3758
+     * @group Laminas-3758
+     * @link https://getlaminas.org/issues/browse/Laminas-3758
      */
     public function testPutFileHandleWithHttpClient()
     {
@@ -362,19 +363,19 @@ class CurlTest extends CommonHttpTests
     }
 
     /**
-     * @group ZF-7040
+     * @group Laminas-7040
      */
     public function testGetCurlHandle()
     {
         $adapter = new Adapter\Curl();
         $adapter->setOptions(['timeout' => 2, 'maxredirects' => 1]);
-        $adapter->connect('http://framework.zend.com');
+        $adapter->connect('https://getlaminas.org');
 
         $this->assertInternalType('resource', $adapter->getHandle());
     }
 
     /**
-     * @group ZF-9857
+     * @group Laminas-9857
      */
     public function testHeadRequest()
     {
@@ -446,14 +447,14 @@ class CurlTest extends CommonHttpTests
     }
 
     /**
-     * @group ZF-7683
+     * @group Laminas-7683
      * @see https://github.com/zendframework/zend-http/pull/53
      *
-     * Note: The headers stored in ZF7683-chunked.php are case insensitive
+     * Note: The headers stored in Laminas7683-chunked.php are case insensitive
      */
     public function testNoCaseSensitiveHeaderName()
     {
-        $this->client->setUri($this->baseuri . 'ZF7683-chunked.php');
+        $this->client->setUri($this->baseuri . 'Laminas7683-chunked.php');
 
         $adapter = new Adapter\Curl();
         $adapter->setOptions([
@@ -513,7 +514,7 @@ class CurlTest extends CommonHttpTests
             ->setStream(true)
             ->setMethod('GET')
             ->setUri(
-                getenv('TESTS_ZEND_HTTP_CLIENT_BIGRESOURCE_URI') ?:
+                getenv('TESTS_LAMINAS_HTTP_CLIENT_BIGRESOURCE_URI') ?:
                 'http://de.releases.ubuntu.com/16.04.1/ubuntu-16.04.1-server-i386.iso'
             );
         $error = null;
