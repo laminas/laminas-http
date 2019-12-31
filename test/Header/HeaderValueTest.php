@@ -1,16 +1,15 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
+use Laminas\Http\Header\HeaderValue;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Http\Header\HeaderValue;
 
 class HeaderValueTest extends TestCase
 {
@@ -91,7 +90,7 @@ class HeaderValueTest extends TestCase
      */
     public function testAssertValidRaisesExceptionForInvalidValue($value)
     {
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException');
         HeaderValue::assertValid($value);
     }
 }
