@@ -1,20 +1,21 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-http for the canonical source repository
- * @copyright Copyright (c) 2005-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-http/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
+use Laminas\Http\Exception\RuntimeException;
+use Laminas\Http\Header\ContentSecurityPolicy;
+use Laminas\Http\Header\Exception\InvalidArgumentException;
+use Laminas\Http\Header\GenericHeader;
+use Laminas\Http\Header\HeaderInterface;
+use Laminas\Http\Header\MultipleHeaderInterface;
+use Laminas\Http\Headers;
 use PHPUnit\Framework\TestCase;
-use Zend\Http\Exception\RuntimeException;
-use Zend\Http\Header\ContentSecurityPolicy;
-use Zend\Http\Header\Exception\InvalidArgumentException;
-use Zend\Http\Header\GenericHeader;
-use Zend\Http\Header\HeaderInterface;
-use Zend\Http\Header\MultipleHeaderInterface;
-use Zend\Http\Headers;
 
 class ContentSecurityPolicyTest extends TestCase
 {
