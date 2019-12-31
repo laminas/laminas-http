@@ -1,17 +1,17 @@
 # HTTP Client Connection Adapters
 
-`Zend\Http\Client` is based on a connection adapter design. The connection adapter is the object in
+`Laminas\Http\Client` is based on a connection adapter design. The connection adapter is the object in
 charge of performing the actual connection to the server, as well as writing requests and reading
 responses. This connection adapter can be replaced, and you can create and extend the default
 connection adapters to suit your special needs, without the need to extend or replace the entire
 HTTP client class.
 
-Currently, zend-http provides four built-in client connection adapters:
+Currently, laminas-http provides four built-in client connection adapters:
 
-- `Zend\Http\Client\Adapter\Socket` (default)
-- `Zend\Http\Client\Adapter\Proxy`
-- `Zend\Http\Client\Adapter\Curl`
-- `Zend\Http\Client\Adapter\Test`
+- `Laminas\Http\Client\Adapter\Socket` (default)
+- `Laminas\Http\Client\Adapter\Proxy`
+- `Laminas\Http\Client\Adapter\Curl`
+- `Laminas\Http\Client\Adapter\Test`
 
 The client can accept an adapter via either its `setAdapter()` method, or during
 instantiation via its `adapter` configuration option. When using configuration,
@@ -23,7 +23,7 @@ the value of the `adapter` option may be one of:
 ## The Socket adapter
 
 The default connection adapter used when none is specified is the
-`Zend\Http\Client\Adapter\Socket` adapter.  The `Socket` adapter is based on
+`Laminas\Http\Client\Adapter\Socket` adapter.  The `Socket` adapter is based on
 PHP's built-in `fsockopen()` function, and does not require any special
 extensions or compilation flags.
 
@@ -67,7 +67,7 @@ Parameter            | Description                                              
 ### Changing the HTTPS transport layer
 
 ```php
-use Zend\Http\Client;
+use Laminas\Http\Client;
 
 // Set the configuration parameters
 $config = [
@@ -91,13 +91,13 @@ fsockopen('tls://www.example.com', 443);
 
 ### Customizing and accessing the Socket adapter stream context
 
-`Zend\Http\Client\Adapter\Socket` provides direct access to the underlying
+`Laminas\Http\Client\Adapter\Socket` provides direct access to the underlying
 [stream context](http://php.net/stream.contexts) used to connect to the remote
 server. This allows the user to pass specific options and parameters to the TCP
 stream, and to the SSL wrapper in case of HTTPS connections.
 
 You can access the stream context using the following methods of
-`Zend\Http\Client\Adapter\Socket`:
+`Laminas\Http\Client\Adapter\Socket`:
 
 - `setStreamContext($context)`: Sets the stream context to be used by the
   adapter. Can accept either a stream context resource created using the
@@ -113,7 +113,7 @@ You can access the stream context using the following methods of
 #### Setting stream context options for the Socket adapter
 
 ```php
-use Zend\Http\Client;
+use Laminas\Http\Client;
 
 // Array of options
 $options = [
@@ -166,10 +166,10 @@ echo $opts['ssl']['peer_certificate'];
 
 ## The Proxy adapter
 
-`Zend\Http\Client\Adapter\Proxy` is similar to the default `Socket` adapter; the
+`Laminas\Http\Client\Adapter\Proxy` is similar to the default `Socket` adapter; the
 primary difference is that the connection is made through an HTTP proxy server
 instead of a direct connection to the target server. This allows usage of
-`Zend\Http\Client` behind proxy servers, which is sometimes required for
+`Laminas\Http\Client` behind proxy servers, which is sometimes required for
 security or performance reasons.
 
 Using the `Proxy` adapter requires several additional client configuration
@@ -181,10 +181,10 @@ Parameter    | Description                    | Expected Type | Example Value
 `proxy_port` | Proxy server TCP port          | integer       | 8080 (default) or 81
 `proxy_user` | Proxy user name, if required   | string        | 'shahar' or '' for none (default)
 `proxy_pass` | Proxy password, if required    | string        | 'secret' or '' for none (default)
-`proxy_auth` | Proxy HTTP authentication type | string        | `Zend\Http\Client::AUTH_BASIC` (default)
+`proxy_auth` | Proxy HTTP authentication type | string        | `Laminas\Http\Client::AUTH_BASIC` (default)
 
 `proxy_host` should always be set; if it is not set, the client will fall back
-to a direct connection using `Zend\Http\Client\Adapter\Socket`. `proxy_port`
+to a direct connection using `Laminas\Http\Client\Adapter\Socket`. `proxy_port`
 defaults to '8080'; if your proxy listens on a different port, you must set this
 one as well.
 
@@ -195,13 +195,13 @@ these two options out.
 
 `proxy_auth` sets the proxy authentication type, if your proxy server requires
 authentication.  Possible values are similar to the ones accepted by the
-`Zend\Http\Client::setAuth()` method. Currently, only basic authentication
-(`Zend\Http\Client::AUTH_BASIC`) is supported.
+`Laminas\Http\Client::setAuth()` method. Currently, only basic authentication
+(`Laminas\Http\Client::AUTH_BASIC`) is supported.
 
-### Using Zend\\Http\\Client behind a proxy server
+### Using Laminas\\Http\\Client behind a proxy server
 
 ```php
-use Zend\Http\Client;
+use Laminas\Http\Client;
 
 // Set the configuration parameters
 $config = [
@@ -225,7 +225,7 @@ according to a configuration parameter.
 
 > ### Access to stream context
 >
-> Since the proxy adapter inherits from `Zend\Http\Client\Adapter\Socket`, you
+> Since the proxy adapter inherits from `Laminas\Http\Client\Adapter\Socket`, you
 > can use the stream context access method (see
 > [above](#setting-stream-context-options-for-the-socket-adapter)) to set stream
 > context options on `Proxy` connections.
@@ -242,7 +242,7 @@ transfering large files.
 ### Setting cURL options
 
 ```php
-use Zend\Http\Client;
+use Laminas\Http\Client;
 
 $config = [
     'adapter'     => Client\Adapter\Curl::class,
@@ -275,7 +275,7 @@ Parameter            | Description                                              
 You can use cURL to transfer very large files over HTTP by filehandle.
 
 ```php
-use Zend\Http\Client;
+use Laminas\Http\Client;
 
 $putFileSize   = filesize('filepath');
 $putFileHandle = fopen('filepath', 'r');
@@ -299,15 +299,15 @@ Testing code that relies on HTTP connections poses difficulties.  For example,
 testing an application that pulls an RSS feed from a remote server will require
 a network connection, which is not always available.
 
-`Zend\Http\Client\Adapter\Test` provides a solution for these situations and
+`Laminas\Http\Client\Adapter\Test` provides a solution for these situations and
 acts as a mock object for unit tests. You can write your application to use
-`Zend\Http\Client`, and, when testing (either in your unit test suite, or in
+`Laminas\Http\Client`, and, when testing (either in your unit test suite, or in
 non-production environments), replace the default adapter with the test adapter,
 allowing you to run tests without actually performing server connections.
 
-`Zend\Http\Client\Adapter\Test` provides two additional methods, `setResponse()`
+`Laminas\Http\Client\Adapter\Test` provides two additional methods, `setResponse()`
 and `addResponse()`.  Each takes one parameter, which represents an HTTP
-response as either text or a `Zend\Http\Response` object. `setResponse()` sets
+response as either text or a `Laminas\Http\Response` object. `setResponse()` sets
 an individual response to always return from any request; `addResponse()` allows
 aggregating a sequence of responses. In both cases, responses are returned
 without performing actual HTTP requests.
@@ -315,7 +315,7 @@ without performing actual HTTP requests.
 ### Testing against a single HTTP response stub
 
 ```php
-use Zend\Http\Client;
+use Laminas\Http\Client;
 
 // Instantiate a new adapter and client
 $adapter = new Client\Adapter\Test();
@@ -358,7 +358,7 @@ your program might need before returning to the caller.
 ### Testing Against Multiple HTTP Response Stubs
 
 ```php
-use Zend\Http\Client;
+use Laminas\Http\Client;
 
 // Instantiate a new adapter and client
 $adapter = new Client\Adapter\Test();
@@ -415,12 +415,12 @@ your object under test and test its behavior.
 
 If you need the adapter to fail on demand you can use
 `setNextRequestWillFail($flag)`. The method will cause the next call to
-`connect()` to throw an `Zend\Http\Client\Adapter\Exception\RuntimeException`.
+`connect()` to throw an `Laminas\Http\Client\Adapter\Exception\RuntimeException`.
 This can be useful when our application caches content from an external site (in
 case the site goes down) and you want to test this feature.
 
 ```php
-use Zend\Http\Client;
+use Laminas\Http\Client;
 
 // Instantiate a new adapter and client
 $adapter = new Client\Adapter\Test();
@@ -445,20 +445,20 @@ try {
 
 ## Creating your own connection adapters
 
-`Zend\Http\Client` has been designed so that you can create and use your own
+`Laminas\Http\Client` has been designed so that you can create and use your own
 connection adapters. You could, for example, create a connection adapter that
 uses persistent sockets, or a connection adapter with caching abilities, and use
 them as needed in your application.
 
 In order to do so, you must create your own adapter class that implements
-`Zend\Http\Client\Adapter\AdapterInterface`. The following example shows the
+`Laminas\Http\Client\Adapter\AdapterInterface`. The following example shows the
 skeleton of a user-implemented adapter class. All the public functions defined
 in this example must be defined in your adapter as well.
 
 ```php
 namespace MyApp\Http\Client\Adapter;
 
-use Zend\Http\Client\Adapter\AdapterInterface;
+use Laminas\Http\Client\Adapter\AdapterInterface;
 
 class BananaProtocol implements AdapterInterface
 {
@@ -470,7 +470,7 @@ class BananaProtocol implements AdapterInterface
     public function setOptions($config = [])
     {
         // This rarely changes - you should usually copy the
-        // implementation in Zend\Http\Client\Adapter\Socket.
+        // implementation in Laminas\Http\Client\Adapter\Socket.
     }
 
     /**
@@ -489,7 +489,7 @@ class BananaProtocol implements AdapterInterface
      * Send request to the remote server
      *
      * @param string        $method
-     * @param Zend\Uri\Http $url
+     * @param Laminas\Uri\Http $url
      * @param string        $http_ver
      * @param array         $headers
      * @param string        $body
@@ -532,7 +532,7 @@ Use the adapter as you would any other:
 
 ```php
 use MyApp\Http\Client\Adapter\BananaProtocol;
-use Zend\Http\Client;
+use Laminas\Http\Client;
 
 $client = new Client([
     'adapter' => BananaProtocol::class,
