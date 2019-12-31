@@ -1,16 +1,15 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
-use Zend\Http\Header\Exception\InvalidArgumentException;
-use Zend\Http\Header\GenericHeader;
+use Laminas\Http\Header\Exception\InvalidArgumentException;
+use Laminas\Http\Header\GenericHeader;
 use PHPUnit_Framework_TestCase as TestCase;
 
 class GenericHeaderTest extends TestCase
@@ -64,7 +63,7 @@ class GenericHeaderTest extends TestCase
      */
     public function testPreventsCRLFAttackViaFromString()
     {
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException');
         $header = GenericHeader::fromString("X_Foo_Bar: Bar\r\n\r\nevilContent");
     }
 
@@ -74,7 +73,7 @@ class GenericHeaderTest extends TestCase
      */
     public function testPreventsCRLFAttackViaConstructor()
     {
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException');
         $header = new GenericHeader('X_Foo_Bar', "Bar\r\n\r\nevilContent");
     }
 
@@ -85,7 +84,7 @@ class GenericHeaderTest extends TestCase
     public function testProtectsFromCRLFAttackViaSetFieldName()
     {
         $header = new GenericHeader();
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException', 'valid');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException', 'valid');
         $header->setFieldName("\rX-\r\nFoo-\nBar");
     }
 
@@ -96,7 +95,7 @@ class GenericHeaderTest extends TestCase
     public function testProtectsFromCRLFAttackViaSetFieldValue()
     {
         $header = new GenericHeader();
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException');
         $header->setFieldValue("\rSome\r\nCLRF\nAttack");
     }
 

@@ -1,23 +1,22 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
-use Zend\Http\Header\ProxyAuthenticate;
+use Laminas\Http\Header\ProxyAuthenticate;
 
 class ProxyAuthenticateTest extends \PHPUnit_Framework_TestCase
 {
     public function testProxyAuthenticateFromStringCreatesValidProxyAuthenticateHeader()
     {
         $proxyAuthenticateHeader = ProxyAuthenticate::fromString('Proxy-Authenticate: xxx');
-        $this->assertInstanceOf('Zend\Http\Header\HeaderInterface', $proxyAuthenticateHeader);
-        $this->assertInstanceOf('Zend\Http\Header\ProxyAuthenticate', $proxyAuthenticateHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\HeaderInterface', $proxyAuthenticateHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\ProxyAuthenticate', $proxyAuthenticateHeader);
     }
 
     public function testProxyAuthenticateGetFieldNameReturnsHeaderName()
@@ -52,7 +51,7 @@ class ProxyAuthenticateTest extends \PHPUnit_Framework_TestCase
      */
     public function testPreventsCRLFAttackViaFromString()
     {
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException');
         $header = ProxyAuthenticate::fromString("Proxy-Authenticate: xxx\r\n\r\nevilContent");
     }
 
@@ -62,7 +61,7 @@ class ProxyAuthenticateTest extends \PHPUnit_Framework_TestCase
      */
     public function testPreventsCRLFAttackViaConstructor()
     {
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException');
         $header = new ProxyAuthenticate("xxx\r\n\r\nevilContent");
     }
 }

@@ -1,18 +1,17 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Http\Client\Adapter;
+namespace Laminas\Http\Client\Adapter;
 
 /**
- * An interface description for Zend\Http\Client\Adapter classes.
+ * An interface description for Laminas\Http\Client\Adapter classes.
  *
- * These classes are used as connectors for Zend\Http\Client, performing the
+ * These classes are used as connectors for Laminas\Http\Client, performing the
  * tasks of connecting, writing, reading and closing connection to the server.
  */
 interface AdapterInterface
@@ -37,7 +36,7 @@ interface AdapterInterface
      * Send request to the remote server
      *
      * @param string        $method
-     * @param \Zend\Uri\Uri $url
+     * @param \Laminas\Uri\Uri $url
      * @param string        $httpVer
      * @param array         $headers
      * @param string        $body

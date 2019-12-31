@@ -1,20 +1,19 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
-use Zend\Http\Header\SetCookie;
+use Laminas\Http\Header\SetCookie;
 
 class SetCookieTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @group ZF2-254
+     * @group Laminas-254
      */
     public function testSetCookieConstructor()
     {
@@ -50,15 +49,15 @@ class SetCookieTest extends \PHPUnit_Framework_TestCase
     public function testSetCookieFromStringCreatesValidSetCookieHeader()
     {
         $setCookieHeader = SetCookie::fromString('Set-Cookie: xxx');
-        $this->assertInstanceOf('Zend\Http\Header\MultipleHeaderInterface', $setCookieHeader);
-        $this->assertInstanceOf('Zend\Http\Header\HeaderInterface', $setCookieHeader);
-        $this->assertInstanceOf('Zend\Http\Header\SetCookie', $setCookieHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\MultipleHeaderInterface', $setCookieHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\HeaderInterface', $setCookieHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\SetCookie', $setCookieHeader);
     }
 
     public function testSetCookieFromStringCanCreateSingleHeader()
     {
         $setCookieHeader = SetCookie::fromString('Set-Cookie: myname=myvalue');
-        $this->assertInstanceOf('Zend\Http\Header\HeaderInterface', $setCookieHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\HeaderInterface', $setCookieHeader);
         $this->assertEquals('myname', $setCookieHeader->getName());
         $this->assertEquals('myvalue', $setCookieHeader->getValue());
 
@@ -66,7 +65,7 @@ class SetCookieTest extends \PHPUnit_Framework_TestCase
             'set-cookie: myname=myvalue; Domain=docs.foo.com; Path=/accounts;'
             . 'Expires=Wed, 13-Jan-2021 22:23:01 GMT; Secure; HttpOnly'
         );
-        $this->assertInstanceOf('Zend\Http\Header\MultipleHeaderInterface', $setCookieHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\MultipleHeaderInterface', $setCookieHeader);
         $this->assertEquals('myname', $setCookieHeader->getName());
         $this->assertEquals('myvalue', $setCookieHeader->getValue());
         $this->assertEquals('docs.foo.com', $setCookieHeader->getDomain());
@@ -87,12 +86,12 @@ class SetCookieTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('array', $setCookieHeaders);
 
         $setCookieHeader = $setCookieHeaders[0];
-        $this->assertInstanceOf('Zend\Http\Header\MultipleHeaderInterface', $setCookieHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\MultipleHeaderInterface', $setCookieHeader);
         $this->assertEquals('myname', $setCookieHeader->getName());
         $this->assertEquals('myvalue', $setCookieHeader->getValue());
 
         $setCookieHeader = $setCookieHeaders[1];
-        $this->assertInstanceOf('Zend\Http\Header\MultipleHeaderInterface', $setCookieHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\MultipleHeaderInterface', $setCookieHeader);
         $this->assertEquals('someothername', $setCookieHeader->getName());
         $this->assertEquals('someothervalue', $setCookieHeader->getValue());
         $this->assertEquals('Wed, 13-Jan-2021 22:23:01 GMT', $setCookieHeader->getExpires());
@@ -324,7 +323,7 @@ class SetCookieTest extends \PHPUnit_Framework_TestCase
     /** Implementation specific tests here */
 
     /**
-     * @group ZF2-169
+     * @group Laminas-169
      */
     public function test169()
     {
@@ -334,7 +333,7 @@ class SetCookieTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @group ZF2-169
+     * @group Laminas-169
      */
     public function testDoesNotAcceptCookieNameFromArbitraryLocationInHeaderValue()
     {
@@ -421,7 +420,7 @@ class SetCookieTest extends \PHPUnit_Framework_TestCase
      */
     public function testPreventsCRLFAttackViaFromString()
     {
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException');
         $header = SetCookie::fromString("Set-Cookie: leo_auth_token=example;\r\n\r\nevilContent");
     }
 
@@ -431,7 +430,7 @@ class SetCookieTest extends \PHPUnit_Framework_TestCase
      */
     public function testPreventsCRLFAttackViaConstructor()
     {
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException');
         $header = new SetCookie("leo_auth_token", "example\r\n\r\nevilContent");
     }
 
@@ -452,7 +451,7 @@ class SetCookieTest extends \PHPUnit_Framework_TestCase
     public function testPreventsCRLFAttackViaSetters($method, $value)
     {
         $header = new SetCookie();
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException');
         $header->{$method}($value);
     }
 
