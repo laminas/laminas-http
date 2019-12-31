@@ -1,23 +1,22 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
-use Zend\Http\Header\Referer;
+use Laminas\Http\Header\Referer;
 
 class RefererTest extends \PHPUnit_Framework_TestCase
 {
     public function testRefererFromStringCreatesValidLocationHeader()
     {
         $refererHeader = Referer::fromString('Referer: http://www.example.com/');
-        $this->assertInstanceOf('Zend\Http\Header\HeaderInterface', $refererHeader);
-        $this->assertInstanceOf('Zend\Http\Header\Referer', $refererHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\HeaderInterface', $refererHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\Referer', $refererHeader);
     }
 
     public function testRefererGetFieldValueReturnsProperValue()
@@ -44,7 +43,7 @@ class RefererTest extends \PHPUnit_Framework_TestCase
     {
         $refererHeader = Referer::fromString('Referer: http://www.example.com/path');
         $uri = $refererHeader->uri();
-        $this->assertInstanceOf('Zend\Uri\Http', $uri);
+        $this->assertInstanceOf('Laminas\Uri\Http', $uri);
         $this->assertTrue($uri->isAbsolute());
         $this->assertEquals('http://www.example.com/path', $refererHeader->getUri());
     }
@@ -53,7 +52,7 @@ class RefererTest extends \PHPUnit_Framework_TestCase
     {
         $refererHeader = Referer::fromString('Referer: /path/to');
         $uri = $refererHeader->uri();
-        $this->assertInstanceOf('Zend\Uri\Uri', $uri);
+        $this->assertInstanceOf('Laminas\Uri\Uri', $uri);
         $this->assertFalse($uri->isAbsolute());
         $this->assertEquals('/path/to', $refererHeader->getUri());
     }
@@ -71,7 +70,7 @@ class RefererTest extends \PHPUnit_Framework_TestCase
      */
     public function testCRLFAttack()
     {
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException');
         $header = Referer::fromString("Referer: http://www.example.com/\r\n\r\nevilContent");
     }
 }

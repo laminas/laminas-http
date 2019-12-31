@@ -1,16 +1,15 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\PhpEnvironment;
+namespace LaminasTest\Http\PhpEnvironment;
 
+use Laminas\Http\PhpEnvironment\RemoteAddress as RemoteAddr;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Http\PhpEnvironment\RemoteAddress as RemoteAddr;
 
 class RemoteAddressTest extends TestCase
 {
@@ -75,7 +74,7 @@ class RemoteAddressTest extends TestCase
         $result = $this->remoteAddress->setTrustedProxies(array(
             '192.168.0.10', '192.168.0.1'
         ));
-        $this->assertInstanceOf('Zend\Http\PhpEnvironment\RemoteAddress', $result);
+        $this->assertInstanceOf('Laminas\Http\PhpEnvironment\RemoteAddress', $result);
     }
 
     public function testGetIpAddress()
