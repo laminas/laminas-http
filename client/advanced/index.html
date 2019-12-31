@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HTTP message and header abstractions, and HTTP client implementation. (Not a PSR-7 implementation; see Diactoros for PSR-7 support.">  
+    <link rel="canonical" href="https://docs.laminas.dev/client/advanced/">
+    <link rel="shortcut icon" href="/img/trademark-laminas-foundation-rgb.svg">
+
+    <title>Advanced - laminas-http - Laminas Docs</title>
+
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body id="page-top" class="components">
+
+    
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        
+        <a class="logo-link navbar-brand offset-md-2" href="https://getlaminas.org/" data-tooltip data-placement="bottom" title="Go to the Laminas homepage">
+            <img src="../../img/laminas-foundation-white.svg" height="28" alt="Lamnias">
+        </a>
+        <a class="navbar-title" href="https://docs.laminas.dev/" data-tooltip data-placement="bottom" title="Go to the Laminas Documentation">
+            Documentation
+        </a>
+
+        
+        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+            
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a href="https://getlaminas.org/about" class="nav-link">About</a>
+                </li>
+                <li class="nav-item">
+                    <a href="https://getlaminas.org/blog" class="nav-link">Blog</a>
+                </li>
+                <li class="nav-item">
+                    <a href="https://docs.laminas.dev" class="nav-link">All Docs</a>
+                </li>
+                <li class="nav-item">
+                    <a href="https://getlaminas.org/participate" class="nav-link">Community</a>
+                </li>
+            </ul>
+
+            
+            
+                <div class="d-block d-sm-none">
+                    
+    <div class="subnavigation hidden-print">
+        <h4 class="subnavigation__title">
+            <a href="../..">laminas-http</a>
+        </h4>
+
+        <h5 class="subnavigation__subtitle">Table of Contents</h5>
+
+        <ul class="subnavigation__list">
+            
+
+                
+                
+
+                    
+                    
+                        
+                            <li class="subnavigation__list-item ">
+                                <a href="../../intro/" class="subnavigation__link">Introduction</a>
+                            </li>
+                        
+                    
+                
+            
+
+                
+                
+
+                    
+                    
+                        
+                            <li class="subnavigation__list-item">
+                                <span class="subnavigation__headline">Reference</span>
+                                <ul class="subnavigation__list">
+                                    
+                                        
+    <li class="subnavigation__list-item ">
+        <a href="../../request/" class="subnavigation__link">Request</a>
+    </li>
+
+                                    
+                                        
+    <li class="subnavigation__list-item ">
+        <a href="../../response/" class="subnavigation__link">Response</a>
+    </li>
+
+                                    
+                                        
+    <li class="subnavigation__list-item ">
+        <a href="../../headers/" class="subnavigation__link">Headers</a>
+    </li>
+
+                                    
+                                        
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Client</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../intro/" class="subnavigation__link">Intro</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../adapters/" class="subnavigation__link">Adapters</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../static/" class="subnavigation__link">Static Client</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../cookies/" class="subnavigation__link">Cookie Persistence</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item subnavigation__list-item--active">
+        <a href="./" class="subnavigation__link">Advanced</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                                    
+                                </ul>
+                            </li>
+                        
+                    
+                
+            
+        </ul>
+    </div>
+
+                </div>
+            
+
+            
+            <div class="d-block d-sm-none">
+                <div class="component-selector">
+    
+    <h5 class="component-selector__subtitle">Find documentation…</h5>
+    <select class="form-control component-selector__control">
+        <option value="/">Overview</option>
+        <optgroup label="Components"></optgroup>
+    </select>
+</div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+    
+    <header class="header">
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="col-6 offset-md-2">
+                <h1 class="header__title">
+                    Components
+
+                    
+                        <small class="header__subtitle">laminas-http</small>
+                    
+                </h1>
+            </div>
+
+            
+            <div class="col-4 text-sm-right">
+                
+                    
+
+                    <a href="#" class="header__link header__link--search" data-toggle="modal" data-target="#mkdocs_search_modal" title="Open search">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                    <a href="https://github.com/laminas/laminas-http/" class="header__link header__link--github" title="Go to repository of laminas-http">
+                        <i class="fa fa-github"></i> GitHub
+                    </a>
+                
+            </div>
+        </div>
+    </div>
+</header>
+
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2 col-sm-12">
+                
+    
+
+    
+    
+        <div class="toc">
+            <h6 class="toc__headline">On this page</h6>
+            <ul class="toc__list">
+                
+                    <li class="toc__entry">
+                        <a href="#http-redirections" class="toc__link">HTTP redirections</a>
+                    </li>
+                
+                    <li class="toc__entry">
+                        <a href="#adding-cookies-and-using-cookie-persistence" class="toc__link">Adding cookies and using cookie persistence</a>
+                    </li>
+                
+                    <li class="toc__entry">
+                        <a href="#setting-custom-request-headers" class="toc__link">Setting custom request headers</a>
+                    </li>
+                
+                    <li class="toc__entry">
+                        <a href="#file-uploads" class="toc__link">File uploads</a>
+                    </li>
+                
+                    <li class="toc__entry">
+                        <a href="#sending-raw-post-data" class="toc__link">Sending raw POST data</a>
+                    </li>
+                
+                    <li class="toc__entry">
+                        <a href="#http-authentication" class="toc__link">HTTP authentication</a>
+                    </li>
+                
+                    <li class="toc__entry">
+                        <a href="#sending-multiple-requests-with-the-same-client" class="toc__link">Sending multiple requests with the same client</a>
+                    </li>
+                
+                    <li class="toc__entry">
+                        <a href="#data-streaming" class="toc__link">Data streaming</a>
+                    </li>
+                
+            </ul>
+        </div>
+    
+
+            </div>
+            <div class="col-md-7 col-sm-12 content" role="main" data-spy="scroll" data-target=".toc">
+                
+                    <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        
+            <li class="breadcrumb-item"><a href="">Overview</a></li>
+
+            
+                <li class="breadcrumb-item"><a href="../..">laminas-http</a></li>
+
+                
+                    
+                        
+                        
+                            <li class="breadcrumb-item">Reference</li>
+                        
+                    
+                
+                    
+                        
+                        
+                            <li class="breadcrumb-item">Client</li>
+                        
+                    
+                
+
+                <li class="breadcrumb-item active" aria-current="page">Advanced</li>
+            
+        
+    </ol>
+</nav>
+
+
+
+
+
+
+    
+    
+        <h2 class="chapter__headline">Client</h2>
+    
+
+    <h1 id="http-client-advanced-usage">HTTP Client Advanced Usage</h1>
+<h2 id="http-redirections">HTTP redirections</h2>
+<p><code>Laminas\Http\Client</code> automatically handles HTTP redirections, and by default
+will follow up to 5 redirections. This can be changed by setting the
+<code>maxredirects</code> configuration parameter.</p>
+<p>According to the HTTP/1.1 RFC, HTTP 301 and 302 responses should be treated by
+the client by resending the same request to the specified location, using the
+same request method. However, most clients to not implement this and always use
+a <code>GET</code> request when redirecting. By default, <code>Laminas\Http\Client</code> does the same;
+when redirecting on a 301 or 302 response, all query and body parameters are
+reset, and a <code>GET</code> request is sent to the new location. This behavior can be
+changed by setting the <code>strictredirects</code> configuration parameter to boolean
+<code>TRUE</code>:</p>
+<p> <div class=codehilite><pre><span></span><span class=x>// Strict Redirections</span>
+<span class=x>$client-&gt;setOptions([&#39;strictredirects&#39; =&gt; true]);</span>
+
+<span class=x>// Non-strict Redirections</span>
+<span class=x>$client-&gt;setOptions([&#39;strictredirects&#39; =&gt; false]);</span>
+</pre></div></p>
+<p>You can always get the number of redirections done after sending a request
+using the <code>getRedirectionsCount()</code> method.</p>
+<h2 id="adding-cookies-and-using-cookie-persistence">Adding cookies and using cookie persistence</h2>
+<p><code>Laminas\Http\Client</code> provides an interface for adding cookies to your request, so
+that no direct header modification is required. Cookies can be added using
+either the addCookie() or <code>setCookies()</code> method. <code>addCookie()</code> can accept
+either a name and value, a <code>SetCookie</code> header instance, or an array of
+<code>SetCookie</code> header instances.</p>
+<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Header\SetCookie;</span>
+
+<span class=x>// Basic usage: provide a cookie name and cookie value:</span>
+<span class=x>$client-&gt;addCookie(&#39;flavor&#39;, &#39;chocolate chips&#39;);</span>
+
+<span class=x>// Or provide a SetCookie instance:</span>
+<span class=x>$cookie = SetCookie::fromString(&#39;Set-Cookie: flavor=chocolate%20chips&#39;);</span>
+<span class=x>$client-&gt;addCookie($cookie);</span>
+
+<span class=x>// Multiple cookies can be set at once by providing an</span>
+<span class=x>// array of SetCookie instances:</span>
+<span class=x>$cookies = [</span>
+<span class=x>    SetCookie::fromString(&#39;Set-Cookie: flavorOne=chocolate%20chips&#39;),</span>
+<span class=x>    SetCookie::fromString(&#39;Set-Cookie: flavorTwo=vanilla&#39;),</span>
+<span class=x>];</span>
+<span class=x>$client-&gt;addCookie($cookies);</span>
+</pre></div></p>
+<p>The <code>setCookies()</code> method works in a similar manner, except that it requires an
+array of cookie name/value pairs as its only argument, and also clears the
+cookie container before adding the new cookies:</p>
+<p> <div class=codehilite><pre><span></span><span class=x>// setCookies accepts an array of cookie values as $name =&gt; $value</span>
+<span class=x>$client-&gt;setCookies([</span>
+<span class=x>    &#39;flavor&#39; =&gt; &#39;chocolate chips&#39;,</span>
+<span class=x>    &#39;amount&#39; =&gt; 10,</span>
+<span class=x>]);</span>
+</pre></div></p>
+<p>See the <a href="../../headers/#setcookie">Headers documentation</a> for more detail on the
+<code>SetCookie</code> class.</p>
+<h3>Enabling Cookie Stickiness</h3>
+<p><code>Laminas\Http\Client</code> also provides a means for simplifying cookie "stickiness"
+&mdash; i.e., having the client internally store all sent and received cookies,
+and resending them on subsequent requests. &mdash; via the <code>Laminas\Http\Cookies</code>
+class. This is useful when you need to log in to a remote site first and
+receive an authentication or session ID cookie before sending further requests.</p>
+<p> <div class=codehilite><pre><span></span><span class=x>$headers = $client-&gt;getRequest()-&gt;getHeaders();</span>
+<span class=x>$cookies = new Laminas\Http\Cookies($headers);</span>
+
+<span class=x>// First request: log in and start a session</span>
+<span class=x>$client-&gt;setUri(&#39;http://example.com/login.php&#39;);</span>
+<span class=x>$client-&gt;setParameterPost([&#39;user&#39; =&gt; &#39;h4x0r&#39;, &#39;password&#39; =&gt; &#39;l33t&#39;]);</span>
+<span class=x>$client-&gt;setMethod(&#39;POST&#39;);</span>
+
+<span class=x>$response = $client-&gt;getResponse();</span>
+<span class=x>$cookies-&gt;addCookiesFromResponse($response, $client-&gt;getUri());</span>
+
+<span class=x>// Now we can send our next request</span>
+<span class=x>$client-&gt;setUri(&#39;http://example.com/read_member_news.php&#39;);</span>
+<span class=x>$client-&gt;setCookies($cookies-&gt;getMatchingCookies($client-&gt;getUri()));</span>
+<span class=x>$client-&gt;setMethod(&#39;GET&#39;);</span>
+</pre></div></p>
+<p>See the chapter on <a href="../cookies/">cookies</a> for more detail.</p>
+<h2 id="setting-custom-request-headers">Setting custom request headers</h2>
+<p>Setting custom headers is performed by first fetching the header container from
+the client's <code>Laminas\Http\Request</code> instance. This <code>Headers</code> container offers a
+number of methods for setting headers:</p>
+<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Header;</span>
+
+<span class=x>// Fetch the container</span>
+<span class=x>$headers = $client-&gt;getRequest()-&gt;getHeaders();</span>
+
+<span class=x>// Setting a single header using a name and value. Will not overwrite any //</span>
+<span class=x>previously-added headers of the same name.</span>
+<span class=x>$headers-&gt;addHeaderLine(&#39;Host&#39;, &#39;www.example.com&#39;);</span>
+
+<span class=x>// You can also use a full header line:</span>
+<span class=x>$headers-&gt;addHeaderLine(&#39;Host: www.example.com&#39;);</span>
+
+<span class=x>// Sometimes you may want to use a HeaderInterface instance:</span>
+<span class=x>$headers-&gt;addHeader(Header\Host::fromString(&#39;Host: www.example.com&#39;));</span>
+
+<span class=x>// You can also add multiple headers at once by passing an</span>
+<span class=x>// array to addHeaders() using any of the formats below:</span>
+<span class=x>$headers-&gt;addHeaders([</span>
+<span class=x>    // Laminas\Http\Header\* instance:</span>
+<span class=x>    Header\Host::fromString(&#39;Host: www.example.com&#39;),</span>
+
+<span class=x>    // Header name/value pair:</span>
+<span class=x>    &#39;Cookie&#39; =&gt; &#39;PHPSESSID=1234567890abcdef1234567890abcdef&#39;,</span>
+
+<span class=x>    // Raw header string:</span>
+<span class=x>    &#39;Cookie: language=he&#39;,</span>
+<span class=x>]);</span>
+</pre></div></p>
+<p><code>Laminas\Http\Client</code> also provides a convenience method for setting request
+headers, <code>setHeaders()</code>.  This method will create a new header container, add
+the specified headers, and then store the new header container in its
+<code>Laminas\Http\Request</code> instance. As a consequence, any pre-existing headers will
+be erased:</p>
+<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Header;</span>
+
+<span class=x>// Setting multiple headers via the client; removes all existing headers,</span>
+<span class=x>// replacing the request header container with the following:</span>
+<span class=x>$client-&gt;setHeaders([</span>
+<span class=x>    Laminas\Http\Header\Host::fromString(&#39;Host: www.example.com&#39;),</span>
+<span class=x>    [&#39;Accept-Encoding&#39; =&gt; &#39;gzip,deflate&#39;],</span>
+<span class=x>    &#39;X-Powered-By: Laminas&#39;,</span>
+<span class=x>]);</span>
+</pre></div></p>
+<h2 id="file-uploads">File uploads</h2>
+<p>You can upload files through HTTP using the <code>setFileUpload()</code> method. This
+method takes a file name as the first parameter, a form name as the second
+parameter, and data as a third optional parameter. If the third data parameter
+is <code>NULL</code>, the first file name parameter is considered to be a real file on
+disk, and <code>Laminas\Http\Client</code> will try to read this file and upload it. If the
+data parameter is not <code>NULL</code>, the first file name parameter will be sent as the
+file name, but no actual file needs to exist on the disk. The second form name
+parameter is always required, and is equivalent to the "name" attribute of an
+<code>&lt;input&gt;</code> tag, if the file was to be uploaded through an HTML form. A fourth
+optional parameter provides the file's <code>Content-Type</code>. If not specified, and
+<code>Laminas\Http\Client</code> reads the file from the disk, the <code>mime_content_type()</code>
+function will be used to guess the file's content type, if it is available. In
+any case, the default MIME type will be <code>application/octet-stream</code>.</p>
+<p> <div class=codehilite><pre><span></span><span class=x>// Uploading arbitrary data as a file:</span>
+<span class=x>$text = &#39;this is some plain text&#39;;</span>
+<span class=x>$client-&gt;setFileUpload(&#39;some_text.txt&#39;, &#39;upload&#39;, $text, &#39;text/plain&#39;);</span>
+
+<span class=x>// Uploading an existing file:</span>
+<span class=x>$client-&gt;setFileUpload(&#39;/tmp/Backup.tar.gz&#39;, &#39;bufile&#39;);</span>
+
+<span class=x>// Send the files:</span>
+<span class=x>$client-&gt;setMethod(&#39;POST&#39;);</span>
+<span class=x>$client-&gt;send();</span>
+</pre></div></p>
+<p>In the first example, the <code>$text</code> variable is uploaded and will be available as
+<code>$_FILES['upload']</code> on the server side. In the second example, the existing
+file <code>/tmp/Backup.tar.gz</code> is uploaded to the server and will be available as
+<code>$_FILES['bufile']</code>. The content type will be guessed automatically if
+possible, defaulting to <code>application/octet-stream</code>.</p>
+<blockquote>
+<h3>Uploading files</h3>
+<p>When uploading files, the HTTP request <code>Content-Type</code> is automatically set to
+<code>multipart/form-data</code>.  Keep in mind that you must send a POST or PUT request
+in order to upload files; most servers will ignore the request body on other
+request methods.</p>
+</blockquote>
+<h2 id="sending-raw-post-data">Sending raw POST data</h2>
+<p>You can send raw POST data via <code>Laminas\Http\Client</code> using the <code>setRawBody()</code>
+method. This method takes one parameter: the data to send in the request body.
+When sending raw POST data, it is advisable to also set the encoding type using
+<code>setEncType()</code>.</p>
+<p> <div class=codehilite><pre><span></span><span class=x>$xml = &#39;&lt;book&gt;&#39;</span>
+<span class=x>    . &#39;  &lt;title&gt;Islands in the Stream&lt;/title&gt;&#39;</span>
+<span class=x>    . &#39;  &lt;author&gt;Ernest Hemingway&lt;/author&gt;&#39;</span>
+<span class=x>    . &#39;  &lt;year&gt;1970&lt;/year&gt;&#39;</span>
+<span class=x>    . &#39;&lt;/book&gt;&#39;;</span>
+<span class=x>$client-&gt;setMethod(&#39;POST&#39;);</span>
+<span class=x>$client-&gt;setRawBody($xml);</span>
+<span class=x>$client-&gt;setEncType(&#39;text/xml&#39;);</span>
+<span class=x>$client-&gt;send();</span>
+</pre></div></p>
+<p>The data should be available on the server side through PHP's <code>php://input</code>
+stream.</p>
+<blockquote>
+<h3>Raw POST data overrides other content</h3>
+<p>Setting raw POST data for a request will override any POST parameters or file
+uploads; you should not try to use both on the same request. Keep in mind
+that most servers will ignore the request body unless you send a POST
+request.</p>
+</blockquote>
+<h2 id="http-authentication">HTTP authentication</h2>
+<p>Currently, <code>Laminas\Http\Client</code> only supports basic HTTP authentication. This feature is utilized
+using the <code>setAuth()</code> method, or by specifying a username and a password in the URI. The <code>setAuth()</code>
+method takes 3 parameters: the user name, the password and an optional authentication type
+parameter.</p>
+<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Client;</span>
+
+<span class=x>// Using basic authentication</span>
+<span class=x>$client-&gt;setAuth(&#39;shahar&#39;, &#39;myPassword!&#39;, Client::AUTH_BASIC);</span>
+
+<span class=x>// Since basic auth is default, you can just do this:</span>
+<span class=x>$client-&gt;setAuth(&#39;shahar&#39;, &#39;myPassword!&#39;);</span>
+
+<span class=x>// You can also specify username and password in the URI</span>
+<span class=x>$client-&gt;setUri(&#39;http://christer:secret@example.com&#39;);</span>
+</pre></div></p>
+<h2 id="sending-multiple-requests-with-the-same-client">Sending multiple requests with the same client</h2>
+<p><code>Laminas\Http\Client</code> was also designed specifically to handle several consecutive
+requests with the same object. This is useful in cases where a script requires
+data to be fetched from several places, or when accessing a specific HTTP
+resource requires logging in and obtaining a session cookie, for example.</p>
+<p>When performing several requests to the same host, it is highly recommended to
+enable the 'keepalive' configuration flag. This way, if the server supports
+keep-alive connections, the connection to the server will only be closed once
+all requests are done and the <code>Client</code> object is destroyed. This prevents the
+overhead of opening and closing TCP connections to the server.</p>
+<p>When you perform several requests with the same client, but want to make sure
+all the request-specific parameters are cleared, you should use the
+<code>resetParameters()</code> method. This ensures that GET and POST parameters, request
+body, and request headers are reset and are not reused in the next request.</p>
+<blockquote>
+<h3>Resetting parameters</h3>
+<p>Note that cookies are not reset by default when the <code>resetParameters()</code>
+method is used. To clean all cookies as well, use <code>resetParameters(true)</code>, or
+call <code>clearCookies()</code> after calling <code>resetParameters()</code>.</p>
+</blockquote>
+<p>Another feature designed specifically for consecutive requests is the
+<code>Laminas\Http\Cookies</code> object.  This "Cookie Jar" allow you to save cookies set by
+the server in a request, and send them back on consecutive requests
+transparently. This allows, for example, going through an authentication
+request before sending the actual data-fetching request.</p>
+<p>If your application requires one authentication request per user, and
+consecutive requests might be performed in more than one script in your
+application, it might be a good idea to store the <code>Cookies</code> object in the user's
+session. This way, you will only need to authenticate the user once every
+session.</p>
+<h3>Performing consecutive requests with one client</h3>
+<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Client;</span>
+<span class=x>use Laminas\Http\Cookies;</span>
+
+<span class=x>// First, instantiate the client</span>
+<span class=x>$client = new Client(</span>
+<span class=x>    &#39;http://www.example.com/fetchdata.php&#39;,</span>
+<span class=x>    [&#39;keepalive&#39; =&gt; true]</span>
+<span class=x>);</span>
+
+<span class=x>// Do we have the cookies stored in our session?</span>
+<span class=x>if (isset($_SESSION[&#39;cookiejar&#39;])</span>
+<span class=x>    &amp;&amp; $_SESSION[&#39;cookiejar&#39;] instanceof Cookies</span>
+<span class=x>) {</span>
+<span class=x>    $cookieJar = $_SESSION[&#39;cookiejar&#39;];</span>
+<span class=x>} else {</span>
+<span class=x>    // If we don&#39;t, authenticate and store cookies</span>
+<span class=x>    $client-&gt;setUri(&#39;http://www.example.com/login.php&#39;);</span>
+<span class=x>    $client-&gt;setParameterPost([</span>
+<span class=x>        &#39;user&#39; =&gt; &#39;shahar&#39;,</span>
+<span class=x>        &#39;pass&#39; =&gt; &#39;somesecret&#39;,</span>
+<span class=x>    ]);</span>
+<span class=x>    $response = $client-&gt;setMethod(&#39;POST&#39;)-&gt;send();</span>
+<span class=x>    $cookieJar = Cookies::fromResponse($response);</span>
+
+<span class=x>    // Now, clear parameters and set the URI to the original one</span>
+<span class=x>    // (note that the cookies that were set by the server are now</span>
+<span class=x>    // stored in the jar)</span>
+<span class=x>    $client-&gt;resetParameters();</span>
+<span class=x>    $client-&gt;setUri(&#39;http://www.example.com/fetchdata.php&#39;);</span>
+<span class=x>}</span>
+
+<span class=x>// Add the cookies to the new request</span>
+<span class=x>$client-&gt;setCookies($cookieJar-&gt;getMatchingCookies($client-&gt;getUri()));</span>
+<span class=x>$response = $client-&gt;setMethod(&#39;GET&#39;)-&gt;send();</span>
+
+<span class=x>// Store cookies in session, for next page</span>
+<span class=x>$_SESSION[&#39;cookiejar&#39;] = $cookieJar;</span>
+</pre></div></p>
+<h2 id="data-streaming">Data streaming</h2>
+<p>By default, <code>Laminas\Http\Client</code> accepts and returns data as PHP strings.
+However, in many cases there are big files to be received, thus keeping them in
+memory might be unnecessary or too expensive. For these cases,
+<code>Laminas\Http\Client</code> supports writing data to files (streams).</p>
+<p>In order to receive data from the server as stream, use <code>setStream()</code>. The
+single, optional argument specifies the filename where the data will be stored.
+If the argument is just <code>TRUE</code> (default), a temporary file will be used and
+will be deleted once the response object is destroyed. Setting the argument to
+<code>FALSE</code> disables the streaming functionality.</p>
+<p>When using streaming, the <code>send()</code> method will return an object of class
+<code>Laminas\Http\Response\Stream</code>, which has two useful methods: <code>getStreamName()</code>
+will return the name of the file where the response is stored, and
+<code>getStream()</code> will return stream from which the response could be read.</p>
+<p>You can either write the response to pre-defined file, or use temporary file
+for storing it and send it out or write it to another file using regular stream
+functions.</p>
+<p> <div class=codehilite><pre><span></span><span class=x>$client-&gt;setStream(); // will use temp file</span>
+<span class=x>$response = $client-&gt;send();</span>
+
+<span class=x>// copy file:</span>
+<span class=x>copy($response-&gt;getStreamName(), &#39;my/downloads/file&#39;);</span>
+
+<span class=x>// use stream:</span>
+<span class=x>$fp = fopen(&#39;my/downloads/file2&#39;, &#39;w&#39;);</span>
+<span class=x>stream_copy_to_stream($response-&gt;getStream(), $fp);</span>
+
+<span class=x>// write to an existing file:</span>
+<span class=x>$client-&gt;setStream(&#39;my/downloads/myfile&#39;)-&gt;send();</span>
+</pre></div></p>
+
+
+
+
+    <nav>
+    <ul class="page-nav hidden-print">
+
+        
+        <li class="page-nav__item">
+            
+                <a rel="prev" class="page-nav__link page-nav__link--prev" href="../cookies/">
+                    <i class="fa fa-chevron-left"></i> Previous
+                </a>
+            
+        </li>
+
+        
+        <li class="page-nav__item">
+            
+        </li>
+    </ul>
+</nav>
+
+
+
+
+    <div class="help-wanted">
+        <p>
+            Found a mistake or want to contribute to the documentation?
+            <a href="https://github.com/laminas/laminas-http/edit/master/docs/book/client/advanced.md" target="_blank" class="help-wanted__link">
+                Edit this page on GitHub!
+            </a>
+        </p>
+    </div>
+
+                
+            </div>
+            <div class="col-md-3 col-sm-12 sidebar">
+                
+                    <div class="component-selector">
+    
+    <h5 class="component-selector__subtitle">Find documentation…</h5>
+    <select class="form-control component-selector__control">
+        <option value="/">Overview</option>
+        <optgroup label="Components"></optgroup>
+    </select>
+</div>
+                    
+    <div class="subnavigation hidden-print">
+        <h4 class="subnavigation__title">
+            <a href="../..">laminas-http</a>
+        </h4>
+
+        <h5 class="subnavigation__subtitle">Table of Contents</h5>
+
+        <ul class="subnavigation__list">
+            
+
+                
+                
+
+                    
+                    
+                        
+                            <li class="subnavigation__list-item ">
+                                <a href="../../intro/" class="subnavigation__link">Introduction</a>
+                            </li>
+                        
+                    
+                
+            
+
+                
+                
+
+                    
+                    
+                        
+                            <li class="subnavigation__list-item">
+                                <span class="subnavigation__headline">Reference</span>
+                                <ul class="subnavigation__list">
+                                    
+                                        
+    <li class="subnavigation__list-item ">
+        <a href="../../request/" class="subnavigation__link">Request</a>
+    </li>
+
+                                    
+                                        
+    <li class="subnavigation__list-item ">
+        <a href="../../response/" class="subnavigation__link">Response</a>
+    </li>
+
+                                    
+                                        
+    <li class="subnavigation__list-item ">
+        <a href="../../headers/" class="subnavigation__link">Headers</a>
+    </li>
+
+                                    
+                                        
+    <li class="subnavigation__list-item">
+        <span class="subnavigation__headline">Client</span>
+        <ul class="subnavigation__list">
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../intro/" class="subnavigation__link">Intro</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../adapters/" class="subnavigation__link">Adapters</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../static/" class="subnavigation__link">Static Client</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../cookies/" class="subnavigation__link">Cookie Persistence</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item subnavigation__list-item--active">
+        <a href="./" class="subnavigation__link">Advanced</a>
+    </li>
+
+            
+        </ul>
+    </li>
+
+                                    
+                                </ul>
+                            </li>
+                        
+                    
+                
+            
+        </ul>
+    </div>
+
+                
+            </div>
+        </div>
+    </div>
+
+    
+    <footer class="footer">
+    <div class="container">
+
+        
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <a class="footer__button" href="#page-top"><i class="fa fa-chevron-up" aria-hidden="true"></i></a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-7 offset-md-2">
+                <h5>Laminas</h5>
+                <ul>
+                    <li>Laminas Project <a href="https://getlaminas.org/">Components and MVC for Enterprise Applications</a></li>
+                    <li>Mezzio <a href="https://docs.mezzio.dev/">PSR-15 Middleware in Minutes</a></li>
+                    <li>Laminas API Tools: <a href="https://api-tools.getlaminas.org/">Build RESTful APIs in minutes</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row">
+
+            
+            <div class="col-md-4 offset-md-2">
+                <h4 class="footer__headline">Support</h4>
+                <ul class="support__list">
+                    <li class="support__list-item">
+                        <a href="https://discourse.laminas.dev" class="support__link" title="Forum"><i class="fa fa-comments"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://laminas.dev/chat" class="support__link" title="Chat"><i class="fa fa-slack"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://github.com/laminas" class="support__link" title="Github"><i class="fa fa-github"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://twitter.com/getlaminas" class="support__link" title="Twitter"><i class="fa fa-twitter"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://getlaminas.org/blog/feed-rss.xml" class="support__link" title="Blog feed"><i class="fa fa-rss"></i></a>
+                    </li>
+                    <li class="support__list-item">
+                        <a href="https://getlaminas.org/security/feed" class="support__link" title="Security feed"><i class="fa fa-rss-square"></i></a>
+                    </li>
+                </ul>
+            </div>
+
+            
+            <div class="col-md-3">
+                <h4 class="footer__headline">License</h4>
+                <p>
+                    Code licensed under <a
+                        href="https://github.com/laminas/laminas-http//blob/master/LICENSE.md">BSD 3-Clause</a>.
+                </p>
+            </div>
+
+            
+            <div class="col-md-3">
+                <h4 class="footer__headline">Copyright</h4>
+                <p>
+                    <!--Built with love by the Laminas team with the help of our
+                    <a href="https://github.com/laminas/laminas-http//graphs/contributors">contributors</a>.<br>-->
+                    &copy; 2019-2019 by <a href="https://getlaminas.org/">The Laminas Project</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script>
+        let base_url = '../..',
+            project  = "components",
+            siteName = 'laminas-http';
+    </script>
+    <script src="/js/scripts.js"></script>
+        <script src="../../search/main.js"></script>
+
+    
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Search</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search in laminas-http" id="mkdocs-search-query">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+
+</html>
