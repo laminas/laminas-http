@@ -1,22 +1,23 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-http for the canonical source repository
- * @copyright Copyright (c) 2005-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-http/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Client;
+namespace LaminasTest\Http\Client;
 
+use Laminas\Http\Client;
+use Laminas\Http\ClientStatic as HTTPClient;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
-use Zend\Http\Client;
-use Zend\Http\ClientStatic as HTTPClient;
 
 /**
- * This are the test for the prototype of Zend\Http\Client
+ * This are the test for the prototype of Laminas\Http\Client
  *
- * @group      Zend\Http
- * @group      Zend\Http\Client
+ * @group      Laminas\Http
+ * @group      Laminas\Http\Client
  */
 class StaticClientTest extends TestCase
 {
@@ -32,9 +33,9 @@ class StaticClientTest extends TestCase
      */
     protected function setUp()
     {
-        if (getenv('TESTS_ZEND_HTTP_CLIENT_BASEURI')
-            && (filter_var(getenv('TESTS_ZEND_HTTP_CLIENT_BASEURI'), FILTER_VALIDATE_BOOLEAN) != false)) {
-            $this->baseuri = getenv('TESTS_ZEND_HTTP_CLIENT_BASEURI');
+        if (getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI')
+            && (filter_var(getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI'), FILTER_VALIDATE_BOOLEAN) != false)) {
+            $this->baseuri = getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI');
             if (substr($this->baseuri, -1) != '/') {
                 $this->baseuri .= '/';
             }

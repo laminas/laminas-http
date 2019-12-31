@@ -1,18 +1,19 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-http for the canonical source repository
- * @copyright Copyright (c) 2005-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-http/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http;
+namespace LaminasTest\Http;
 
+use Laminas\Http\Cookies;
+use Laminas\Http\Header\SetCookie;
+use Laminas\Http\Headers;
+use Laminas\Http\PhpEnvironment\Request;
+use Laminas\Http\Response;
 use PHPUnit\Framework\TestCase;
-use Zend\Http\Cookies;
-use Zend\Http\Header\SetCookie;
-use Zend\Http\Headers;
-use Zend\Http\PhpEnvironment\Request;
-use Zend\Http\Response;
 
 class CookiesTest extends TestCase
 {
@@ -26,8 +27,8 @@ class CookiesTest extends TestCase
         $headers->addHeader($header);
         $response->setHeaders($headers);
 
-        $response = Cookies::fromResponse($response, 'http://www.zend.com');
-        $this->assertSame($header, $response->getCookie('http://www.zend.com', 'foo'));
+        $response = Cookies::fromResponse($response, 'https://www.zend.com');
+        $this->assertSame($header, $response->getCookie('https://www.zend.com', 'foo'));
     }
 
     public function testFromResponseInCookie()
@@ -40,8 +41,8 @@ class CookiesTest extends TestCase
         $headers->addHeader($header);
         $response->setHeaders($headers);
 
-        $response = Cookies::fromResponse($response, 'http://www.zend.com');
-        $this->assertSame($header, $response->getCookie('http://www.zend.com', 'foo'));
+        $response = Cookies::fromResponse($response, 'https://www.zend.com');
+        $this->assertSame($header, $response->getCookie('https://www.zend.com', 'foo'));
     }
 
     public function testRequestCanHaveArrayCookies()

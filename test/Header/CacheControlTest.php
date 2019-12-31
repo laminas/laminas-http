@@ -1,16 +1,17 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-http for the canonical source repository
- * @copyright Copyright (c) 2005-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-http/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
+use Laminas\Http\Header\CacheControl;
+use Laminas\Http\Header\Exception\InvalidArgumentException;
+use Laminas\Http\Header\HeaderInterface;
 use PHPUnit\Framework\TestCase;
-use Zend\Http\Header\CacheControl;
-use Zend\Http\Header\Exception\InvalidArgumentException;
-use Zend\Http\Header\HeaderInterface;
 
 class CacheControlTest extends TestCase
 {
