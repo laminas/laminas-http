@@ -1,29 +1,27 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Http
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Http\Client\Adapter;
+namespace Laminas\Http\Client\Adapter;
 
+use Laminas\Http\Response;
+use Laminas\Stdlib\ArrayUtils;
 use Traversable;
-use Zend\Http\Response;
-use Zend\Stdlib\ArrayUtils;
 
 /**
  * A testing-purposes adapter.
  *
- * Should be used to test all components that rely on Zend_Http_Client,
+ * Should be used to test all components that rely on Laminas_Http_Client,
  * without actually performing an HTTP request. You should instantiate this
  * object manually, and then set it as the client's adapter. Then, you can
  * set the expected response using the setResponse() method.
  *
- * @category   Zend
- * @package    Zend_Http
+ * @category   Laminas
+ * @package    Laminas_Http
  * @subpackage Client_Adapter
  */
 class Test implements AdapterInterface
@@ -67,7 +65,7 @@ class Test implements AdapterInterface
      * Set the nextRequestWillFail flag
      *
      * @param boolean $flag
-     * @return \Zend\Http\Client\Adapter\Test
+     * @return \Laminas\Http\Client\Adapter\Test
      */
     public function setNextRequestWillFail($flag)
     {
@@ -121,7 +119,7 @@ class Test implements AdapterInterface
      * Send request to the remote server
      *
      * @param string        $method
-     * @param \Zend\Uri\Uri $uri
+     * @param \Laminas\Uri\Uri $uri
      * @param string        $http_ver
      * @param array         $headers
      * @param string        $body
@@ -175,7 +173,7 @@ class Test implements AdapterInterface
     /**
      * Set the HTTP response(s) to be returned by this adapter
      *
-     * @param \Zend\Http\Response|array|string $response
+     * @param \Laminas\Http\Response|array|string $response
      */
     public function setResponse($response)
     {
