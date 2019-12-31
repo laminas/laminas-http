@@ -1,6 +1,6 @@
 # The Response Class
 
-`Zend\Http\Response` is responsible for providing a fluent API that allows a
+`Laminas\Http\Response` is responsible for providing a fluent API that allows a
 developer to interact with all the various parts of an HTTP response.
 
 A typical HTTP Response looks like this:
@@ -24,10 +24,10 @@ specification of an HTTP response can be found in
 
 Response objects can either be created from the provided `fromString()` factory,
 or, if you wish to have a completely empty object to start with, by
-instantiating the `Zend\Http\Response` class with no arguments.
+instantiating the `Laminas\Http\Response` class with no arguments.
 
 ```php
-use Zend\Http\Response;
+use Laminas\Http\Response;
 $response = Response::fromString(<<<EOS
 HTTP/1.0 200 OK
 HeaderField1: header-field-value
@@ -68,8 +68,8 @@ The following table details available methods, their signatures, and a brief
 description. Note that the following references refer to the following
 fully qualified class names and/or namespaces:
 
-- `Headers`: `Zend\Http\Headers`
-- `Response`: `Zend\Http\Response`
+- `Headers`: `Laminas\Http\Headers`
+- `Response`: `Laminas\Http\Response`
 
 Method signature                                                       | Description
 ---------------------------------------------------------------------- | -----------
@@ -77,7 +77,7 @@ Method signature                                                       | Descrip
 `renderStatusLine() : string`                                          | Render the status line header
 `setHeaders(Headers $headers) : self`                                  | Provide an alternate Parameter Container implementation for headers in this object. (This is NOT the primary API for value setting; for that, see `getHeaders()`.)
 `getHeaders() : Headers`                                               | Return the container responsible for storing HTTP headers. This container exposes the primary API for manipulating headers set in the HTTP response. See the section on [Headers](headers.md) for more information.
-`setVersion(string $version) : self`                                   | Set the HTTP version for this object, one of 1.0, 1.1 or 2 (`Response::VERSION_10`, `Response::VERSION_11`, `Response::VERSION_2`). HTTP/2 support was added in zend-http 2.10.0.
+`setVersion(string $version) : self`                                   | Set the HTTP version for this object, one of 1.0, 1.1 or 2 (`Response::VERSION_10`, `Response::VERSION_11`, `Response::VERSION_2`). HTTP/2 support was added in laminas-http 2.10.0.
 `getVersion() : string`                                                | Return the HTTP version for this response.
 `setStatusCode(int $code) : self`                                      | Set HTTP status code.
 `getStatusCode() : int`                                                | Retrieve HTTP status code.
@@ -106,7 +106,7 @@ Method signature                                                       | Descrip
 ### Generating a Response object from a string
 
 ```php
-use Zend\Http\Response;
+use Laminas\Http\Response;
 $request = Response::fromString(<<<EOS
 HTTP/1.0 200 OK
 HeaderField1: header-field-value
@@ -123,7 +123,7 @@ EOS);
 ### Generating a formatted HTTP Response from a Response object
 
 ```php
-use Zend\Http\Response;
+use Laminas\Http\Response;
 $response = new Response();
 $response->setStatusCode(Response::STATUS_CODE_200);
 $response->getHeaders()->addHeaders([

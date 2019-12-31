@@ -1,25 +1,26 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-http for the canonical source repository
- * @copyright Copyright (c) 2005-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-http/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Http\Client\Adapter;
+namespace Laminas\Http\Client\Adapter;
 
+use Laminas\Http\Client;
+use Laminas\Http\Client\Adapter\Exception as AdapterException;
+use Laminas\Http\Response;
+use Laminas\Stdlib\ArrayUtils;
+use Laminas\Stdlib\ErrorHandler;
 use Traversable;
-use Zend\Http\Client;
-use Zend\Http\Client\Adapter\Exception as AdapterException;
-use Zend\Http\Response;
-use Zend\Stdlib\ArrayUtils;
-use Zend\Stdlib\ErrorHandler;
 
 /**
- * HTTP Proxy-supporting Zend\Http\Client adapter class, based on the default
+ * HTTP Proxy-supporting Laminas\Http\Client adapter class, based on the default
  * socket based adapter.
  *
  * Should be used if proxy HTTP access is required. If no proxy is set, will
- * fall back to Zend\Http\Client\Adapter\Socket behavior. Just like the
+ * fall back to Laminas\Http\Client\Adapter\Socket behavior. Just like the
  * default Socket adapter, this adapter does not require any special extensions
  * installed.
  */
@@ -67,7 +68,7 @@ class Proxy extends Socket
         }
         if (! is_array($options)) {
             throw new AdapterException\InvalidArgumentException(
-                'Array or Zend\Config object expected, got ' . gettype($options)
+                'Array or Laminas\Config object expected, got ' . gettype($options)
             );
         }
 
@@ -119,7 +120,7 @@ class Proxy extends Socket
      * Send request to the proxy server
      *
      * @param string        $method
-     * @param \Zend\Uri\Uri $uri
+     * @param \Laminas\Uri\Uri $uri
      * @param string        $httpVer
      * @param array         $headers
      * @param string        $body
