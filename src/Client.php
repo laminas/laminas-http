@@ -1,21 +1,22 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-http for the canonical source repository
- * @copyright Copyright (c) 2005-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-http/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Http;
+namespace Laminas\Http;
 
 use ArrayIterator;
+use Laminas\Http\Client\Adapter\Curl;
+use Laminas\Http\Client\Adapter\Socket;
+use Laminas\Http\Header\SetCookie;
+use Laminas\Stdlib;
+use Laminas\Stdlib\ArrayUtils;
+use Laminas\Stdlib\ErrorHandler;
+use Laminas\Uri\Http;
 use Traversable;
-use Zend\Http\Client\Adapter\Curl;
-use Zend\Http\Client\Adapter\Socket;
-use Zend\Http\Header\SetCookie;
-use Zend\Stdlib;
-use Zend\Stdlib\ArrayUtils;
-use Zend\Stdlib\ErrorHandler;
-use Zend\Uri\Http;
 
 /**
  * Http client
@@ -693,7 +694,7 @@ class Client implements Stdlib\DispatchableInterface
      * Set streaming for received data
      *
      * @param string|bool $streamfile Stream file, true for temp file, false/null for no streaming
-     * @return \Zend\Http\Client
+     * @return \Laminas\Http\Client
      */
     public function setStream($streamfile = true)
     {
@@ -1246,7 +1247,7 @@ class Client implements Stdlib\DispatchableInterface
      * Prepare the request body (for PATCH, POST and PUT requests)
      *
      * @return string
-     * @throws \Zend\Http\Client\Exception\RuntimeException
+     * @throws \Laminas\Http\Client\Exception\RuntimeException
      */
     protected function prepareBody()
     {

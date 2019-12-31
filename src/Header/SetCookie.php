@@ -1,14 +1,15 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-http for the canonical source repository
- * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (https://www.zend.com)
- * @license   https://github.com/zendframework/zend-http/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Http\Header;
+namespace Laminas\Http\Header;
 
 use DateTime;
-use Zend\Uri\UriFactory;
+use Laminas\Uri\UriFactory;
 
 /**
  * @throws Exception\InvalidArgumentException
@@ -664,7 +665,7 @@ class SetCookie implements MultipleHeaderInterface
     /**
      * Checks whether the cookie should be sent or not in a specific scenario
      *
-     * @param string|\Zend\Uri\Uri $uri URI to check against (secure, domain, path)
+     * @param string|\Laminas\Uri\Uri $uri URI to check against (secure, domain, path)
      * @param bool $matchSessionCookies Whether to send session cookies
      * @param int|null $now Override the current time when checking for expiry time
      * @return bool
@@ -676,7 +677,7 @@ class SetCookie implements MultipleHeaderInterface
             $uri = UriFactory::factory($uri);
         }
 
-        // Make sure we have a valid Zend_Uri_Http object
+        // Make sure we have a valid Laminas_Uri_Http object
         if (! ($uri->isValid() && ($uri->getScheme() == 'http' || $uri->getScheme() == 'https'))) {
             throw new Exception\InvalidArgumentException('Passed URI is not a valid HTTP or HTTPS URI');
         }
@@ -709,7 +710,7 @@ class SetCookie implements MultipleHeaderInterface
     /**
      * Check if a cookie's domain matches a host name.
      *
-     * Used by Zend\Http\Cookies for cookie matching
+     * Used by Laminas\Http\Cookies for cookie matching
      *
      * @param  string $cookieDomain
      * @param  string $host
@@ -727,7 +728,7 @@ class SetCookie implements MultipleHeaderInterface
     /**
      * Check if a cookie's path matches a URL path
      *
-     * Used by Zend\Http\Cookies for cookie matching
+     * Used by Laminas\Http\Cookies for cookie matching
      *
      * @param  string $cookiePath
      * @param  string $path

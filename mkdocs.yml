@@ -13,6 +13,6 @@ nav:
             - "Static Client": client/static.md
             - "Cookie Persistence": client/cookies.md
             - Advanced: client/advanced.md
-site_name: zend-http
-site_description: HTTP message and header abstractions, and HTTP client implementation.  (Not a PSR-7 implementation; see <a href="//docs.zendframework.com/zend-diactoros">Diactoros</a> for PSR-7 support.
-repo_url: 'https://github.com/zendframework/zend-http'
+site_name: laminas-http
+site_description: HTTP message and header abstractions, and HTTP client implementation.  (Not a PSR-7 implementation; see <a href="//docs.laminas.dev/laminas-diactoros">Diactoros</a> for PSR-7 support.
+repo_url: 'https://github.com/laminas/laminas-http'
