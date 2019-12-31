@@ -1,21 +1,22 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-http for the canonical source repository
- * @copyright Copyright (c) 2005-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-http/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
+use Laminas\Http\Header\Exception\InvalidArgumentException;
+use Laminas\Http\Header\HeaderInterface;
+use Laminas\Http\Header\Location;
+use Laminas\Uri\File;
+use Laminas\Uri\Http;
+use Laminas\Uri\Mailto;
+use Laminas\Uri\Uri;
+use Laminas\Uri\UriFactory;
 use PHPUnit\Framework\TestCase;
-use Zend\Http\Header\Exception\InvalidArgumentException;
-use Zend\Http\Header\HeaderInterface;
-use Zend\Http\Header\Location;
-use Zend\Uri\File;
-use Zend\Uri\Http;
-use Zend\Uri\Mailto;
-use Zend\Uri\Uri;
-use Zend\Uri\UriFactory;
 
 class LocationTest extends TestCase
 {

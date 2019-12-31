@@ -1,7 +1,7 @@
 # Introduction
 
-zend-http provides the HTTP message abstraction used by
-[zend-mvc](https://docs.zendframework.com/zend-mvc/), and also provides an
+laminas-http provides the HTTP message abstraction used by
+[laminas-mvc](https://docs.laminas.dev/laminas-mvc/), and also provides an
 extensible, adapter-driven HTTP client library. It provides the following
 abstractions:
 
@@ -18,14 +18,14 @@ abstractions:
 >
 > This library **does not** support [PSR-7](http://www.php-fig.org/psr/psr-7), as
 > it predates that specification. For PSR-7 support, please see our
-> [Diactoros component](https://docs.zendframework.com/zend-diactoros/).
+> [Diactoros component](https://docs.laminas.dev/laminas-diactoros/).
 
-## Zend\Http Request, Response and Headers
+## Laminas\Http Request, Response and Headers
 
-The request, response and headers implementations of the zend-http component
+The request, response and headers implementations of the laminas-http component
 provides a fluent, object-oriented interface for introspecting information from
 all the various parts of an HTTP request or HTTP response. The primary classes
-are `Zend\Http\Request` and `Zend\Http\Response`. Both are “context-less”,
+are `Laminas\Http\Request` and `Laminas\Http\Response`. Both are “context-less”,
 meaning that they model a request or response in the same way whether it is
 presented by a client (to **send** a request and **receive** a response) or by a
 server (to **receive** a request and **send** a response). In other words,

@@ -1,23 +1,24 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-http for the canonical source repository
- * @copyright Copyright (c) 2005-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-http/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
 use DateTime;
+use Laminas\Http\Header\Exception\InvalidArgumentException;
+use Laminas\Http\Header\HeaderInterface;
+use Laminas\Http\Header\MultipleHeaderInterface;
+use Laminas\Http\Header\SetCookie;
 use PHPUnit\Framework\TestCase;
-use Zend\Http\Header\Exception\InvalidArgumentException;
-use Zend\Http\Header\HeaderInterface;
-use Zend\Http\Header\MultipleHeaderInterface;
-use Zend\Http\Header\SetCookie;
 
 class SetCookieTest extends TestCase
 {
     /**
-     * @group ZF2-254
+     * @group Laminas-254
      */
     public function testSetCookieConstructor()
     {
@@ -327,7 +328,7 @@ class SetCookieTest extends TestCase
     /** Implementation specific tests here */
 
     /**
-     * @group ZF2-169
+     * @group Laminas-169
      */
     public function test169()
     {
@@ -339,7 +340,7 @@ class SetCookieTest extends TestCase
     }
 
     /**
-     * @group ZF2-169
+     * @group Laminas-169
      */
     public function testDoesNotAcceptCookieNameFromArbitraryLocationInHeaderValue()
     {
