@@ -8,30 +8,23 @@ env:
   global:
     - COMPOSER_ARGS="--no-interaction"
     - COVERAGE_DEPS="php-coveralls/php-coveralls"
-    - TESTS_ZEND_HTTP_CLIENT_ONLINE=true
-    - TESTS_ZEND_HTTP_CLIENT_BASEURI=http://127.0.0.1
-    - TESTS_ZEND_HTTP_CLIENT_HTTP_PROXY=127.0.0.1:8081
-    - TESTS_ZEND_HTTP_CLIENT_NOTRESPONDINGURI=http://127.1.1.0:1234
+    - TESTS_LAMINAS_HTTP_CLIENT_ONLINE=true
+    - TESTS_LAMINAS_HTTP_CLIENT_BASEURI=http://127.0.0.1
+    - TESTS_LAMINAS_HTTP_CLIENT_HTTP_PROXY=127.0.0.1:8081
+    - TESTS_LAMINAS_HTTP_CLIENT_NOTRESPONDINGURI=http://127.1.1.0:1234
 
 matrix:
+  fast_finish: true
   include:
     - php: 5.6
       env:
         - DEPS=lowest
     - php: 5.6
       env:
-        - DEPS=locked
-        - LEGACY_DEPS="phpunit/phpunit"
-    - php: 5.6
-      env:
         - DEPS=latest
     - php: 7
       env:
         - DEPS=lowest
-    - php: 7
-      env:
-        - DEPS=locked
-        - LEGACY_DEPS="phpunit/phpunit"
     - php: 7
       env:
         - DEPS=latest
@@ -40,27 +33,18 @@ matrix:
         - DEPS=lowest
     - php: 7.1
       env:
-        - DEPS=locked
+        - DEPS=latest
         - CS_CHECK=true
         - TEST_COVERAGE=true
-    - php: 7.1
-      env:
-        - DEPS=latest
     - php: 7.2
       env:
         - DEPS=lowest
-    - php: 7.2
-      env:
-        - DEPS=locked
     - php: 7.2
       env:
         - DEPS=latest
     - php: 7.3
       env:
         - DEPS=lowest
-    - php: 7.3
-      env:
-        - DEPS=locked
     - php: 7.3
       env:
         - DEPS=latest
