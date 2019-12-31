@@ -1,23 +1,22 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
-use Zend\Http\Header\CacheControl;
+use Laminas\Http\Header\CacheControl;
 
 class CacheControlTest extends \PHPUnit_Framework_TestCase
 {
     public function testCacheControlFromStringCreatesValidCacheControlHeader()
     {
         $cacheControlHeader = CacheControl::fromString('Cache-Control: xxx');
-        $this->assertInstanceOf('Zend\Http\Header\HeaderInterface', $cacheControlHeader);
-        $this->assertInstanceOf('Zend\Http\Header\CacheControl', $cacheControlHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\HeaderInterface', $cacheControlHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\CacheControl', $cacheControlHeader);
     }
 
     public function testCacheControlGetFieldNameReturnsHeaderName()
@@ -105,7 +104,7 @@ class CacheControlTest extends \PHPUnit_Framework_TestCase
      */
     public function testPreventsCRLFAttackViaFromString()
     {
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException');
         $header = CacheControl::fromString("Cache-Control: xxx\r\n\r\n");
     }
 
@@ -116,7 +115,7 @@ class CacheControlTest extends \PHPUnit_Framework_TestCase
     public function testProtectsFromCRLFAttackViaSetters()
     {
         $header = new CacheControl();
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException');
         $header->addDirective("\rsome\r\ninvalid\nkey", "\ra\r\nCRLF\ninjection");
     }
 }

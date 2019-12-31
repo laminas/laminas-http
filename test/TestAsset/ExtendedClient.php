@@ -1,8 +1,8 @@
 <?php
 
-namespace ZendTest\Http\TestAsset;
+namespace LaminasTest\Http\TestAsset;
 
-use Zend\Http\Client;
+use Laminas\Http\Client;
 
 class ExtendedClient extends Client
 {
