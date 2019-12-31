@@ -1,31 +1,30 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
-use Zend\Http\Header\Cookie;
-use Zend\Http\Header\SetCookie;
+use Laminas\Http\Header\Cookie;
+use Laminas\Http\Header\SetCookie;
 
 /**
- * Zend_Http_Cookie unit tests
+ * Laminas_Http_Cookie unit tests
  *
- * @group      Zend_Http
- * @group      Zend_Http_Cookie
+ * @group      Laminas_Http
+ * @group      Laminas_Http_Cookie
  */
 class CookieTest extends \PHPUnit_Framework_TestCase
 {
     public function testCookieFromStringCreatesValidCookieHeader()
     {
         $cookieHeader = Cookie::fromString('Cookie: name=value');
-        $this->assertInstanceOf('Zend\Http\Header\HeaderInterface', $cookieHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\HeaderInterface', $cookieHeader);
         $this->assertInstanceOf('ArrayObject', $cookieHeader);
-        $this->assertInstanceOf('Zend\Http\Header\Cookie', $cookieHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\Cookie', $cookieHeader);
     }
 
     public function testCookieFromStringCreatesValidCookieHeadersWithMultipleValues()
@@ -73,7 +72,7 @@ class CookieTest extends \PHPUnit_Framework_TestCase
      */
     public function testPreventsCRLFAttackViaFromString()
     {
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException');
         $header = Cookie::fromString("Cookie: foo=bar\r\n\r\nevilContent");
     }
 
@@ -110,7 +109,7 @@ class CookieTest extends \PHPUnit_Framework_TestCase
 //    public function testSetInvalidName($char)
 //    {
 //        $this->setExpectedException(
-//            'Zend\Http\Exception\InvalidArgumentException',
+//            'Laminas\Http\Exception\InvalidArgumentException',
 //            'Cookie name cannot contain these characters');
 //
 //        $cookie = new Http\Cookie("cookie_$char", 'foo', 'example.com');
@@ -508,9 +507,9 @@ class CookieTest extends \PHPUnit_Framework_TestCase
 //     *
 //     * @todo  re-enable once Locale is working
 //     * @group disable
-//     * @link http://framework.zend.com/issues/browse/ZF-5690
+//     * @link https://getlaminas.org/issues/browse/Laminas-5690
 //     */
-//    public function testZF5690OverflowingExpiryDate()
+//    public function testLaminas5690OverflowingExpiryDate()
 //    {
 //        $expTime = "Sat, 29-Jan-2039 00:54:42 GMT";
 //        $cookie = Http\Cookie::fromString("foo=bar; domain=.example.com; expires=$expTime");
@@ -552,7 +551,7 @@ class CookieTest extends \PHPUnit_Framework_TestCase
 //            array('space cookie'),
 //            array('!@#$%^*&()* ][{}?;'),
 //            array("line\n\rbreaks"),
-//            array("0000j8CydACPu_-J9bE8uTX91YU:12a83ks4k"), // value from: Alexander Cheshchevik's comment on issue: ZF-1850
+//            array("0000j8CydACPu_-J9bE8uTX91YU:12a83ks4k"), // value from: Alexander Cheshchevik's comment on issue: Laminas-1850
 //
 //            // Long cookie value - 2kb
 //            array(str_repeat(md5(time()), 64))

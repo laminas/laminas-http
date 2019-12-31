@@ -1,26 +1,25 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Client;
+namespace LaminasTest\Http\Client;
 
 /**
- * Exercises Zend_Http_Client_Adapter_Test
+ * Exercises Laminas_Http_Client_Adapter_Test
  *
- * @group      Zend_Http
- * @group      Zend_Http_Client
+ * @group      Laminas_Http
+ * @group      Laminas_Http_Client
  */
 class TestAdapterTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Test adapter
      *
-     * @var \Zend\Http\Client\Adapter\Test
+     * @var \Laminas\Http\Client\Adapter\Test
      */
     protected $adapter;
 
@@ -30,7 +29,7 @@ class TestAdapterTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->adapter = new \Zend\Http\Client\Adapter\Test();
+        $this->adapter = new \Laminas\Http\Client\Adapter\Test();
     }
 
     /**
@@ -49,7 +48,7 @@ class TestAdapterTest extends \PHPUnit_Framework_TestCase
     public function testSetConfigThrowsOnInvalidConfig()
     {
         $this->setExpectedException(
-            'Zend\Http\Client\Adapter\Exception\InvalidArgumentException',
+            'Laminas\Http\Client\Adapter\Exception\InvalidArgumentException',
             'Array or Traversable object expected'
         );
 
@@ -79,7 +78,7 @@ class TestAdapterTest extends \PHPUnit_Framework_TestCase
             // Make a connection that will fail
             $this->adapter->connect('http://foo');
             $this->fail();
-        } catch (\Zend\Http\Client\Adapter\Exception\RuntimeException $e) {
+        } catch (\Laminas\Http\Client\Adapter\Exception\RuntimeException $e) {
             // Connect again to see that the next request does not fail
             $this->adapter->connect('http://foo');
         }
@@ -126,16 +125,16 @@ class TestAdapterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test that responses could be added as objects (ZF-7009)
+     * Test that responses could be added as objects (Laminas-7009)
      *
-     * @link http://framework.zend.com/issues/browse/ZF-7009
+     * @link https://getlaminas.org/issues/browse/Laminas-7009
      * @dataProvider validHttpResponseProvider
      */
     public function testAddResponseAsObject($testResponse)
     {
         $this->adapter->read(); // pop out first response
 
-        $respObj = \Zend\Http\Response::fromString($testResponse);
+        $respObj = \Laminas\Http\Response::fromString($testResponse);
 
         $this->adapter->addResponse($respObj);
         $this->assertEquals($testResponse, $this->adapter->read());
@@ -176,7 +175,7 @@ class TestAdapterTest extends \PHPUnit_Framework_TestCase
                 $this->adapter->setResponseIndex($i);
                 $this->fail();
             } catch (\Exception $e) {
-                $this->assertInstanceOf('Zend\\Http\\Client\\Adapter\\Exception\\OutOfRangeException', $e);
+                $this->assertInstanceOf('Laminas\\Http\\Client\\Adapter\\Exception\\OutOfRangeException', $e);
                 $this->assertRegexp('/out of range/i', $e->getMessage());
             }
         }

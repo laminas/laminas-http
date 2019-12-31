@@ -1,27 +1,26 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Client;
+namespace LaminasTest\Http\Client;
 
-use Zend\Uri\Http as UriHttp;
-use Zend\Http\Client as HTTPClient;
-use ZendTest\Http\Client\TestAsset\MockAdapter;
-use ZendTest\Http\Client\TestAsset\MockClient;
+use Laminas\Http\Client as HTTPClient;
+use Laminas\Uri\Http as UriHttp;
+use LaminasTest\Http\Client\TestAsset\MockAdapter;
+use LaminasTest\Http\Client\TestAsset\MockClient;
 
 /**
- * This Testsuite includes all Zend_Http_Client tests that do not rely
+ * This Testsuite includes all Laminas_Http_Client tests that do not rely
  * on performing actual requests to an HTTP server. These tests can be
  * executed once, and do not need to be tested with different servers /
  * client setups.
  *
- * @group      Zend_Http
- * @group      Zend_Http_Client
+ * @group      Laminas_Http
+ * @group      Laminas_Http_Client
  */
 class StaticTest extends \PHPUnit_Framework_TestCase
 {
@@ -29,7 +28,7 @@ class StaticTest extends \PHPUnit_Framework_TestCase
     /**
      * Common HTTP client
      *
-     * @var \Zend\Http\Client
+     * @var \Laminas\Http\Client
      */
     protected $_client = null;
     // @codingStandardsIgnoreEnd
@@ -62,12 +61,12 @@ class StaticTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetUriString()
     {
-        $uristr = 'http://www.zend.com:80/';
+        $uristr = 'https://www.zend.com:80/';
 
         $this->_client->setUri($uristr);
 
         $uri = $this->_client->getUri();
-        $this->assertInstanceOf('Zend\Uri\Http', $uri, 'Returned value is not a Uri object as expected');
+        $this->assertInstanceOf('Laminas\Uri\Http', $uri, 'Returned value is not a Uri object as expected');
         $this->assertEquals($uri->__toString(), $uristr, 'Returned Uri object does not hold the expected URI');
 
         $uri = $this->_client->getUri()->toString();
@@ -85,12 +84,12 @@ class StaticTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetGetUriObject()
     {
-        $uriobj = new UriHttp('http://www.zend.com:80/');
+        $uriobj = new UriHttp('https://www.zend.com:80/');
 
         $this->_client->setUri($uriobj);
 
         $uri = $this->_client->getUri();
-        $this->assertInstanceOf('Zend\Uri\Http', $uri, 'Returned value is not a Uri object as expected');
+        $this->assertInstanceOf('Laminas\Uri\Http', $uri, 'Returned value is not a Uri object as expected');
         $this->assertEquals($uri, $uriobj, 'Returned object is not the excepted Uri object');
     }
 
@@ -104,7 +103,7 @@ class StaticTest extends \PHPUnit_Framework_TestCase
         $qstr = 'foo=bar&foo=baz';
 
         $this->_client->setUri('http://example.com/test/?' . $qstr);
-        $this->_client->setAdapter('\\Zend\\Http\\Client\\Adapter\\Test');
+        $this->_client->setAdapter('\\Laminas\\Http\\Client\\Adapter\\Test');
         $this->_client->setMethod('GET');
         $res = $this->_client->send();
 
@@ -154,7 +153,7 @@ class StaticTest extends \PHPUnit_Framework_TestCase
     public function testExceptUnsupportedAuthDynamic()
     {
         $this->setExpectedException(
-            'Zend\Http\Exception\InvalidArgumentException',
+            'Laminas\Http\Exception\InvalidArgumentException',
             'Invalid or not supported authentication type: \'SuperStrongAlgo\''
         );
 
@@ -177,7 +176,7 @@ class StaticTest extends \PHPUnit_Framework_TestCase
 
         // Check we got the right cookiejar
         $this->assertInternalType('array', $cookies);
-        $this->assertContainsOnlyInstancesOf('Zend\Http\Header\SetCookie', $cookies);
+        $this->assertContainsOnlyInstancesOf('Laminas\Http\Header\SetCookie', $cookies);
         $this->assertCount(2, $cookies);
     }
 
@@ -206,7 +205,7 @@ class StaticTest extends \PHPUnit_Framework_TestCase
     public function testSetInvalidCookies()
     {
         $this->setExpectedException(
-            'Zend\Http\Exception\InvalidArgumentException',
+            'Laminas\Http\Exception\InvalidArgumentException',
             'Invalid parameter type passed as Cookie'
         );
 
@@ -238,13 +237,13 @@ class StaticTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test that a Zend_Config object can be used to set configuration
+     * Test that a Laminas_Config object can be used to set configuration
      *
-     * @link http://framework.zend.com/issues/browse/ZF-5577
+     * @link https://getlaminas.org/issues/browse/Laminas-5577
      */
-    public function testConfigSetAsZendConfig()
+    public function testConfigSetAsLaminasConfig()
     {
-        $config = new \Zend\Config\Config([
+        $config = new \Laminas\Config\Config([
             'timeout'  => 400,
             'nested'   => [
                 'item' => 'value',
@@ -266,7 +265,7 @@ class StaticTest extends \PHPUnit_Framework_TestCase
     public function testConfigSetInvalid($config)
     {
         $this->setExpectedException(
-            'Zend\Http\Client\Exception\InvalidArgumentException',
+            'Laminas\Http\Client\Exception\InvalidArgumentException',
             'Config parameter is not valid'
         );
 
@@ -277,9 +276,9 @@ class StaticTest extends \PHPUnit_Framework_TestCase
      * Test that configuration options are passed to the adapter after the
      * adapter is instantiated
      *
-     * @group ZF-4557
+     * @group Laminas-4557
      */
-    public function testConfigPassToAdapterZF4557()
+    public function testConfigPassToAdapterLaminas4557()
     {
         $adapter = new MockAdapter();
 
@@ -314,7 +313,7 @@ class StaticTest extends \PHPUnit_Framework_TestCase
 
         // Now, test we get a proper response after the request
         $this->_client->setUri('http://example.com/foo/bar');
-        $this->_client->setAdapter('Zend\Http\Client\Adapter\Test');
+        $this->_client->setAdapter('Laminas\Http\Client\Adapter\Test');
 
         $response = $this->_client->send();
         $this->assertSame(
@@ -332,7 +331,7 @@ class StaticTest extends \PHPUnit_Framework_TestCase
     {
         // Now, test we get a proper response after the request
         $this->_client->setUri('http://example.com/foo/bar');
-        $this->_client->setAdapter('Zend\Http\Client\Adapter\Test');
+        $this->_client->setAdapter('Laminas\Http\Client\Adapter\Test');
         $this->_client->setOptions(['storeresponse' => false]);
 
         $response = $this->_client->send();
@@ -350,11 +349,11 @@ class StaticTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidPostContentType()
     {
-        if (! getenv('TESTS_ZEND_HTTP_CLIENT_ONLINE')) {
-            $this->markTestSkipped('Zend\Http\Client online tests are not enabled');
+        if (! getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE')) {
+            $this->markTestSkipped('Laminas\Http\Client online tests are not enabled');
         }
         $this->setExpectedException(
-            'Zend\Http\Exception\RuntimeException',
+            'Laminas\Http\Exception\RuntimeException',
             'Cannot handle content type \'x-foo/something-fake\' automatically'
         );
 
@@ -371,11 +370,11 @@ class StaticTest extends \PHPUnit_Framework_TestCase
      */
     public function testSocketErrorException()
     {
-        if (! getenv('TESTS_ZEND_HTTP_CLIENT_ONLINE')) {
-            $this->markTestSkipped('Zend\Http\Client online tests are not enabled');
+        if (! getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE')) {
+            $this->markTestSkipped('Laminas\Http\Client online tests are not enabled');
         }
         $this->setExpectedException(
-            'Zend\Http\Client\Adapter\Exception\RuntimeException',
+            'Laminas\Http\Client\Adapter\Exception\RuntimeException',
             'Unable to connect to 255.255.255.255:80'
         );
 
@@ -398,7 +397,7 @@ class StaticTest extends \PHPUnit_Framework_TestCase
     public function testSettingInvalidMethodThrowsException($method)
     {
         $this->setExpectedException(
-            'Zend\Http\Exception\InvalidArgumentException',
+            'Laminas\Http\Exception\InvalidArgumentException',
             'Invalid HTTP method passed'
         );
 
@@ -410,12 +409,12 @@ class StaticTest extends \PHPUnit_Framework_TestCase
      * multipart/form-data
      *
      */
-    public function testFormDataEncodingWithMultiArrayZF7038()
+    public function testFormDataEncodingWithMultiArrayLaminas7038()
     {
-        if (! getenv('TESTS_ZEND_HTTP_CLIENT_ONLINE')) {
-            $this->markTestSkipped('Zend\Http\Client online tests are not enabled');
+        if (! getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE')) {
+            $this->markTestSkipped('Laminas\Http\Client online tests are not enabled');
         }
-        $this->_client->setAdapter('Zend\Http\Client\Adapter\Test');
+        $this->_client->setAdapter('Laminas\Http\Client\Adapter\Test');
         $this->_client->setUri('http://example.com');
         $this->_client->setEncType(HTTPClient::ENC_FORMDATA);
 
@@ -433,7 +432,7 @@ class StaticTest extends \PHPUnit_Framework_TestCase
         $this->_client->setMethod('POST');
         $this->_client->send();
 
-        $expectedLines = file(__DIR__ . '/_files/ZF7038-multipartarrayrequest.txt');
+        $expectedLines = file(__DIR__ . '/_files/Laminas7038-multipartarrayrequest.txt');
 
         $gotLines = explode("\n", $this->_client->getLastRawRequest());
 
@@ -454,17 +453,17 @@ class StaticTest extends \PHPUnit_Framework_TestCase
      * This may file in case that mbstring overloads the substr and strlen
      * functions, and the mbstring internal encoding is a multibyte encoding.
      *
-     * @link http://framework.zend.com/issues/browse/ZF-2098
+     * @link https://getlaminas.org/issues/browse/Laminas-2098
      */
-    public function testMultibyteRawPostDataZF2098()
+    public function testMultibyteRawPostDataLaminas2098()
     {
-        if (! getenv('TESTS_ZEND_HTTP_CLIENT_ONLINE')) {
-            $this->markTestSkipped('Zend\Http\Client online tests are not enabled');
+        if (! getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE')) {
+            $this->markTestSkipped('Laminas\Http\Client online tests are not enabled');
         }
-        $this->_client->setAdapter('Zend\Http\Client\Adapter\Test');
+        $this->_client->setAdapter('Laminas\Http\Client\Adapter\Test');
         $this->_client->setUri('http://example.com');
 
-        $bodyFile = __DIR__ . '/_files/ZF2098-multibytepostdata.txt';
+        $bodyFile = __DIR__ . '/_files/Laminas2098-multibytepostdata.txt';
 
         $this->_client->setRawBody(file_get_contents($bodyFile));
         $this->_client->setEncType('text/plain');
@@ -482,16 +481,16 @@ class StaticTest extends \PHPUnit_Framework_TestCase
     /**
      * Testing if the connection isn't closed
      *
-     * @group ZF-9685
+     * @group Laminas-9685
      */
     public function testOpenTempStreamWithValidFileDoesntThrowsException()
     {
-        if (! getenv('TESTS_ZEND_HTTP_CLIENT_ONLINE')) {
-            $this->markTestSkipped('Zend\Http\Client online tests are not enabled');
+        if (! getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE')) {
+            $this->markTestSkipped('Laminas\Http\Client online tests are not enabled');
         }
         $url = 'http://www.example.com/';
         $config = [
-            'outputstream' => realpath(__DIR__ . '/_files/zend_http_client_stream.file'),
+            'outputstream' => realpath(__DIR__ . '/_files/laminas_http_client_stream.file'),
         ];
         $client = new HTTPClient($url, $config);
 
@@ -505,15 +504,15 @@ class StaticTest extends \PHPUnit_Framework_TestCase
     /**
      * Testing if the connection can be closed
      *
-     * @group ZF-9685
+     * @group Laminas-9685
      */
     public function testOpenTempStreamWithBogusFileClosesTheConnection()
     {
-        if (! getenv('TESTS_ZEND_HTTP_CLIENT_ONLINE')) {
-            $this->markTestSkipped('Zend\Http\Client online tests are not enabled');
+        if (! getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE')) {
+            $this->markTestSkipped('Laminas\Http\Client online tests are not enabled');
         }
         $this->setExpectedException(
-            'Zend\Http\Exception\RuntimeException',
+            'Laminas\Http\Exception\RuntimeException',
             'Could not open temp file /path/to/bogus/file.ext'
         );
 
@@ -533,8 +532,8 @@ class StaticTest extends \PHPUnit_Framework_TestCase
      */
     public function testEncodedCookiesInRequestHeaders()
     {
-        if (! getenv('TESTS_ZEND_HTTP_CLIENT_ONLINE')) {
-            $this->markTestSkipped('Zend\Http\Client online tests are not enabled');
+        if (! getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE')) {
+            $this->markTestSkipped('Laminas\Http\Client online tests are not enabled');
         }
         $this->_client->addCookie('foo', 'bar=baz');
         $this->_client->send();
@@ -553,8 +552,8 @@ class StaticTest extends \PHPUnit_Framework_TestCase
      */
     public function testRawCookiesInRequestHeaders()
     {
-        if (! getenv('TESTS_ZEND_HTTP_CLIENT_ONLINE')) {
-            $this->markTestSkipped('Zend\Http\Client online tests are not enabled');
+        if (! getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE')) {
+            $this->markTestSkipped('Laminas\Http\Client online tests are not enabled');
         }
         $this->_client->setOptions(['encodecookies' => false]);
         $this->_client->addCookie('foo', 'bar=baz');

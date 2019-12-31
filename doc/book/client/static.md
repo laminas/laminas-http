@@ -1,13 +1,13 @@
 # HTTP Client - Static Usage
 
-zend-http provides another client implementation, `Zend\Http\ClientStatic`, a
+laminas-http provides another client implementation, `Laminas\Http\ClientStatic`, a
 static HTTP client which exposes a simplified API for quickly performing one-off `GET`
 and `POST` operations.
 
 ## Quick Start
 
 ```php
-use Zend\Http\ClientStatic;
+use Laminas\Http\ClientStatic;
 
 // Simple GET request
 $response = ClientStatic::get('http://example.org');

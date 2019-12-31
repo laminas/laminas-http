@@ -1,17 +1,16 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http;
+namespace LaminasTest\Http;
 
-use Zend\Http\Request;
-use Zend\Http\Headers;
-use Zend\Http\Header\GenericHeader;
+use Laminas\Http\Header\GenericHeader;
+use Laminas\Http\Headers;
+use Laminas\Http\Request;
 
 class RequestTest extends \PHPUnit_Framework_TestCase
 {
@@ -30,15 +29,15 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testRequestUsesParametersContainerByDefault()
     {
         $request = new Request();
-        $this->assertInstanceOf('Zend\Stdlib\Parameters', $request->getQuery());
-        $this->assertInstanceOf('Zend\Stdlib\Parameters', $request->getPost());
-        $this->assertInstanceOf('Zend\Stdlib\Parameters', $request->getFiles());
+        $this->assertInstanceOf('Laminas\Stdlib\Parameters', $request->getQuery());
+        $this->assertInstanceOf('Laminas\Stdlib\Parameters', $request->getPost());
+        $this->assertInstanceOf('Laminas\Stdlib\Parameters', $request->getFiles());
     }
 
     public function testRequestAllowsSettingOfParameterContainer()
     {
         $request = new Request();
-        $p = new \Zend\Stdlib\Parameters();
+        $p = new \Laminas\Stdlib\Parameters();
         $request->setQuery($p);
         $request->setPost($p);
         $request->setFiles($p);
@@ -55,7 +54,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testRetrievingASingleValueForParameters()
     {
         $request = new Request();
-        $p = new \Zend\Stdlib\Parameters([
+        $p = new \Laminas\Stdlib\Parameters([
             'foo' => 'bar'
         ]);
         $request->setQuery($p);
@@ -79,7 +78,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testParameterRetrievalDefaultValue()
     {
         $request = new Request();
-        $p = new \Zend\Stdlib\Parameters([
+        $p = new \Laminas\Stdlib\Parameters([
             'foo' => 'bar'
         ]);
         $request->setQuery($p);
@@ -104,16 +103,16 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testRequestUsesHeadersContainerByDefault()
     {
         $request = new Request();
-        $this->assertInstanceOf('Zend\Http\Headers', $request->getHeaders());
+        $this->assertInstanceOf('Laminas\Http\Headers', $request->getHeaders());
     }
 
     public function testRequestCanSetHeaders()
     {
         $request = new Request();
-        $headers = new \Zend\Http\Headers();
+        $headers = new \Laminas\Http\Headers();
 
         $ret = $request->setHeaders($headers);
-        $this->assertInstanceOf('Zend\Http\Request', $ret);
+        $this->assertInstanceOf('Laminas\Http\Request', $ret);
         $this->assertSame($headers, $request->getHeaders());
     }
 
@@ -139,7 +138,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $request = new Request();
         $request->setUri($uri);
         $this->assertEquals($uri, $request->getUri());
-        $this->assertInstanceOf('Zend\Uri\Uri', $request->getUri());
+        $this->assertInstanceOf('Laminas\Uri\Uri', $request->getUri());
         $this->assertEquals($uri, $request->getUri()->toString());
         $this->assertEquals($uri, $request->getUriString());
     }
@@ -157,7 +156,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     {
         $request = new Request();
 
-        $this->setExpectedException('Zend\Http\Exception\InvalidArgumentException', 'must be an instance of');
+        $this->setExpectedException('Laminas\Http\Exception\InvalidArgumentException', 'must be an instance of');
         $request->setUri(new \stdClass());
     }
 
@@ -174,7 +173,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $request = new Request();
 
         $this->setExpectedException(
-            'Zend\Http\Exception\InvalidArgumentException',
+            'Laminas\Http\Exception\InvalidArgumentException',
             'Not valid or not supported HTTP version'
         );
         $request->setVersion('1.2');
@@ -249,7 +248,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function getMethods($providerContext, $trueMethod = null)
     {
-        $refClass = new \ReflectionClass('Zend\Http\Request');
+        $refClass = new \ReflectionClass('Laminas\Http\Request');
         $return = [];
         foreach ($refClass->getConstants() as $cName => $cValue) {
             if (substr($cName, 0, 6) == 'METHOD') {
@@ -278,7 +277,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $request->setAllowCustomMethods(false);
 
         $this->setExpectedException(
-            'Zend\Http\Exception\InvalidArgumentException',
+            'Laminas\Http\Exception\InvalidArgumentException',
             'Invalid HTTP method passed'
         );
 
@@ -296,7 +295,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testDisallowCustomMethodsFromString()
     {
         $this->setExpectedException(
-            'Zend\Http\Exception\InvalidArgumentException',
+            'Laminas\Http\Exception\InvalidArgumentException',
             'A valid request line was not found in the provided string'
         );
 
@@ -316,7 +315,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, $headers->count());
 
         $header = $headers->get('fake');
-        $this->assertInstanceOf('Zend\Http\Header\GenericHeader', $header);
+        $this->assertInstanceOf('Laminas\Http\Header\GenericHeader', $header);
         $this->assertEquals('Fake', $header->getFieldName());
         $this->assertEquals('foo-bar', $header->getFieldValue());
     }
@@ -327,7 +326,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function testCRLFAttack()
     {
-        $this->setExpectedException('Zend\Http\Exception\RuntimeException');
+        $this->setExpectedException('Laminas\Http\Exception\RuntimeException');
         $request = Request::fromString(
             "GET /foo HTTP/1.1\r\nHost: example.com\r\nX-Foo: This\ris\r\n\r\nCRLF\nInjection"
         );
