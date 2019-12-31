@@ -1,15 +1,14 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Http\Header;
+namespace Laminas\Http\Header;
 
-use Zend\Http\Header\Accept\FieldValuePart;
+use Laminas\Http\Header\Accept\FieldValuePart;
 
 /**
  * Accept Encoding Header
@@ -68,8 +67,8 @@ class AcceptEncoding extends AbstractAccept
      * Parse the keys contained in the header line
      *
      * @param string $fieldValuePart
-     * @return \Zend\Http\Header\Accept\FieldValuePart\EncodingFieldValuePart
-     * @see \Zend\Http\Header\AbstractAccept::parseFieldValuePart()
+     * @return \Laminas\Http\Header\Accept\FieldValuePart\EncodingFieldValuePart
+     * @see \Laminas\Http\Header\AbstractAccept::parseFieldValuePart()
      */
     protected function parseFieldValuePart($fieldValuePart)
     {

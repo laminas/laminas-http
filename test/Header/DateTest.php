@@ -1,17 +1,16 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
-use Zend\Http\Header\Date;
 use DateTime;
 use DateTimeZone;
+use Laminas\Http\Header\Date;
 
 class DateTest extends \PHPUnit_Framework_TestCase
 {
@@ -25,8 +24,8 @@ class DateTest extends \PHPUnit_Framework_TestCase
     public function testDateFromStringCreatesValidDateHeader()
     {
         $dateHeader = Date::fromString('Date: Sun, 06 Nov 1994 08:49:37 GMT');
-        $this->assertInstanceOf('Zend\Http\Header\HeaderInterface', $dateHeader);
-        $this->assertInstanceOf('Zend\Http\Header\Date', $dateHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\HeaderInterface', $dateHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\Date', $dateHeader);
     }
 
     public function testDateGetFieldNameReturnsHeaderName()
@@ -75,7 +74,7 @@ class DateTest extends \PHPUnit_Framework_TestCase
 
     public function testDateThrowsExceptionForInvalidDate()
     {
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException', 'Invalid date');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException', 'Invalid date');
         $dateHeader = new Date();
         $dateHeader->setDate('~~~~');
     }

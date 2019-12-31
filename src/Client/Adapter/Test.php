@@ -1,22 +1,21 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Http\Client\Adapter;
+namespace Laminas\Http\Client\Adapter;
 
+use Laminas\Http\Response;
+use Laminas\Stdlib\ArrayUtils;
 use Traversable;
-use Zend\Http\Response;
-use Zend\Stdlib\ArrayUtils;
 
 /**
  * A testing-purposes adapter.
  *
- * Should be used to test all components that rely on Zend\Http\Client,
+ * Should be used to test all components that rely on Laminas\Http\Client,
  * without actually performing an HTTP request. You should instantiate this
  * object manually, and then set it as the client's adapter. Then, you can
  * set the expected response using the setResponse() method.
@@ -62,7 +61,7 @@ class Test implements AdapterInterface
      * Set the nextRequestWillFail flag
      *
      * @param  bool $flag
-     * @return \Zend\Http\Client\Adapter\Test
+     * @return \Laminas\Http\Client\Adapter\Test
      */
     public function setNextRequestWillFail($flag)
     {
@@ -115,7 +114,7 @@ class Test implements AdapterInterface
      * Send request to the remote server
      *
      * @param string        $method
-     * @param \Zend\Uri\Uri $uri
+     * @param \Laminas\Uri\Uri $uri
      * @param string        $httpVer
      * @param array         $headers
      * @param string        $body
@@ -169,7 +168,7 @@ class Test implements AdapterInterface
     /**
      * Set the HTTP response(s) to be returned by this adapter
      *
-     * @param \Zend\Http\Response|array|string $response
+     * @param \Laminas\Http\Response|array|string $response
      */
     public function setResponse($response)
     {

@@ -1,19 +1,18 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Client;
+namespace LaminasTest\Http\Client;
 
-use Zend\Http\Client\Adapter;
-use Zend\Uri\Uri;
+use Laminas\Http\Client\Adapter;
+use Laminas\Uri\Uri;
 
 /**
- * This Testsuite includes all Zend_Http_Client that require a working web
+ * This Testsuite includes all Laminas_Http_Client that require a working web
  * server to perform. It was designed to be extendable, so that several
  * test suites could be run against several servers, with different client
  * adapters and configurations.
@@ -25,8 +24,8 @@ use Zend\Uri\Uri;
  * You can also set the proper constant in your test configuration file to
  * point to the right place.
  *
- * @group      Zend_Http
- * @group      Zend_Http_Client
+ * @group      Laminas_Http
+ * @group      Laminas_Http_Client
  */
 class SocketTest extends CommonHttpTests
 {
@@ -36,7 +35,7 @@ class SocketTest extends CommonHttpTests
      * @var array
      */
     protected $config = array(
-        'adapter' => 'Zend\Http\Client\Adapter\Socket'
+        'adapter' => 'Laminas\Http\Client\Adapter\Socket'
     );
 
     /**
@@ -75,7 +74,7 @@ class SocketTest extends CommonHttpTests
         $this->_adapter->setOptions($config);
         try {
             $this->_adapter->connect('localhost', 443, true);
-        } catch (\Zend\Http\Client\Adapter\Exception\RuntimeException $e) {
+        } catch (\Laminas\Http\Client\Adapter\Exception\RuntimeException $e) {
             // Test is designed to allow connect failure because we're interested
             // only in the stream context state created within that method.
         }
@@ -86,14 +85,14 @@ class SocketTest extends CommonHttpTests
     }
 
     /**
-     * Test that a Zend_Config object can be used to set configuration
+     * Test that a Laminas_Config object can be used to set configuration
      *
-     * @link http://framework.zend.com/issues/browse/ZF-5577
+     * @link https://getlaminas.org/issues/browse/Laminas-5577
      */
-    public function testConfigSetAsZendConfig()
+    public function testConfigSetAsLaminasConfig()
     {
 
-        $config = new \Zend\Config\Config(array(
+        $config = new \Laminas\Config\Config(array(
             'timeout'  => 400,
             'nested'   => array(
                 'item' => 'value',
@@ -115,8 +114,8 @@ class SocketTest extends CommonHttpTests
     public function testSetConfigInvalidConfig($config)
     {
         $this->setExpectedException(
-            'Zend\Http\Client\Adapter\Exception\InvalidArgumentException',
-            'Array or Zend_Config object expected');
+            'Laminas\Http\Client\Adapter\Exception\InvalidArgumentException',
+            'Array or Laminas_Config object expected');
 
         $this->_adapter->setOptions($config);
     }
@@ -173,7 +172,7 @@ class SocketTest extends CommonHttpTests
     public function testSetInvalidContextOptions($invalid)
     {
         $this->setExpectedException(
-            'Zend\Http\Client\Adapter\Exception\InvalidArgumentException',
+            'Laminas\Http\Client\Adapter\Exception\InvalidArgumentException',
             'Expecting either a stream context resource or array');
 
         $adapterClass = $this->config['adapter'];
@@ -207,7 +206,7 @@ class SocketTest extends CommonHttpTests
     /**
      * Test that we get the right exception after a socket timeout
      *
-     * @link http://framework.zend.com/issues/browse/ZF-7309
+     * @link https://getlaminas.org/issues/browse/Laminas-7309
      */
     public function testExceptionOnReadTimeout()
     {
@@ -218,7 +217,7 @@ class SocketTest extends CommonHttpTests
 
         try {
             $this->client->send();
-            $this->fail('Expected a timeout Zend\Http\Client\Adapter\Exception\TimeoutException');
+            $this->fail('Expected a timeout Laminas\Http\Client\Adapter\Exception\TimeoutException');
         } catch (Adapter\Exception\TimeoutException $e) {
             $this->assertEquals(Adapter\Exception\TimeoutException::READ_TIMEOUT, $e->getCode());
         }
@@ -236,9 +235,9 @@ class SocketTest extends CommonHttpTests
      * overloads substr() and strlen(), and mbstring's internal encoding is
      * not a single-byte encoding.
      *
-     * @link http://framework.zend.com/issues/browse/ZF-6218
+     * @link https://getlaminas.org/issues/browse/Laminas-6218
      */
-    public function testMultibyteChunkedResponseZF6218()
+    public function testMultibyteChunkedResponseLaminas6218()
     {
         $md5 = '7667818873302f9995be3798d503d8d3';
 
