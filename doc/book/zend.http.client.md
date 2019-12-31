@@ -2,22 +2,22 @@
 
 ## Overview
 
-`Zend\Http\Client` provides an easy interface for performing Hyper-Text Transfer Protocol (HTTP)
-requests. `Zend\Http\Client` supports the most simple features expected from an *HTTP* client, as
+`Laminas\Http\Client` provides an easy interface for performing Hyper-Text Transfer Protocol (HTTP)
+requests. `Laminas\Http\Client` supports the most simple features expected from an *HTTP* client, as
 well as some more complex features such as *HTTP* authentication and file uploads. Successful
-requests (and most unsuccessful ones too) return a `Zend\Http\Response` object, which provides
+requests (and most unsuccessful ones too) return a `Laminas\Http\Response` object, which provides
 access to the response's headers and body (see this
-section &lt;zend.http.response&gt;).
+section &lt;laminas.http.response&gt;).
 
 ## Quick Start
 
 The class constructor optionally accepts a URL as its first parameter (can be either a string or a
-`Zend\Uri\Http` object), and an array or `Zend\Config\Config` object containing configuration
+`Laminas\Uri\Http` object), and an array or `Laminas\Config\Config` object containing configuration
 options. The `send()` method is used to submit the request to the remote server, and a
-`Zend\Http\Response` object is returned:
+`Laminas\Http\Response` object is returned:
 
 ```php
-use Zend\Http\Client;
+use Laminas\Http\Client;
 
 $client = new Client('http://example.org', array(
     'maxredirects' => 0,
@@ -30,7 +30,7 @@ Both constructor parameters can be left out, and set later using the setUri() an
 methods:
 
 ```php
-use Zend\Http\Client;
+use Laminas\Http\Client;
 
 $client = new Client();
 $client->setUri('http://example.org');
@@ -41,13 +41,13 @@ $client->setOptions(array(
 $response = $client->send();
 ```
 
-`Zend\Http\Client` can also dispatch requests using a separately configured `request` object (see
-the Zend\\\\Http\\\\Request manual page&lt;zend.http.request&gt; for full details of the methods
+`Laminas\Http\Client` can also dispatch requests using a separately configured `request` object (see
+the Laminas\\\\Http\\\\Request manual page&lt;laminas.http.request&gt; for full details of the methods
 available):
 
 ```php
-use Zend\Http\Client;
-use Zend\Http\Request;
+use Laminas\Http\Client;
+use Laminas\Http\Request;
 
 $request = new Request();
 $request->setUri('http://example.org');
@@ -58,18 +58,18 @@ $response = $client->send($request);
 ```
 
 > ## Note
-`Zend\Http\Client` uses `Zend\Uri\Http` to validate URLs. See the Zend\\\\Uri manual
-page&lt;zend.uri&gt; for more information on the validation process.
+`Laminas\Http\Client` uses `Laminas\Uri\Http` to validate URLs. See the Laminas\\\\Uri manual
+page&lt;laminas.uri&gt; for more information on the validation process.
 
 ## Configuration
 
 The constructor and setOptions() method accepts an associative array of configuration parameters, or
-a `Zend\Config\Config` object. Setting these parameters is optional, as they all have default
+a `Laminas\Config\Config` object. Setting these parameters is optional, as they all have default
 values.
 
 The options are also passed to the adapter class upon instantiation, so the same array or
-`Zend\Config\Config` object) can be used for adapter configuration. See the Zend Http Client adapter
-section&lt;zend.http.client.adapters&gt; for more information on the adapter-specific options
+`Laminas\Config\Config` object) can be used for adapter configuration. See the Laminas Http Client adapter
+section&lt;laminas.http.client.adapters&gt; for more information on the adapter-specific options
 available.
 
 ## Examples
@@ -79,7 +79,7 @@ available.
 Performing simple *HTTP* requests is very easily done:
 
 ```php
-use Zend\Http\Client;
+use Laminas\Http\Client;
 
 $client = new Client('http://example.org');
 $response = $client->send();
@@ -92,7 +92,7 @@ last `setMethod()` call is used. If `setMethod()` was never called, the default 
 `GET`.
 
 ```php
-use Zend\Http\Client;
+use Laminas\Http\Client;
 
 $client = new Client('http://example.org');
 
@@ -101,12 +101,12 @@ $client->setMethod('POST');
 $response = $client->send();
 ```
 
-For convenience, `Zend\Http\Request` defines all the request methods as class constants,
-`Zend\Http\Request::METHOD_GET`, `Zend\Http\Request::METHOD_POST` and so on:
+For convenience, `Laminas\Http\Request` defines all the request methods as class constants,
+`Laminas\Http\Request::METHOD_GET`, `Laminas\Http\Request::METHOD_POST` and so on:
 
 ```php
-use Zend\Http\Client;
-use Zend\Http\Request;
+use Laminas\Http\Client;
+use Laminas\Http\Request;
 
 $client = new Client('http://example.org');
 
@@ -122,7 +122,7 @@ them as part of the URL, or by using the `setParameterGet()` method. This method
 parameters as an associative array of name =&gt; value `GET` variables.
 
 ```php
-use Zend\Http\Client;
+use Laminas\Http\Client;
 $client = new Client();
 
 // This is equivalent to setting a URL in the Client's constructor:
@@ -145,7 +145,7 @@ parameters, and can be done with the `setParameterPost()` method, which is ident
 `setParameterGet()` method in structure.
 
 ```php
-use Zend\Http\Client;
+use Laminas\Http\Client;
 
 $client = new Client();
 
@@ -164,11 +164,11 @@ useless. Unless the request is a `POST` request, `POST` parameters are simply ig
 ### Connecting to SSL URLs
 
 If you are trying to connect to an SSL (https) URL and are using the default
-(`Zend\Http\Client\Adapter\Socket`) adapter, you may need to set the `sslcapath` configuration
+(`Laminas\Http\Client\Adapter\Socket`) adapter, you may need to set the `sslcapath` configuration
 option in order to allow PHP to validate the SSL certificate:
 
 ```php
-use Zend\Http\Client;
+use Laminas\Http\Client;
 
 $client = new Client('https://example.org', array(
    'sslcapath' => '/etc/ssl/certs'
@@ -183,10 +183,10 @@ Alternatively, you could switch to the curl adapter, which negotiates SSL connec
 transparently:
 
 ```php
-use Zend\Http\Client;
+use Laminas\Http\Client;
 
 $client = new Client('https://example.org', array(
-   'adapter' => 'Zend\Http\Client\Adapter\Curl'
+   'adapter' => 'Laminas\Http\Client\Adapter\Curl'
 ));
 $response = $client->send();
 ```
@@ -194,7 +194,7 @@ $response = $client->send();
 ### A Complete Example
 
 ```php
-use Zend\Http\Client;
+use Laminas\Http\Client;
 
 $client = new Client();
 $client->setUri('http://www.example.com');
@@ -213,8 +213,8 @@ if ($response->isSuccess()) {
 or the same thing, using a request object:
 
 ```php
-use Zend\Http\Client;
-use Zend\Http\Request;
+use Laminas\Http\Client;
+use Laminas\Http\Request;
 
 $request = new Request();
 $request->setUri('http://www.example.com');

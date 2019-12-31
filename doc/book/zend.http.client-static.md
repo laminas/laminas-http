@@ -2,13 +2,13 @@
 
 ## Overview
 
-The `Zend\Http` component also provides `Zend\Http\ClientStatic`, a static HTTP client which exposes
+The `Laminas\Http` component also provides `Laminas\Http\ClientStatic`, a static HTTP client which exposes
 a simplified API for quickly performing GET and POST operations:
 
 ## Quick Start
 
 ```php
-use Zend\Http\ClientStatic;
+use Laminas\Http\ClientStatic;
 
 // Simple GET request
 $response = ClientStatic::get('http://example.org');
@@ -38,7 +38,7 @@ $clientOptions = null)`
 Perform an HTTP `GET` request using the provided URL, query string variables, headers and request
 body. The fifth parameter can be used to pass configuration options to the HTTP Client instance.
 
-Returns Zend\\Http\\Response
+Returns Laminas\\Http\\Response
 
 <!-- -->
 
@@ -49,6 +49,6 @@ null)`
 Perform an HTTP `POST` request using the provided URL, parameters, headers and request body. The
 fifth parameter can be used to pass configuration options to the HTTP Client instance.
 
-Returns Zend\\Http\\Response
+Returns Laminas\\Http\\Response
 
 

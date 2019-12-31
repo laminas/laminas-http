@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `Zend\Http\Response` class is responsible for providing a fluent API that allows a developer to
+The `Laminas\Http\Response` class is responsible for providing a fluent API that allows a developer to
 interact with all the various parts of an HTTP response.
 
 A typical HTTP Response looks like this:
@@ -22,11 +22,11 @@ site](http://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html).
 ## Quick Start
 
 Response objects can either be created from the provided `fromString()` factory, or, if you wish to
-have a completely empty object to start with, by simply instantiating the `Zend\Http\Response`
+have a completely empty object to start with, by simply instantiating the `Laminas\Http\Response`
 class.
 
 ```php
-use Zend\Http\Response;
+use Laminas\Http\Response;
 $response = Response::fromString(<<<EOS
 HTTP/1.0 200 OK
 HeaderField1: header-field-value
@@ -68,7 +68,7 @@ No configuration options are available.
 
 Populate object from string
 
-Returns `Zend\Http\Response`
+Returns `Laminas\Http\Response`
 
 <!-- -->
 
@@ -82,12 +82,12 @@ Returns string
 <!-- -->
 
 **setHeaders**  
-`setHeaders(Zend\Http\Headers $headers)`
+`setHeaders(Laminas\Http\Headers $headers)`
 
 Provide an alternate Parameter Container implementation for headers in this object. (This is NOT the
 primary API for value setting; for that, see `getHeaders()`.)
 
-Returns `Zend\Http\Request`
+Returns `Laminas\Http\Request`
 
 <!-- -->
 
@@ -96,9 +96,9 @@ Returns `Zend\Http\Request`
 
 Return the container responsible for storing HTTP headers. This container exposes the primary API
 for manipulating headers set in the HTTP response. See the section on
-Zend\\\\Http\\\\Headers&lt;zend.http.headers&gt; for more information.
+Laminas\\\\Http\\\\Headers&lt;laminas.http.headers&gt; for more information.
 
-Returns `Zend\Http\Headers`
+Returns `Laminas\Http\Headers`
 
 <!-- -->
 
@@ -108,7 +108,7 @@ Returns `Zend\Http\Headers`
 Set the HTTP version for this object, one of 1.0 or 1.1 (`Request::VERSION_10`,
 `Request::VERSION_11`).
 
-Returns `Zend\Http\Request`.
+Returns `Laminas\Http\Request`.
 
 <!-- -->
 
@@ -126,7 +126,7 @@ Returns string
 
 Set HTTP status code
 
-Returns `Zend\Http\Response`
+Returns `Laminas\Http\Response`
 
 <!-- -->
 
@@ -144,7 +144,7 @@ Returns int
 
 Set custom HTTP status message
 
-Returns `Zend\Http\Response`
+Returns `Laminas\Http\Response`
 
 <!-- -->
 
@@ -268,7 +268,7 @@ Set message metadata
 Non-destructive setting of message metadata; always adds to the metadata, never overwrites the
 entire metadata container.
 
-Returns `Zend\Stdlib\Message`
+Returns `Laminas\Stdlib\Message`
 
 <!-- -->
 
@@ -286,7 +286,7 @@ Returns mixed
 
 Set message content
 
-Returns `Zend\Stdlib\Message`
+Returns `Laminas\Stdlib\Message`
 
 <!-- -->
 
@@ -318,7 +318,7 @@ Returns string
 **Generating a Response object from a string**
 
 ```php
-use Zend\Http\Response;
+use Laminas\Http\Response;
 $request = Response::fromString(<<<EOS
 HTTP/1.0 200 OK
 HeaderField1: header-field-value
@@ -335,7 +335,7 @@ EOS);
 **Generating a formatted HTTP Response from a Response object**
 
 ```php
-use Zend\Http\Response;
+use Laminas\Http\Response;
 $response = new Response();
 $response->setStatusCode(Response::STATUS_CODE_200);
 $response->getHeaders()->addHeaders(array(

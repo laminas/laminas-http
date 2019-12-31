@@ -2,13 +2,13 @@
 
 ## HTTP Redirections
 
-`Zend\Http\Client` automatically handles *HTTP* redirections, and by default will follow up to 5
+`Laminas\Http\Client` automatically handles *HTTP* redirections, and by default will follow up to 5
 redirections. This can be changed by setting the `maxredirects` configuration parameter.
 
 According to the *HTTP*/1.1 RFC, *HTTP* 301 and 302 responses should be treated by the client by
 resending the same request to the specified location - using the same request method. However, most
 clients to not implement this and always use a `GET` request when redirecting. By default,
-`Zend\Http\Client` does the same - when redirecting on a 301 or 302 response, all `GET` and POST
+`Laminas\Http\Client` does the same - when redirecting on a 301 or 302 response, all `GET` and POST
 parameters are reset, and a `GET` request is sent to the new location. This behavior can be changed
 by setting the `strictredirects` configuration parameter to boolean `TRUE`:
 
@@ -27,7 +27,7 @@ You can always get the number of redirections done after sending a request using
 
 ## Adding Cookies and Using Cookie Persistence
 
-`Zend\Http\Client` provides an easy interface for adding cookies to your request, so that no direct
+`Laminas\Http\Client` provides an easy interface for adding cookies to your request, so that no direct
 header modification is required. Cookies can be added using either the addCookie() or `setCookies`
 method. The `addCookie` method has a number of operating modes:
 
@@ -37,15 +37,15 @@ method. The `addCookie` method has a number of operating modes:
 // Easy and simple: by providing a cookie name and cookie value
 $client->addCookie('flavor', 'chocolate chips');
 
-// By providing a Zend\Http\Header\SetCookie object
-$cookie = Zend\Http\Header\SetCookie::fromString('Set-Cookie: flavor=chocolate%20chips');
+// By providing a Laminas\Http\Header\SetCookie object
+$cookie = Laminas\Http\Header\SetCookie::fromString('Set-Cookie: flavor=chocolate%20chips');
 $client->addCookie($cookie);
 
 // Multiple cookies can be set at once by providing an
-// array of Zend\Http\Header\SetCookie objects
+// array of Laminas\Http\Header\SetCookie objects
 $cookies = array(
-    Zend\Http\Header\SetCookie::fromString('Set-Cookie: flavorOne=chocolate%20chips'),
-    Zend\Http\Header\SetCookie::fromString('Set-Cookie: flavorTwo=vanilla'),
+    Laminas\Http\Header\SetCookie::fromString('Set-Cookie: flavorOne=chocolate%20chips'),
+    Laminas\Http\Header\SetCookie::fromString('Set-Cookie: flavorTwo=vanilla'),
 );
 $client->addCookie($cookies);
 ```
@@ -63,19 +63,19 @@ $client->setCookies(array(
 ));
 ```
 
-For more information about `Zend\Http\Header\SetCookie` objects, see \[this
-section\](zend.http.headers).
+For more information about `Laminas\Http\Header\SetCookie` objects, see \[this
+section\](laminas.http.headers).
 
-`Zend\Http\Client` also provides a means for simplifying cookie stickiness - that is having the
+`Laminas\Http\Client` also provides a means for simplifying cookie stickiness - that is having the
 client internally store all sent and received cookies, and resend them on subsequent requests:
-`Zend\Http\Cookies`. This is useful, for example when you need to log in to a remote site first and
+`Laminas\Http\Cookies`. This is useful, for example when you need to log in to a remote site first and
 receive and authentication or session ID cookie before sending further requests.
 
 **Enabling Cookie Stickiness**
 
 ```php
 $headers = $client->getRequest()->getHeaders();
-$cookies = new Zend\Http\Cookies($headers);
+$cookies = new Laminas\Http\Cookies($headers);
 
 // First request: log in and start a session
 $client->setUri('http://example.com/login.php');
@@ -91,13 +91,13 @@ $client->setCookies($cookies->getMatchingCookies($client->getUri()));
 $client->setMethod('GET');
 ```
 
-For more information about the `Zend\Http\Cookies` class, see this section
-&lt;zend.http.client.cookies&gt;.
+For more information about the `Laminas\Http\Cookies` class, see this section
+&lt;laminas.http.client.cookies&gt;.
 
 ## Setting Custom Request Headers
 
 Setting custom headers is performed by first fetching the header container from the client's
-`Zend\Http\Request` object. This method is quite diverse and can be used in several ways, as the
+`Laminas\Http\Request` object. This method is quite diverse and can be used in several ways, as the
 following example shows:
 
 **Setting A Single Custom Request Header**
@@ -114,14 +114,14 @@ $headers->addHeaderLine('Host', 'www.example.com');
 $headers->addHeaderLine('Host: www.example.com');
 
 // Another way of doing the exact same thing using
-// the provided Zend\Http\Header class
-$headers->addHeader(Zend\Http\Header\Host::fromString('Host: www.example.com'));
+// the provided Laminas\Http\Header class
+$headers->addHeader(Laminas\Http\Header\Host::fromString('Host: www.example.com'));
 
 // You can also add multiple headers at once by passing an
 // array to addHeaders using any of the formats below:
 $headers->addHeaders(array(
-    // Zend\Http\Header\* object
-    Zend\Http\Header\Host::fromString('Host: www.example.com'),
+    // Laminas\Http\Header\* object
+    Laminas\Http\Header\Host::fromString('Host: www.example.com'),
 
     // Header name as array key, header value as array key value
     'Cookie' => 'PHPSESSID=1234567890abcdef1234567890abcdef',
@@ -131,9 +131,9 @@ $headers->addHeaders(array(
 ));
 ```
 
-`Zend\Http\Client` also provides a convenience method for setting request headers, `setHeaders`.
+`Laminas\Http\Client` also provides a convenience method for setting request headers, `setHeaders`.
 This method will create a new header container, add the specified headers and then store the new
-header container in it's `Zend\Http\Request` object. As a consequence, any pre-existing headers will
+header container in it's `Laminas\Http\Request` object. As a consequence, any pre-existing headers will
 be erased.
 
 **Setting Multiple Custom Request Headers**
@@ -142,9 +142,9 @@ be erased.
 // Setting multiple headers.  Will remove all existing
 // headers and add new ones to the Request header container
 $client->setHeaders(array(
-    Zend\Http\Header\Host::fromString('Host: www.example.com'),
+    Laminas\Http\Header\Host::fromString('Host: www.example.com'),
     'Accept-Encoding' => 'gzip,deflate',
-    'X-Powered-By: Zend Framework',
+    'X-Powered-By: Laminas',
 ));
 ```
 
@@ -153,11 +153,11 @@ $client->setHeaders(array(
 You can upload files through *HTTP* using the setFileUpload method. This method takes a file name as
 the first parameter, a form name as the second parameter, and data as a third optional parameter. If
 the third data parameter is `NULL`, the first file name parameter is considered to be a real file on
-disk, and `Zend\Http\Client` will try to read this file and upload it. If the data parameter is not
+disk, and `Laminas\Http\Client` will try to read this file and upload it. If the data parameter is not
 `NULL`, the first file name parameter will be sent as the file name, but no actual file needs to
 exist on the disk. The second form name parameter is always required, and is equivalent to the
 "name" attribute of an `<input>` tag, if the file was to be uploaded through an *HTML* form. A
-fourth optional parameter provides the file's content-type. If not specified, and `Zend\Http\Client`
+fourth optional parameter provides the file's content-type. If not specified, and `Laminas\Http\Client`
 reads the file from the disk, the `mime_content_type` function will be used to guess the file's
 content type, if it is available. In any case, the default MIME type will be
 application/octet-stream.
@@ -190,7 +190,7 @@ ignore the request body on other request methods.
 
 ## Sending Raw POST Data
 
-You can use a `Zend\Http\Client` to send raw POST data using the `setRawBody()` method. This method
+You can use a `Laminas\Http\Client` to send raw POST data using the `setRawBody()` method. This method
 takes one parameter: the data to send in the request body. When sending raw POST data, it is
 advisable to also set the encoding type using `setEncType()`.
 
@@ -219,7 +219,7 @@ unless you send a POST request.
 
 ## HTTP Authentication
 
-Currently, `Zend\Http\Client` only supports basic *HTTP* authentication. This feature is utilized
+Currently, `Laminas\Http\Client` only supports basic *HTTP* authentication. This feature is utilized
 using the `setAuth()` method, or by specifying a username and a password in the URI. The `setAuth()`
 method takes 3 parameters: The user name, the password and an optional authentication type
 parameter. As mentioned, currently only basic authentication is supported (digest authentication
@@ -229,7 +229,7 @@ support is planned).
 
 ```php
 // Using basic authentication
-$client->setAuth('shahar', 'myPassword!', Zend\Http\Client::AUTH_BASIC);
+$client->setAuth('shahar', 'myPassword!', Laminas\Http\Client::AUTH_BASIC);
 
 // Since basic auth is default, you can just do this:
 $client->setAuth('shahar', 'myPassword!');
@@ -240,7 +240,7 @@ $client->setUri('http://christer:secret@example.com');
 
 ## Sending Multiple Requests With the Same Client
 
-`Zend\Http\Client` was also designed specifically to handle several consecutive requests with the
+`Laminas\Http\Client` was also designed specifically to handle several consecutive requests with the
 same object. This is useful in cases where a script requires data to be fetched from several places,
 or when accessing a specific *HTTP* resource requires logging in and obtaining a session cookie, for
 example.
@@ -261,7 +261,7 @@ Note that cookies are not reset by default when the `resetParameters()` method i
 cookies as well, use `resetParameters(true)`, or call `clearCookies()` after calling
 `resetParameters()`.
 
-Another feature designed specifically for consecutive requests is the `Zend\Http\Cookies` object.
+Another feature designed specifically for consecutive requests is the `Laminas\Http\Cookies` object.
 This "Cookie Jar" allow you to save cookies set by the server in a request, and send them back on
 consecutive requests transparently. This allows, for example, going through an authentication
 request before sending the actual data-fetching request.
@@ -275,13 +275,13 @@ session.
 
 ```php
 // First, instantiate the client
-$client = new Zend\Http\Client('http://www.example.com/fetchdata.php', array(
+$client = new Laminas\Http\Client('http://www.example.com/fetchdata.php', array(
     'keepalive' => true
 ));
 
 // Do we have the cookies stored in our session?
 if (isset($_SESSION['cookiejar']) &&
-    $_SESSION['cookiejar'] instanceof Zend\Http\Cookies) {
+    $_SESSION['cookiejar'] instanceof Laminas\Http\Cookies) {
 
     $cookieJar = $_SESSION['cookiejar'];
 } else {
@@ -292,7 +292,7 @@ if (isset($_SESSION['cookiejar']) &&
         'pass' => 'somesecret'
     ));
     $response = $client->setMethod('POST')->send();
-    $cookieJar = Zend\Http\Cookies::fromResponse($response);
+    $cookieJar = Laminas\Http\Cookies::fromResponse($response);
 
     // Now, clear parameters and set the URI to the original one
     // (note that the cookies that were set by the server are now
@@ -311,16 +311,16 @@ $_SESSION['cookiejar'] = $cookieJar;
 
 ## Data Streaming
 
-By default, `Zend\Http\Client` accepts and returns data as *PHP* strings. However, in many cases
+By default, `Laminas\Http\Client` accepts and returns data as *PHP* strings. However, in many cases
 there are big files to be received, thus keeping them in memory might be unnecessary or too
-expensive. For these cases, `Zend\Http\Client` supports writing data to files (streams).
+expensive. For these cases, `Laminas\Http\Client` supports writing data to files (streams).
 
 In order to receive data from the server as stream, use `setStream()`. Optional argument specifies
 the filename where the data will be stored. If the argument is just `TRUE` (default), temporary file
 will be used and will be deleted once response object is destroyed. Setting argument to `FALSE`
 disables the streaming functionality.
 
-When using streaming, `send()` method will return object of class `Zend\Http\Response\Stream`, which
+When using streaming, `send()` method will return object of class `Laminas\Http\Response\Stream`, which
 has two useful methods: `getStreamName()` will return the name of the file where the response is
 stored, and `getStream()` will return stream from which the response could be read.
 

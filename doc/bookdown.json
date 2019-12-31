@@ -1,13 +1,13 @@
 {
-    "title": "Zend\\Http",
+    "title": "Laminas\\Http",
     "target": "html/",
     "content": [
-        "book/zend.http.request.md",
-        "book/zend.http.response.md",
-        "book/zend.http.headers.md",
-        "book/zend.http.client.md",
-        "book/zend.http.client.adapters.md",
-        "book/zend.http.client.advanced.md",
-        "book/zend.http.client-static.md"
+        "book/laminas.http.request.md",
+        "book/laminas.http.response.md",
+        "book/laminas.http.headers.md",
+        "book/laminas.http.client.md",
+        "book/laminas.http.client.adapters.md",
+        "book/laminas.http.client.advanced.md",
+        "book/laminas.http.client-static.md"
     ]
 }

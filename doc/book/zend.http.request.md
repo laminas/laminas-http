@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `Zend\Http\Request` object is responsible for providing a fluent API that allows a developer to
+The `Laminas\Http\Request` object is responsible for providing a fluent API that allows a developer to
 interact with all the various parts of an HTTP request.
 
 A typical HTTP request looks like this:
@@ -21,10 +21,10 @@ site](http://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html).
 ## Quick Start
 
 Request objects can either be created from the provided `fromString()` factory, or, if you wish to
-have a completely empty object to start with, by simply instantiating the `Zend\Http\Request` class.
+have a completely empty object to start with, by simply instantiating the `Laminas\Http\Request` class.
 
 ```php
-use Zend\Http\Request;
+use Laminas\Http\Request;
 
 $request = Request::fromString(<<<EOS
 POST /foo HTTP/1.1
@@ -59,7 +59,7 @@ No configuration options are available.
 
 A factory that produces a Request object from a well-formed HTTP Request string.
 
-Returns `Zend\Http\Request`
+Returns `Laminas\Http\Request`
 
 <!-- -->
 
@@ -68,7 +68,7 @@ Returns `Zend\Http\Request`
 
 Set the method for this request.
 
-Returns `Zend\Http\Request`
+Returns `Laminas\Http\Request`
 
 <!-- -->
 
@@ -82,11 +82,11 @@ Returns string
 <!-- -->
 
 **setUri**  
-`setUri(string|Zend\Uri\Http $uri)`
+`setUri(string|Laminas\Uri\Http $uri)`
 
-Set the URI/URL for this request; this can be a string or an instance of `Zend\Uri\Http`.
+Set the URI/URL for this request; this can be a string or an instance of `Laminas\Uri\Http`.
 
-Returns `Zend\Http\Request`
+Returns `Laminas\Http\Request`
 
 <!-- -->
 
@@ -95,7 +95,7 @@ Returns `Zend\Http\Request`
 
 Return the URI for this request object.
 
-Returns `Zend\Uri\Http`
+Returns `Laminas\Uri\Http`
 
 <!-- -->
 
@@ -114,7 +114,7 @@ Returns string
 Set the HTTP version for this object, one of 1.0 or 1.1 (`Request::VERSION_10`,
 `Request::VERSION_11`).
 
-Returns `Zend\Http\Request`
+Returns `Laminas\Http\Request`
 
 <!-- -->
 
@@ -128,12 +128,12 @@ Returns string
 <!-- -->
 
 **setQuery**  
-`setQuery(Zend\Stdlib\ParametersInterface $query)`
+`setQuery(Laminas\Stdlib\ParametersInterface $query)`
 
 Provide an alternate Parameter Container implementation for query parameters in this object. (This
 is NOT the primary API for value setting; for that, see `getQuery()`).
 
-Returns `Zend\Http\Request`
+Returns `Laminas\Http\Request`
 
 <!-- -->
 
@@ -142,18 +142,18 @@ Returns `Zend\Http\Request`
 
 Return the parameter container responsible for query parameters or a single query parameter.
 
-Returns `string`, `Zend\Stdlib\ParametersInterface`, or `null` depending on value of `$name`
+Returns `string`, `Laminas\Stdlib\ParametersInterface`, or `null` depending on value of `$name`
 argument.
 
 <!-- -->
 
 **setPost**  
-`setPost(Zend\Stdlib\ParametersInterface $post)`
+`setPost(Laminas\Stdlib\ParametersInterface $post)`
 
 Provide an alternate Parameter Container implementation for POST parameters in this object. (This is
 NOT the primary API for value setting; for that, see `getPost()`).
 
-Returns `Zend\Http\Request`
+Returns `Laminas\Http\Request`
 
 <!-- -->
 
@@ -162,7 +162,7 @@ Returns `Zend\Http\Request`
 
 Return the parameter container responsible for POST parameters or a single POST parameter.
 
-Returns `string`, `Zend\Stdlib\ParametersInterface`, or `null` depending on value of `$name`
+Returns `string`, `Laminas\Stdlib\ParametersInterface`, or `null` depending on value of `$name`
 argument.
 
 <!-- -->
@@ -173,17 +173,17 @@ argument.
 Return the Cookie header, this is the same as calling
 *$request-&gt;getHeaders()-&gt;get('Cookie');*.
 
-Returns `Zend\Http\Header\Cookie`
+Returns `Laminas\Http\Header\Cookie`
 
 <!-- -->
 
 **setFiles**  
-`setFiles(Zend\Stdlib\ParametersInterface $files)`
+`setFiles(Laminas\Stdlib\ParametersInterface $files)`
 
 Provide an alternate Parameter Container implementation for file parameters in this object, (This is
 NOT the primary API for value setting; for that, see `getFiles()`).
 
-Returns `Zend\Http\Request`
+Returns `Laminas\Http\Request`
 
 <!-- -->
 
@@ -192,18 +192,18 @@ Returns `Zend\Http\Request`
 
 Return the parameter container responsible for file parameters or a single file parameter.
 
-Returns `string`, `Zend\Stdlib\ParametersInterface`, or `null` depending on value of `$name`
+Returns `string`, `Laminas\Stdlib\ParametersInterface`, or `null` depending on value of `$name`
 argument.
 
 <!-- -->
 
 **setHeaders**  
-`setHeaders(Zend\Http\Headers $headers)`
+`setHeaders(Laminas\Http\Headers $headers)`
 
 Provide an alternate Parameter Container implementation for headers in this object, (this is NOT the
 primary API for value setting, for that see `getHeaders()`).
 
-Returns `Zend\Http\Request`
+Returns `Laminas\Http\Request`
 
 <!-- -->
 
@@ -212,9 +212,9 @@ Returns `Zend\Http\Request`
 
 Return the container responsible for storing HTTP headers. This container exposes the primary API
 for manipulating headers set in the HTTP request. See the section on
-Zend\\\\Http\\\\Headers&lt;zend.http.headers&gt; for more information.
+Laminas\\\\Http\\\\Headers&lt;laminas.http.headers&gt; for more information.
 
-Returns `Zend\Http\Headers` if `$name` is `null`. Returns `Zend\Http\Header\HeaderInterface` or
+Returns `Laminas\Http\Headers` if `$name` is `null`. Returns `Laminas\Http\Header\HeaderInterface` or
 `ArrayIterator` if `$name` matches one or more stored headers, respectively.
 
 <!-- -->
@@ -227,7 +227,7 @@ Set message metadata.
 Non-destructive setting of message metadata; always adds to the metadata, never overwrites the
 entire metadata container.
 
-Returns `Zend\Http\Request`
+Returns `Laminas\Http\Request`
 
 <!-- -->
 
@@ -245,7 +245,7 @@ Returns mixed
 
 Set request body (content).
 
-Returns `Zend\Http\Request`
+Returns `Laminas\Http\Request`
 
 <!-- -->
 
@@ -385,13 +385,13 @@ Returns string
 **Generating a Request object from a string**
 
 ```php
-use Zend\Http\Request;
+use Laminas\Http\Request;
 
 $string = "GET /foo HTTP/1.1\r\n\r\nSome Content";
 $request = Request::fromString($string);
 
 $request->getMethod();    // returns Request::METHOD_GET
-$request->getUri();       // returns Zend\Uri\Http object
+$request->getUri();       // returns Laminas\Uri\Http object
 $request->getUriString(); // returns '/foo'
 $request->getVersion();   // returns Request::VERSION_11 or '1.1'
 $request->getContent();   // returns 'Some Content'
@@ -400,8 +400,8 @@ $request->getContent();   // returns 'Some Content'
 **Retrieving and setting headers**
 
 ```php
-use Zend\Http\Request;
-use Zend\Http\Header\Cookie;
+use Laminas\Http\Request;
+use Laminas\Http\Header\Cookie;
 
 $request = new Request();
 $request->getHeaders()->get('Content-Type'); // return content type
@@ -414,7 +414,7 @@ foreach ($request->getHeaders() as $header) {
 **Retrieving and setting GET and POST values**
 
 ```php
-use Zend\Http\Request;
+use Laminas\Http\Request;
 
 $request = new Request();
 
@@ -428,7 +428,7 @@ $request->getQuery()->offsetGet('bar'); // returns 'Bar value'
 **Generating a formatted HTTP Request from a Request object**
 
 ```php
-use Zend\Http\Request;
+use Laminas\Http\Request;
 
 $request = new Request();
 $request->setMethod(Request::METHOD_POST);

@@ -2,13 +2,13 @@
 
 ## Overview
 
-The `Zend\Http\Headers` class is a container for HTTP headers. It is typically accessed as part of a
-`Zend\Http\Request` or `Zend\Http\Response` `getHeaders()` call. The Headers container will lazily
+The `Laminas\Http\Headers` class is a container for HTTP headers. It is typically accessed as part of a
+`Laminas\Http\Request` or `Laminas\Http\Response` `getHeaders()` call. The Headers container will lazily
 load actual Header objects as to reduce the overhead of header specific parsing.
 
-The `Zend\Http\Header\*` classes are the domain specific implementations for the various types of
+The `Laminas\Http\Header\*` classes are the domain specific implementations for the various types of
 Headers that one might encounter during the typical HTTP request. If a header of unknown type is
-encountered, it will be implemented as a `Zend\Http\Header\GenericHeader` instance. See the below
+encountered, it will be implemented as a `Laminas\Http\Header\GenericHeader` instance. See the below
 table for a list of the various HTTP headers and the API that is specific to each header type.
 
 ## Quick Start
@@ -17,7 +17,7 @@ The quickest way to get started interacting with header objects is by getting an
 Headers container from a request or response object.
 
 ```php
-// $client is an instance of Zend\Http\Client
+// $client is an instance of Laminas\Http\Client
 
 // You can retrieve the request headers by first retrieving
 // the Request object and then calling getHeaders on it
@@ -27,7 +27,7 @@ $requestHeaders  = $client->getRequest()->getHeaders();
 $responseHeaders = $client->getResponse()->getHeaders();
 ```
 
-`Zend\Http\Headers` can also extract headers from a string:
+`Laminas\Http\Headers` can also extract headers from a string:
 
 ```php
 $headerString = <<<EOB
@@ -36,16 +36,16 @@ Content-Type: text/html
 Content-Length: 1337
 EOB;
 
-$headers = Zend\Http\Headers::fromString($headerString);
+$headers = Laminas\Http\Headers::fromString($headerString);
 // $headers is now populated with three objects
-//   (1) Zend\Http\Header\Host
-//   (2) Zend\Http\Header\ContentType
-//   (3) Zend\Http\Header\ContentLength
+//   (1) Laminas\Http\Header\Host
+//   (2) Laminas\Http\Header\ContentType
+//   (3) Laminas\Http\Header\ContentLength
 ```
 
-Now that you have an instance of `Zend\Http\Headers` you can manipulate the individual headers it
+Now that you have an instance of `Laminas\Http\Headers` you can manipulate the individual headers it
 contains using the provided public API methods outlined in the "Available
-Methods&lt;zend.http.headers.methods&gt;" section.
+Methods&lt;laminas.http.headers.methods&gt;" section.
 
 ## Configuration Options
 
@@ -61,25 +61,25 @@ Populates headers from string representation
 Parses a string for headers, and aggregates them, in order, in the current instance, primarily as
 strings until they are needed (they will be lazy loaded).
 
-Returns `Zend\Http\Headers`
+Returns `Laminas\Http\Headers`
 
 <!-- -->
 
 **setPluginClassLoader**  
-`setPluginClassLoader(Zend\Loader\PluginClassLocator $pluginClassLoader)`
+`setPluginClassLoader(Laminas\Loader\PluginClassLocator $pluginClassLoader)`
 
 Set an alternate implementation for the plugin class loader
 
-Returns `Zend\Http\Headers`
+Returns `Laminas\Http\Headers`
 
 <!-- -->
 
 **getPluginClassLoader**  
 `getPluginClassLoader()`
 
-Return an instance of a `Zend\Loader\PluginClassLocator`, lazyload and inject map if necessary.
+Return an instance of a `Laminas\Loader\PluginClassLocator`, lazyload and inject map if necessary.
 
-Returns `Zend\Loader\PluginClassLocator`
+Returns `Laminas\Loader\PluginClassLocator`
 
 <!-- -->
 
@@ -90,7 +90,7 @@ Add many headers at once
 
 Expects an array (or `Traversable` object) of type/value pairs.
 
-Returns `Zend\Http\Headers`
+Returns `Laminas\Http\Headers`
 
 <!-- -->
 
@@ -102,21 +102,21 @@ Add a raw header line, either in name =&gt; value, or as a single string 'name: 
 This method allows for lazy-loading in that the parsing and instantiation of Header object will be
 delayed until they are retrieved by either `get()` or `current()`.
 
-Returns `Zend\Http\Headers`
+Returns `Laminas\Http\Headers`
 
 <!-- -->
 
 **addHeader**  
-`addHeader(Zend\Http\Header\HeaderInterface $header)`
+`addHeader(Laminas\Http\Header\HeaderInterface $header)`
 
 Add a Header to this container, for raw values see `addHeaderLine()` and `addHeaders()`.
 
-Returns `Zend\Http\Headers`
+Returns `Laminas\Http\Headers`
 
 <!-- -->
 
 **removeHeader**  
-`removeHeader(Zend\Http\Header\HeaderInterface $header)`
+`removeHeader(Laminas\Http\Header\HeaderInterface $header)`
 
 Remove a Header from the container
 
@@ -131,7 +131,7 @@ Clear all headers
 
 Removes all headers from queue
 
-Returns `Zend\Http\Headers`
+Returns `Laminas\Http\Headers`
 
 <!-- -->
 
@@ -140,7 +140,7 @@ Returns `Zend\Http\Headers`
 
 Get all headers of a certain name/type
 
-Returns false| `Zend\Http\Header\HeaderInterface`| `ArrayIterator`
+Returns false| `Laminas\Http\Header\HeaderInterface`| `ArrayIterator`
 
 <!-- -->
 
@@ -194,7 +194,7 @@ Returns void
 
 Return the current value for this iterator, lazy loading it if need be
 
-Returns `Zend\Http\Header\HeaderInterface`
+Returns `Laminas\Http\Header\HeaderInterface`
 
 <!-- -->
 
@@ -238,14 +238,14 @@ accurate
 
 Returns bool
 
-## Zend\\Http\\Header\\HeaderInterface Methods
+## Laminas\\Http\\Header\\HeaderInterface Methods
 
 **fromString**  
 `fromString(string $headerLine)`
 
 Factory to generate a header object from a string
 
-Returns `Zend\Http\Header\GenericHeader`
+Returns `Laminas\Http\Header\GenericHeader`
 
 <!-- -->
 
@@ -276,7 +276,7 @@ Returns in form of "NAME: VALUE"
 
 Returns string
 
-## Zend\\Http\\Header\\AbstractAccept Methods
+## Laminas\\Http\\Header\\AbstractAccept Methods
 
 **parseHeaderLine**  
 `parseHeaderLine(string $headerLine)`
@@ -290,7 +290,7 @@ Returns void
 
 Parse the Field Value Parts represented by a header line
 
-Throws `Zend\Http\Header\Exception\InvalidArgumentException` if the header is invalid
+Throws `Laminas\Http\Header\Exception\InvalidArgumentException` if the header is invalid
 
 Returns array
 
@@ -315,7 +315,7 @@ Returns all the keys, values and parameters this header represents
 
 Returns array
 
-## Zend\\Http\\Header\\AbstractDate Methods
+## Laminas\\Http\\Header\\AbstractDate Methods
 
 **setDateFormat**  
 static `setDateFormat(int $format)`
@@ -336,7 +336,7 @@ Returns string
 
 Set the date for this header, this can be a string or an instance of DateTime
 
-Throws `Zend\Http\Header\Exception\InvalidArgumentException` if the date is neither a valid string
+Throws `Laminas\Http\Header\Exception\InvalidArgumentException` if the date is neither a valid string
 nor an instance of `\DateTime`.
 
 Returns self
@@ -378,15 +378,15 @@ Create date-based header from strtotime()-compatible string
 
 Returns self
 
-## Zend\\Http\\Header\\AbstractLocation Methods
+## Laminas\\Http\\Header\\AbstractLocation Methods
 
 **setUri**  
-`setUri(string|Zend\Uri\UriInterface $uri)`
+`setUri(string|Laminas\Uri\UriInterface $uri)`
 
-Set the URI/URL for this header, this can be a string or an instance of `Zend\Uri\Http`
+Set the URI/URL for this header, this can be a string or an instance of `Laminas\Uri\Http`
 
-Throws `Zend\Http\Header\Exception\InvalidArgumentException` if `$uri` is neither a valid URL nor an
-instance of `Zend\Uri\UriInterface`.
+Throws `Laminas\Http\Header\Exception\InvalidArgumentException` if `$uri` is neither a valid URL nor an
+instance of `Laminas\Uri\UriInterface`.
 
 Returns self
 
@@ -400,19 +400,19 @@ Returns string
 **uri**  
 `uri()`
 
-Return the URI for this header as an instance of `Zend\Uri\Http`
+Return the URI for this header as an instance of `Laminas\Uri\Http`
 
-Returns `Zend\Uri\UriInterface`
+Returns `Laminas\Uri\UriInterface`
 
 ## List of HTTP Header Types
 
 Some header classes expose methods for manipulating their value. The following list contains all of
-the classes available in the `Zend\Http\Header\*` namespace, as well as any specific methods they
-contain. All these classes implement `Zend\Http\Header\HeaderInterface` and its
-methods&lt;zend.http.headers.header-description&gt;.
+the classes available in the `Laminas\Http\Header\*` namespace, as well as any specific methods they
+contain. All these classes implement `Laminas\Http\Header\HeaderInterface` and its
+methods&lt;laminas.http.headers.header-description&gt;.
 
 **Accept**  
-See `Zend\Http\Header\AbstractAccept` methods&lt;zend.http.header.abstractaccept.methods&gt;.
+See `Laminas\Http\Header\AbstractAccept` methods&lt;laminas.http.header.abstractaccept.methods&gt;.
 
 `addMediaType(string $type, int|float $priority = 1)`  
 Add a media type, with the given priority
@@ -427,7 +427,7 @@ Returns bool
 <!-- -->
 
 **AcceptCharset**  
-See `Zend\Http\Header\AbstractAccept` methods&lt;zend.http.header.abstractaccept.methods&gt;.
+See `Laminas\Http\Header\AbstractAccept` methods&lt;laminas.http.header.abstractaccept.methods&gt;.
 
 `addCharset(string $type, int|float $priority = 1)`  
 Add a charset, with the given priority
@@ -442,7 +442,7 @@ Returns bool
 <!-- -->
 
 **AcceptEncoding**  
-See `Zend\Http\Header\AbstractAccept` methods&lt;zend.http.header.abstractaccept.methods&gt;.
+See `Laminas\Http\Header\AbstractAccept` methods&lt;laminas.http.header.abstractaccept.methods&gt;.
 
 `addEncoding(string $type, int|float $priority = 1)`  
 Add an encoding, with the given priority
@@ -457,7 +457,7 @@ Returns bool
 <!-- -->
 
 **AcceptLanguage**  
-See `Zend\Http\Header\AbstractAccept` methods&lt;zend.http.header.abstractaccept.methods&gt;.
+See `Laminas\Http\Header\AbstractAccept` methods&lt;laminas.http.header.abstractaccept.methods&gt;.
 
 `addLanguage(string $type, int|float $priority = 1)`  
 Add a language, with the given priority
@@ -607,7 +607,7 @@ No additional methods
 <!-- -->
 
 **ContentLocation**  
-See `Zend\Http\Header\AbstractLocation` methods&lt;zend.http.header.abstractlocation.methods&gt;.
+See `Laminas\Http\Header\AbstractLocation` methods&lt;laminas.http.header.abstractlocation.methods&gt;.
 
 <!-- -->
 
@@ -704,7 +704,7 @@ static `fromSetCookieArray(array $setCookies)`
 <!-- -->
 
 **Date**  
-See `Zend\Http\Header\AbstractDate` methods&lt;zend.http.header.abstractdate.methods&gt;.
+See `Laminas\Http\Header\AbstractDate` methods&lt;laminas.http.header.abstractdate.methods&gt;.
 
 <!-- -->
 
@@ -719,7 +719,7 @@ No additional methods
 <!-- -->
 
 **Expires**  
-See `Zend\Http\Header\AbstractDate` methods&lt;zend.http.header.abstractdate.methods&gt;.
+See `Laminas\Http\Header\AbstractDate` methods&lt;laminas.http.header.abstractdate.methods&gt;.
 
 <!-- -->
 
@@ -739,7 +739,7 @@ No additional methods
 <!-- -->
 
 **IfModifiedSince**  
-See `Zend\Http\Header\AbstractDate` methods&lt;zend.http.header.abstractdate.methods&gt;.
+See `Laminas\Http\Header\AbstractDate` methods&lt;laminas.http.header.abstractdate.methods&gt;.
 
 <!-- -->
 
@@ -754,7 +754,7 @@ No additional methods
 <!-- -->
 
 **IfUnmodifiedSince**  
-See `Zend\Http\Header\AbstractDate` methods&lt;zend.http.header.abstractdate.methods&gt;.
+See `Laminas\Http\Header\AbstractDate` methods&lt;laminas.http.header.abstractdate.methods&gt;.
 
 <!-- -->
 
@@ -764,12 +764,12 @@ No additional methods
 <!-- -->
 
 **LastModified**  
-See `Zend\Http\Header\AbstractDate` methods&lt;zend.http.header.abstractdate.methods&gt;.
+See `Laminas\Http\Header\AbstractDate` methods&lt;laminas.http.header.abstractdate.methods&gt;.
 
 <!-- -->
 
 **Location**  
-See `Zend\Http\Header\AbstractLocation` methods&lt;zend.http.header.abstractlocation.methods&gt;.
+See `Laminas\Http\Header\AbstractLocation` methods&lt;laminas.http.header.abstractlocation.methods&gt;.
 
 <!-- -->
 
@@ -804,7 +804,7 @@ No additional methods
 <!-- -->
 
 **Referer**  
-See `Zend\Http\Header\AbstractLocation` methods&lt;zend.http.header.abstractlocation.methods&gt;.
+See `Laminas\Http\Header\AbstractLocation` methods&lt;laminas.http.header.abstractlocation.methods&gt;.
 
 <!-- -->
 
@@ -814,7 +814,7 @@ No additional methods
 <!-- -->
 
 **RetryAfter**  
-See `Zend\Http\Header\AbstractDate` methods&lt;zend.http.header.abstractdate.methods&gt;.
+See `Laminas\Http\Header\AbstractDate` methods&lt;laminas.http.header.abstractdate.methods&gt;.
 
 `setDeltaSeconds(int $delta)`  
 Set number of seconds
@@ -965,10 +965,10 @@ No additional methods
 
 ## Examples
 
-**Retrieving headers from a Zend\\Http\\Headers object**
+**Retrieving headers from a Laminas\\Http\\Headers object**
 
 ```php
-// $client is an instance of Zend\Http\Client
+// $client is an instance of Laminas\Http\Client
 $response = $client->send();
 $headers = $response->getHeaders();
 
@@ -986,17 +986,17 @@ There are three possibilities for the return value of the above call to the `get
 
 > -   If no Content-Type header was set in the Request, `get` will return false.
 - If only one Content-Type header was set in the Request, `get` will return an instance of
-`Zend\Http\Header\ContentType`.
+`Laminas\Http\Header\ContentType`.
 - If more than one Content-Type header was set in the Request, `get` will return an ArrayIterator
-containing one `Zend\Http\Header\ContentType` instance per header.
+containing one `Laminas\Http\Header\ContentType` instance per header.
 
-**Adding headers to a Zend\\Http\\Headers object**
+**Adding headers to a Laminas\\Http\\Headers object**
 
 ```php
-$headers = new Zend\Http\Headers();
+$headers = new Laminas\Http\Headers();
 
-// We can directly add any object that implements Zend\Http\Header\HeaderInterface
-$typeHeader = Zend\Http\Header\ContentType::fromString('Content-Type: text/html');
+// We can directly add any object that implements Laminas\Http\Header\HeaderInterface
+$typeHeader = Laminas\Http\Header\ContentType::fromString('Content-Type: text/html');
 $headers->addHeader($typeHeader);
 
 // We can add headers using the raw string representation, either
@@ -1011,8 +1011,8 @@ $headers->addHeaderLine('Content-Type: text/html');
 // the accepted formats outlined below:
 $headers->addHeaders(array(
 
-    // An object implementing Zend\Http\Header\HeaderInterface
-    Zend\Http\Header\ContentType::fromString('Content-Type: text/html'),
+    // An object implementing Laminas\Http\Header\HeaderInterface
+    Laminas\Http\Header\ContentType::fromString('Content-Type: text/html'),
 
     // A raw header string
     'Content-Type: text/html',
@@ -1024,13 +1024,13 @@ $headers->addHeaders(array(
 ));
 ```
 
-**Removing headers from a Zend\\Http\\Headers object**
+**Removing headers from a Laminas\\Http\\Headers object**
 
 We can remove all headers of a specific type using the `removeHeader` method, which accepts a single
-object implementing `Zend\Http\Header\HeaderInterface`
+object implementing `Laminas\Http\Header\HeaderInterface`
 
 ```php
-// $headers is a pre-configured instance of Zend\Http\Headers
+// $headers is a pre-configured instance of Laminas\Http\Headers
 
 // We can also delete individual headers or groups of headers
 $matches = $headers->get('Content-Type');
@@ -1042,7 +1042,7 @@ if ($matches instanceof ArrayIterator) {
         $headers->removeHeader($header);
     }
 // If only a single header was found, remove it directly
-} elseif ($matches instanceof Zend\Http\Header\HeaderInterface) {
+} elseif ($matches instanceof Laminas\Http\Header\HeaderInterface) {
     $headers->removeHeader($header);
 }
 

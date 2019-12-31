@@ -1,19 +1,18 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Http;
+namespace Laminas\Http;
 
 use ArrayIterator;
 use Countable;
 use Iterator;
+use Laminas\Loader\PluginClassLocator;
 use Traversable;
-use Zend\Loader\PluginClassLocator;
 
 /**
  * Basic HTTP headers collection functionality
@@ -109,7 +108,7 @@ class Headers implements Countable, Iterator
     /**
      * Set an alternate implementation for the PluginClassLoader
      *
-     * @param \Zend\Loader\PluginClassLocator $pluginClassLoader
+     * @param \Laminas\Loader\PluginClassLocator $pluginClassLoader
      * @return Headers
      */
     public function setPluginClassLoader(PluginClassLocator $pluginClassLoader)
@@ -263,9 +262,9 @@ class Headers implements Countable, Iterator
             return false;
         }
 
-        $class = ($this->getPluginClassLoader()->load($key)) ?: 'Zend\Http\Header\GenericHeader';
+        $class = ($this->getPluginClassLoader()->load($key)) ?: 'Laminas\Http\Header\GenericHeader';
 
-        if (in_array('Zend\Http\Header\MultipleHeaderInterface', class_implements($class, true))) {
+        if (in_array('Laminas\Http\Header\MultipleHeaderInterface', class_implements($class, true))) {
             $headers = [];
             foreach (array_keys($this->headersKeys, $key) as $index) {
                 if (is_array($this->headers[$index])) {
@@ -443,7 +442,7 @@ class Headers implements Countable, Iterator
 
         $key = $this->headersKeys[$index];
         /* @var $class Header\HeaderInterface */
-        $class = ($this->getPluginClassLoader()->load($key)) ?: 'Zend\Http\Header\GenericHeader';
+        $class = ($this->getPluginClassLoader()->load($key)) ?: 'Laminas\Http\Header\GenericHeader';
 
         $headers = $class::fromString($current['line']);
         if (is_array($headers)) {

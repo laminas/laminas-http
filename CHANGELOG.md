@@ -18,8 +18,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#42](https://github.com/zendframework/zend-http/pull/42) updates dependencies
-  to ensure it can work with PHP 5.5+ and 7.0+, as well as zend-stdlib
+- [zendframework/zend-http#42](https://github.com/zendframework/zend-http/pull/42) updates dependencies
+  to ensure it can work with PHP 5.5+ and 7.0+, as well as laminas-stdlib
   2.5+/3.0+.
 
 ## 2.5.3 - 2015-09-14
@@ -38,8 +38,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#23](https://github.com/zendframework/zend-http/pull/23) fixes a BC break
-  introduced with fixes for [ZF2015-04](http://framework.zend.com/security/advisory/ZF2015-04),
+- [zendframework/zend-http#23](https://github.com/zendframework/zend-http/pull/23) fixes a BC break
+  introduced with fixes for [ZF2015-04](https://getlaminas.org/security/advisory/ZF2015-04),
   pertaining specifically to the `SetCookie` header. The fix backs out a
   check for message splitting syntax, as that particular class already encodes
   the value in a manner that prevents the attack. It also adds tests to ensure
@@ -61,13 +61,13 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#7](https://github.com/zendframework/zend-http/pull/7) fixes a call in the
+- [zendframework/zend-http#7](https://github.com/zendframework/zend-http/pull/7) fixes a call in the
   proxy adapter to `Response::extractCode()`, which does not exist, to
   `Response::fromString()->getStatusCode()`, which does.
-- [#8](https://github.com/zendframework/zend-http/pull/8) ensures that the Curl
+- [zendframework/zend-http#8](https://github.com/zendframework/zend-http/pull/8) ensures that the Curl
   client adapter enables the `CURLINFO_HEADER_OUT`, which is required to ensure
   we can fetch the raw request after it is sent.
-- [#14](https://github.com/zendframework/zend-http/pull/14) fixes
-  `Zend\Http\PhpEnvironment\Request` to ensure that empty `SCRIPT_FILENAME` and
+- [zendframework/zend-http#14](https://github.com/zendframework/zend-http/pull/14) fixes
+  `Laminas\Http\PhpEnvironment\Request` to ensure that empty `SCRIPT_FILENAME` and
   `SCRIPT_NAME` values which result in an empty `$baseUrl` will not raise an
   `E_WARNING` when used to do a `strpos()` check during base URI detection.
