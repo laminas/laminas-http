@@ -1,34 +1,31 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Http
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Http\Header;
+namespace Laminas\Http\Header;
 
-use Zend\Uri\Exception as UriException;
-use Zend\Uri\UriInterface;
-use Zend\Uri\UriFactory;
-use Zend\Uri\Uri;
-
+use Laminas\Uri\Exception as UriException;
+use Laminas\Uri\Uri;
+use Laminas\Uri\UriFactory;
+use Laminas\Uri\UriInterface;
 
 /**
  * Abstract Location Header
  * Supports headers that have URI as value
- * @see Zend\Http\Header\Location
- * @see Zend\Http\Header\ContentLocation
- * @see Zend\Http\Header\Referer
+ * @see Laminas\Http\Header\Location
+ * @see Laminas\Http\Header\ContentLocation
+ * @see Laminas\Http\Header\Referer
  *
  * Note for 'Location' header:
  * While RFC 1945 requires an absolute URI, most of the browsers also support relative URI
  * This class allows relative URIs, and let user retrieve URI instance if strict validation needed
  *
- * @category   Zend
- * @package    Zend_Http
+ * @category   Laminas
+ * @package    Laminas_Http
  */
 abstract class AbstractLocation implements HeaderInterface
 {
@@ -50,7 +47,7 @@ abstract class AbstractLocation implements HeaderInterface
     {
         $locationHeader = new static();
 
-        // ZF-5520 - IIS bug, no space after colon
+        // Laminas-5520 - IIS bug, no space after colon
         list($name, $uri) = explode(':', $headerLine, 2);
 
         // check to ensure proper header type for this factory
@@ -66,7 +63,7 @@ abstract class AbstractLocation implements HeaderInterface
     }
 
     /**
-     * Set the URI/URL for this header, this can be a string or an instance of Zend\Uri\Http
+     * Set the URI/URL for this header, this can be a string or an instance of Laminas\Uri\Http
      *
      * @param string|UriInterface $uri
      * @return AbstractLocation
@@ -85,7 +82,7 @@ abstract class AbstractLocation implements HeaderInterface
                 );
             }
         } elseif (!($uri instanceof UriInterface)) {
-            throw new Exception\InvalidArgumentException('URI must be an instance of Zend\Uri\Http or a string');
+            throw new Exception\InvalidArgumentException('URI must be an instance of Laminas\Uri\Http or a string');
         }
         $this->uri = $uri;
 
@@ -106,7 +103,7 @@ abstract class AbstractLocation implements HeaderInterface
     }
 
     /**
-     * Return the URI for this header as an instance of Zend\Uri\Http
+     * Return the URI for this header as an instance of Laminas\Uri\Http
      *
      * @return UriInterface
      */

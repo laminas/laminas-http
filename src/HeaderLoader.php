@@ -1,22 +1,20 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Http
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Http;
+namespace Laminas\Http;
 
-use Zend\Loader\PluginClassLoader;
+use Laminas\Loader\PluginClassLoader;
 
 /**
  * Plugin Class Loader implementation for HTTP headers
  *
- * @category   Zend
- * @package    Zend_Http
+ * @category   Laminas
+ * @package    Laminas_Http
  */
 class HeaderLoader extends PluginClassLoader
 {
@@ -24,58 +22,58 @@ class HeaderLoader extends PluginClassLoader
      * @var array Pre-aliased Header plugins
      */
     protected $plugins = array(
-        'accept'             => 'Zend\Http\Header\Accept',
-        'acceptcharset'      => 'Zend\Http\Header\AcceptCharset',
-        'acceptencoding'     => 'Zend\Http\Header\AcceptEncoding',
-        'acceptlanguage'     => 'Zend\Http\Header\AcceptLanguage',
-        'acceptranges'       => 'Zend\Http\Header\AcceptRanges',
-        'age'                => 'Zend\Http\Header\Age',
-        'allow'              => 'Zend\Http\Header\Allow',
-        'authenticationinfo' => 'Zend\Http\Header\AuthenticationInfo',
-        'authorization'      => 'Zend\Http\Header\Authorization',
-        'cachecontrol'       => 'Zend\Http\Header\CacheControl',
-        'connection'         => 'Zend\Http\Header\Connection',
-        'contentdisposition' => 'Zend\Http\Header\ContentDisposition',
-        'contentencoding'    => 'Zend\Http\Header\ContentEncoding',
-        'contentlanguage'    => 'Zend\Http\Header\ContentLanguage',
-        'contentlength'      => 'Zend\Http\Header\ContentLength',
-        'contentlocation'    => 'Zend\Http\Header\ContentLocation',
-        'contentmd5'         => 'Zend\Http\Header\ContentMD5',
-        'contentrange'       => 'Zend\Http\Header\ContentRange',
-        'contenttype'        => 'Zend\Http\Header\ContentType',
-        'cookie'             => 'Zend\Http\Header\Cookie',
-        'date'               => 'Zend\Http\Header\Date',
-        'etag'               => 'Zend\Http\Header\Etag',
-        'expect'             => 'Zend\Http\Header\Expect',
-        'expires'            => 'Zend\Http\Header\Expires',
-        'from'               => 'Zend\Http\Header\From',
-        'host'               => 'Zend\Http\Header\Host',
-        'ifmatch'            => 'Zend\Http\Header\IfMatch',
-        'ifmodifiedsince'    => 'Zend\Http\Header\IfModifiedSince',
-        'ifnonematch'        => 'Zend\Http\Header\IfNoneMatch',
-        'ifrange'            => 'Zend\Http\Header\IfRange',
-        'ifunmodifiedsince'  => 'Zend\Http\Header\IfUnmodifiedSince',
-        'keepalive'          => 'Zend\Http\Header\KeepAlive',
-        'lastmodified'       => 'Zend\Http\Header\LastModified',
-        'location'           => 'Zend\Http\Header\Location',
-        'maxforwards'        => 'Zend\Http\Header\MaxForwards',
-        'pragma'             => 'Zend\Http\Header\Pragma',
-        'proxyauthenticate'  => 'Zend\Http\Header\ProxyAuthenticate',
-        'proxyauthorization' => 'Zend\Http\Header\ProxyAuthorization',
-        'range'              => 'Zend\Http\Header\Range',
-        'referer'            => 'Zend\Http\Header\Referer',
-        'refresh'            => 'Zend\Http\Header\Refresh',
-        'retryafter'         => 'Zend\Http\Header\RetryAfter',
-        'server'             => 'Zend\Http\Header\Server',
-        'setcookie'          => 'Zend\Http\Header\SetCookie',
-        'te'                 => 'Zend\Http\Header\TE',
-        'trailer'            => 'Zend\Http\Header\Trailer',
-        'transferencoding'   => 'Zend\Http\Header\TransferEncoding',
-        'upgrade'            => 'Zend\Http\Header\Upgrade',
-        'useragent'          => 'Zend\Http\Header\UserAgent',
-        'vary'               => 'Zend\Http\Header\Vary',
-        'via'                => 'Zend\Http\Header\Via',
-        'warning'            => 'Zend\Http\Header\Warning',
-        'wwwauthenticate'    => 'Zend\Http\Header\WWWAuthenticate'
+        'accept'             => 'Laminas\Http\Header\Accept',
+        'acceptcharset'      => 'Laminas\Http\Header\AcceptCharset',
+        'acceptencoding'     => 'Laminas\Http\Header\AcceptEncoding',
+        'acceptlanguage'     => 'Laminas\Http\Header\AcceptLanguage',
+        'acceptranges'       => 'Laminas\Http\Header\AcceptRanges',
+        'age'                => 'Laminas\Http\Header\Age',
+        'allow'              => 'Laminas\Http\Header\Allow',
+        'authenticationinfo' => 'Laminas\Http\Header\AuthenticationInfo',
+        'authorization'      => 'Laminas\Http\Header\Authorization',
+        'cachecontrol'       => 'Laminas\Http\Header\CacheControl',
+        'connection'         => 'Laminas\Http\Header\Connection',
+        'contentdisposition' => 'Laminas\Http\Header\ContentDisposition',
+        'contentencoding'    => 'Laminas\Http\Header\ContentEncoding',
+        'contentlanguage'    => 'Laminas\Http\Header\ContentLanguage',
+        'contentlength'      => 'Laminas\Http\Header\ContentLength',
+        'contentlocation'    => 'Laminas\Http\Header\ContentLocation',
+        'contentmd5'         => 'Laminas\Http\Header\ContentMD5',
+        'contentrange'       => 'Laminas\Http\Header\ContentRange',
+        'contenttype'        => 'Laminas\Http\Header\ContentType',
+        'cookie'             => 'Laminas\Http\Header\Cookie',
+        'date'               => 'Laminas\Http\Header\Date',
+        'etag'               => 'Laminas\Http\Header\Etag',
+        'expect'             => 'Laminas\Http\Header\Expect',
+        'expires'            => 'Laminas\Http\Header\Expires',
+        'from'               => 'Laminas\Http\Header\From',
+        'host'               => 'Laminas\Http\Header\Host',
+        'ifmatch'            => 'Laminas\Http\Header\IfMatch',
+        'ifmodifiedsince'    => 'Laminas\Http\Header\IfModifiedSince',
+        'ifnonematch'        => 'Laminas\Http\Header\IfNoneMatch',
+        'ifrange'            => 'Laminas\Http\Header\IfRange',
+        'ifunmodifiedsince'  => 'Laminas\Http\Header\IfUnmodifiedSince',
+        'keepalive'          => 'Laminas\Http\Header\KeepAlive',
+        'lastmodified'       => 'Laminas\Http\Header\LastModified',
+        'location'           => 'Laminas\Http\Header\Location',
+        'maxforwards'        => 'Laminas\Http\Header\MaxForwards',
+        'pragma'             => 'Laminas\Http\Header\Pragma',
+        'proxyauthenticate'  => 'Laminas\Http\Header\ProxyAuthenticate',
+        'proxyauthorization' => 'Laminas\Http\Header\ProxyAuthorization',
+        'range'              => 'Laminas\Http\Header\Range',
+        'referer'            => 'Laminas\Http\Header\Referer',
+        'refresh'            => 'Laminas\Http\Header\Refresh',
+        'retryafter'         => 'Laminas\Http\Header\RetryAfter',
+        'server'             => 'Laminas\Http\Header\Server',
+        'setcookie'          => 'Laminas\Http\Header\SetCookie',
+        'te'                 => 'Laminas\Http\Header\TE',
+        'trailer'            => 'Laminas\Http\Header\Trailer',
+        'transferencoding'   => 'Laminas\Http\Header\TransferEncoding',
+        'upgrade'            => 'Laminas\Http\Header\Upgrade',
+        'useragent'          => 'Laminas\Http\Header\UserAgent',
+        'vary'               => 'Laminas\Http\Header\Vary',
+        'via'                => 'Laminas\Http\Header\Via',
+        'warning'            => 'Laminas\Http\Header\Warning',
+        'wwwauthenticate'    => 'Laminas\Http\Header\WWWAuthenticate'
     );
 }
