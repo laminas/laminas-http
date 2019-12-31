@@ -1,27 +1,25 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Http
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Http;
+namespace Laminas\Http;
 
 use ArrayIterator;
+use Laminas\Stdlib;
+use Laminas\Stdlib\ArrayUtils;
+use Laminas\Stdlib\ErrorHandler;
+use Laminas\Uri\Http;
 use Traversable;
-use Zend\Stdlib;
-use Zend\Stdlib\ArrayUtils;
-use Zend\Stdlib\ErrorHandler;
-use Zend\Uri\Http;
 
 /**
  * Http client
  *
- * @category   Zend
- * @package    Zend\Http
+ * @category   Laminas
+ * @package    Laminas\Http
  */
 class Client implements Stdlib\DispatchableInterface
 {
@@ -105,9 +103,9 @@ class Client implements Stdlib\DispatchableInterface
     protected $config = array(
         'maxredirects'    => 5,
         'strictredirects' => false,
-        'useragent'       => 'Zend\Http\Client',
+        'useragent'       => 'Laminas\Http\Client',
         'timeout'         => 10,
-        'adapter'         => 'Zend\Http\Client\Adapter\Socket',
+        'adapter'         => 'Laminas\Http\Client\Adapter\Socket',
         'httpversion'     => Request::VERSION_11,
         'storeresponse'   => true,
         'keepalive'       => false,
@@ -319,7 +317,7 @@ class Client implements Stdlib\DispatchableInterface
     /**
      * Get uri (from the request)
      *
-     * @return Zend\Uri\Http
+     * @return Laminas\Uri\Http
      */
     public function getUri()
     {
@@ -565,7 +563,7 @@ class Client implements Stdlib\DispatchableInterface
      * Set streaming for received data
      *
      * @param string|boolean $streamfile Stream file, true for temp file, false/null for no streaming
-     * @return \Zend\Http\Client
+     * @return \Laminas\Http\Client
      */
     public function setStream($streamfile = true)
     {
@@ -595,7 +593,7 @@ class Client implements Stdlib\DispatchableInterface
             // If name is not given, create temp name
             $this->streamName = tempnam(
                 isset($this->config['streamtmpdir']) ? $this->config['streamtmpdir'] : sys_get_temp_dir(),
-                'Zend\Http\Client'
+                'Laminas\Http\Client'
             );
         }
 
@@ -1085,7 +1083,7 @@ class Client implements Stdlib\DispatchableInterface
      * Prepare the request body (for PATCH, POST and PUT requests)
      *
      * @return string
-     * @throws \Zend\Http\Client\Exception\RuntimeException
+     * @throws \Laminas\Http\Client\Exception\RuntimeException
      */
     protected function prepareBody()
     {

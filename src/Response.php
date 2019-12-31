@@ -1,22 +1,20 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Http
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Http;
+namespace Laminas\Http;
 
-use Zend\Stdlib\ResponseInterface;
+use Laminas\Stdlib\ResponseInterface;
 
 /**
  * HTTP Response
  *
- * @category  Zend
- * @package   Zend_Http
+ * @category  Laminas
+ * @package   Laminas_Http
  * @link      http://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html#sec6
  */
 class Response extends AbstractMessage implements ResponseInterface
@@ -505,7 +503,7 @@ class Response extends AbstractMessage implements ResponseInterface
          *
          * This method was adapted from PEAR HTTP_Request2 by (c) Alexey Borzov
          *
-         * @link http://framework.zend.com/issues/browse/ZF-6040
+         * @link https://getlaminas.org/issues/browse/Laminas-6040
          */
         $zlibHeader = unpack('n', substr($body, 0, 2));
 

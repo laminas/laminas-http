@@ -1,46 +1,44 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Http
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Http\Client;
+namespace Laminas\Http\Client;
 
 use ArrayIterator;
-use Zend\Http\Header\Cookie;
-use Zend\Http\Response;
-use Zend\Stdlib\ParametersInterface;
-use Zend\Uri;
+use Laminas\Http\Header\Cookie;
+use Laminas\Http\Response;
+use Laminas\Stdlib\ParametersInterface;
+use Laminas\Uri;
 
 /**
  * A Cookies object is designed to contain and maintain HTTP cookies, and should
- * be used along with Zend_Http_Client in order to manage cookies across HTTP requests and
+ * be used along with Laminas_Http_Client in order to manage cookies across HTTP requests and
  * responses.
  *
- * The class contains an array of Zend\Http\Header\Cookie objects. Cookies can be added
+ * The class contains an array of Laminas\Http\Header\Cookie objects. Cookies can be added
  * automatically from a request or manually. Then, the Cookies class can find and return the
  * cookies needed for a specific HTTP request.
  *
  * A special parameter can be passed to all methods of this class that return cookies: Cookies
- * can be returned either in their native form (as Zend\Http\Header\Cookie objects) or as strings -
+ * can be returned either in their native form (as Laminas\Http\Header\Cookie objects) or as strings -
  * the later is suitable for sending as the value of the "Cookie" header in an HTTP request.
  * You can also choose, when returning more than one cookie, whether to get an array of strings
- * (by passing Zend\Http\Client\Cookies::COOKIE_STRING_ARRAY) or one unified string for all cookies
- * (by passing Zend\Http\Client\Cookies::COOKIE_STRING_CONCAT).
+ * (by passing Laminas\Http\Client\Cookies::COOKIE_STRING_ARRAY) or one unified string for all cookies
+ * (by passing Laminas\Http\Client\Cookies::COOKIE_STRING_CONCAT).
  *
  * @link       http://wp.netscape.com/newsref/std/cookie_spec.html for some specs.
  *
- * @category   Zend
- * @package    Zend\Http\Client
+ * @category   Laminas
+ * @package    Laminas\Http\Client
  */
 class Cookies
 {
     /**
-     * Return cookie(s) as a Zend\Http\Header\Cookie object
+     * Return cookie(s) as a Laminas\Http\Header\Cookie object
      *
      */
     const COOKIE_OBJECT = 0;
@@ -77,7 +75,7 @@ class Cookies
     protected $cookies = array();
 
     /**
-     * The Zend\Http\Header\Cookie array
+     * The Laminas\Http\Header\Cookie array
      *
      * @var array
      */
@@ -91,7 +89,7 @@ class Cookies
     { }
 
     /**
-     * Add a cookie to the class. Cookie should be passed either as a Zend\Http\Header\Cookie object
+     * Add a cookie to the class. Cookie should be passed either as a Laminas\Http\Header\Cookie object
      * or as a string - in which case an object is created from the string.
      *
      * @param Cookie|string $cookie
@@ -141,7 +139,7 @@ class Cookies
     /**
      * Get all cookies in the cookie jar as an array
      *
-     * @param int $ret_as Whether to return cookies as objects of \Zend\Http\Header\Cookie or as strings
+     * @param int $ret_as Whether to return cookies as objects of \Laminas\Http\Header\Cookie or as strings
      * @return array|string
      */
     public function getAllCookies($ret_as = self::COOKIE_OBJECT)
@@ -157,7 +155,7 @@ class Cookies
      *
      * @param string|Uri\Uri $uri URI to check against (secure, domain, path)
      * @param boolean $matchSessionCookies Whether to send session cookies
-     * @param int $ret_as Whether to return cookies as objects of \Zend\Http\Header\Cookie or as strings
+     * @param int $ret_as Whether to return cookies as objects of \Laminas\Http\Header\Cookie or as strings
      * @param int $now Override the current time when checking for expiry time
      * @return array|string
      */
@@ -197,7 +195,7 @@ class Cookies
      *
      * @param Uri\Uri|string $uri The uri (domain and path) to match
      * @param string $cookie_name The cookie's name
-     * @param int $ret_as Whether to return cookies as objects of \Zend\Http\Header\Cookie or as strings
+     * @param int $ret_as Whether to return cookies as objects of \Laminas\Http\Header\Cookie or as strings
      * @return Cookie|string
      */
     public function getCookie($uri, $cookie_name, $ret_as = self::COOKIE_OBJECT)
@@ -244,7 +242,7 @@ class Cookies
      * Helper function to recursively flatten an array. Should be used when exporting the
      * cookies array (or parts of it)
      *
-     * @param \Zend\Http\Header\Cookie|array $ptr
+     * @param \Laminas\Http\Header\Cookie|array $ptr
      * @param int $ret_as What value to return
      * @return array|string
      */
