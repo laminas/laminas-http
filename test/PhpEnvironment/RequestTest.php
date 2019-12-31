@@ -1,18 +1,17 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\PhpEnvironment;
+namespace LaminasTest\Http\PhpEnvironment;
 
+use Laminas\Http\Header\GenericHeader;
+use Laminas\Http\Headers;
+use Laminas\Http\PhpEnvironment\Request;
 use PHPUnit_Framework_TestCase as TestCase;
-use Zend\Http\Headers;
-use Zend\Http\Header\GenericHeader;
-use Zend\Http\PhpEnvironment\Request;
 
 class RequestTest extends TestCase
 {
@@ -139,7 +138,7 @@ class RequestTest extends TestCase
                 [
                     'REQUEST_URI'     => '/article/archive?foo=index.php',
                     'QUERY_STRING'    => 'foo=index.php',
-                    'SCRIPT_FILENAME' => '/var/www/zftests/index.php',
+                    'SCRIPT_FILENAME' => '/var/www/laminastests/index.php',
                 ],
                 '',
                 ''
@@ -173,17 +172,17 @@ class RequestTest extends TestCase
                 '/~username/public',
                 '/~username/public'
             ],
-            // ZF2-206
+            // Laminas-206
             [
                 [
-                    'SCRIPT_NAME'     => '/zf2tut/index.php',
-                    'REQUEST_URI'     => '/zf2tut/',
-                    'PHP_SELF'        => '/zf2tut/index.php',
-                    'SCRIPT_FILENAME' => 'c:/ZF2Tutorial/public/index.php',
+                    'SCRIPT_NAME'     => '/laminastut/index.php',
+                    'REQUEST_URI'     => '/laminastut/',
+                    'PHP_SELF'        => '/laminastut/index.php',
+                    'SCRIPT_FILENAME' => 'c:/LaminasTutorial/public/index.php',
                     'ORIG_SCRIPT_NAME'=> null
                 ],
-                '/zf2tut',
-                '/zf2tut'
+                '/laminastut',
+                '/laminastut'
             ],
             [
                 [
@@ -698,7 +697,7 @@ class RequestTest extends TestCase
     public function testParameterRetrievalDefaultValue()
     {
         $request = new Request();
-        $p = new \Zend\Stdlib\Parameters([
+        $p = new \Laminas\Stdlib\Parameters([
             'foo' => 'bar'
         ]);
         $request->setQuery($p);
@@ -720,7 +719,7 @@ class RequestTest extends TestCase
     public function testRetrievingASingleValueForParameters()
     {
         $request = new Request();
-        $p = new \Zend\Stdlib\Parameters([
+        $p = new \Laminas\Stdlib\Parameters([
             'foo' => 'bar'
         ]);
         $request->setQuery($p);
@@ -746,7 +745,7 @@ class RequestTest extends TestCase
     }
 
     /**
-     * @group ZF2-480
+     * @group Laminas-480
      */
     public function testBaseurlFallsBackToRootPathIfScriptFilenameIsNotSet()
     {
@@ -766,7 +765,7 @@ class RequestTest extends TestCase
         $_SERVER['REQUEST_METHOD'] = 'xcustomx';
 
         $this->setExpectedException(
-            'Zend\Http\Exception\InvalidArgumentException',
+            'Laminas\Http\Exception\InvalidArgumentException',
             'Invalid HTTP method passed'
         );
 
