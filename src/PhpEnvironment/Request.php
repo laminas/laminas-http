@@ -1,20 +1,19 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Http\PhpEnvironment;
+namespace Laminas\Http\PhpEnvironment;
 
-use Zend\Http\Header\Cookie;
-use Zend\Http\Request as HttpRequest;
-use Zend\Stdlib\Parameters;
-use Zend\Stdlib\ParametersInterface;
-use Zend\Uri\Http as HttpUri;
-use Zend\Validator\Hostname as HostnameValidator;
+use Laminas\Http\Header\Cookie;
+use Laminas\Http\Request as HttpRequest;
+use Laminas\Stdlib\Parameters;
+use Laminas\Stdlib\ParametersInterface;
+use Laminas\Uri\Http as HttpUri;
+use Laminas\Validator\Hostname as HostnameValidator;
 
 /**
  * HTTP Request for current PHP environment
@@ -331,7 +330,7 @@ class Request extends HttpRequest
      * @param string|null           $name            Parameter name to retrieve, or null to get the whole container.
      * @param mixed|null            $default         Default value to use when the parameter is missing.
      * @see http://www.faqs.org/rfcs/rfc3875.html
-     * @return \Zend\Stdlib\ParametersInterface|mixed
+     * @return \Laminas\Stdlib\ParametersInterface|mixed
      */
     public function getServer($name = null, $default = null)
     {
@@ -364,7 +363,7 @@ class Request extends HttpRequest
      *
      * @param string|null           $name            Parameter name to retrieve, or null to get the whole container.
      * @param mixed|null            $default         Default value to use when the parameter is missing.
-     * @return \Zend\Stdlib\ParametersInterface|mixed
+     * @return \Laminas\Stdlib\ParametersInterface|mixed
      */
     public function getEnv($name = null, $default = null)
     {
