@@ -1,23 +1,22 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
-use Zend\Http\Header\Etag;
+use Laminas\Http\Header\Etag;
 
 class EtagTest extends \PHPUnit_Framework_TestCase
 {
     public function testEtagFromStringCreatesValidEtagHeader()
     {
         $etagHeader = Etag::fromString('Etag: xxx');
-        $this->assertInstanceOf('Zend\Http\Header\HeaderInterface', $etagHeader);
-        $this->assertInstanceOf('Zend\Http\Header\Etag', $etagHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\HeaderInterface', $etagHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\Etag', $etagHeader);
     }
 
     public function testEtagGetFieldNameReturnsHeaderName()
@@ -52,7 +51,7 @@ class EtagTest extends \PHPUnit_Framework_TestCase
      */
     public function testPreventsCRLFAttackViaFromString()
     {
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException');
         $header = Etag::fromString("Etag: xxx\r\n\r\nevilContent");
     }
 
@@ -62,7 +61,7 @@ class EtagTest extends \PHPUnit_Framework_TestCase
      */
     public function testPreventsCRLFAttackViaConstructor()
     {
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException');
         $header = new Etag("xxx\r\n\r\nevilContent");
     }
 }
