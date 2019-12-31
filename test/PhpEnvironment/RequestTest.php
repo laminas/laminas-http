@@ -1,18 +1,19 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-http for the canonical source repository
- * @copyright Copyright (c) 2005-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-http/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\PhpEnvironment;
+namespace LaminasTest\Http\PhpEnvironment;
 
+use Laminas\Http\Exception\InvalidArgumentException;
+use Laminas\Http\Header\GenericHeader;
+use Laminas\Http\Headers;
+use Laminas\Http\PhpEnvironment\Request;
+use Laminas\Stdlib\Parameters;
 use PHPUnit\Framework\TestCase;
-use Zend\Http\Exception\InvalidArgumentException;
-use Zend\Http\Header\GenericHeader;
-use Zend\Http\Headers;
-use Zend\Http\PhpEnvironment\Request;
-use Zend\Stdlib\Parameters;
 
 class RequestTest extends TestCase
 {
@@ -130,7 +131,7 @@ class RequestTest extends TestCase
                 [
                     'REQUEST_URI'     => '/article/archive?foo=index.php',
                     'QUERY_STRING'    => 'foo=index.php',
-                    'SCRIPT_FILENAME' => '/var/www/zftests/index.php',
+                    'SCRIPT_FILENAME' => '/var/www/laminastests/index.php',
                 ],
                 '',
                 '',
@@ -164,17 +165,17 @@ class RequestTest extends TestCase
                 '/~username/public',
                 '/~username/public',
             ],
-            // ZF2-206
+            // Laminas-206
             [
                 [
-                    'SCRIPT_NAME'     => '/zf2tut/index.php',
-                    'REQUEST_URI'     => '/zf2tut/',
-                    'PHP_SELF'        => '/zf2tut/index.php',
-                    'SCRIPT_FILENAME' => 'c:/ZF2Tutorial/public/index.php',
+                    'SCRIPT_NAME'     => '/laminastut/index.php',
+                    'REQUEST_URI'     => '/laminastut/',
+                    'PHP_SELF'        => '/laminastut/index.php',
+                    'SCRIPT_FILENAME' => 'c:/LaminasTutorial/public/index.php',
                     'ORIG_SCRIPT_NAME' => null,
                 ],
-                '/zf2tut',
-                '/zf2tut',
+                '/laminastut',
+                '/laminastut',
             ],
             [
                 [
@@ -737,7 +738,7 @@ class RequestTest extends TestCase
     }
 
     /**
-     * @group ZF2-480
+     * @group Laminas-480
      */
     public function testBaseurlFallsBackToRootPathIfScriptFilenameIsNotSet()
     {

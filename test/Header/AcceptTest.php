@@ -1,18 +1,19 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-http for the canonical source repository
- * @copyright Copyright (c) 2005-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-http/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
+use Laminas\Http\Header\Accept;
+use Laminas\Http\Header\Accept\FieldValuePart\AbstractFieldValuePart;
+use Laminas\Http\Header\Accept\FieldValuePart\AcceptFieldValuePart;
+use Laminas\Http\Header\Exception\InvalidArgumentException;
+use Laminas\Http\Header\HeaderInterface;
 use PHPUnit\Framework\TestCase;
-use Zend\Http\Header\Accept;
-use Zend\Http\Header\Accept\FieldValuePart\AbstractFieldValuePart;
-use Zend\Http\Header\Accept\FieldValuePart\AcceptFieldValuePart;
-use Zend\Http\Header\Exception\InvalidArgumentException;
-use Zend\Http\Header\HeaderInterface;
 
 class AcceptTest extends TestCase
 {
@@ -279,7 +280,7 @@ class AcceptTest extends TestCase
 
     /**
      * @group 3739
-     * @covers Zend\Http\Header\AbstractAccept::matchAcceptParams()
+     * @covers Laminas\Http\Header\AbstractAccept::matchAcceptParams()
      */
     public function testParamRangesWithDecimals()
     {
@@ -289,8 +290,8 @@ class AcceptTest extends TestCase
 
     /**
      * @group 3740
-     * @covers Zend\Http\Header\AbstractAccept::matchAcceptParams()
-     * @covers Zend\Http\Header\AbstractAccept::getParametersFromFieldValuePart()
+     * @covers Laminas\Http\Header\AbstractAccept::matchAcceptParams()
+     * @covers Laminas\Http\Header\AbstractAccept::getParametersFromFieldValuePart()
      *
      * @dataProvider provideParamRanges
      *
