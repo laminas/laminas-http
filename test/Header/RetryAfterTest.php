@@ -1,23 +1,22 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
-use Zend\Http\Header\RetryAfter;
+use Laminas\Http\Header\RetryAfter;
 
 class RetryAfterTest extends \PHPUnit_Framework_TestCase
 {
     public function testRetryAfterFromStringCreatesValidRetryAfterHeader()
     {
         $retryAfterHeader = RetryAfter::fromString('Retry-After: 10');
-        $this->assertInstanceOf('Zend\Http\Header\HeaderInterface', $retryAfterHeader);
-        $this->assertInstanceOf('Zend\Http\Header\RetryAfter', $retryAfterHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\HeaderInterface', $retryAfterHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\RetryAfter', $retryAfterHeader);
         $this->assertEquals('10', $retryAfterHeader->getDeltaSeconds());
     }
 
