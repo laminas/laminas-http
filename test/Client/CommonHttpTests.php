@@ -1,24 +1,23 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Client;
+namespace LaminasTest\Http\Client;
 
-use Zend\Http\Client as HTTPClient;
-use Zend\Http;
-use Zend\Http\Client\Adapter;
-use Zend\Http\Client\Adapter\Exception as AdapterException;
-use Zend\Http\Request;
-use Zend\Http\Response;
-use Zend\Stdlib\Parameters;
+use Laminas\Http;
+use Laminas\Http\Client\Adapter;
+use Laminas\Http\Client\Adapter\Exception as AdapterException;
+use Laminas\Http\Client as HTTPClient;
+use Laminas\Http\Request;
+use Laminas\Http\Response;
+use Laminas\Stdlib\Parameters;
 
 /**
- * This Testsuite includes all Zend_Http_Client that require a working web
+ * This Testsuite includes all Laminas_Http_Client that require a working web
  * server to perform. It was designed to be extendable, so that several
  * test suites could be run against several servers, with different client
  * adapters and configurations.
@@ -30,8 +29,8 @@ use Zend\Stdlib\Parameters;
  * You can also set the proper constant in your test configuration file to
  * point to the right place.
  *
- * @group      Zend_Http
- * @group      Zend_Http_Client
+ * @group      Laminas_Http
+ * @group      Laminas_Http_Client
  */
 abstract class CommonHttpTests extends \PHPUnit_Framework_TestCase
 {
@@ -46,7 +45,7 @@ abstract class CommonHttpTests extends \PHPUnit_Framework_TestCase
     /**
      * Common HTTP client
      *
-     * @var \Zend\Http\Client
+     * @var \Laminas\Http\Client
      */
     protected $client = null;
 
@@ -54,7 +53,7 @@ abstract class CommonHttpTests extends \PHPUnit_Framework_TestCase
     /**
      * Common HTTP client adapter
      *
-     * @var \Zend\Http\Client\Adapter\AdapterInterface
+     * @var \Laminas\Http\Client\Adapter\AdapterInterface
      */
     protected $_adapter = null;
     // @codingStandardsIgnoreEnd
@@ -65,7 +64,7 @@ abstract class CommonHttpTests extends \PHPUnit_Framework_TestCase
      * @var array
      */
     protected $config = [
-        'adapter'     => 'Zend\Http\Client\Adapter\Socket'
+        'adapter'     => 'Laminas\Http\Client\Adapter\Socket'
     ];
 
     /**
@@ -74,9 +73,9 @@ abstract class CommonHttpTests extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        if (getenv('TESTS_ZEND_HTTP_CLIENT_BASEURI')
-            && (filter_var(getenv('TESTS_ZEND_HTTP_CLIENT_BASEURI'), FILTER_VALIDATE_BOOLEAN) != false)) {
-            $this->baseuri = getenv('TESTS_ZEND_HTTP_CLIENT_BASEURI');
+        if (getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI')
+            && (filter_var(getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI'), FILTER_VALIDATE_BOOLEAN) != false)) {
+            $this->baseuri = getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI');
             if (substr($this->baseuri, -1) != '/') {
                 $this->baseuri .= '/';
             }
@@ -93,7 +92,7 @@ abstract class CommonHttpTests extends \PHPUnit_Framework_TestCase
             $this->client->setAdapter($this->_adapter);
         } else {
             // Skip tests
-            $this->markTestSkipped("Zend_Http_Client dynamic tests are not enabled in phpunit.xml");
+            $this->markTestSkipped("Laminas_Http_Client dynamic tests are not enabled in phpunit.xml");
         }
     }
 
@@ -493,8 +492,8 @@ abstract class CommonHttpTests extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @group ZF-4136
-     * @link  http://framework.zend.com/issues/browse/ZF2-122
+     * @group Laminas-4136
+     * @link  https://getlaminas.org/issues/browse/Laminas-122
      */
     public function testRedirectPersistsCookies()
     {
@@ -517,13 +516,13 @@ abstract class CommonHttpTests extends \PHPUnit_Framework_TestCase
             // Check that we have received and persisted expected cookies
             $cookies = $this->client->getCookies();
         $this->assertInternalType('array', $cookies, 'Client is not sending cookies on redirect');
-        $this->assertArrayHasKey('zf2testSessionCookie', $cookies, 'Client is not sending cookies on redirect');
-        $this->assertArrayHasKey('zf2testLongLivedCookie', $cookies, 'Client is not sending cookies on redirect');
-        $this->assertEquals('positive', $cookies['zf2testSessionCookie']->getValue());
-        $this->assertEquals('positive', $cookies['zf2testLongLivedCookie']->getValue());
+        $this->assertArrayHasKey('laminastestSessionCookie', $cookies, 'Client is not sending cookies on redirect');
+        $this->assertArrayHasKey('laminastestLongLivedCookie', $cookies, 'Client is not sending cookies on redirect');
+        $this->assertEquals('positive', $cookies['laminastestSessionCookie']->getValue());
+        $this->assertEquals('positive', $cookies['laminastestLongLivedCookie']->getValue());
 
             // Check that expired cookies are not passed on
-            $this->assertArrayNotHasKey('zf2testExpiredCookie', $cookies, 'Expired cookies are not removed.');
+            $this->assertArrayNotHasKey('laminastestExpiredCookie', $cookies, 'Expired cookies are not removed.');
     }
 
     /**
@@ -889,9 +888,9 @@ abstract class CommonHttpTests extends \PHPUnit_Framework_TestCase
      * Test that one can upload multiple files with the same form name, as an
      * array
      *
-     * @link http://framework.zend.com/issues/browse/ZF-5744
+     * @link https://getlaminas.org/issues/browse/Laminas-5744
      */
-    public function testMutipleFilesWithSameFormNameZF5744()
+    public function testMutipleFilesWithSameFormNameLaminas5744()
     {
         if (! ini_get('file_uploads')) {
             $this->markTestSkipped('File uploads disabled.');
@@ -923,14 +922,14 @@ abstract class CommonHttpTests extends \PHPUnit_Framework_TestCase
      * Test that lines that might be evaluated as boolean false do not break
      * the reading prematurely.
      *
-     * @group ZF-4238
+     * @group Laminas-4238
      */
-    public function testZF4238FalseLinesInResponse()
+    public function testLaminas4238FalseLinesInResponse()
     {
-        $this->client->setUri($this->baseuri . 'ZF4238-zerolineresponse.txt');
+        $this->client->setUri($this->baseuri . 'Laminas4238-zerolineresponse.txt');
 
         $got = $this->client->send()->getBody();
-        $expected = $this->_getTestFileContents('ZF4238-zerolineresponse.txt');
+        $expected = $this->_getTestFileContents('Laminas4238-zerolineresponse.txt');
         $this->assertEquals($expected, $got);
     }
 
@@ -945,7 +944,7 @@ abstract class CommonHttpTests extends \PHPUnit_Framework_TestCase
 
         $response = $this->client->send();
 
-        $this->assertInstanceOf('Zend\Http\Response\Stream', $response, 'Request did not return stream response!');
+        $this->assertInstanceOf('Laminas\Http\Response\Stream', $response, 'Request did not return stream response!');
         $this->assertInternalType('resource', $response->getStream(), 'Request does not contain stream!');
 
         $stream_name = $response->getStreamName();
@@ -961,7 +960,7 @@ abstract class CommonHttpTests extends \PHPUnit_Framework_TestCase
 
     public function testStreamResponseBody()
     {
-        $this->markTestSkipped('To check with the new ZF2 implementation');
+        $this->markTestSkipped('To check with the new Laminas implementation');
 
         if (! ($this->client->getAdapter() instanceof Adapter\StreamInterface)) {
             $this->markTestSkipped('Current adapter does not support streaming');
@@ -972,7 +971,7 @@ abstract class CommonHttpTests extends \PHPUnit_Framework_TestCase
 
         $response = $this->client->send();
 
-        $this->assertInstanceOf('Zend\Http\Response\Stream', $response, 'Request did not return stream response!');
+        $this->assertInstanceOf('Laminas\Http\Response\Stream', $response, 'Request did not return stream response!');
         $this->assertInternalType('resource', $response->getStream(), 'Request does not contain stream!');
 
         $body = $response->getBody();
@@ -993,7 +992,7 @@ abstract class CommonHttpTests extends \PHPUnit_Framework_TestCase
 
         $response = $this->client->send();
 
-        $this->assertInstanceOf('Zend\Http\Response\Stream', $response, 'Request did not return stream response!');
+        $this->assertInstanceOf('Laminas\Http\Response\Stream', $response, 'Request did not return stream response!');
         $this->assertInternalType('resource', $response->getStream(), 'Request does not contain stream!');
 
         $this->assertEquals($outfile, $response->getStreamName());
@@ -1026,13 +1025,13 @@ abstract class CommonHttpTests extends \PHPUnit_Framework_TestCase
     /**
      * Test that we can deal with double Content-Length headers
      *
-     * @link http://framework.zend.com/issues/browse/ZF-9404
+     * @link https://getlaminas.org/issues/browse/Laminas-9404
      */
-    public function testZF9404DoubleContentLengthHeader()
+    public function testLaminas9404DoubleContentLengthHeader()
     {
-        $this->client->setUri($this->baseuri . 'ZF9404-doubleContentLength.php');
+        $this->client->setUri($this->baseuri . 'Laminas9404-doubleContentLength.php');
         $expect = filesize(dirname(realpath(__FILE__)) . DIRECTORY_SEPARATOR . '_files' . DIRECTORY_SEPARATOR
-            . 'ZF9404-doubleContentLength.php');
+            . 'Laminas9404-doubleContentLength.php');
 
         $response = $this->client->send();
         if (! $response->isSuccess()) {
@@ -1050,7 +1049,7 @@ abstract class CommonHttpTests extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * @group ZF2-78
+     * @group Laminas-78
      * @dataProvider parameterArrayProvider
      */
     public function testContentTypeAdditionlInfo($params)
@@ -1061,7 +1060,7 @@ abstract class CommonHttpTests extends \PHPUnit_Framework_TestCase
         $this->client->setHeaders([
             'Content-Type' => $content_type
         ]);
-        $this->client->setMethod(\Zend\Http\Request::METHOD_POST);
+        $this->client->setMethod(\Laminas\Http\Request::METHOD_POST);
 
         $this->client->setParameterPost($params);
 
@@ -1081,7 +1080,7 @@ abstract class CommonHttpTests extends \PHPUnit_Framework_TestCase
     {
         $this->client->setArgSeparator(';');
         $request = new Request();
-        $request->setUri('http://framework.zend.com');
+        $request->setUri('https://getlaminas.org');
         $request->setQuery(new Parameters(['foo' => 'bar', 'baz' => 'bat']));
         $this->client->send($request);
         $rawRequest = $this->client->getLastRawRequest();

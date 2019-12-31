@@ -18,27 +18,27 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#107](https://github.com/zendframework/zend-http/pull/107) fixes the
+- [zendframework/zend-http#107](https://github.com/zendframework/zend-http/pull/107) fixes the
   `Expires` header to allow values of `0` or `'0'`; these now resolve
   to the start of the unix epoch (1970-01-01).
-- [#102](https://github.com/zendframework/zend-http/pull/102) fixes the Curl
+- [zendframework/zend-http#102](https://github.com/zendframework/zend-http/pull/102) fixes the Curl
   adapter timeout detection.
-- [#93](https://github.com/zendframework/zend-http/pull/93) fixes the Content
+- [zendframework/zend-http#93](https://github.com/zendframework/zend-http/pull/93) fixes the Content
   Security Policy CSP HTTP header when it is `none` (empty value).
-- [#92](https://github.com/zendframework/zend-http/pull/92) fixes the flatten
+- [zendframework/zend-http#92](https://github.com/zendframework/zend-http/pull/92) fixes the flatten
   cookies value for array value (also multidimensional).
 
 ## 2.5.5 - 2016-08-08
 
 ### Added
 
-- [#44](https://github.com/zendframework/zend-http/pull/44),
-  [#45](https://github.com/zendframework/zend-http/pull/45),
-  [#46](https://github.com/zendframework/zend-http/pull/46),
-  [#47](https://github.com/zendframework/zend-http/pull/47),
-  [#48](https://github.com/zendframework/zend-http/pull/48), and
-  [#49](https://github.com/zendframework/zend-http/pull/49) prepare the
-  documentation for publication at https://zendframework.github.io/zend-http/
+- [zendframework/zend-http#44](https://github.com/zendframework/zend-http/pull/44),
+  [zendframework/zend-http#45](https://github.com/zendframework/zend-http/pull/45),
+  [zendframework/zend-http#46](https://github.com/zendframework/zend-http/pull/46),
+  [zendframework/zend-http#47](https://github.com/zendframework/zend-http/pull/47),
+  [zendframework/zend-http#48](https://github.com/zendframework/zend-http/pull/48), and
+  [zendframework/zend-http#49](https://github.com/zendframework/zend-http/pull/49) prepare the
+  documentation for publication at https://docs.laminas.dev/laminas-http/
 
 ### Deprecated
 
@@ -50,14 +50,14 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#87](https://github.com/zendframework/zend-http/pull/87) fixes the
+- [zendframework/zend-http#87](https://github.com/zendframework/zend-http/pull/87) fixes the
   `ContentLength` constructor to test for a non null value (vs a falsy value)
   before validating the value; this ensures 0 values may be specified for the
   length.
-- [#85](https://github.com/zendframework/zend-http/pull/85) fixes infinite recursion
+- [zendframework/zend-http#85](https://github.com/zendframework/zend-http/pull/85) fixes infinite recursion
   on AbstractAccept. If you create a new Accept and try to call getFieldValue(),
   an infinite recursion and a fatal error happens.
-- [#58](https://github.com/zendframework/zend-http/pull/58) avoid triggering a notice
+- [zendframework/zend-http#58](https://github.com/zendframework/zend-http/pull/58) avoid triggering a notice
   with special crafted accept headers. In the case the value of an accept header
   does not contain an equal sign, an "Undefined offset" notice is triggered.
 
@@ -77,8 +77,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#42](https://github.com/zendframework/zend-http/pull/42) updates dependencies
-  to ensure it can work with PHP 5.5+ and 7.0+, as well as zend-stdlib
+- [zendframework/zend-http#42](https://github.com/zendframework/zend-http/pull/42) updates dependencies
+  to ensure it can work with PHP 5.5+ and 7.0+, as well as laminas-stdlib
   2.5+/3.0+.
 
 ## 2.5.3 - 2015-09-14
@@ -97,8 +97,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#23](https://github.com/zendframework/zend-http/pull/23) fixes a BC break
-  introduced with fixes for [ZF2015-04](http://framework.zend.com/security/advisory/ZF2015-04),
+- [zendframework/zend-http#23](https://github.com/zendframework/zend-http/pull/23) fixes a BC break
+  introduced with fixes for [ZF2015-04](https://getlaminas.org/security/advisory/ZF2015-04),
   pertaining specifically to the `SetCookie` header. The fix backs out a
   check for message splitting syntax, as that particular class already encodes
   the value in a manner that prevents the attack. It also adds tests to ensure
@@ -120,13 +120,13 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#7](https://github.com/zendframework/zend-http/pull/7) fixes a call in the
+- [zendframework/zend-http#7](https://github.com/zendframework/zend-http/pull/7) fixes a call in the
   proxy adapter to `Response::extractCode()`, which does not exist, to
   `Response::fromString()->getStatusCode()`, which does.
-- [#8](https://github.com/zendframework/zend-http/pull/8) ensures that the Curl
+- [zendframework/zend-http#8](https://github.com/zendframework/zend-http/pull/8) ensures that the Curl
   client adapter enables the `CURLINFO_HEADER_OUT`, which is required to ensure
   we can fetch the raw request after it is sent.
-- [#14](https://github.com/zendframework/zend-http/pull/14) fixes
-  `Zend\Http\PhpEnvironment\Request` to ensure that empty `SCRIPT_FILENAME` and
+- [zendframework/zend-http#14](https://github.com/zendframework/zend-http/pull/14) fixes
+  `Laminas\Http\PhpEnvironment\Request` to ensure that empty `SCRIPT_FILENAME` and
   `SCRIPT_NAME` values which result in an empty `$baseUrl` will not raise an
   `E_WARNING` when used to do a `strpos()` check during base URI detection.

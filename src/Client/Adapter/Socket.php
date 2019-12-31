@@ -1,23 +1,22 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Http\Client\Adapter;
+namespace Laminas\Http\Client\Adapter;
 
+use Laminas\Http\Client\Adapter\AdapterInterface as HttpAdapter;
+use Laminas\Http\Client\Adapter\Exception as AdapterException;
+use Laminas\Http\Response;
+use Laminas\Stdlib\ArrayUtils;
+use Laminas\Stdlib\ErrorHandler;
 use Traversable;
-use Zend\Http\Client\Adapter\AdapterInterface as HttpAdapter;
-use Zend\Http\Client\Adapter\Exception as AdapterException;
-use Zend\Http\Response;
-use Zend\Stdlib\ArrayUtils;
-use Zend\Stdlib\ErrorHandler;
 
 /**
- * A sockets based (stream\socket\client) adapter class for Zend\Http\Client. Can be used
+ * A sockets based (stream\socket\client) adapter class for Laminas\Http\Client. Can be used
  * on almost every PHP environment, and does not require any special extensions.
  */
 class Socket implements HttpAdapter, StreamInterface
@@ -107,7 +106,7 @@ class Socket implements HttpAdapter, StreamInterface
         }
         if (! is_array($options)) {
             throw new AdapterException\InvalidArgumentException(
-                'Array or Zend\Config object expected, got ' . gettype($options)
+                'Array or Laminas\Config object expected, got ' . gettype($options)
             );
         }
 
@@ -134,7 +133,7 @@ class Socket implements HttpAdapter, StreamInterface
      * stream_context_create() PHP function. In such case a new stream context
      * will be created using the passed options.
      *
-     * @since  Zend Framework 1.9
+     * @since  Laminas 1.9
      *
      * @param  mixed $context Stream context or array of context options
      * @throws Exception\InvalidArgumentException
@@ -334,7 +333,7 @@ class Socket implements HttpAdapter, StreamInterface
      * Send request to the remote server
      *
      * @param string        $method
-     * @param \Zend\Uri\Uri $uri
+     * @param \Laminas\Uri\Uri $uri
      * @param string        $httpVer
      * @param array         $headers
      * @param string        $body
@@ -435,7 +434,7 @@ class Socket implements HttpAdapter, StreamInterface
          * to have a body - stop reading here
          */
         if ($statusCode == 304 || $statusCode == 204 ||
-            $this->method == \Zend\Http\Request::METHOD_HEAD) {
+            $this->method == \Laminas\Http\Request::METHOD_HEAD) {
             // Close the connection if requested to do so by the server
             $connection = $headers->get('connection');
             if ($connection && $connection->getFieldValue() == 'close') {
@@ -506,13 +505,13 @@ class Socket implements HttpAdapter, StreamInterface
             }
 
             // We automatically decode chunked-messages when writing to a stream
-            // this means we have to disallow the Zend\Http\Response to do it again
+            // this means we have to disallow the Laminas\Http\Response to do it again
             if ($this->outStream) {
                 $response = str_ireplace("Transfer-Encoding: chunked\r\n", '', $response);
             }
         // Else, if we got the content-length header, read this number of bytes
         } elseif ($contentLength !== false) {
-            // If we got more than one Content-Length header (see ZF-9404) use
+            // If we got more than one Content-Length header (see Laminas-9404) use
             // the last value sent
             if (is_array($contentLength)) {
                 $contentLength = $contentLength[count($contentLength) - 1];
@@ -618,7 +617,7 @@ class Socket implements HttpAdapter, StreamInterface
      * Set output stream for the response
      *
      * @param resource $stream
-     * @return \Zend\Http\Client\Adapter\Socket
+     * @return \Laminas\Http\Client\Adapter\Socket
      */
     public function setOutputStream($stream)
     {
