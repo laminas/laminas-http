@@ -1,24 +1,25 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-http for the canonical source repository
- * @copyright Copyright (c) 2005-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-http/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Client;
+namespace LaminasTest\Http\Client;
 
+use Laminas\Http\Client\Adapter\Exception\InvalidArgumentException;
+use Laminas\Http\Client\Adapter\Exception\OutOfRangeException;
+use Laminas\Http\Client\Adapter\Exception\RuntimeException;
+use Laminas\Http\Client\Adapter\Test;
+use Laminas\Http\Response;
 use PHPUnit\Framework\TestCase;
-use Zend\Http\Client\Adapter\Exception\InvalidArgumentException;
-use Zend\Http\Client\Adapter\Exception\OutOfRangeException;
-use Zend\Http\Client\Adapter\Exception\RuntimeException;
-use Zend\Http\Client\Adapter\Test;
-use Zend\Http\Response;
 
 /**
- * Exercises Zend_Http_Client_Adapter_Test
+ * Exercises Laminas_Http_Client_Adapter_Test
  *
- * @group      Zend_Http
- * @group      Zend_Http_Client
+ * @group      Laminas_Http
+ * @group      Laminas_Http_Client
  */
 class TestAdapterTest extends TestCase
 {
@@ -130,9 +131,9 @@ class TestAdapterTest extends TestCase
     }
 
     /**
-     * Test that responses could be added as objects (ZF-7009)
+     * Test that responses could be added as objects (Laminas-7009)
      *
-     * @link http://framework.zend.com/issues/browse/ZF-7009
+     * @link https://getlaminas.org/issues/browse/Laminas-7009
      *
      * @dataProvider validHttpResponseProvider
      *

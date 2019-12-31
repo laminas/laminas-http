@@ -1,18 +1,19 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-http for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-http/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http;
+namespace LaminasTest\Http;
 
+use Laminas\Http\Exception\InvalidArgumentException;
+use Laminas\Http\Exception\RuntimeException;
+use Laminas\Http\Header\GenericHeader;
+use Laminas\Http\Headers;
+use Laminas\Http\Response;
 use PHPUnit\Framework\TestCase;
-use Zend\Http\Exception\InvalidArgumentException;
-use Zend\Http\Exception\RuntimeException;
-use Zend\Http\Header\GenericHeader;
-use Zend\Http\Headers;
-use Zend\Http\Response;
 
 class ResponseTest extends TestCase
 {
@@ -88,7 +89,7 @@ class ResponseTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('A valid response status line was not found in the provided string');
         $string = 'HTTP/2.0 200 OK' . "\r\n\r\n" . 'Foo Bar';
-        $response = \Zend\Http\Response::fromString($string);
+        $response = \Laminas\Http\Response::fromString($string);
     }
 
     public function testResponseUsesHeadersContainerByDefault()
@@ -255,9 +256,9 @@ REQ;
      * and trailer. Unfortunately some buggy servers (read: IIS) send those and
      * we need to support them.
      *
-     * @link http://framework.zend.com/issues/browse/ZF-6040
+     * @link https://getlaminas.org/issues/browse/Laminas-6040
      */
-    public function testNonStandardDeflateResponseZF6040()
+    public function testNonStandardDeflateResponseLaminas6040()
     {
         $this->markTestSkipped('Not correctly handling non-RFC complient "deflate" responses');
         $responseTest = file_get_contents(__DIR__ . '/_files/response_deflate_iis');
@@ -280,7 +281,7 @@ REQ;
         $this->assertEquals('c0cc9d44790fa2a58078059bab1902a9', md5($res->getContent()));
     }
 
-    public function testChunkedResponseCaseInsensitiveZF5438()
+    public function testChunkedResponseCaseInsensitiveLaminas5438()
     {
         $responseTest = file_get_contents(__DIR__ . '/_files/response_chunked_case');
 
@@ -422,7 +423,7 @@ REQ;
     }
 
     /**
-     * @group ZF-5520
+     * @group Laminas-5520
      */
     public function test302LocationHeaderMatches()
     {
@@ -558,7 +559,7 @@ REQ;
 
     /**
      * Make sure a response with some leading whitespace in the response body
-     * does not get modified (see ZF-1924)
+     * does not get modified (see Laminas-1924)
      */
     public function testLeadingWhitespaceBody()
     {

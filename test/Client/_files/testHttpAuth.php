@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-http for the canonical source repository
- * @copyright Copyright (c) 2005-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-http/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
 $user = isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : null;
@@ -12,7 +13,7 @@ $gpass = isset($_GET['pass']) ? $_GET['pass'] : null;
 $method = isset($_GET['method']) ? $_GET['method'] : 'Basic';
 
 if (! $user || ! $pass || $user != $guser || $pass != $gpass) {
-    header('WWW-Authenticate: ' . $method . ' realm="ZendTest"');
+    header('WWW-Authenticate: ' . $method . ' realm="LaminasTest"');
     header('HTTP/1.0 401 Unauthorized');
 }
 
