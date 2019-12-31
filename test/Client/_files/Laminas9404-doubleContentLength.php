@@ -6,11 +6,9 @@
  * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace Laminas\Http\Client\Exception;
+$clength = filesize(__FILE__);
 
-use Laminas\Http\Exception;
+header(sprintf('Content-length: %s', $clength));
+header(sprintf('Content-length: %s', $clength), false);
 
-class InvalidArgumentException extends Exception\InvalidArgumentException implements
-    ExceptionInterface
-{
-}
+readfile(__FILE__);

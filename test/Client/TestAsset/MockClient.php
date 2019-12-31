@@ -1,22 +1,23 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-http for the canonical source repository
- * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-http/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Client\TestAsset;
+namespace LaminasTest\Http\Client\TestAsset;
 
-use Zend\Http\Client;
-use Zend\Http\Client\Adapter\Socket;
-use Zend\Http\Request;
+use Laminas\Http\Client;
+use Laminas\Http\Client\Adapter\Socket;
+use Laminas\Http\Request;
 
 class MockClient extends Client
 {
     public $config = [
         'maxredirects'    => 5,
         'strictredirects' => false,
-        'useragent'       => 'Zend_Http_Client',
+        'useragent'       => 'Laminas_Http_Client',
         'timeout'         => 10,
         'adapter'         => Socket::class,
         'httpversion'     => Request::VERSION_11,

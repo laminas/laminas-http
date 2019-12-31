@@ -1,23 +1,24 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-http for the canonical source repository
- * @copyright Copyright (c) 2005-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-http/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http;
+namespace LaminasTest\Http;
 
 use Countable;
 use Iterator;
+use Laminas\Http\Exception\InvalidArgumentException;
+use Laminas\Http\Exception\RuntimeException;
+use Laminas\Http\Header;
+use Laminas\Http\Header\GenericHeader;
+use Laminas\Http\Header\GenericMultiHeader;
+use Laminas\Http\Header\HeaderInterface;
+use Laminas\Http\HeaderLoader;
+use Laminas\Http\Headers;
 use PHPUnit\Framework\TestCase;
-use Zend\Http\Exception\InvalidArgumentException;
-use Zend\Http\Exception\RuntimeException;
-use Zend\Http\Header;
-use Zend\Http\Header\GenericHeader;
-use Zend\Http\Header\GenericMultiHeader;
-use Zend\Http\Header\HeaderInterface;
-use Zend\Http\HeaderLoader;
-use Zend\Http\Headers;
 
 class HeadersTest extends TestCase
 {
