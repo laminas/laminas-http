@@ -1,23 +1,22 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
-use Zend\Http\Header\Age;
+use Laminas\Http\Header\Age;
 
 class AgeTest extends \PHPUnit_Framework_TestCase
 {
     public function testAgeFromStringCreatesValidAgeHeader()
     {
         $ageHeader = Age::fromString('Age: 12');
-        $this->assertInstanceOf('Zend\Http\Header\HeaderInterface', $ageHeader);
-        $this->assertInstanceOf('Zend\Http\Header\Age', $ageHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\HeaderInterface', $ageHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\Age', $ageHeader);
         $this->assertEquals('12', $ageHeader->getDeltaSeconds());
     }
 
