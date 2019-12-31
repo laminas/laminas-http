@@ -1,16 +1,14 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Http
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
-use Zend\Http\Header\Expect;
+use Laminas\Http\Header\Expect;
 
 class ExpectTest extends \PHPUnit_Framework_TestCase
 {
@@ -18,8 +16,8 @@ class ExpectTest extends \PHPUnit_Framework_TestCase
     public function testExpectFromStringCreatesValidExpectHeader()
     {
         $expectHeader = Expect::fromString('Expect: xxx');
-        $this->assertInstanceOf('Zend\Http\Header\HeaderInterface', $expectHeader);
-        $this->assertInstanceOf('Zend\Http\Header\Expect', $expectHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\HeaderInterface', $expectHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\Expect', $expectHeader);
     }
 
     public function testExpectGetFieldNameReturnsHeaderName()
