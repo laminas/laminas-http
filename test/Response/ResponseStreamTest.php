@@ -1,15 +1,14 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Response;
+namespace LaminasTest\Http\Response;
 
-use Zend\Http\Response\Stream;
+use Laminas\Http\Response\Stream;
 
 class ResponseStreamTest extends \PHPUnit_Framework_TestCase
 {
@@ -28,7 +27,7 @@ class ResponseStreamTest extends \PHPUnit_Framework_TestCase
     /**
      * @group 6027
      *
-     * @covers \Zend\Http\Response\Stream::fromStream
+     * @covers \Laminas\Http\Response\Stream::fromStream
      */
     public function testResponseFactoryFromEmptyStringCreatesValidResponse()
     {
