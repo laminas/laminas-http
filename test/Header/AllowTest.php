@@ -1,23 +1,22 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
-use Zend\Http\Header\Allow;
+use Laminas\Http\Header\Allow;
 
 class AllowTest extends \PHPUnit_Framework_TestCase
 {
     public function testAllowFromStringCreatesValidAllowHeader()
     {
         $allowHeader = Allow::fromString('Allow: GET, POST, PUT');
-        $this->assertInstanceOf('Zend\Http\Header\HeaderInterface', $allowHeader);
-        $this->assertInstanceOf('Zend\Http\Header\Allow', $allowHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\HeaderInterface', $allowHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\Allow', $allowHeader);
         $this->assertEquals(['GET', 'POST', 'PUT'], $allowHeader->getAllowedMethods());
     }
 
@@ -89,7 +88,7 @@ class AllowTest extends \PHPUnit_Framework_TestCase
      */
     public function testPreventsCRLFAttackViaFromString()
     {
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException', 'Invalid header value detected');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException', 'Invalid header value detected');
         $header = Allow::fromString("Allow: GET\r\n\r\nevilContent");
     }
 
@@ -109,7 +108,7 @@ class AllowTest extends \PHPUnit_Framework_TestCase
     public function testPreventsCRLFAttackViaAllowMethods($methods)
     {
         $header = new Allow();
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException', 'valid method');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException', 'valid method');
         $header->allowMethods($methods);
     }
 
@@ -121,7 +120,7 @@ class AllowTest extends \PHPUnit_Framework_TestCase
     public function testPreventsCRLFAttackViaDisallowMethods($methods)
     {
         $header = new Allow();
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException', 'valid method');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException', 'valid method');
         $header->disallowMethods($methods);
     }
 }
