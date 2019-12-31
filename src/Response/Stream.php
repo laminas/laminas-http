@@ -1,17 +1,16 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\Http\Response;
+namespace Laminas\Http\Response;
 
-use Zend\Http\Exception;
-use Zend\Http\Response;
-use Zend\Stdlib\ErrorHandler;
+use Laminas\Http\Exception;
+use Laminas\Http\Response;
+use Laminas\Stdlib\ErrorHandler;
 
 /**
  * Represents an HTTP response message as PHP stream resource
@@ -140,7 +139,7 @@ class Stream extends Response
     }
 
     /**
-     * Create a new Zend\Http\Response\Stream object from a stream
+     * Create a new Laminas\Http\Response\Stream object from a stream
      *
      * @param  string $responseString
      * @param  resource $stream
@@ -200,7 +199,7 @@ class Stream extends Response
 
         $headers = $response->getHeaders();
         foreach ($headers as $header) {
-            if ($header instanceof \Zend\Http\Header\ContentLength) {
+            if ($header instanceof \Laminas\Http\Header\ContentLength) {
                 $response->setContentLength((int) $header->getFieldValue());
                 $contentLength = $response->getContentLength();
                 if (strlen($response->content) > $contentLength) {

@@ -1,15 +1,14 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
-use Zend\Http\Header\Origin;
+use Laminas\Http\Header\Origin;
 
 class OriginTest extends \PHPUnit_Framework_TestCase
 {
@@ -25,9 +24,9 @@ class OriginTest extends \PHPUnit_Framework_TestCase
 
     public function testOriginFromStringCreatesValidOriginHeader()
     {
-        $OriginHeader = Origin::fromString('Origin: http://zend.org');
-        $this->assertInstanceOf('Zend\Http\Header\HeaderInterface', $OriginHeader);
-        $this->assertInstanceOf('Zend\Http\Header\Origin', $OriginHeader);
+        $OriginHeader = Origin::fromString('Origin: http://laminas.org');
+        $this->assertInstanceOf('Laminas\Http\Header\HeaderInterface', $OriginHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\Origin', $OriginHeader);
     }
 
     public function testOriginGetFieldNameReturnsHeaderName()
@@ -38,7 +37,7 @@ class OriginTest extends \PHPUnit_Framework_TestCase
 
     public function testOriginGetFieldValueReturnsProperValue()
     {
-        $OriginHeader = Origin::fromString('Origin: http://zend.org');
-        $this->assertEquals('http://zend.org', $OriginHeader->getFieldValue());
+        $OriginHeader = Origin::fromString('Origin: http://laminas.org');
+        $this->assertEquals('http://laminas.org', $OriginHeader->getFieldValue());
     }
 }

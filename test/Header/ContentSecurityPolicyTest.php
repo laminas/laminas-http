@@ -1,21 +1,20 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
-use Zend\Http\Header\ContentSecurityPolicy;
+use Laminas\Http\Header\ContentSecurityPolicy;
 
 class ContentSecurityPolicyTest extends \PHPUnit_Framework_TestCase
 {
     public function testContentSecurityPolicyFromStringThrowsExceptionIfImproperHeaderNameUsed()
     {
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException');
         ContentSecurityPolicy::fromString('X-Content-Security-Policy: default-src *;');
     }
 
@@ -24,8 +23,8 @@ class ContentSecurityPolicyTest extends \PHPUnit_Framework_TestCase
         $csp = ContentSecurityPolicy::fromString(
             "Content-Security-Policy: default-src 'none'; script-src 'self'; img-src 'self'; style-src 'self';"
         );
-        $this->assertInstanceOf('Zend\Http\Header\HeaderInterface', $csp);
-        $this->assertInstanceOf('Zend\Http\Header\ContentSecurityPolicy', $csp);
+        $this->assertInstanceOf('Laminas\Http\Header\HeaderInterface', $csp);
+        $this->assertInstanceOf('Laminas\Http\Header\ContentSecurityPolicy', $csp);
         $directives = array('default-src' => "'none'",
                             'script-src'  => "'self'",
                             'img-src'     => "'self'",
@@ -44,8 +43,8 @@ class ContentSecurityPolicyTest extends \PHPUnit_Framework_TestCase
         $csp = ContentSecurityPolicy::fromString(
             "Content-Security-Policy: default-src 'none'; img-src 'self' https://*.gravatar.com;"
         );
-        $this->assertInstanceOf('Zend\Http\Header\HeaderInterface', $csp);
-        $this->assertInstanceOf('Zend\Http\Header\ContentSecurityPolicy', $csp);
+        $this->assertInstanceOf('Laminas\Http\Header\HeaderInterface', $csp);
+        $this->assertInstanceOf('Laminas\Http\Header\ContentSecurityPolicy', $csp);
         $this->assertEquals(
             "Content-Security-Policy: default-src 'none'; img-src 'self' https://*.gravatar.com;",
             $csp->toString()
@@ -77,7 +76,7 @@ class ContentSecurityPolicyTest extends \PHPUnit_Framework_TestCase
 
     public function testContentSecurityPolicySetDirectiveThrowsExceptionIfInvalidDirectiveNameGiven()
     {
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException');
         $csp = new ContentSecurityPolicy();
         $csp->setDirective('foo', array());
     }
