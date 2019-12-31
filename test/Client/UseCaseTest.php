@@ -1,24 +1,22 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Client;
+namespace LaminasTest\Http\Client;
 
-use Zend\Http\Client as HTTPClient;
-use Zend\Http\Client\Adapter;
-use Zend\Http\Request;
-
+use Laminas\Http\Client\Adapter;
+use Laminas\Http\Client as HTTPClient;
+use Laminas\Http\Request;
 
 /**
- * This are the test for the prototype of Zend\Http\Client
+ * This are the test for the prototype of Laminas\Http\Client
  *
- * @group      Zend_Http
- * @group      Zend_Http_Client
+ * @group      Laminas_Http
+ * @group      Laminas_Http_Client
  */
 class UseCaseTest extends \PHPUnit_Framework_TestCase
 {
@@ -33,14 +31,14 @@ class UseCaseTest extends \PHPUnit_Framework_TestCase
     /**
      * Common HTTP client
      *
-     * @var \Zend\Http\Client
+     * @var \Laminas\Http\Client
      */
     protected $client = null;
 
     /**
      * Common HTTP client adapter
      *
-     * @var \Zend\Http\Client\Adapter\AdapterInterface
+     * @var \Laminas\Http\Client\Adapter\AdapterInterface
      */
     protected $adapter = null;
 
@@ -50,7 +48,7 @@ class UseCaseTest extends \PHPUnit_Framework_TestCase
      * @var array
      */
     protected $config = array(
-        'adapter'     => 'Zend\Http\Client\Adapter\Socket'
+        'adapter'     => 'Laminas\Http\Client\Adapter\Socket'
     );
 
     /**
@@ -58,14 +56,14 @@ class UseCaseTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        if (defined('TESTS_ZEND_HTTP_CLIENT_BASEURI')
-            && (TESTS_ZEND_HTTP_CLIENT_BASEURI != false)
+        if (defined('TESTS_LAMINAS_HTTP_CLIENT_BASEURI')
+            && (TESTS_LAMINAS_HTTP_CLIENT_BASEURI != false)
         ) {
-            $this->baseuri = TESTS_ZEND_HTTP_CLIENT_BASEURI;
+            $this->baseuri = TESTS_LAMINAS_HTTP_CLIENT_BASEURI;
             $this->client  = new HTTPClient($this->baseuri);
         } else {
             // Skip tests
-            $this->markTestSkipped("Zend_Http_Client dynamic tests are not enabled in TestConfiguration.php");
+            $this->markTestSkipped("Laminas_Http_Client dynamic tests are not enabled in TestConfiguration.php");
         }
     }
 
