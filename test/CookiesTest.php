@@ -1,19 +1,16 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Http
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http;
+namespace LaminasTest\Http;
 
-use Zend\Http\Header\SetCookie;
-use Zend\Http\Response;
-use \Zend\Http\Headers;
-
+use \Laminas\Http\Headers;
+use Laminas\Http\Header\SetCookie;
+use Laminas\Http\Response;
 
 class CookiesTest extends \PHPUnit_Framework_TestCase
 {
@@ -21,27 +18,27 @@ class CookiesTest extends \PHPUnit_Framework_TestCase
     {
         $response = new Response();
         $headers = new Headers();
-        $header = new \Zend\Http\Header\SetCookie("foo", "bar");
+        $header = new \Laminas\Http\Header\SetCookie("foo", "bar");
         $header->setDomain("www.zend.com");
         $header->setPath("/");
         $headers->addHeader($header);
         $response->setHeaders($headers);
 
-        $response = \Zend\Http\Cookies::fromResponse($response, "http://www.zend.com");
-        $this->assertSame($header, $response->getCookie('http://www.zend.com', 'foo'));
+        $response = \Laminas\Http\Cookies::fromResponse($response, "https://www.zend.com");
+        $this->assertSame($header, $response->getCookie('https://www.zend.com', 'foo'));
     }
 
     public function testFromResponseInCookie()
     {
         $response = new Response();
         $headers = new Headers();
-        $header = new \Zend\Http\Header\SetCookie("foo", "bar");
+        $header = new \Laminas\Http\Header\SetCookie("foo", "bar");
         $header->setDomain("www.zend.com");
         $header->setPath("/");
         $headers->addHeader($header);
         $response->setHeaders($headers);
 
-        $response = \Zend\Http\Client\Cookies::fromResponse($response, "http://www.zend.com");
-        $this->assertSame($header, $response->getCookie('http://www.zend.com', 'foo'));
+        $response = \Laminas\Http\Client\Cookies::fromResponse($response, "https://www.zend.com");
+        $this->assertSame($header, $response->getCookie('https://www.zend.com', 'foo'));
     }
 }
