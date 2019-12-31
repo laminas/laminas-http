@@ -1,23 +1,20 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Http
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http;
+namespace LaminasTest\Http;
 
+use Laminas\Http\Client;
+use Laminas\Http\Exception;
+use Laminas\Http\Header\AcceptEncoding;
+use Laminas\Http\Header\SetCookie;
+use Laminas\Http\Request;
+use Laminas\Http\Response;
 use ReflectionClass;
-use Zend\Http\Client;
-use Zend\Http\Header\AcceptEncoding;
-use Zend\Http\Header\SetCookie;
-use Zend\Http\Response;
-use Zend\Http\Request;
-use Zend\Http\Exception;
-
 
 class ClientTest extends \PHPUnit_Framework_TestCase
 {
@@ -30,15 +27,15 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
     public function testAcceptEncodingHeaderWorksProperly()
     {
-        $method = new \ReflectionMethod('\Zend\Http\Client', 'prepareHeaders');
+        $method = new \ReflectionMethod('\Laminas\Http\Client', 'prepareHeaders');
         $method->setAccessible(true);
 
         $requestString = "GET http://www.domain.com/index.php HTTP/1.1\r\nHost: domain.com\r\nUser-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:16.0) Gecko/20100101 Firefox/16.0\r\nAccept: */*\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nConnection: keep-alive\r\n";
         $request = Request::fromString($requestString);
 
-        $adapter = new \Zend\Http\Client\Adapter\Test();
+        $adapter = new \Laminas\Http\Client\Adapter\Test();
 
-        $client = new \Zend\Http\Client('http://www.domain.com/');
+        $client = new \Laminas\Http\Client('http://www.domain.com/');
         $client->setAdapter($adapter);
         $client->setRequest($request);
 
@@ -59,7 +56,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-    * @expectedException Zend\Http\Exception\InvalidArgumentException
+    * @expectedException Laminas\Http\Exception\InvalidArgumentException
     */
     public function testIfNullValueCookiesThrowsException()
     {
@@ -111,7 +108,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     {
         $client = new Client();
 
-        $client->setAdapter('Zend\Http\Client\Adapter\Test');
+        $client->setAdapter('Laminas\Http\Client\Adapter\Test');
 
         $request = $client->getRequest();
 
@@ -136,7 +133,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Zend\Http\Client\Exception\InvalidArgumentException
+     * @expectedException Laminas\Http\Client\Exception\InvalidArgumentException
      */
     public function testEncodeAuthHeaderThrowsExceptionWhenUsernameContainsSemiColon()
     {
@@ -144,7 +141,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Zend\Http\Client\Exception\InvalidArgumentException
+     * @expectedException Laminas\Http\Client\Exception\InvalidArgumentException
      */
     public function testEncodeAuthHeaderThrowsExceptionWhenInvalidAuthTypeIsUsed()
     {

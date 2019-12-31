@@ -1,11 +1,9 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Http
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
 if (! isset($_GET['redirection'])) {
@@ -14,17 +12,17 @@ if (! isset($_GET['redirection'])) {
     /**
      * Create session cookie, but only on first redirect
      */
-    setcookie('zf2testSessionCookie','positive');
+    setcookie('laminastestSessionCookie','positive');
 
     /**
      * Create a long living cookie
      */
-    setcookie('zf2testLongLivedCookie','positive',time()+2678400);
+    setcookie('laminastestLongLivedCookie','positive',time()+2678400);
 
     /**
      * Create a cookie that should be invalid on arrival
      */
-    setcookie('zf2testExpiredCookie','negative',time()-2400);
+    setcookie('laminastestExpiredCookie','negative',time()-2400);
 }
 
 $_GET['redirection']++;
