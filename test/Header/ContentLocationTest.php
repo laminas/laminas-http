@@ -1,15 +1,14 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
-use Zend\Http\Header\ContentLocation;
+use Laminas\Http\Header\ContentLocation;
 
 class ContentLocationTest extends \PHPUnit_Framework_TestCase
 {
@@ -17,8 +16,8 @@ class ContentLocationTest extends \PHPUnit_Framework_TestCase
     public function testContentLocationFromStringCreatesValidLocationHeader()
     {
         $contentLocationHeader = ContentLocation::fromString('Content-Location: http://www.example.com/');
-        $this->assertInstanceOf('Zend\Http\Header\HeaderInterface', $contentLocationHeader);
-        $this->assertInstanceOf('Zend\Http\Header\ContentLocation', $contentLocationHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\HeaderInterface', $contentLocationHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\ContentLocation', $contentLocationHeader);
     }
 
     public function testContentLocationGetFieldValueReturnsProperValue()
@@ -45,7 +44,7 @@ class ContentLocationTest extends \PHPUnit_Framework_TestCase
     {
         $contentLocationHeader = ContentLocation::fromString('Content-Location: http://www.example.com/path');
         $uri = $contentLocationHeader->uri();
-        $this->assertInstanceOf('Zend\Uri\UriInterface', $uri);
+        $this->assertInstanceOf('Laminas\Uri\UriInterface', $uri);
         $this->assertTrue($uri->isAbsolute());
         $this->assertEquals('http://www.example.com/path', $contentLocationHeader->getUri());
     }
@@ -54,7 +53,7 @@ class ContentLocationTest extends \PHPUnit_Framework_TestCase
     {
         $contentLocationHeader = ContentLocation::fromString('Content-Location: /path/to');
         $uri = $contentLocationHeader->uri();
-        $this->assertInstanceOf('Zend\Uri\UriInterface', $uri);
+        $this->assertInstanceOf('Laminas\Uri\UriInterface', $uri);
         $this->assertFalse($uri->isAbsolute());
         $this->assertEquals('/path/to', $contentLocationHeader->getUri());
     }

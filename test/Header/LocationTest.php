@@ -1,15 +1,14 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
-use Zend\Http\Header\Location;
+use Laminas\Http\Header\Location;
 
 class LocationTest extends \PHPUnit_Framework_TestCase
 {
@@ -21,8 +20,8 @@ class LocationTest extends \PHPUnit_Framework_TestCase
     public function testLocationFromStringCreatesValidLocationHeader($uri)
     {
         $locationHeader = Location::fromString('Location: ' . $uri);
-        $this->assertInstanceOf('Zend\Http\Header\HeaderInterface', $locationHeader);
-        $this->assertInstanceOf('Zend\Http\Header\Location', $locationHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\HeaderInterface', $locationHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\Location', $locationHeader);
     }
 
     public function locationFromStringCreatesValidLocationHeaderProvider()
@@ -60,7 +59,7 @@ class LocationTest extends \PHPUnit_Framework_TestCase
      */
     public function testLocationCanSetDifferentSchemeUriObjects($uri, $expectedClass)
     {
-            $uri = \Zend\Uri\UriFactory::factory($uri);
+            $uri = \Laminas\Uri\UriFactory::factory($uri);
         $locationHeader = new Location;
         $locationHeader->setUri($uri);
         $this->assertAttributeInstanceof($expectedClass, 'uri', $locationHeader);
@@ -75,10 +74,10 @@ class LocationTest extends \PHPUnit_Framework_TestCase
     public function locationCanSetDifferentSchemeUrisProvider()
     {
         return array(
-            array('http://www.example.com', '\Zend\Uri\Http'),
-            array('https://www.example.com', '\Zend\Uri\Http'),
-            array('mailto://www.example.com', '\Zend\Uri\Mailto'),
-            array('file://www.example.com', '\Zend\Uri\File'),
+            array('http://www.example.com', '\Laminas\Uri\Http'),
+            array('https://www.example.com', '\Laminas\Uri\Http'),
+            array('mailto://www.example.com', '\Laminas\Uri\Mailto'),
+            array('file://www.example.com', '\Laminas\Uri\File'),
         );
     }
 
@@ -106,7 +105,7 @@ class LocationTest extends \PHPUnit_Framework_TestCase
     {
         $locationHeader = Location::fromString('Location: http://www.example.com/path');
         $uri = $locationHeader->uri();
-        $this->assertInstanceOf('Zend\Uri\Http', $uri);
+        $this->assertInstanceOf('Laminas\Uri\Http', $uri);
         $this->assertTrue($uri->isAbsolute());
         $this->assertEquals('http://www.example.com/path', $locationHeader->getUri());
     }
@@ -115,7 +114,7 @@ class LocationTest extends \PHPUnit_Framework_TestCase
     {
         $locationHeader = Location::fromString('Location: /path/to');
         $uri = $locationHeader->uri();
-        $this->assertInstanceOf('Zend\Uri\Uri', $uri);
+        $this->assertInstanceOf('Laminas\Uri\Uri', $uri);
         $this->assertFalse($uri->isAbsolute());
         $this->assertEquals('/path/to', $locationHeader->getUri());
     }
