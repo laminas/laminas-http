@@ -1,52 +1,51 @@
 {
-    "name": "zendframework/zend-http",
+    "name": "laminas/laminas-http",
     "description": "provides an easy interface for performing Hyper-Text Transfer Protocol (HTTP) requests",
-    "homepage": "https://github.com/zendframework/zend-http",
     "license": "BSD-3-Clause",
     "keywords": [
-        "zf",
-        "zend",
-        "zendframework",
+        "laminas",
         "http",
         "HTTP client"
     ],
+    "homepage": "https://laminas.dev",
     "support": {
-        "docs": "https://docs.zendframework.com/zend-http",
-        "issues": "https://github.com/zendframework/zend-http/issues",
-        "source": "https://github.com/zendframework/zend-http",
-        "rss": "https://github.com/zendframework/zend-http/releases.atom",
-        "slack": "https://zendframework-slack.herokuapp.com",
-        "forum": "https://discourse.zendframework.com/c/questions/components"
+        "docs": "https://docs.laminas.dev/laminas-http/",
+        "issues": "https://github.com/laminas/laminas-http/issues",
+        "source": "https://github.com/laminas/laminas-http",
+        "rss": "https://github.com/laminas/laminas-http/releases.atom",
+        "chat": "https://laminas.dev/chat",
+        "forum": "https://discourse.laminas.dev"
     },
     "config": {
         "sort-packages": true
-    },
-    "require": {
-        "php": "^5.6 || ^7.0",
-        "zendframework/zend-loader": "^2.5.1",
-        "zendframework/zend-stdlib": "^3.1 || ^2.7.7",
-        "zendframework/zend-uri": "^2.5.2",
-        "zendframework/zend-validator": "^2.10.1"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^6.4.1 || ^5.7.15",
-        "zendframework/zend-coding-standard": "~1.0.0",
-        "zendframework/zend-config": "^3.1 || ^2.6"
-    },
-    "autoload": {
-        "psr-4": {
-            "Zend\\Http\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "ZendTest\\Http\\": "test/"
-        }
     },
     "extra": {
         "branch-alias": {
             "dev-master": "2.7-dev",
             "dev-develop": "2.8-dev"
+        }
+    },
+    "require": {
+        "php": "^5.6 || ^7.0",
+        "laminas/laminas-loader": "^2.5.1",
+        "laminas/laminas-stdlib": "^3.1 || ^2.7.7",
+        "laminas/laminas-uri": "^2.5.2",
+        "laminas/laminas-validator": "^2.10.1",
+        "laminas/laminas-zendframework-bridge": "^1.0"
+    },
+    "require-dev": {
+        "laminas/laminas-coding-standard": "~1.0.0",
+        "laminas/laminas-config": "^3.1 || ^2.6",
+        "phpunit/phpunit": "^6.4.1 || ^5.7.15"
+    },
+    "autoload": {
+        "psr-4": {
+            "Laminas\\Http\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "LaminasTest\\Http\\": "test/"
         }
     },
     "scripts": {
@@ -59,5 +58,8 @@
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
         "upload-coverage": "coveralls -v"
+    },
+    "replace": {
+        "zendframework/zend-http": "self.version"
     }
 }

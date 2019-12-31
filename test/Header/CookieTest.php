@@ -1,24 +1,25 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-http for the canonical source repository
- * @copyright Copyright (c) 2005-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-http/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
 use ArrayObject;
+use Laminas\Http\Header\Cookie;
+use Laminas\Http\Header\Exception\InvalidArgumentException;
+use Laminas\Http\Header\HeaderInterface;
+use Laminas\Http\Header\SetCookie;
 use PHPUnit\Framework\TestCase;
-use Zend\Http\Header\Cookie;
-use Zend\Http\Header\Exception\InvalidArgumentException;
-use Zend\Http\Header\HeaderInterface;
-use Zend\Http\Header\SetCookie;
 
 /**
- * Zend_Http_Cookie unit tests
+ * Laminas_Http_Cookie unit tests
  *
- * @group      Zend_Http
- * @group      Zend_Http_Cookie
+ * @group      Laminas_Http
+ * @group      Laminas_Http_Cookie
  */
 class CookieTest extends TestCase
 {
@@ -551,9 +552,9 @@ class CookieTest extends TestCase
 //     *
 //     * @todo  re-enable once Locale is working
 //     * @group disable
-//     * @link http://framework.zend.com/issues/browse/ZF-5690
+//     * @link https://getlaminas.org/issues/browse/Laminas-5690
 //     */
-//    public function testZF5690OverflowingExpiryDate()
+//    public function testLaminas5690OverflowingExpiryDate()
 //    {
 //        $expTime = "Sat, 29-Jan-2039 00:54:42 GMT";
 //        $cookie = Http\Cookie::fromString("foo=bar; domain=.example.com; expires=$expTime");
@@ -595,7 +596,7 @@ class CookieTest extends TestCase
 //            ['space cookie'],
 //            ['!@#$%^*&()* ][{}?;'],
 //            ["line\n\rbreaks"],
-//            ["0000j8CydACPu_-J9bE8uTX91YU:12a83ks4k"], // value from: Alexander Cheshchevik's comment on issue: ZF-1850
+//            ["0000j8CydACPu_-J9bE8uTX91YU:12a83ks4k"], // value from: Alexander Cheshchevik's comment on issue: Laminas-1850
 //
 //            // Long cookie value - 2kb
 //            [str_repeat(md5(time()), 64)],

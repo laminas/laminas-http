@@ -1,15 +1,16 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-http for the canonical source repository
- * @copyright Copyright (c) 2005-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-http/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\PhpEnvironment;
+namespace LaminasTest\Http\PhpEnvironment;
 
+use Laminas\Http\Exception\InvalidArgumentException;
+use Laminas\Http\PhpEnvironment\Response;
 use PHPUnit\Framework\TestCase;
-use Zend\Http\Exception\InvalidArgumentException;
-use Zend\Http\PhpEnvironment\Response;
 
 class ResponseTest extends TestCase
 {
@@ -74,7 +75,7 @@ class ResponseTest extends TestCase
     public function testFallsBackToVersionOneOhWhenServerSuperglobalVersionIsNotRecognized()
     {
         // unknown protocol or version -> fallback to HTTP/1.0
-        $_SERVER['SERVER_PROTOCOL'] = 'zf/2.0';
+        $_SERVER['SERVER_PROTOCOL'] = 'laminas/2.0';
         $response = new Response();
         $this->assertSame(Response::VERSION_10, $response->getVersion());
     }
@@ -97,6 +98,6 @@ class ResponseTest extends TestCase
         $this->assertSame(Response::VERSION_10, $response->getVersion());
 
         $this->expectException(InvalidArgumentException::class);
-        $response->setVersion('zf/2.0');
+        $response->setVersion('laminas/2.0');
     }
 }

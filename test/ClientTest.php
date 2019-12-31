@@ -1,27 +1,28 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-http for the canonical source repository
- * @copyright Copyright (c) 2005-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-http/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http;
+namespace LaminasTest\Http;
 
 use ArrayIterator;
+use Laminas\Http\Client;
+use Laminas\Http\Client\Adapter\AdapterInterface;
+use Laminas\Http\Client\Adapter\Test;
+use Laminas\Http\Client\Exception as ClientException;
+use Laminas\Http\Cookies;
+use Laminas\Http\Exception as HttpException;
+use Laminas\Http\Header\AcceptEncoding;
+use Laminas\Http\Header\SetCookie;
+use Laminas\Http\Request;
+use Laminas\Http\Response;
+use Laminas\Uri\Http;
+use LaminasTest\Http\TestAsset\ExtendedClient;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
-use Zend\Http\Client;
-use Zend\Http\Client\Adapter\AdapterInterface;
-use Zend\Http\Client\Adapter\Test;
-use Zend\Http\Client\Exception as ClientException;
-use Zend\Http\Cookies;
-use Zend\Http\Exception as HttpException;
-use Zend\Http\Header\AcceptEncoding;
-use Zend\Http\Header\SetCookie;
-use Zend\Http\Request;
-use Zend\Http\Response;
-use Zend\Uri\Http;
-use ZendTest\Http\TestAsset\ExtendedClient;
 
 class ClientTest extends TestCase
 {
