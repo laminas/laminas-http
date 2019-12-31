@@ -1,31 +1,29 @@
 <?php
+
 /**
- * Zend Framework (http://framework.zend.com/)
- *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-http for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\Http\Header;
+namespace LaminasTest\Http\Header;
 
-use Zend\Http\Header\Accept;
-
+use Laminas\Http\Header\Accept;
 
 class AcceptTest extends \PHPUnit_Framework_TestCase
 {
 
     public function testInvalidHeaderLine()
     {
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException');
         $acceptHeader = Accept::fromString('');
     }
 
     public function testAcceptFromStringCreatesValidAcceptHeader()
     {
         $acceptHeader = Accept::fromString('Accept: xxx');
-        $this->assertInstanceOf('Zend\Http\Header\HeaderInterface', $acceptHeader);
-        $this->assertInstanceOf('Zend\Http\Header\Accept', $acceptHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\HeaderInterface', $acceptHeader);
+        $this->assertInstanceOf('Laminas\Http\Header\Accept', $acceptHeader);
     }
 
     public function testAcceptGetFieldNameReturnsHeaderName()
@@ -52,7 +50,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
             'Accept: text/html;q=0.8, application/json, application/atom+xml;q=0.9',
             $acceptHeader->toString());
 
-        $this->setExpectedException('Zend\Http\Header\Exception\InvalidArgumentException');
+        $this->setExpectedException('Laminas\Http\Header\Exception\InvalidArgumentException');
         $acceptHeader->addMediaType('\\', 0.9);
 
     }
@@ -139,7 +137,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
                 if (!$shouldPass) {
                     $this->fail('Exception expected');
                 }
-            } catch (\Zend\Http\Header\Exception\InvalidArgumentException $e) {
+            } catch (\Laminas\Http\Header\Exception\InvalidArgumentException $e) {
                 if ($shouldPass) {
                     throw $e;
                 }
@@ -200,7 +198,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
 
         $res = $acceptHeader->match('text/html; _randomValue=foobar');
         $this->assertInstanceOf(
-                'Zend\Http\Header\Accept\FieldValuePart\AbstractFieldValuePart',
+                'Laminas\Http\Header\Accept\FieldValuePart\AbstractFieldValuePart',
                 $res->getMatchedAgainst()
         );
         $this->assertEquals(
@@ -213,7 +211,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
 
         $res = $acceptHeader->match('text/html; _foo=bar');
         $this->assertInstanceOf(
-                'Zend\Http\Header\Accept\FieldValuePart\AbstractFieldValuePart',
+                'Laminas\Http\Header\Accept\FieldValuePart\AbstractFieldValuePart',
                 $res->getMatchedAgainst()
         );
 
@@ -275,7 +273,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
 
         $acceptHeader = Accept::fromString('Accept: */*; version=21');
         $res = $acceptHeader->match('*/*; version=20-22');
-        $this->assertInstanceOf('Zend\Http\Header\Accept\FieldValuePart\AcceptFieldValuePart', $res);
+        $this->assertInstanceOf('Laminas\Http\Header\Accept\FieldValuePart\AcceptFieldValuePart', $res);
         $this->assertEquals('21', $res->getParams()->version);
     }
 
@@ -306,7 +304,7 @@ class AcceptTest extends \PHPUnit_Framework_TestCase
         );
 
         if ($success) {
-            $this->assertInstanceOf('Zend\Http\Header\Accept\FieldValuePart\AcceptFieldValuePart', $res);
+            $this->assertInstanceOf('Laminas\Http\Header\Accept\FieldValuePart\AcceptFieldValuePart', $res);
         } else {
             $this->assertFalse($res);
         }
