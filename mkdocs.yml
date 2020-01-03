@@ -16,3 +16,6 @@ nav:
 site_name: laminas-http
 site_description: HTTP message and header abstractions, and HTTP client implementation.  (Not a PSR-7 implementation; see <a href="//docs.laminas.dev/laminas-diactoros">Diactoros</a> for PSR-7 support.
 repo_url: 'https://github.com/laminas/laminas-http'
+extra:
+    project: Components
+    project_url: 'https://docs.laminas.dev'
