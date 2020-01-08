@@ -18,4 +18,3 @@ site_description: HTTP message and header abstractions, and HTTP client implemen
 repo_url: 'https://github.com/laminas/laminas-http'
 extra:
     project: Components
-    project_url: 'https://docs.laminas.dev'
