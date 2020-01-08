@@ -1,6 +1,6 @@
 # laminas-http
 
-[![Build Status](https://travis-ci.org/laminas/laminas-http.svg?branch=master)](https://travis-ci.org/laminas/laminas-http)
+[![Build Status](https://travis-ci.com/laminas/laminas-http.svg?branch=master)](https://travis-ci.com/laminas/laminas-http)
 [![Coverage Status](https://coveralls.io/repos/github/laminas/laminas-http/badge.svg?branch=master)](https://coveralls.io/github/laminas/laminas-http?branch=master)
 
 laminas-http provides the HTTP message abstraction used by
