@@ -20,7 +20,7 @@
     <div class="container">
         
         <a class="logo-link navbar-brand offset-md-2" href="https://getlaminas.org/" data-tooltip data-placement="bottom" title="Go to the Laminas homepage">
-            <img src="../img/laminas-foundation-white.svg" height="28" alt="Lamnias">
+            <img src="../img/laminas-foundation-white.svg" height="28" alt="Laminas">
         </a>
         <a class="navbar-title" href="https://docs.laminas.dev/" data-tooltip data-placement="bottom" title="Go to the Laminas Documentation">
             Documentation
@@ -36,13 +36,17 @@
             
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a href="https://getlaminas.org/about" class="nav-link">About</a>
-                </li>
-                <li class="nav-item">
-                    <a href="https://getlaminas.org/blog" class="nav-link">Blog</a>
-                </li>
-                <li class="nav-item">
-                    <a href="https://docs.laminas.dev" class="nav-link">All Docs</a>
+                    <div class="dropdown">
+                        <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false">
+                            All Docs
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="https://docs.laminas.dev/components">Components</a>
+                            <a class="dropdown-item" href="https://docs.mezzio.dev/">Mezzio</a>
+                            <a class="dropdown-item" href="https://api-tools.getlaminas.org/docs">API Tools</a>
+                            <a class="dropdown-item" href="https://docs.laminas.dev/mvc">MVC</a>
+                        </div>
+                    </div>
                 </li>
                 <li class="nav-item">
                     <a href="https://getlaminas.org/participate" class="nav-link">Community</a>
@@ -277,10 +281,9 @@
 <p><code>Laminas\Http\Response</code> is responsible for providing a fluent API that allows a
 developer to interact with all the various parts of an HTTP response.</p>
 <p>A typical HTTP Response looks like this:</p>
-<p> <div class=codehilite><pre><span></span>| VERSION | CODE | REASON |
+<pre class=codehilite><code class=language-text>| VERSION | CODE | REASON |
 |        HEADERS          |
-|         BODY            |
-</pre></div></p>
+|         BODY            |</code></pre>
 <p>The first line of the response consists of the HTTP version, status code, and
 the reason string for the provided status code; this is called the Response
 Line. Next is a set of zero or more headers.  The remainder of the response is
@@ -293,36 +296,35 @@ specification of an HTTP response can be found in
 <p>Response objects can either be created from the provided <code>fromString()</code> factory,
 or, if you wish to have a completely empty object to start with, by
 instantiating the <code>Laminas\Http\Response</code> class with no arguments.</p>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Response;</span>
-<span class=x>$response = Response::fromString(&lt;&lt;&lt;EOS</span>
-<span class=x>HTTP/1.0 200 OK</span>
-<span class=x>HeaderField1: header-field-value</span>
-<span class=x>HeaderField2: header-field-value2</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Response;
+$response = Response::fromString(&lt;&lt;&lt;EOS
+HTTP/1.0 200 OK
+HeaderField1: header-field-value
+HeaderField2: header-field-value2
 
-<span class=x>&lt;html&gt;</span>
-<span class=x>&lt;body&gt;</span>
-<span class=x>    Hello World</span>
-<span class=x>&lt;/body&gt;</span>
-<span class=x>&lt;/html&gt;</span>
-<span class=x>EOS);</span>
+&lt;html&gt;
+&lt;body&gt;
+    Hello World
+&lt;/body&gt;
+&lt;/html&gt;
+EOS);
 
-<span class=x>// OR</span>
+// OR
 
-<span class=x>$response = new Response();</span>
-<span class=x>$response-&gt;setStatusCode(Response::STATUS_CODE_200);</span>
-<span class=x>$response-&gt;getHeaders()-&gt;addHeaders([</span>
-<span class=x>    &#39;HeaderField1&#39; =&gt; &#39;header-field-value&#39;,</span>
-<span class=x>    &#39;HeaderField2&#39; =&gt; &#39;header-field-value2&#39;,</span>
-<span class=x>]);</span>
-<span class=x>$response-&gt;setContent(&lt;&lt;&lt;EOS</span>
-<span class=x>&lt;html&gt;</span>
-<span class=x>&lt;body&gt;</span>
-<span class=x>    Hello World</span>
-<span class=x>&lt;/body&gt;</span>
-<span class=x>&lt;/html&gt;</span>
-<span class=x>EOS</span>
-<span class=x>);</span>
-</pre></div></p>
+$response = new Response();
+$response-&gt;setStatusCode(Response::STATUS_CODE_200);
+$response-&gt;getHeaders()-&gt;addHeaders([
+    'HeaderField1' =&gt; 'header-field-value',
+    'HeaderField2' =&gt; 'header-field-value2',
+]);
+$response-&gt;setContent(&lt;&lt;&lt;EOS
+&lt;html&gt;
+&lt;body&gt;
+    Hello World
+&lt;/body&gt;
+&lt;/html&gt;
+EOS
+);</code></pre>
 <h2 id="configuration-options">Configuration Options</h2>
 <p>No configuration options are available.</p>
 <h2 id="available-methods">Available Methods</h2>
@@ -453,35 +455,33 @@ fully qualified class names and/or namespaces:</p>
 </table></div>
 <h2 id="examples">Examples</h2>
 <h3>Generating a Response object from a string</h3>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Response;</span>
-<span class=x>$request = Response::fromString(&lt;&lt;&lt;EOS</span>
-<span class=x>HTTP/1.0 200 OK</span>
-<span class=x>HeaderField1: header-field-value</span>
-<span class=x>HeaderField2: header-field-value2</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Response;
+$request = Response::fromString(&lt;&lt;&lt;EOS
+HTTP/1.0 200 OK
+HeaderField1: header-field-value
+HeaderField2: header-field-value2
 
-<span class=x>&lt;html&gt;</span>
-<span class=x>&lt;body&gt;</span>
-<span class=x>    Hello World</span>
-<span class=x>&lt;/body&gt;</span>
-<span class=x>&lt;/html&gt;</span>
-<span class=x>EOS);</span>
-</pre></div></p>
+&lt;html&gt;
+&lt;body&gt;
+    Hello World
+&lt;/body&gt;
+&lt;/html&gt;
+EOS);</code></pre>
 <h3>Generating a formatted HTTP Response from a Response object</h3>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Response;</span>
-<span class=x>$response = new Response();</span>
-<span class=x>$response-&gt;setStatusCode(Response::STATUS_CODE_200);</span>
-<span class=x>$response-&gt;getHeaders()-&gt;addHeaders([</span>
-<span class=x>    &#39;HeaderField1&#39; =&gt; &#39;header-field-value&#39;,</span>
-<span class=x>    &#39;HeaderField2&#39; =&gt; &#39;header-field-value2&#39;,</span>
-<span class=x>]);</span>
-<span class=x>$response-&gt;setContent(&lt;&lt;&lt;EOS</span>
-<span class=x>&lt;html&gt;</span>
-<span class=x>&lt;body&gt;</span>
-<span class=x>    Hello World</span>
-<span class=x>&lt;/body&gt;</span>
-<span class=x>&lt;/html&gt;</span>
-<span class=x>EOS);</span>
-</pre></div></p>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Response;
+$response = new Response();
+$response-&gt;setStatusCode(Response::STATUS_CODE_200);
+$response-&gt;getHeaders()-&gt;addHeaders([
+    'HeaderField1' =&gt; 'header-field-value',
+    'HeaderField2' =&gt; 'header-field-value2',
+]);
+$response-&gt;setContent(&lt;&lt;&lt;EOS
+&lt;html&gt;
+&lt;body&gt;
+    Hello World
+&lt;/body&gt;
+&lt;/html&gt;
+EOS);</code></pre>
 
 
 
@@ -654,9 +654,10 @@ fully qualified class names and/or namespaces:</p>
             <div class="col-md-7 offset-md-2">
                 <h5>Laminas</h5>
                 <ul>
-                    <li>Laminas Project <a href="https://getlaminas.org/">Components and MVC for Enterprise Applications</a></li>
-                    <li>Mezzio <a href="https://docs.mezzio.dev/">PSR-15 Middleware in Minutes</a></li>
-                    <li>Laminas API Tools: <a href="https://api-tools.getlaminas.org/">Build RESTful APIs in minutes</a></li>
+                    <li>Laminas Project <a href="https://getlaminas.org/">The new foundation for the community-supported, open source continuation of Zend Framework</a></li>
+                    <li>Laminas Components and MVC <a href="https://docs.laminas.dev/">Components and MVC for enterprise applications</a></li>
+                    <li>Mezzio <a href="https://docs.mezzio.dev/">PSR-15 middleware in minutes</a></li>
+                    <li>Laminas API Tools <a href="https://api-tools.getlaminas.org/">Build RESTful APIs in minutes</a></li>
                 </ul>
             </div>
         </div>
@@ -693,7 +694,7 @@ fully qualified class names and/or namespaces:</p>
                 <h4 class="footer__headline">License</h4>
                 <p>
                     Code licensed under <a
-                        href="https://github.com/laminas/laminas-http//blob/master/LICENSE.md">BSD 3-Clause</a>.
+                        href="https://github.com/laminas/laminas-http/blob/master/LICENSE.md">BSD 3-Clause</a>.
                 </p>
             </div>
 
@@ -702,8 +703,8 @@ fully qualified class names and/or namespaces:</p>
                 <h4 class="footer__headline">Copyright</h4>
                 <p>
                     <!--Built with love by the Laminas team with the help of our
-                    <a href="https://github.com/laminas/laminas-http//graphs/contributors">contributors</a>.<br>-->
-                    &copy; 2019-2019 by <a href="https://getlaminas.org/">The Laminas Project</a>.
+                    <a href="https://github.com/laminas/laminas-http/graphs/contributors">contributors</a>.<br>-->
+                    &copy; 2019-2020 by <a href="https://getlaminas.org/">The Laminas Project</a>.
                 </p>
             </div>
         </div>

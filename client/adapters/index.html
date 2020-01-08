@@ -20,7 +20,7 @@
     <div class="container">
         
         <a class="logo-link navbar-brand offset-md-2" href="https://getlaminas.org/" data-tooltip data-placement="bottom" title="Go to the Laminas homepage">
-            <img src="../../img/laminas-foundation-white.svg" height="28" alt="Lamnias">
+            <img src="../../img/laminas-foundation-white.svg" height="28" alt="Laminas">
         </a>
         <a class="navbar-title" href="https://docs.laminas.dev/" data-tooltip data-placement="bottom" title="Go to the Laminas Documentation">
             Documentation
@@ -36,13 +36,17 @@
             
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a href="https://getlaminas.org/about" class="nav-link">About</a>
-                </li>
-                <li class="nav-item">
-                    <a href="https://getlaminas.org/blog" class="nav-link">Blog</a>
-                </li>
-                <li class="nav-item">
-                    <a href="https://docs.laminas.dev" class="nav-link">All Docs</a>
+                    <div class="dropdown">
+                        <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false">
+                            All Docs
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="https://docs.laminas.dev/components">Components</a>
+                            <a class="dropdown-item" href="https://docs.mezzio.dev/">Mezzio</a>
+                            <a class="dropdown-item" href="https://api-tools.getlaminas.org/docs">API Tools</a>
+                            <a class="dropdown-item" href="https://docs.laminas.dev/mvc">MVC</a>
+                        </div>
+                    </div>
                 </li>
                 <li class="nav-item">
                     <a href="https://getlaminas.org/participate" class="nav-link">Community</a>
@@ -404,24 +408,22 @@ connecting to requires special client setup. If so, please read the
 <a href="http://php.net/transports.inet">PHP manual chapter on SSL and TLS transport options</a>.</p>
 </blockquote>
 <h3>Changing the HTTPS transport layer</h3>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Client;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
 
-<span class=x>// Set the configuration parameters</span>
-<span class=x>$config = [</span>
-<span class=x>    &#39;adapter&#39;      =&gt; Client\Adapter\Socket::class,</span>
-<span class=x>    &#39;ssltransport&#39; =&gt; &#39;tls&#39;,</span>
-<span class=x>];</span>
+// Set the configuration parameters
+$config = [
+    'adapter'      =&gt; Client\Adapter\Socket::class,
+    'ssltransport' =&gt; 'tls',
+];
 
-<span class=x>// Instantiate a client object</span>
-<span class=x>$client = new Client(&#39;https://www.example.com&#39;, $config);</span>
+// Instantiate a client object
+$client = new Client('https://www.example.com', $config);
 
-<span class=x>// The following request will be sent over a TLS secure connection.</span>
-<span class=x>$response = $client-&gt;send();</span>
-</pre></div></p>
+// The following request will be sent over a TLS secure connection.
+$response = $client-&gt;send();</code></pre>
 <p>The result of the example above will be similar to opening a TCP connection
 using the following PHP command:</p>
-<p> <div class=codehilite><pre><span></span><span class=x>fsockopen(&#39;tls://www.example.com&#39;, 443);</span>
-</pre></div></p>
+<pre class=codehilite><code class=language-php>fsockopen('tls://www.example.com', 443);</code></pre>
 <h3>Customizing and accessing the Socket adapter stream context</h3>
 <p><code>Laminas\Http\Client\Adapter\Socket</code> provides direct access to the underlying
 <a href="http://php.net/stream.contexts">stream context</a> used to connect to the remote
@@ -442,48 +444,47 @@ stream, and to the SSL wrapper in case of HTTPS connections.</p>
   using regular PHP stream context functions.</li>
 </ul>
 <h4>Setting stream context options for the Socket adapter</h4>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Client;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
 
-<span class=x>// Array of options</span>
-<span class=x>$options = [</span>
-<span class=x>    &#39;socket&#39; =&gt; [</span>
-<span class=x>        // Bind local socket side to a specific interface</span>
-<span class=x>        &#39;bindto&#39; =&gt; &#39;10.1.2.3:50505&#39;,</span>
-<span class=x>    ],</span>
-<span class=x>    &#39;ssl&#39;    =&gt; [</span>
-<span class=x>        // Verify server side certificate,</span>
-<span class=x>        // do not accept invalid or self-signed SSL certificates</span>
-<span class=x>        &#39;verify_peer&#39;       =&gt; true,</span>
-<span class=x>        &#39;allow_self_signed&#39; =&gt; false,</span>
+// Array of options
+$options = [
+    'socket' =&gt; [
+        // Bind local socket side to a specific interface
+        'bindto' =&gt; '10.1.2.3:50505',
+    ],
+    'ssl'    =&gt; [
+        // Verify server side certificate,
+        // do not accept invalid or self-signed SSL certificates
+        'verify_peer'       =&gt; true,
+        'allow_self_signed' =&gt; false,
 
-<span class=x>        // Capture the peer&#39;s certificate</span>
-<span class=x>        &#39;capture_peer_cert&#39; =&gt; true,</span>
-<span class=x>    ],</span>
-<span class=x>];</span>
+        // Capture the peer's certificate
+        'capture_peer_cert' =&gt; true,
+    ],
+];
 
-<span class=x>// Create an adapter object and attach it to the HTTP client:</span>
-<span class=x>$adapter = new Client\Adapter\Socket();</span>
-<span class=x>$client  = new Client();</span>
-<span class=x>$client-&gt;setAdapter($adapter);</span>
+// Create an adapter object and attach it to the HTTP client:
+$adapter = new Client\Adapter\Socket();
+$client  = new Client();
+$client-&gt;setAdapter($adapter);
 
-<span class=x>// Method 1: pass the options array to setStreamContext():</span>
-<span class=x>$adapter-&gt;setStreamContext($options);</span>
+// Method 1: pass the options array to setStreamContext():
+$adapter-&gt;setStreamContext($options);
 
-<span class=x>// Method 2: create a stream context and pass it to setStreamContext():</span>
-<span class=x>$context = stream_context_create($options);</span>
-<span class=x>$adapter-&gt;setStreamContext($context);</span>
+// Method 2: create a stream context and pass it to setStreamContext():
+$context = stream_context_create($options);
+$adapter-&gt;setStreamContext($context);
 
-<span class=x>// Method 3: get the default stream context and set the options on it:</span>
-<span class=x>$context = $adapter-&gt;getStreamContext();</span>
-<span class=x>stream_context_set_option($context, $options);</span>
+// Method 3: get the default stream context and set the options on it:
+$context = $adapter-&gt;getStreamContext();
+stream_context_set_option($context, $options);
 
-<span class=x>// Now, perform the request:</span>
-<span class=x>$response = $client-&gt;send();</span>
+// Now, perform the request:
+$response = $client-&gt;send();
 
-<span class=x>// If everything went well, you can now access the context again:</span>
-<span class=x>$opts = stream_context_get_options($adapter-&gt;getStreamContext());</span>
-<span class=x>echo $opts[&#39;ssl&#39;][&#39;peer_certificate&#39;];</span>
-</pre></div></p>
+// If everything went well, you can now access the context again:
+$opts = stream_context_get_options($adapter-&gt;getStreamContext());
+echo $opts['ssl']['peer_certificate'];</code></pre>
 <blockquote>
 <h4>Set stream context options prior to requests</h4>
 <p>Note that you must set any stream context options before using the adapter to
@@ -555,22 +556,21 @@ authentication.  Possible values are similar to the ones accepted by the
 <code>Laminas\Http\Client::setAuth()</code> method. Currently, only basic authentication
 (<code>Laminas\Http\Client::AUTH_BASIC</code>) is supported.</p>
 <h3>Using Laminas\Http\Client behind a proxy server</h3>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Client;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
 
-<span class=x>// Set the configuration parameters</span>
-<span class=x>$config = [</span>
-<span class=x>    &#39;adapter&#39;    =&gt; Client\Adapter\Proxy::class,</span>
-<span class=x>    &#39;proxy_host&#39; =&gt; &#39;proxy.int.zend.com&#39;,</span>
-<span class=x>    &#39;proxy_port&#39; =&gt; 8000,</span>
-<span class=x>    &#39;proxy_user&#39; =&gt; &#39;shahar.e&#39;,</span>
-<span class=x>    &#39;proxy_pass&#39; =&gt; &#39;bananashaped&#39;,</span>
-<span class=x>];</span>
+// Set the configuration parameters
+$config = [
+    'adapter'    =&gt; Client\Adapter\Proxy::class,
+    'proxy_host' =&gt; 'proxy.int.zend.com',
+    'proxy_port' =&gt; 8000,
+    'proxy_user' =&gt; 'shahar.e',
+    'proxy_pass' =&gt; 'bananashaped',
+];
 
-<span class=x>// Instantiate a client object</span>
-<span class=x>$client = new Client(&#39;http://www.example.com&#39;, $config);</span>
+// Instantiate a client object
+$client = new Client('http://www.example.com', $config);
 
-<span class=x>// Continue working...</span>
-</pre></div></p>
+// Continue working...</code></pre>
 <p>As mentioned, if <code>proxy_host</code> is not set or is set to a blank string, the
 connection will fall back to a regular direct connection. This allows you to
 write your application in a way that allows a proxy to be used optionally,
@@ -596,14 +596,13 @@ prior to 7.30.0. It leads to problems with removing the Transfer-Encoding
 header from the response. We encourage to update libcurl.</p>
 </blockquote>
 <h3>Setting cURL options</h3>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Client;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
 
-<span class=x>$config = [</span>
-<span class=x>    &#39;adapter&#39;     =&gt; Client\Adapter\Curl::class,</span>
-<span class=x>    &#39;curloptions&#39; =&gt; [CURLOPT_FOLLOWLOCATION =&gt; true],</span>
-<span class=x>];</span>
-<span class=x>$client = new Client($uri, $config);</span>
-</pre></div></p>
+$config = [
+    'adapter'     =&gt; Client\Adapter\Curl::class,
+    'curloptions' =&gt; [CURLOPT_FOLLOWLOCATION =&gt; true],
+];
+$client = new Client($uri, $config);</code></pre>
 <p>By default, the cURL adapter is configured to behave exactly like the <code>Socket</code>
 adapter, and it also accepts the same configuration parameters as the <code>Socket</code>
 and <code>Proxy</code> adapters. You can also change the cURL options by either specifying
@@ -657,23 +656,22 @@ method are:</p>
 </table></div>
 <h3>Transfering files by handle</h3>
 <p>You can use cURL to transfer very large files over HTTP by filehandle.</p>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Client;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
 
-<span class=x>$putFileSize   = filesize(&#39;filepath&#39;);</span>
-<span class=x>$putFileHandle = fopen(&#39;filepath&#39;, &#39;r&#39;);</span>
+$putFileSize   = filesize('filepath');
+$putFileHandle = fopen('filepath', 'r');
 
-<span class=x>$adapter = new Client\Adapter\Curl();</span>
-<span class=x>$client = new Client();</span>
-<span class=x>$client-&gt;setAdapter($adapter);</span>
-<span class=x>$client-&gt;setMethod(&#39;PUT&#39;);</span>
-<span class=x>$adapter-&gt;setOptions([</span>
-<span class=x>    &#39;curloptions&#39; =&gt; [</span>
-<span class=x>        CURLOPT_INFILE     =&gt; $putFileHandle,</span>
-<span class=x>        CURLOPT_INFILESIZE =&gt; $putFileSize,</span>
-<span class=x>    ],</span>
-<span class=x>]);</span>
-<span class=x>$client-&gt;send();</span>
-</pre></div></p>
+$adapter = new Client\Adapter\Curl();
+$client = new Client();
+$client-&gt;setAdapter($adapter);
+$client-&gt;setMethod('PUT');
+$adapter-&gt;setOptions([
+    'curloptions' =&gt; [
+        CURLOPT_INFILE     =&gt; $putFileHandle,
+        CURLOPT_INFILESIZE =&gt; $putFileSize,
+    ],
+]);
+$client-&gt;send();</code></pre>
 <h2 id="the-test-adapter">The Test adapter</h2>
 <p>Testing code that relies on HTTP connections poses difficulties.  For example,
 testing an application that pulls an RSS feed from a remote server will require
@@ -690,34 +688,33 @@ an individual response to always return from any request; <code>addResponse()</c
 aggregating a sequence of responses. In both cases, responses are returned
 without performing actual HTTP requests.</p>
 <h3>Testing against a single HTTP response stub</h3>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Client;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
 
-<span class=x>// Instantiate a new adapter and client</span>
-<span class=x>$adapter = new Client\Adapter\Test();</span>
-<span class=x>$client  = new Client(</span>
-<span class=x>    &#39;http://www.example.com&#39;,</span>
-<span class=x>    [&#39;adapter&#39; =&gt; $adapter]</span>
-<span class=x>);</span>
+// Instantiate a new adapter and client
+$adapter = new Client\Adapter\Test();
+$client  = new Client(
+    'http://www.example.com',
+    ['adapter' =&gt; $adapter]
+);
 
-<span class=x>// Set the expected response</span>
-<span class=x>$adapter-&gt;setResponse(</span>
-<span class=x>    &quot;HTTP/1.1 200 OK\r\n&quot;</span>
-<span class=x>    . &quot;Content-type: text/xml\r\n&quot;</span>
-<span class=x>    . &quot;\r\n&quot;</span>
-<span class=x>    . &#39;</span><span class=cp>&lt;?</span><span class=nx>xml</span> <span class=nx>version</span><span class=o>=</span><span class=s2>&quot;1.0&quot;</span> <span class=nx>encoding</span><span class=o>=</span><span class=s2>&quot;UTF-8&quot;</span><span class=cp>?&gt;</span><span class=x>&#39;</span>
-<span class=x>    . &#39;&lt;rss version=&quot;2.0&quot; &#39;</span>
-<span class=x>    . &#39;     xmlns:content=&quot;http://purl.org/rss/1.0/modules/content/&quot;&#39;</span>
-<span class=x>    . &#39;     xmlns:wfw=&quot;http://wellformedweb.org/CommentAPI/&quot;&#39;</span>
-<span class=x>    . &#39;     xmlns:dc=&quot;http://purl.org/dc/elements/1.1/&quot;&gt;&#39;</span>
-<span class=x>    . &#39;  &lt;channel&gt;&#39;</span>
-<span class=x>    . &#39;    &lt;title&gt;Premature Optimization&lt;/title&gt;&#39;</span>
-<span class=x>    // and so on...</span>
-<span class=x>    . &#39;&lt;/rss&gt;&#39;</span>
-<span class=x>);</span>
+// Set the expected response
+$adapter-&gt;setResponse(
+    &quot;HTTP/1.1 200 OK\r\n&quot;
+    . &quot;Content-type: text/xml\r\n&quot;
+    . &quot;\r\n&quot;
+    . '&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;'
+    . '&lt;rss version=&quot;2.0&quot; '
+    . '     xmlns:content=&quot;http://purl.org/rss/1.0/modules/content/&quot;'
+    . '     xmlns:wfw=&quot;http://wellformedweb.org/CommentAPI/&quot;'
+    . '     xmlns:dc=&quot;http://purl.org/dc/elements/1.1/&quot;&gt;'
+    . '  &lt;channel&gt;'
+    . '    &lt;title&gt;Premature Optimization&lt;/title&gt;'
+    // and so on...
+    . '&lt;/rss&gt;'
+);
 
-<span class=x>$response = $client-&gt;send();</span>
-<span class=x>// .. continue parsing $response..</span>
-</pre></div></p>
+$response = $client-&gt;send();
+// .. continue parsing $response..</code></pre>
 <p>The above example shows how you can preset your HTTP client to return the
 response you need. Then, you can continue testing your own code, without being
 dependent on a network connection, the server's response, etc. In this case, the
@@ -728,41 +725,40 @@ performing multiple HTTP transactions. In this case, it's not possible to use
 <code>setResponse()</code> alone because there's no opportunity to set the next response(s)
 your program might need before returning to the caller.</p>
 <h3>Testing Against Multiple HTTP Response Stubs</h3>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Client;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
 
-<span class=x>// Instantiate a new adapter and client</span>
-<span class=x>$adapter = new Client\Adapter\Test();</span>
-<span class=x>$client = new Client(</span>
-<span class=x>    &#39;http://www.example.com&#39;,</span>
-<span class=x>    [&#39;adapter&#39; =&gt; $adapter]</span>
-<span class=x>);</span>
+// Instantiate a new adapter and client
+$adapter = new Client\Adapter\Test();
+$client = new Client(
+    'http://www.example.com',
+    ['adapter' =&gt; $adapter]
+);
 
-<span class=x>// Set the first expected response</span>
-<span class=x>$adapter-&gt;setResponse(</span>
-<span class=x>    &quot;HTTP/1.1 302 Found\r\n&quot;</span>
-<span class=x>    . &quot;Location: /\r\n&quot;</span>
-<span class=x>    . &quot;Content-Type: text/html\r\n&quot;</span>
-<span class=x>    . &quot;\r\n&quot;</span>
-<span class=x>    . &#39;&lt;html&gt;&#39;</span>
-<span class=x>    . &#39;  &lt;head&gt;&lt;title&gt;Moved&lt;/title&gt;&lt;/head&gt;&#39;</span>
-<span class=x>    . &#39;  &lt;body&gt;&lt;p&gt;This page has moved.&lt;/p&gt;&lt;/body&gt;&#39;</span>
-<span class=x>    . &#39;&lt;/html&gt;&#39;</span>
-<span class=x>);</span>
+// Set the first expected response
+$adapter-&gt;setResponse(
+    &quot;HTTP/1.1 302 Found\r\n&quot;
+    . &quot;Location: /\r\n&quot;
+    . &quot;Content-Type: text/html\r\n&quot;
+    . &quot;\r\n&quot;
+    . '&lt;html&gt;'
+    . '  &lt;head&gt;&lt;title&gt;Moved&lt;/title&gt;&lt;/head&gt;'
+    . '  &lt;body&gt;&lt;p&gt;This page has moved.&lt;/p&gt;&lt;/body&gt;'
+    . '&lt;/html&gt;'
+);
 
-<span class=x>// Set the next successive response</span>
-<span class=x>$adapter-&gt;addResponse(</span>
-<span class=x>    &quot;HTTP/1.1 200 OK\r\n&quot;</span>
-<span class=x>    . &quot;Content-Type: text/html\r\n&quot;</span>
-<span class=x>    . &quot;\r\n&quot;</span>
-<span class=x>    . &#39;&lt;html&gt;&#39;</span>
-<span class=x>    . &#39;  &lt;head&gt;&lt;title&gt;My Pet Store Home Page&lt;/title&gt;&lt;/head&gt;&#39;</span>
-<span class=x>    . &#39;  &lt;body&gt;&lt;p&gt;...&lt;/p&gt;&lt;/body&gt;&#39;</span>
-<span class=x>    . &#39;&lt;/html&gt;&#39;</span>
-<span class=x>);</span>
+// Set the next successive response
+$adapter-&gt;addResponse(
+    &quot;HTTP/1.1 200 OK\r\n&quot;
+    . &quot;Content-Type: text/html\r\n&quot;
+    . &quot;\r\n&quot;
+    . '&lt;html&gt;'
+    . '  &lt;head&gt;&lt;title&gt;My Pet Store Home Page&lt;/title&gt;&lt;/head&gt;'
+    . '  &lt;body&gt;&lt;p&gt;...&lt;/p&gt;&lt;/body&gt;'
+    . '&lt;/html&gt;'
+);
 
-<span class=x>// inject the http client object ($client) into your object</span>
-<span class=x>// being tested and then test your object&#39;s behavior below</span>
-</pre></div></p>
+// inject the http client object ($client) into your object
+// being tested and then test your object's behavior below</code></pre>
 <p>The <code>setResponse()</code> method clears any responses in the adapter's buffer and sets
 the first response that will be returned. The <code>addResponse()</code> method will add
 successive responses.</p>
@@ -783,28 +779,27 @@ your object under test and test its behavior.</p>
 <code>connect()</code> to throw an <code>Laminas\Http\Client\Adapter\Exception\RuntimeException</code>.
 This can be useful when our application caches content from an external site (in
 case the site goes down) and you want to test this feature.</p>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Client;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
 
-<span class=x>// Instantiate a new adapter and client</span>
-<span class=x>$adapter = new Client\Adapter\Test();</span>
-<span class=x>$client  = new Client(</span>
-<span class=x>    &#39;http://www.example.com&#39;,</span>
-<span class=x>    [&#39;adapter&#39; =&gt; $adapter]</span>
-<span class=x>);</span>
+// Instantiate a new adapter and client
+$adapter = new Client\Adapter\Test();
+$client  = new Client(
+    'http://www.example.com',
+    ['adapter' =&gt; $adapter]
+);
 
-<span class=x>// Force the next request to fail with an exception</span>
-<span class=x>$adapter-&gt;setNextRequestWillFail(true);</span>
+// Force the next request to fail with an exception
+$adapter-&gt;setNextRequestWillFail(true);
 
-<span class=x>try {</span>
-<span class=x>    // This call will result in an exception.</span>
-<span class=x>    $client-&gt;send();</span>
-<span class=x>} catch (Client\Adapter\Exception\RuntimeException $e) {</span>
-<span class=x>    // ...</span>
-<span class=x>}</span>
+try {
+    // This call will result in an exception.
+    $client-&gt;send();
+} catch (Client\Adapter\Exception\RuntimeException $e) {
+    // ...
+}
 
-<span class=x>// Further requests will work as expected until</span>
-<span class=x>// you call setNextRequestWillFail(true) again</span>
-</pre></div></p>
+// Further requests will work as expected until
+// you call setNextRequestWillFail(true) again</code></pre>
 <h2 id="creating-your-own-connection-adapters">Creating your own connection adapters</h2>
 <p><code>Laminas\Http\Client</code> has been designed so that you can create and use your own
 connection adapters. You could, for example, create a connection adapter that
@@ -814,85 +809,83 @@ them as needed in your application.</p>
 <code>Laminas\Http\Client\Adapter\AdapterInterface</code>. The following example shows the
 skeleton of a user-implemented adapter class. All the public functions defined
 in this example must be defined in your adapter as well.</p>
-<p> <div class=codehilite><pre><span></span><span class=x>namespace MyApp\Http\Client\Adapter;</span>
+<pre class=codehilite><code class=language-php>namespace MyApp\Http\Client\Adapter;
 
-<span class=x>use Laminas\Http\Client\Adapter\AdapterInterface;</span>
+use Laminas\Http\Client\Adapter\AdapterInterface;
 
-<span class=x>class BananaProtocol implements AdapterInterface</span>
-<span class=x>{</span>
-<span class=x>    /**</span>
-<span class=x>     * Set Adapter Options</span>
-<span class=x>     *</span>
-<span class=x>     * @param array $config</span>
-<span class=x>     */</span>
-<span class=x>    public function setOptions($config = [])</span>
-<span class=x>    {</span>
-<span class=x>        // This rarely changes - you should usually copy the</span>
-<span class=x>        // implementation in Laminas\Http\Client\Adapter\Socket.</span>
-<span class=x>    }</span>
+class BananaProtocol implements AdapterInterface
+{
+    /**
+     * Set Adapter Options
+     *
+     * @param array $config
+     */
+    public function setOptions($config = [])
+    {
+        // This rarely changes - you should usually copy the
+        // implementation in Laminas\Http\Client\Adapter\Socket.
+    }
 
-<span class=x>    /**</span>
-<span class=x>     * Connect to the remote server</span>
-<span class=x>     *</span>
-<span class=x>     * @param string  $host</span>
-<span class=x>     * @param int     $port</span>
-<span class=x>     * @param boolean $secure</span>
-<span class=x>     */</span>
-<span class=x>    public function connect($host, $port = 80, $secure = false)</span>
-<span class=x>    {</span>
-<span class=x>        // Set up the connection to the remote server</span>
-<span class=x>    }</span>
+    /**
+     * Connect to the remote server
+     *
+     * @param string  $host
+     * @param int     $port
+     * @param boolean $secure
+     */
+    public function connect($host, $port = 80, $secure = false)
+    {
+        // Set up the connection to the remote server
+    }
 
-<span class=x>    /**</span>
-<span class=x>     * Send request to the remote server</span>
-<span class=x>     *</span>
-<span class=x>     * @param string        $method</span>
-<span class=x>     * @param Laminas\Uri\Http $url</span>
-<span class=x>     * @param string        $http_ver</span>
-<span class=x>     * @param array         $headers</span>
-<span class=x>     * @param string        $body</span>
-<span class=x>     * @return string Request as text</span>
-<span class=x>     */</span>
-<span class=x>    public function write(</span>
-<span class=x>        $method,</span>
-<span class=x>        $url,</span>
-<span class=x>        $http_ver = &#39;1.1&#39;,</span>
-<span class=x>        $headers = [],</span>
-<span class=x>        $body = &#39;&#39;</span>
-<span class=x>    ) {</span>
-<span class=x>        // Send request to the remote server.</span>
-<span class=x>        // This function is expected to return the full request</span>
-<span class=x>        // (headers and body) as a string</span>
-<span class=x>    }</span>
+    /**
+     * Send request to the remote server
+     *
+     * @param string        $method
+     * @param Laminas\Uri\Http $url
+     * @param string        $http_ver
+     * @param array         $headers
+     * @param string        $body
+     * @return string Request as text
+     */
+    public function write(
+        $method,
+        $url,
+        $http_ver = '1.1',
+        $headers = [],
+        $body = ''
+    ) {
+        // Send request to the remote server.
+        // This function is expected to return the full request
+        // (headers and body) as a string
+    }
 
-<span class=x>    /**</span>
-<span class=x>     * Read response from server</span>
-<span class=x>     *</span>
-<span class=x>     * @return string</span>
-<span class=x>     */</span>
-<span class=x>    public function read()</span>
-<span class=x>    {</span>
-<span class=x>        // Read response from remote server and return it as a string</span>
-<span class=x>    }</span>
+    /**
+     * Read response from server
+     *
+     * @return string
+     */
+    public function read()
+    {
+        // Read response from remote server and return it as a string
+    }
 
-<span class=x>    /**</span>
-<span class=x>     * Close the connection to the server</span>
-<span class=x>     *</span>
-<span class=x>     */</span>
-<span class=x>    public function close()</span>
-<span class=x>    {</span>
-<span class=x>        // Close the connection to the remote server - called last.</span>
-<span class=x>    }</span>
-<span class=x>}</span>
-</pre></div></p>
+    /**
+     * Close the connection to the server
+     *
+     */
+    public function close()
+    {
+        // Close the connection to the remote server - called last.
+    }
+}</code></pre>
 <p>Use the adapter as you would any other:</p>
-<p> <div class=codehilite><pre><span></span><span class=x>use MyApp\Http\Client\Adapter\BananaProtocol;</span>
-<span class=x>use Laminas\Http\Client;</span>
+<pre class=codehilite><code class=language-php>use MyApp\Http\Client\Adapter\BananaProtocol;
+use Laminas\Http\Client;
 
-<span class=x>$client = new Client([</span>
-<span class=x>    &#39;adapter&#39; =&gt; BananaProtocol::class,</span>
-<span class=x>]);</span>
-</pre></div></p>
+$client = new Client([
+    'adapter' =&gt; BananaProtocol::class,
+]);</code></pre>
 
 
 
@@ -1065,9 +1058,10 @@ in this example must be defined in your adapter as well.</p>
             <div class="col-md-7 offset-md-2">
                 <h5>Laminas</h5>
                 <ul>
-                    <li>Laminas Project <a href="https://getlaminas.org/">Components and MVC for Enterprise Applications</a></li>
-                    <li>Mezzio <a href="https://docs.mezzio.dev/">PSR-15 Middleware in Minutes</a></li>
-                    <li>Laminas API Tools: <a href="https://api-tools.getlaminas.org/">Build RESTful APIs in minutes</a></li>
+                    <li>Laminas Project <a href="https://getlaminas.org/">The new foundation for the community-supported, open source continuation of Zend Framework</a></li>
+                    <li>Laminas Components and MVC <a href="https://docs.laminas.dev/">Components and MVC for enterprise applications</a></li>
+                    <li>Mezzio <a href="https://docs.mezzio.dev/">PSR-15 middleware in minutes</a></li>
+                    <li>Laminas API Tools <a href="https://api-tools.getlaminas.org/">Build RESTful APIs in minutes</a></li>
                 </ul>
             </div>
         </div>
@@ -1104,7 +1098,7 @@ in this example must be defined in your adapter as well.</p>
                 <h4 class="footer__headline">License</h4>
                 <p>
                     Code licensed under <a
-                        href="https://github.com/laminas/laminas-http//blob/master/LICENSE.md">BSD 3-Clause</a>.
+                        href="https://github.com/laminas/laminas-http/blob/master/LICENSE.md">BSD 3-Clause</a>.
                 </p>
             </div>
 
@@ -1113,8 +1107,8 @@ in this example must be defined in your adapter as well.</p>
                 <h4 class="footer__headline">Copyright</h4>
                 <p>
                     <!--Built with love by the Laminas team with the help of our
-                    <a href="https://github.com/laminas/laminas-http//graphs/contributors">contributors</a>.<br>-->
-                    &copy; 2019-2019 by <a href="https://getlaminas.org/">The Laminas Project</a>.
+                    <a href="https://github.com/laminas/laminas-http/graphs/contributors">contributors</a>.<br>-->
+                    &copy; 2019-2020 by <a href="https://getlaminas.org/">The Laminas Project</a>.
                 </p>
             </div>
         </div>

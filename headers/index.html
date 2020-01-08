@@ -20,7 +20,7 @@
     <div class="container">
         
         <a class="logo-link navbar-brand offset-md-2" href="https://getlaminas.org/" data-tooltip data-placement="bottom" title="Go to the Laminas homepage">
-            <img src="../img/laminas-foundation-white.svg" height="28" alt="Lamnias">
+            <img src="../img/laminas-foundation-white.svg" height="28" alt="Laminas">
         </a>
         <a class="navbar-title" href="https://docs.laminas.dev/" data-tooltip data-placement="bottom" title="Go to the Laminas Documentation">
             Documentation
@@ -36,13 +36,17 @@
             
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a href="https://getlaminas.org/about" class="nav-link">About</a>
-                </li>
-                <li class="nav-item">
-                    <a href="https://getlaminas.org/blog" class="nav-link">Blog</a>
-                </li>
-                <li class="nav-item">
-                    <a href="https://docs.laminas.dev" class="nav-link">All Docs</a>
+                    <div class="dropdown">
+                        <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false">
+                            All Docs
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="https://docs.laminas.dev/components">Components</a>
+                            <a class="dropdown-item" href="https://docs.mezzio.dev/">Mezzio</a>
+                            <a class="dropdown-item" href="https://api-tools.getlaminas.org/docs">API Tools</a>
+                            <a class="dropdown-item" href="https://docs.laminas.dev/mvc">MVC</a>
+                        </div>
+                    </div>
                 </li>
                 <li class="nav-item">
                     <a href="https://getlaminas.org/participate" class="nav-link">Community</a>
@@ -308,30 +312,28 @@ header type.</p>
 <h2 id="quick-start">Quick Start</h2>
 <p>The quickest way to get started interacting with header objects is by retrieving
 an already populated <code>Headers</code> container from a request or response instance.</p>
-<p> <div class=codehilite><pre><span></span><span class=x>// $client is an instance of Laminas\Http\Client</span>
+<pre class=codehilite><code class=language-php>// $client is an instance of Laminas\Http\Client
 
-<span class=x>// You can retrieve the request headers by first retrieving</span>
-<span class=x>// the Request object and then calling getHeaders on it</span>
-<span class=x>$requestHeaders  = $client-&gt;getRequest()-&gt;getHeaders();</span>
+// You can retrieve the request headers by first retrieving
+// the Request object and then calling getHeaders on it
+$requestHeaders  = $client-&gt;getRequest()-&gt;getHeaders();
 
-<span class=x>// The same method also works for retrieving Response headers</span>
-<span class=x>$responseHeaders = $client-&gt;getResponse()-&gt;getHeaders();</span>
-</pre></div></p>
+// The same method also works for retrieving Response headers
+$responseHeaders = $client-&gt;getResponse()-&gt;getHeaders();</code></pre>
 <p><code>Laminas\Http\Headers</code> can also extract headers from a string:</p>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Headers;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Headers;
 
-<span class=x>$headerString = &lt;&lt;&lt;EOB</span>
-<span class=x>Host: www.example.com</span>
-<span class=x>Content-Type: text/html</span>
-<span class=x>Content-Length: 1337</span>
-<span class=x>EOB;</span>
+$headerString = &lt;&lt;&lt;EOB
+Host: www.example.com
+Content-Type: text/html
+Content-Length: 1337
+EOB;
 
-<span class=x>$headers = Headers::fromString($headerString);</span>
-<span class=x>// $headers is now populated with three objects</span>
-<span class=x>//   (1) Laminas\Http\Header\Host</span>
-<span class=x>//   (2) Laminas\Http\Header\ContentType</span>
-<span class=x>//   (3) Laminas\Http\Header\ContentLength</span>
-</pre></div></p>
+$headers = Headers::fromString($headerString);
+// $headers is now populated with three objects
+//   (1) Laminas\Http\Header\Host
+//   (2) Laminas\Http\Header\ContentType
+//   (3) Laminas\Http\Header\ContentLength</code></pre>
 <p>Now that you have an instance of <code>Laminas\Http\Headers</code>, you can manipulate the
 individual headers it contains using the provided public API methods outlined in
 the <a href="#available-methods">Available Methods</a> section.</p>
@@ -837,13 +839,12 @@ namespace, as well as any specific methods they contain. Each class implements
 content from a list of trusted media providers (including a content distribution
 network), and scripts only from a server under its control hosting sanitized
 Javacript:</p>
-<p> <div class=codehilite><pre><span></span><span class=x>// http://www.w3.org/TR/2012/CR-CSP-20121115/#sample-policy-definitions</span>
-<span class=x>$csp = new ContentSecurityPolicy();</span>
-<span class=x>$csp-&gt;setDirective(&#39;default-src&#39;, []); // No sources</span>
-<span class=x>$csp-&gt;setDirective(&#39;img-src&#39;, [&#39;*&#39;]);</span>
-<span class=x>$csp-&gt;setDirective(&#39;object-src&#39;, [&#39;media1.example.com&#39;, &#39;media2.example.com&#39;, &#39;*.cdn.example.com&#39;]);</span>
-<span class=x>$csp-&gt;setDirective(&#39;script-src&#39;, [&#39;trustedscripts.example.com&#39;]);</span>
-</pre></div></p>
+<pre class=codehilite><code class=language-php>// http://www.w3.org/TR/2012/CR-CSP-20121115/#sample-policy-definitions
+$csp = new ContentSecurityPolicy();
+$csp-&gt;setDirective('default-src', []); // No sources
+$csp-&gt;setDirective('img-src', ['*']);
+$csp-&gt;setDirective('object-src', ['media1.example.com', 'media2.example.com', '*.cdn.example.com']);
+$csp-&gt;setDirective('script-src', ['trustedscripts.example.com']);</code></pre>
 <h3>ContentTransferEncoding</h3>
 <p>No additional methods.</p>
 <h3>ContentType</h3>
@@ -1136,19 +1137,18 @@ Javacript:</p>
 string when multiple values are present.</p>
 <h2 id="examples">Examples</h2>
 <h3>Retrieving headers from a Headers object</h3>
-<p> <div class=codehilite><pre><span></span><span class=x>// $client is an instance of Laminas\Http\Client</span>
-<span class=x>$response = $client-&gt;send();</span>
-<span class=x>$headers = $response-&gt;getHeaders();</span>
+<pre class=codehilite><code class=language-php>// $client is an instance of Laminas\Http\Client
+$response = $client-&gt;send();
+$headers = $response-&gt;getHeaders();
 
-<span class=x>// We can check if the Request contains a specific header by</span>
-<span class=x>// using the ``has`` method. Returns boolean ``TRUE`` if at least</span>
-<span class=x>// one matching header found, and ``FALSE`` otherwise</span>
-<span class=x>$headers-&gt;has(&#39;Content-Type&#39;);</span>
+// We can check if the Request contains a specific header by
+// using the ``has`` method. Returns boolean ``TRUE`` if at least
+// one matching header found, and ``FALSE`` otherwise
+$headers-&gt;has('Content-Type');
 
-<span class=x>// We can retrieve all instances of a specific header by using</span>
-<span class=x>// the ``get`` method:</span>
-<span class=x>$contentTypeHeaders = $headers-&gt;get(&#39;Content-Type&#39;);</span>
-</pre></div></p>
+// We can retrieve all instances of a specific header by using
+// the ``get`` method:
+$contentTypeHeaders = $headers-&gt;get('Content-Type');</code></pre>
 <p>There are three possibilities for the return value of the above call to the <code>get</code> method:</p>
 <ul>
 <li>If no <code>Content-Type</code> header was set in the <code>Request</code>, <code>get</code> will return <code>false</code>.</li>
@@ -1159,63 +1159,61 @@ string when multiple values are present.</p>
   instance per header.</li>
 </ul>
 <h3>Adding headers to a Headers object</h3>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Header;</span>
-<span class=x>use Laminas\Http\Headers;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Header;
+use Laminas\Http\Headers;
 
-<span class=x>$headers = new Headers();</span>
+$headers = new Headers();
 
-<span class=x>// We can directly add any object that implements Laminas\Http\Header\HeaderInterface</span>
-<span class=x>$typeHeader = Header\ContentType::fromString(&#39;Content-Type: text/html&#39;);</span>
-<span class=x>$headers-&gt;addHeader($typeHeader);</span>
+// We can directly add any object that implements Laminas\Http\Header\HeaderInterface
+$typeHeader = Header\ContentType::fromString('Content-Type: text/html');
+$headers-&gt;addHeader($typeHeader);
 
-<span class=x>// We can add headers using the raw string representation, either</span>
-<span class=x>// passing the header name and value as separate arguments...</span>
-<span class=x>$headers-&gt;addHeaderLine(&#39;Content-Type&#39;, &#39;text/html&#39;);</span>
+// We can add headers using the raw string representation, either
+// passing the header name and value as separate arguments...
+$headers-&gt;addHeaderLine('Content-Type', 'text/html');
 
-<span class=x>// .. or we can pass the entire header as the only argument</span>
-<span class=x>$headers-&gt;addHeaderLine(&#39;Content-Type: text/html&#39;);</span>
+// .. or we can pass the entire header as the only argument
+$headers-&gt;addHeaderLine('Content-Type: text/html');
 
-<span class=x>// We can also add headers in bulk using addHeaders, which accepts</span>
-<span class=x>// an array of individual header definitions that can be in any of</span>
-<span class=x>// the accepted formats outlined below:</span>
-<span class=x>$headers-&gt;addHeaders([</span>
-<span class=x>    // An object implementing Header\HeaderInterface</span>
-<span class=x>    Header\ContentType::fromString(&#39;Content-Type: text/html&#39;),</span>
+// We can also add headers in bulk using addHeaders, which accepts
+// an array of individual header definitions that can be in any of
+// the accepted formats outlined below:
+$headers-&gt;addHeaders([
+    // An object implementing Header\HeaderInterface
+    Header\ContentType::fromString('Content-Type: text/html'),
 
-<span class=x>    // A raw header string</span>
-<span class=x>    &#39;Content-Type: text/html&#39;,</span>
+    // A raw header string
+    'Content-Type: text/html',
 
-<span class=x>    // We can also pass the header name as the array key and the</span>
-<span class=x>    // header content as that array key&#39;s value</span>
-<span class=x>    &#39;Content-Type&#39; =&gt; &#39;text/html&#39;,</span>
-<span class=x>]);</span>
-</pre></div></p>
+    // We can also pass the header name as the array key and the
+    // header content as that array key's value
+    'Content-Type' =&gt; 'text/html',
+]);</code></pre>
 <h3>Removing headers from a Headers object</h3>
 <p>We can remove all headers of a specific type using the <code>removeHeader</code> method,
 which accepts a single object implementing <code>Laminas\Http\Header\HeaderInterface</code></p>
-<p> <div class=codehilite><pre><span></span><span class=x>use ArrayIterator;</span>
-<span class=x>use Laminas\Http\Header\HeaderInterface;</span>
+<pre class=codehilite><code class=language-php>use ArrayIterator;
+use Laminas\Http\Header\HeaderInterface;
 
-<span class=x>// $headers is a pre-configured instance of Laminas\Http\Headers</span>
+// $headers is a pre-configured instance of Laminas\Http\Headers
 
-<span class=x>// We can also delete individual headers or groups of headers</span>
-<span class=x>$matches = $headers-&gt;get(&#39;Content-Type&#39;);</span>
+// We can also delete individual headers or groups of headers
+$matches = $headers-&gt;get('Content-Type');
 
-<span class=x>if ($matches instanceof ArrayIterator) {</span>
-<span class=x>    // If more than one header was found, iterate over the collection</span>
-<span class=x>    // and remove each one individually</span>
-<span class=x>    foreach ($headers as $header) {</span>
-<span class=x>        $headers-&gt;removeHeader($header);</span>
-<span class=x>    }</span>
-<span class=x>} elseif ($matches instanceof HeaderInterface) {</span>
-<span class=x>    // If only a single header was found, remove it directly</span>
-<span class=x>    $headers-&gt;removeHeader($header);</span>
-<span class=x>}</span>
+if ($matches instanceof ArrayIterator) {
+    // If more than one header was found, iterate over the collection
+    // and remove each one individually
+    foreach ($headers as $header) {
+        $headers-&gt;removeHeader($header);
+    }
+} elseif ($matches instanceof HeaderInterface) {
+    // If only a single header was found, remove it directly
+    $headers-&gt;removeHeader($header);
+}
 
-<span class=x>// In addition to this, we can clear all the headers currently stored in</span>
-<span class=x>// the container by calling the clearHeaders() method</span>
-<span class=x>$matches-&gt;clearHeaders();</span>
-</pre></div></p>
+// In addition to this, we can clear all the headers currently stored in
+// the container by calling the clearHeaders() method
+$matches-&gt;clearHeaders();</code></pre>
 
 
 
@@ -1388,9 +1386,10 @@ which accepts a single object implementing <code>Laminas\Http\Header\HeaderInter
             <div class="col-md-7 offset-md-2">
                 <h5>Laminas</h5>
                 <ul>
-                    <li>Laminas Project <a href="https://getlaminas.org/">Components and MVC for Enterprise Applications</a></li>
-                    <li>Mezzio <a href="https://docs.mezzio.dev/">PSR-15 Middleware in Minutes</a></li>
-                    <li>Laminas API Tools: <a href="https://api-tools.getlaminas.org/">Build RESTful APIs in minutes</a></li>
+                    <li>Laminas Project <a href="https://getlaminas.org/">The new foundation for the community-supported, open source continuation of Zend Framework</a></li>
+                    <li>Laminas Components and MVC <a href="https://docs.laminas.dev/">Components and MVC for enterprise applications</a></li>
+                    <li>Mezzio <a href="https://docs.mezzio.dev/">PSR-15 middleware in minutes</a></li>
+                    <li>Laminas API Tools <a href="https://api-tools.getlaminas.org/">Build RESTful APIs in minutes</a></li>
                 </ul>
             </div>
         </div>
@@ -1427,7 +1426,7 @@ which accepts a single object implementing <code>Laminas\Http\Header\HeaderInter
                 <h4 class="footer__headline">License</h4>
                 <p>
                     Code licensed under <a
-                        href="https://github.com/laminas/laminas-http//blob/master/LICENSE.md">BSD 3-Clause</a>.
+                        href="https://github.com/laminas/laminas-http/blob/master/LICENSE.md">BSD 3-Clause</a>.
                 </p>
             </div>
 
@@ -1436,8 +1435,8 @@ which accepts a single object implementing <code>Laminas\Http\Header\HeaderInter
                 <h4 class="footer__headline">Copyright</h4>
                 <p>
                     <!--Built with love by the Laminas team with the help of our
-                    <a href="https://github.com/laminas/laminas-http//graphs/contributors">contributors</a>.<br>-->
-                    &copy; 2019-2019 by <a href="https://getlaminas.org/">The Laminas Project</a>.
+                    <a href="https://github.com/laminas/laminas-http/graphs/contributors">contributors</a>.<br>-->
+                    &copy; 2019-2020 by <a href="https://getlaminas.org/">The Laminas Project</a>.
                 </p>
             </div>
         </div>

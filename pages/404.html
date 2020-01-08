@@ -6,10 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="HTTP message and header abstractions, and HTTP client implementation. (Not a PSR-7 implementation; see Diactoros for PSR-7 support.">  
-    <link rel="canonical" href="https://docs.laminas.dev/client/static/">
     <link rel="shortcut icon" href="/img/trademark-laminas-foundation-rgb.svg">
 
-    <title>Static Client - laminas-http - Laminas Docs</title>
+    <title>laminas-http - Laminas Docs</title>
 
     <link rel="stylesheet" href="/css/styles.css">
 </head>
@@ -20,7 +19,7 @@
     <div class="container">
         
         <a class="logo-link navbar-brand offset-md-2" href="https://getlaminas.org/" data-tooltip data-placement="bottom" title="Go to the Laminas homepage">
-            <img src="../../img/laminas-foundation-white.svg" height="28" alt="Laminas">
+            <img src="../img/laminas-foundation-white.svg" height="28" alt="Laminas">
         </a>
         <a class="navbar-title" href="https://docs.laminas.dev/" data-tooltip data-placement="bottom" title="Go to the Laminas Documentation">
             Documentation
@@ -59,7 +58,7 @@
                     
     <div class="subnavigation hidden-print">
         <h4 class="subnavigation__title">
-            <a href="../..">laminas-http</a>
+            <a href="../.">laminas-http</a>
         </h4>
 
         <h5 class="subnavigation__subtitle">Table of Contents</h5>
@@ -74,7 +73,7 @@
                     
                         
                             <li class="subnavigation__list-item ">
-                                <a href="../../intro/" class="subnavigation__link">Introduction</a>
+                                <a href="../intro/" class="subnavigation__link">Introduction</a>
                             </li>
                         
                     
@@ -93,19 +92,19 @@
                                     
                                         
     <li class="subnavigation__list-item ">
-        <a href="../../request/" class="subnavigation__link">Request</a>
+        <a href="../request/" class="subnavigation__link">Request</a>
     </li>
 
                                     
                                         
     <li class="subnavigation__list-item ">
-        <a href="../../response/" class="subnavigation__link">Response</a>
+        <a href="../response/" class="subnavigation__link">Response</a>
     </li>
 
                                     
                                         
     <li class="subnavigation__list-item ">
-        <a href="../../headers/" class="subnavigation__link">Headers</a>
+        <a href="../headers/" class="subnavigation__link">Headers</a>
     </li>
 
                                     
@@ -116,31 +115,31 @@
             
                 
     <li class="subnavigation__list-item ">
-        <a href="../intro/" class="subnavigation__link">Intro</a>
+        <a href="../client/intro/" class="subnavigation__link">Intro</a>
     </li>
 
             
                 
     <li class="subnavigation__list-item ">
-        <a href="../adapters/" class="subnavigation__link">Adapters</a>
-    </li>
-
-            
-                
-    <li class="subnavigation__list-item subnavigation__list-item--active">
-        <a href="./" class="subnavigation__link">Static Client</a>
+        <a href="../client/adapters/" class="subnavigation__link">Adapters</a>
     </li>
 
             
                 
     <li class="subnavigation__list-item ">
-        <a href="../cookies/" class="subnavigation__link">Cookie Persistence</a>
+        <a href="../client/static/" class="subnavigation__link">Static Client</a>
     </li>
 
             
                 
     <li class="subnavigation__list-item ">
-        <a href="../advanced/" class="subnavigation__link">Advanced</a>
+        <a href="../client/cookies/" class="subnavigation__link">Cookie Persistence</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../client/advanced/" class="subnavigation__link">Advanced</a>
     </li>
 
             
@@ -213,159 +212,21 @@
         <div class="row">
             <div class="col-md-2 col-sm-12">
                 
-    
-
-    
-    
-        <div class="toc">
-            <h6 class="toc__headline">On this page</h6>
-            <ul class="toc__list">
-                
-                    <li class="toc__entry">
-                        <a href="#quick-start" class="toc__link">Quick Start</a>
-                    </li>
-                
-                    <li class="toc__entry">
-                        <a href="#available-methods" class="toc__link">Available Methods</a>
-                    </li>
-                
-            </ul>
-        </div>
-    
-
             </div>
             <div class="col-md-7 col-sm-12 content" role="main" data-spy="scroll" data-target=".toc">
                 
-                    <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        
-            <li class="breadcrumb-item"><a href="">Overview</a></li>
 
-            
-                <li class="breadcrumb-item"><a href="../..">laminas-http</a></li>
+<h1 class="content__title">404</h1>
+<blockquote>
+    <h3>Something went wrong!</h3>
+    <p>
+        We're sorry, but the page you are looking for does not exist.
+    </p>
+</blockquote>
 
-                
-                    
-                        
-                        
-                            <li class="breadcrumb-item">Reference</li>
-                        
-                    
-                
-                    
-                        
-                        
-                            <li class="breadcrumb-item">Client</li>
-                        
-                    
-                
-
-                <li class="breadcrumb-item active" aria-current="page">Static Client</li>
-            
-        
-    </ol>
-</nav>
+<a href="../." class="btn btn-default" role="button">Go to homepage</a>
 
 
-
-
-
-
-    
-    
-        <h2 class="chapter__headline">Client</h2>
-    
-
-    <h1 id="http-client-static-usage">HTTP Client - Static Usage</h1>
-<p>laminas-http provides another client implementation, <code>Laminas\Http\ClientStatic</code>, a
-static HTTP client which exposes a simplified API for quickly performing one-off <code>GET</code>
-and <code>POST</code> operations.</p>
-<h2 id="quick-start">Quick Start</h2>
-<pre class=codehilite><code class=language-php>use Laminas\Http\ClientStatic;
-
-// Simple GET request
-$response = ClientStatic::get('http://example.org');
-
-// More complex GET request, specifying query string 'foo=bar' and adding a
-// custom header to request JSON data be returned (Accept: application/json):
-$response = ClientStatic::get(
-    'http://example.org',
-    ['foo' =&gt; 'bar'],
-    ['Accept' =&gt; 'application/json']
-);
-
-// We can also do a POST request using the same format. Here we POST
-// login credentials (username/password) to a login page:
-$response = ClientStatic::post(
-    'https://example.org/login.php',
-    [
-        'username' =&gt; 'foo',
-        'password' =&gt; 'bar',
-    ]
-);</code></pre>
-<h2 id="available-methods">Available Methods</h2>
-<h3>get()</h3>
-<pre class=codehilite><code class=language-php>get(
-    string $url,
-    array $query = [],
-    array $headers = [],
-    mixed $body = null,
-    $clientOptions = null
-) : Response</code></pre>
-<p>Perform an HTTP <code>GET</code> request using the provided URL, query string variables,
-headers, and request body. The fifth parameter can be used to pass configuration
-options to the HTTP client instance.</p>
-<h3>post()</h3>
-<pre class=codehilite><code class=language-php>post(
-    string $url,
-    array $params,
-    array $headers = [],
-    mixed $body = null,
-    $clientOptions = null
-) : Response</code></pre>
-<p>Perform an HTTP <code>POST</code> request using the provided URL, parameters, headers, and
-request body. The fifth parameter can be used to pass configuration options to
-the HTTP client instance.</p>
-
-
-
-
-    <nav>
-    <ul class="page-nav hidden-print">
-
-        
-        <li class="page-nav__item">
-            
-                <a rel="prev" class="page-nav__link page-nav__link--prev" href="../adapters/">
-                    <i class="fa fa-chevron-left"></i> Previous
-                </a>
-            
-        </li>
-
-        
-        <li class="page-nav__item">
-            
-                <a rel="next" class="page-nav__link page-nav__link--next" href="../cookies/">
-                    Next <i class="fa fa-chevron-right"></i>
-                </a>
-            
-        </li>
-    </ul>
-</nav>
-
-
-
-
-    <div class="help-wanted">
-        <p>
-            Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/laminas/laminas-http/edit/master/docs/book/client/static.md" target="_blank" class="help-wanted__link">
-                Edit this page on GitHub!
-            </a>
-        </p>
-    </div>
-
-                
             </div>
             <div class="col-md-3 col-sm-12 sidebar">
                 
@@ -380,7 +241,7 @@ the HTTP client instance.</p>
                     
     <div class="subnavigation hidden-print">
         <h4 class="subnavigation__title">
-            <a href="../..">laminas-http</a>
+            <a href="../.">laminas-http</a>
         </h4>
 
         <h5 class="subnavigation__subtitle">Table of Contents</h5>
@@ -395,7 +256,7 @@ the HTTP client instance.</p>
                     
                         
                             <li class="subnavigation__list-item ">
-                                <a href="../../intro/" class="subnavigation__link">Introduction</a>
+                                <a href="../intro/" class="subnavigation__link">Introduction</a>
                             </li>
                         
                     
@@ -414,19 +275,19 @@ the HTTP client instance.</p>
                                     
                                         
     <li class="subnavigation__list-item ">
-        <a href="../../request/" class="subnavigation__link">Request</a>
+        <a href="../request/" class="subnavigation__link">Request</a>
     </li>
 
                                     
                                         
     <li class="subnavigation__list-item ">
-        <a href="../../response/" class="subnavigation__link">Response</a>
+        <a href="../response/" class="subnavigation__link">Response</a>
     </li>
 
                                     
                                         
     <li class="subnavigation__list-item ">
-        <a href="../../headers/" class="subnavigation__link">Headers</a>
+        <a href="../headers/" class="subnavigation__link">Headers</a>
     </li>
 
                                     
@@ -437,31 +298,31 @@ the HTTP client instance.</p>
             
                 
     <li class="subnavigation__list-item ">
-        <a href="../intro/" class="subnavigation__link">Intro</a>
+        <a href="../client/intro/" class="subnavigation__link">Intro</a>
     </li>
 
             
                 
     <li class="subnavigation__list-item ">
-        <a href="../adapters/" class="subnavigation__link">Adapters</a>
-    </li>
-
-            
-                
-    <li class="subnavigation__list-item subnavigation__list-item--active">
-        <a href="./" class="subnavigation__link">Static Client</a>
+        <a href="../client/adapters/" class="subnavigation__link">Adapters</a>
     </li>
 
             
                 
     <li class="subnavigation__list-item ">
-        <a href="../cookies/" class="subnavigation__link">Cookie Persistence</a>
+        <a href="../client/static/" class="subnavigation__link">Static Client</a>
     </li>
 
             
                 
     <li class="subnavigation__list-item ">
-        <a href="../advanced/" class="subnavigation__link">Advanced</a>
+        <a href="../client/cookies/" class="subnavigation__link">Cookie Persistence</a>
+    </li>
+
+            
+                
+    <li class="subnavigation__list-item ">
+        <a href="../client/advanced/" class="subnavigation__link">Advanced</a>
     </li>
 
             
@@ -556,12 +417,12 @@ the HTTP client instance.</p>
 </footer>
 
     <script>
-        let base_url = '../..',
+        let base_url = '..',
             project  = "components",
             siteName = 'laminas-http';
     </script>
     <script src="/js/scripts.js"></script>
-        <script src="../../search/main.js"></script>
+        <script src="../search/main.js"></script>
 
     
     <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">

@@ -20,7 +20,7 @@
     <div class="container">
         
         <a class="logo-link navbar-brand offset-md-2" href="https://getlaminas.org/" data-tooltip data-placement="bottom" title="Go to the Laminas homepage">
-            <img src="../img/laminas-foundation-white.svg" height="28" alt="Lamnias">
+            <img src="../img/laminas-foundation-white.svg" height="28" alt="Laminas">
         </a>
         <a class="navbar-title" href="https://docs.laminas.dev/" data-tooltip data-placement="bottom" title="Go to the Laminas Documentation">
             Documentation
@@ -36,13 +36,17 @@
             
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a href="https://getlaminas.org/about" class="nav-link">About</a>
-                </li>
-                <li class="nav-item">
-                    <a href="https://getlaminas.org/blog" class="nav-link">Blog</a>
-                </li>
-                <li class="nav-item">
-                    <a href="https://docs.laminas.dev" class="nav-link">All Docs</a>
+                    <div class="dropdown">
+                        <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false">
+                            All Docs
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="https://docs.laminas.dev/components">Components</a>
+                            <a class="dropdown-item" href="https://docs.mezzio.dev/">Mezzio</a>
+                            <a class="dropdown-item" href="https://api-tools.getlaminas.org/docs">API Tools</a>
+                            <a class="dropdown-item" href="https://docs.laminas.dev/mvc">MVC</a>
+                        </div>
+                    </div>
                 </li>
                 <li class="nav-item">
                     <a href="https://getlaminas.org/participate" class="nav-link">Community</a>
@@ -277,10 +281,9 @@
 <p><code>Laminas\Http\Request</code> is responsible for providing a fluent API that allows a
 developer to interact with all the various parts of an HTTP request.</p>
 <p>A typical HTTP request looks like this:</p>
-<p> <div class=codehilite><pre><span></span>| METHOD | URI | VERSION |
+<pre class=codehilite><code class=language-text>| METHOD | URI | VERSION |
 |        HEADERS         |
-|         BODY           |
-</pre></div></p>
+|         BODY           |</code></pre>
 <p>In simplified terms, the request consists of a method, URI, and HTTP version
 number; together, they make up the "Request Line." This line is followed by zero
 or more HTTP headers, which is followed by an empty line and then the request
@@ -293,28 +296,27 @@ specification of a HTTP request can be found in
 <p>Request objects can either be created from the provided <code>fromString()</code> factory,
 or, if you wish to have a completely empty object to start with, by
 manually instantiating the <code>Laminas\Http\Request</code> class with no parameters.</p>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Request;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Request;
 
-<span class=x>$request = Request::fromString(&lt;&lt;&lt;EOS</span>
-<span class=x>POST /foo HTTP/1.1</span>
-<span class=x>HeaderField1: header-field-value1</span>
-<span class=x>HeaderField2: header-field-value2</span>
+$request = Request::fromString(&lt;&lt;&lt;EOS
+POST /foo HTTP/1.1
+HeaderField1: header-field-value1
+HeaderField2: header-field-value2
 
-<span class=x>foo=bar</span>
-<span class=x>EOS</span>
-<span class=x>);</span>
+foo=bar
+EOS
+);
 
-<span class=x>// OR, the completely equivalent</span>
+// OR, the completely equivalent
 
-<span class=x>$request = new Request();</span>
-<span class=x>$request-&gt;setMethod(Request::METHOD_POST);</span>
-<span class=x>$request-&gt;setUri(&#39;/foo&#39;);</span>
-<span class=x>$request-&gt;getHeaders()-&gt;addHeaders([</span>
-<span class=x>    &#39;HeaderField1&#39; =&gt; &#39;header-field-value1&#39;,</span>
-<span class=x>    &#39;HeaderField2&#39; =&gt; &#39;header-field-value2&#39;,</span>
-<span class=x>]);</span>
-<span class=x>$request-&gt;getPost()-&gt;set(&#39;foo&#39;, &#39;bar&#39;);</span>
-</pre></div></p>
+$request = new Request();
+$request-&gt;setMethod(Request::METHOD_POST);
+$request-&gt;setUri('/foo');
+$request-&gt;getHeaders()-&gt;addHeaders([
+    'HeaderField1' =&gt; 'header-field-value1',
+    'HeaderField2' =&gt; 'header-field-value2',
+]);
+$request-&gt;getPost()-&gt;set('foo', 'bar');</code></pre>
 <h2 id="configuration-options">Configuration Options</h2>
 <p>No configuration options are available.</p>
 <h2 id="available-methods">Available Methods</h2>
@@ -481,62 +483,58 @@ fully qualified class names and/or namespaces:</p>
 </table></div>
 <h2 id="examples">Examples</h2>
 <h3>Generating a Request object from a string</h3>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Request;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Request;
 
-<span class=x>$string = &quot;GET /foo HTTP/1.1\r\n\r\nSome Content&quot;;</span>
-<span class=x>$request = Request::fromString($string);</span>
+$string = &quot;GET /foo HTTP/1.1\r\n\r\nSome Content&quot;;
+$request = Request::fromString($string);
 
-<span class=x>$request-&gt;getMethod();    // returns Request::METHOD_GET</span>
-<span class=x>$request-&gt;getUri();       // returns Laminas\Uri\Http object</span>
-<span class=x>$request-&gt;getUriString(); // returns &#39;/foo&#39;</span>
-<span class=x>$request-&gt;getVersion();   // returns Request::VERSION_11 or &#39;1.1&#39;</span>
-<span class=x>$request-&gt;getContent();   // returns &#39;Some Content&#39;</span>
-</pre></div></p>
+$request-&gt;getMethod();    // returns Request::METHOD_GET
+$request-&gt;getUri();       // returns Laminas\Uri\Http object
+$request-&gt;getUriString(); // returns '/foo'
+$request-&gt;getVersion();   // returns Request::VERSION_11 or '1.1'
+$request-&gt;getContent();   // returns 'Some Content'</code></pre>
 <h3>Retrieving and setting headers</h3>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Request;</span>
-<span class=x>use Laminas\Http\Header\Cookie;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Request;
+use Laminas\Http\Header\Cookie;
 
-<span class=x>$request = new Request();</span>
-<span class=x>$request-&gt;getHeaders()-&gt;get(&#39;Content-Type&#39;); // return content type</span>
-<span class=x>$request-&gt;getHeaders()-&gt;addHeader(new Cookie([&#39;foo&#39; =&gt; &#39;bar&#39;]));</span>
-<span class=x>foreach ($request-&gt;getHeaders() as $header) {</span>
-<span class=x>    printf(&quot;%s with value %s\n&quot;, $header-&gt;getFieldName(), $header-&gt;getFieldValue());</span>
-<span class=x>}</span>
-</pre></div></p>
+$request = new Request();
+$request-&gt;getHeaders()-&gt;get('Content-Type'); // return content type
+$request-&gt;getHeaders()-&gt;addHeader(new Cookie(['foo' =&gt; 'bar']));
+foreach ($request-&gt;getHeaders() as $header) {
+    printf(&quot;%s with value %s\n&quot;, $header-&gt;getFieldName(), $header-&gt;getFieldValue());
+}</code></pre>
 <h3>Retrieving and setting GET and POST values</h3>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Request;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Request;
 
-<span class=x>$request = new Request();</span>
+$request = new Request();
 
-<span class=x>// getPost() and getQuery() both return, by default, a Parameters object, which</span>
-<span class=x>// extends ArrayObject</span>
-<span class=x>$request-&gt;getPost()-&gt;foo = &#39;Foo value&#39;;</span>
-<span class=x>$request-&gt;getQuery()-&gt;bar = &#39;Bar value&#39;;</span>
-<span class=x>$request-&gt;getPost(&#39;foo&#39;); // returns &#39;Foo value&#39;</span>
-<span class=x>$request-&gt;getQuery()-&gt;offsetGet(&#39;bar&#39;); // returns &#39;Bar value&#39;</span>
-</pre></div></p>
+// getPost() and getQuery() both return, by default, a Parameters object, which
+// extends ArrayObject
+$request-&gt;getPost()-&gt;foo = 'Foo value';
+$request-&gt;getQuery()-&gt;bar = 'Bar value';
+$request-&gt;getPost('foo'); // returns 'Foo value'
+$request-&gt;getQuery()-&gt;offsetGet('bar'); // returns 'Bar value'</code></pre>
 <h3>Generating a formatted HTTP Request from a Request object</h3>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Request;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Request;
 
-<span class=x>$request = new Request();</span>
-<span class=x>$request-&gt;setMethod(Request::METHOD_POST);</span>
-<span class=x>$request-&gt;setUri(&#39;/foo&#39;);</span>
-<span class=x>$request-&gt;getHeaders()-&gt;addHeaders([</span>
-<span class=x>    &#39;HeaderField1&#39; =&gt; &#39;header-field-value1&#39;,</span>
-<span class=x>    &#39;HeaderField2&#39; =&gt; &#39;header-field-value2&#39;,</span>
-<span class=x>]);</span>
-<span class=x>$request-&gt;getPost()-&gt;set(&#39;foo&#39;, &#39;bar&#39;);</span>
-<span class=x>$request-&gt;setContent($request-&gt;getPost()-&gt;toString());</span>
-<span class=x>echo $request-&gt;toString();</span>
+$request = new Request();
+$request-&gt;setMethod(Request::METHOD_POST);
+$request-&gt;setUri('/foo');
+$request-&gt;getHeaders()-&gt;addHeaders([
+    'HeaderField1' =&gt; 'header-field-value1',
+    'HeaderField2' =&gt; 'header-field-value2',
+]);
+$request-&gt;getPost()-&gt;set('foo', 'bar');
+$request-&gt;setContent($request-&gt;getPost()-&gt;toString());
+echo $request-&gt;toString();
 
-<span class=x>/** Will produce:</span>
-<span class=x>POST /foo HTTP/1.1</span>
-<span class=x>HeaderField1: header-field-value1</span>
-<span class=x>HeaderField2: header-field-value2</span>
+/** Will produce:
+POST /foo HTTP/1.1
+HeaderField1: header-field-value1
+HeaderField2: header-field-value2
 
-<span class=x>foo=bar</span>
-<span class=x>*/</span>
-</pre></div></p>
+foo=bar
+*/</code></pre>
 
 
 
@@ -709,9 +707,10 @@ fully qualified class names and/or namespaces:</p>
             <div class="col-md-7 offset-md-2">
                 <h5>Laminas</h5>
                 <ul>
-                    <li>Laminas Project <a href="https://getlaminas.org/">Components and MVC for Enterprise Applications</a></li>
-                    <li>Mezzio <a href="https://docs.mezzio.dev/">PSR-15 Middleware in Minutes</a></li>
-                    <li>Laminas API Tools: <a href="https://api-tools.getlaminas.org/">Build RESTful APIs in minutes</a></li>
+                    <li>Laminas Project <a href="https://getlaminas.org/">The new foundation for the community-supported, open source continuation of Zend Framework</a></li>
+                    <li>Laminas Components and MVC <a href="https://docs.laminas.dev/">Components and MVC for enterprise applications</a></li>
+                    <li>Mezzio <a href="https://docs.mezzio.dev/">PSR-15 middleware in minutes</a></li>
+                    <li>Laminas API Tools <a href="https://api-tools.getlaminas.org/">Build RESTful APIs in minutes</a></li>
                 </ul>
             </div>
         </div>
@@ -748,7 +747,7 @@ fully qualified class names and/or namespaces:</p>
                 <h4 class="footer__headline">License</h4>
                 <p>
                     Code licensed under <a
-                        href="https://github.com/laminas/laminas-http//blob/master/LICENSE.md">BSD 3-Clause</a>.
+                        href="https://github.com/laminas/laminas-http/blob/master/LICENSE.md">BSD 3-Clause</a>.
                 </p>
             </div>
 
@@ -757,8 +756,8 @@ fully qualified class names and/or namespaces:</p>
                 <h4 class="footer__headline">Copyright</h4>
                 <p>
                     <!--Built with love by the Laminas team with the help of our
-                    <a href="https://github.com/laminas/laminas-http//graphs/contributors">contributors</a>.<br>-->
-                    &copy; 2019-2019 by <a href="https://getlaminas.org/">The Laminas Project</a>.
+                    <a href="https://github.com/laminas/laminas-http/graphs/contributors">contributors</a>.<br>-->
+                    &copy; 2019-2020 by <a href="https://getlaminas.org/">The Laminas Project</a>.
                 </p>
             </div>
         </div>

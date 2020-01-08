@@ -20,7 +20,7 @@
     <div class="container">
         
         <a class="logo-link navbar-brand offset-md-2" href="https://getlaminas.org/" data-tooltip data-placement="bottom" title="Go to the Laminas homepage">
-            <img src="../../img/laminas-foundation-white.svg" height="28" alt="Lamnias">
+            <img src="../../img/laminas-foundation-white.svg" height="28" alt="Laminas">
         </a>
         <a class="navbar-title" href="https://docs.laminas.dev/" data-tooltip data-placement="bottom" title="Go to the Laminas Documentation">
             Documentation
@@ -36,13 +36,17 @@
             
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a href="https://getlaminas.org/about" class="nav-link">About</a>
-                </li>
-                <li class="nav-item">
-                    <a href="https://getlaminas.org/blog" class="nav-link">Blog</a>
-                </li>
-                <li class="nav-item">
-                    <a href="https://docs.laminas.dev" class="nav-link">All Docs</a>
+                    <div class="dropdown">
+                        <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false">
+                            All Docs
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="https://docs.laminas.dev/components">Components</a>
+                            <a class="dropdown-item" href="https://docs.mezzio.dev/">Mezzio</a>
+                            <a class="dropdown-item" href="https://api-tools.getlaminas.org/docs">API Tools</a>
+                            <a class="dropdown-item" href="https://docs.laminas.dev/mvc">MVC</a>
+                        </div>
+                    </div>
                 </li>
                 <li class="nav-item">
                     <a href="https://getlaminas.org/participate" class="nav-link">Community</a>
@@ -293,42 +297,39 @@ more details).</p>
 be either a string or a <code>Laminas\Uri\Http</code> object), and an array or <code>Traversable</code>
 object containing configuration options. The <code>send()</code> method is used to submit
 the request to the remote server, and a <code>Laminas\Http\Response</code> object is returned:</p>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Client;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
 
-<span class=x>$client = new Client(</span>
-<span class=x>    &#39;http://example.org&#39;,</span>
-<span class=x>    [</span>
-<span class=x>        &#39;maxredirects&#39; =&gt; 0,</span>
-<span class=x>        &#39;timeout&#39;      =&gt; 30,</span>
-<span class=x>    ]</span>
-<span class=x>);</span>
-<span class=x>$response = $client-&gt;send();</span>
-</pre></div></p>
+$client = new Client(
+    'http://example.org',
+    [
+        'maxredirects' =&gt; 0,
+        'timeout'      =&gt; 30,
+    ]
+);
+$response = $client-&gt;send();</code></pre>
 <p>Both constructor parameters can be left out, and set later using the <code>setUri()</code>
 and <code>setOptions()</code> methods:</p>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Client;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
 
-<span class=x>$client = new Client();</span>
-<span class=x>$client-&gt;setUri(&#39;http://example.org&#39;);</span>
-<span class=x>$client-&gt;setOptions([</span>
-<span class=x>    &#39;maxredirects&#39; =&gt; 0,</span>
-<span class=x>    &#39;timeout&#39;      =&gt; 30,</span>
-<span class=x>]);</span>
-<span class=x>$response = $client-&gt;send();</span>
-</pre></div></p>
+$client = new Client();
+$client-&gt;setUri('http://example.org');
+$client-&gt;setOptions([
+    'maxredirects' =&gt; 0,
+    'timeout'      =&gt; 30,
+]);
+$response = $client-&gt;send();</code></pre>
 <p><code>Laminas\Http\Client</code> can also dispatch requests using a separately configured
 <code>request</code> object (see the <a href="../../request/">Request</a> manual for full details of
 the methods available):</p>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Client;</span>
-<span class=x>use Laminas\Http\Request;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
+use Laminas\Http\Request;
 
-<span class=x>$request = new Request();</span>
-<span class=x>$request-&gt;setUri(&#39;http://example.org&#39;);</span>
+$request = new Request();
+$request-&gt;setUri('http://example.org');
 
-<span class=x>$client = new Client();</span>
+$client = new Client();
 
-<span class=x>$response = $client-&gt;send($request);</span>
-</pre></div></p>
+$response = $client-&gt;send($request);</code></pre>
 <blockquote>
 <h3>URL validation</h3>
 <p><code>Laminas\Http\Client</code> uses <code>Laminas\Uri\Http</code> to validate URLs. See the
@@ -436,70 +437,65 @@ options available.</p>
 <h2 id="examples">Examples</h2>
 <h3>Performing a GET request</h3>
 <p>GET is the default method used, and requires no special configuration.</p>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Client;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
 
-<span class=x>$client = new Client(&#39;http://example.org&#39;);</span>
-<span class=x>$response = $client-&gt;send();</span>
-</pre></div></p>
+$client = new Client('http://example.org');
+$response = $client-&gt;send();</code></pre>
 <h3>Using request methods other than GET</h3>
 <p>The request method can be set using <code>setMethod()</code>. If no method is specified,
 the method set by the last <code>setMethod()</code> call is used. If <code>setMethod()</code> was
 never called, the default request method is <code>GET</code>.</p>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Client;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
 
-<span class=x>$client = new Client(&#39;http://example.org&#39;);</span>
+$client = new Client('http://example.org');
 
-<span class=x>// Performing a POST request</span>
-<span class=x>$client-&gt;setMethod(&#39;POST&#39;);</span>
-<span class=x>$response = $client-&gt;send();</span>
-</pre></div></p>
+// Performing a POST request
+$client-&gt;setMethod('POST');
+$response = $client-&gt;send();</code></pre>
 <p>For convenience, <code>Laminas\Http\Request</code> defines all request methods as class
 constants: <code>Laminas\Http\Request::METHOD_GET</code>, <code>Laminas\Http\Request::METHOD_POST</code> and
 so on.</p>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Client;</span>
-<span class=x>use Laminas\Http\Request;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
+use Laminas\Http\Request;
 
-<span class=x>$client = new Client(&#39;http://example.org&#39;);</span>
+$client = new Client('http://example.org');
 
-<span class=x>// Performing a POST request</span>
-<span class=x>$client-&gt;setMethod(Request::METHOD_POST);</span>
-<span class=x>$response = $client-&gt;send();</span>
-</pre></div></p>
+// Performing a POST request
+$client-&gt;setMethod(Request::METHOD_POST);
+$response = $client-&gt;send();</code></pre>
 <h3>Setting query parameters</h3>
 <p>Adding query parameters to an HTTP request can be done either by specifying them
 as part of the URL, or by using the <code>setParameterGet()</code> method. This method
 takes the query parameters as an associative array of name/value pairs.</p>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Client;</span>
-<span class=x>$client = new Client();</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
+$client = new Client();
 
-<span class=x>// This is equivalent to setting a URL in the Client&#39;s constructor:</span>
-<span class=x>$client-&gt;setUri(&#39;http://example.com/index.php?knight=lancelot&#39;);</span>
+// This is equivalent to setting a URL in the Client's constructor:
+$client-&gt;setUri('http://example.com/index.php?knight=lancelot');
 
-<span class=x>// Adding several parameters with one call</span>
-<span class=x>$client-&gt;setParameterGet([</span>
-<span class=x>    &#39;first_name&#39;  =&gt; &#39;Bender&#39;,</span>
-<span class=x>    &#39;middle_name&#39; =&gt; &#39;Bending&#39;,</span>
-<span class=x>    &#39;last_name&#39;   =&gt; &#39;Rodríguez&#39;,</span>
-<span class=x>    &#39;made_in&#39;     =&gt; &#39;Mexico&#39;,</span>
-<span class=x>]);</span>
-</pre></div></p>
+// Adding several parameters with one call
+$client-&gt;setParameterGet([
+    'first_name'  =&gt; 'Bender',
+    'middle_name' =&gt; 'Bending',
+    'last_name'   =&gt; 'Rodríguez',
+    'made_in'     =&gt; 'Mexico',
+]);</code></pre>
 <h3>Setting form-encoded body parameters</h3>
 <p>While query parameters can be sent with every request method, other methods can
 accept parameters via the request body. In many cases, these are
 <code>application/x-www-form-urlencoded</code> parameters; laminas-http allows you to specify
 such parameters usingthe <code>setParameterPost()</code> method, which is identical to the
 <code>setParameterGet()</code> method in structure.</p>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Client;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
 
-<span class=x>$client = new Client();</span>
+$client = new Client();
 
-<span class=x>// Setting several POST parameters, one of them with several values</span>
-<span class=x>$client-&gt;setParameterPost([</span>
-<span class=x>    &#39;language&#39;  =&gt; &#39;es&#39;,</span>
-<span class=x>    &#39;country&#39;   =&gt; &#39;ar&#39;,</span>
-<span class=x>    &#39;selection&#39; =&gt; [45, 32, 80],</span>
-<span class=x>]);</span>
-</pre></div></p>
+// Setting several POST parameters, one of them with several values
+$client-&gt;setParameterPost([
+    'language'  =&gt; 'es',
+    'country'   =&gt; 'ar',
+    'selection' =&gt; [45, 32, 80],
+]);</code></pre>
 <p>Note that when sending <code>POST</code> requests (or an request allowing a request body),
 you can set both query and <code>POST</code> parameters. On the other hand, setting POST
 parameters on a <code>GET</code> request will not trigger an error, rendering it useless.</p>
@@ -508,63 +504,59 @@ parameters on a <code>GET</code> request will not trigger an error, rendering it
 default (<code>Laminas\Http\Client\Adapter\Socket</code>) adapter, you may need to set the
 <code>sslcapath</code> configuration option in order to allow PHP to validate the SSL
 certificate:</p>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Client;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
 
-<span class=x>$client = new Client(</span>
-<span class=x>    &#39;https://example.org&#39;,</span>
-<span class=x>    [</span>
-<span class=x>        &#39;sslcapath&#39; =&gt; &#39;/etc/ssl/certs&#39;,</span>
-<span class=x>    ]</span>
-<span class=x>);</span>
-<span class=x>$response = $client-&gt;send();</span>
-</pre></div></p>
+$client = new Client(
+    'https://example.org',
+    [
+        'sslcapath' =&gt; '/etc/ssl/certs',
+    ]
+);
+$response = $client-&gt;send();</code></pre>
 <p>The exact path to use will vary depending on your operating system. Without this
 you'll get the exception "Unable to enable crypto on TCP connection" when trying
 to connect.</p>
 <p>Alternatively, you could switch to the curl adapter, which negotiates SSL
 connections more transparently:</p>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Client;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
 
-<span class=x>$client = new Client(</span>
-<span class=x>    &#39;https://example.org&#39;,</span>
-<span class=x>    [</span>
-<span class=x>        &#39;adapter&#39; =&gt; &#39;Laminas\Http\Client\Adapter\Curl&#39;,</span>
-<span class=x>    ]</span>
-<span class=x>);</span>
-<span class=x>$response = $client-&gt;send();</span>
-</pre></div></p>
+$client = new Client(
+    'https://example.org',
+    [
+        'adapter' =&gt; 'Laminas\Http\Client\Adapter\Curl',
+    ]
+);
+$response = $client-&gt;send();</code></pre>
 <h2 id="complete-example">Complete Example</h2>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Client;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
 
-<span class=x>$client = new Client();</span>
-<span class=x>$client-&gt;setUri(&#39;http://www.example.com&#39;);</span>
-<span class=x>$client-&gt;setMethod(&#39;POST&#39;);</span>
-<span class=x>$client-&gt;setParameterPost([</span>
-<span class=x>    &#39;foo&#39; =&gt; &#39;bar&#39;,</span>
-<span class=x>]);</span>
+$client = new Client();
+$client-&gt;setUri('http://www.example.com');
+$client-&gt;setMethod('POST');
+$client-&gt;setParameterPost([
+    'foo' =&gt; 'bar',
+]);
 
-<span class=x>$response = $client-&gt;send();</span>
+$response = $client-&gt;send();
 
-<span class=x>if ($response-&gt;isSuccess()) {</span>
-<span class=x>    // the POST was successful</span>
-<span class=x>}</span>
-</pre></div></p>
+if ($response-&gt;isSuccess()) {
+    // the POST was successful
+}</code></pre>
 <p>or the same thing, using a request object:</p>
-<p> <div class=codehilite><pre><span></span><span class=x>use Laminas\Http\Client;</span>
-<span class=x>use Laminas\Http\Request;</span>
+<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
+use Laminas\Http\Request;
 
-<span class=x>$request = new Request();</span>
-<span class=x>$request-&gt;setUri(&#39;http://www.example.com&#39;);</span>
-<span class=x>$request-&gt;setMethod(&#39;POST&#39;);</span>
-<span class=x>$request-&gt;getPost()-&gt;set(&#39;foo&#39;, &#39;bar&#39;);</span>
+$request = new Request();
+$request-&gt;setUri('http://www.example.com');
+$request-&gt;setMethod('POST');
+$request-&gt;getPost()-&gt;set('foo', 'bar');
 
-<span class=x>$client = new Client();</span>
-<span class=x>$response = $client-&gt;send($request);</span>
+$client = new Client();
+$response = $client-&gt;send($request);
 
-<span class=x>if ($response-&gt;isSuccess()) {</span>
-<span class=x>    // the POST was successful</span>
-<span class=x>}</span>
-</pre></div></p>
+if ($response-&gt;isSuccess()) {
+    // the POST was successful
+}</code></pre>
 
 
 
@@ -737,9 +729,10 @@ connections more transparently:</p>
             <div class="col-md-7 offset-md-2">
                 <h5>Laminas</h5>
                 <ul>
-                    <li>Laminas Project <a href="https://getlaminas.org/">Components and MVC for Enterprise Applications</a></li>
-                    <li>Mezzio <a href="https://docs.mezzio.dev/">PSR-15 Middleware in Minutes</a></li>
-                    <li>Laminas API Tools: <a href="https://api-tools.getlaminas.org/">Build RESTful APIs in minutes</a></li>
+                    <li>Laminas Project <a href="https://getlaminas.org/">The new foundation for the community-supported, open source continuation of Zend Framework</a></li>
+                    <li>Laminas Components and MVC <a href="https://docs.laminas.dev/">Components and MVC for enterprise applications</a></li>
+                    <li>Mezzio <a href="https://docs.mezzio.dev/">PSR-15 middleware in minutes</a></li>
+                    <li>Laminas API Tools <a href="https://api-tools.getlaminas.org/">Build RESTful APIs in minutes</a></li>
                 </ul>
             </div>
         </div>
@@ -776,7 +769,7 @@ connections more transparently:</p>
                 <h4 class="footer__headline">License</h4>
                 <p>
                     Code licensed under <a
-                        href="https://github.com/laminas/laminas-http//blob/master/LICENSE.md">BSD 3-Clause</a>.
+                        href="https://github.com/laminas/laminas-http/blob/master/LICENSE.md">BSD 3-Clause</a>.
                 </p>
             </div>
 
@@ -785,8 +778,8 @@ connections more transparently:</p>
                 <h4 class="footer__headline">Copyright</h4>
                 <p>
                     <!--Built with love by the Laminas team with the help of our
-                    <a href="https://github.com/laminas/laminas-http//graphs/contributors">contributors</a>.<br>-->
-                    &copy; 2019-2019 by <a href="https://getlaminas.org/">The Laminas Project</a>.
+                    <a href="https://github.com/laminas/laminas-http/graphs/contributors">contributors</a>.<br>-->
+                    &copy; 2019-2020 by <a href="https://getlaminas.org/">The Laminas Project</a>.
                 </p>
             </div>
         </div>
