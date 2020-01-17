@@ -13,6 +13,7 @@ use Countable;
 use Iterator;
 use Laminas\Http\Header\Exception;
 use Laminas\Http\Header\GenericHeader;
+use Laminas\Http\Header\MultipleHeaderInterface;
 use Laminas\Loader\PluginClassLocator;
 use Traversable;
 
@@ -283,9 +284,9 @@ class Headers implements Countable, Iterator
             return false;
         }
 
-        $class = ($this->getPluginClassLoader()->load(str_replace('-', '', $key))) ?: 'Laminas\Http\Header\GenericHeader';
+        $class = ($this->getPluginClassLoader()->load(str_replace('-', '', $key))) ?: GenericHeader::class;
 
-        if (in_array('Laminas\Http\Header\MultipleHeaderInterface', class_implements($class, true))) {
+        if (in_array(MultipleHeaderInterface::class, class_implements($class, true))) {
             $headers = [];
             foreach (array_keys($this->headersKeys, $key) as $index) {
                 if (is_array($this->headers[$index])) {
