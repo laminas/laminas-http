@@ -12,16 +12,18 @@ use ArrayIterator;
 use Laminas\Http\Client\Adapter\Curl;
 use Laminas\Http\Client\Adapter\Socket;
 use Laminas\Http\Header\SetCookie;
-use Laminas\Stdlib;
 use Laminas\Stdlib\ArrayUtils;
+use Laminas\Stdlib\DispatchableInterface;
 use Laminas\Stdlib\ErrorHandler;
+use Laminas\Stdlib\RequestInterface;
+use Laminas\Stdlib\ResponseInterface;
 use Laminas\Uri\Http;
 use Traversable;
 
 /**
  * Http client
  */
-class Client implements Stdlib\DispatchableInterface
+class Client implements DispatchableInterface
 {
     /**
      * @const string Supported HTTP Authentication methods
@@ -854,11 +856,11 @@ class Client implements Stdlib\DispatchableInterface
     /**
      * Dispatch
      *
-     * @param Stdlib\RequestInterface $request
-     * @param Stdlib\ResponseInterface $response
-     * @return Stdlib\ResponseInterface
+     * @param RequestInterface $request
+     * @param ResponseInterface $response
+     * @return ResponseInterface
      */
-    public function dispatch(Stdlib\RequestInterface $request, Stdlib\ResponseInterface $response = null)
+    public function dispatch(RequestInterface $request, ResponseInterface $response = null)
     {
         return $this->send($request);
     }
