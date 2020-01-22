@@ -275,26 +275,13 @@ class Proxy extends Socket
             ));
         }
 
-        // If all is good, switch socket to secure mode. We have to fall back
-        // through the different modes
-        $modes = [
-            STREAM_CRYPTO_METHOD_TLS_CLIENT,
-            STREAM_CRYPTO_METHOD_SSLv3_CLIENT,
-            STREAM_CRYPTO_METHOD_SSLv23_CLIENT,
-            STREAM_CRYPTO_METHOD_SSLv2_CLIENT,
-        ];
-
-        $success = false;
-        foreach ($modes as $mode) {
-            $success = stream_socket_enable_crypto($this->socket, true, $mode);
-            if ($success) {
-                break;
-            }
-        }
-
-        if (! $success) {
+        try {
+            $this->enableCryptoTransport($this->config['ssltransport'], $this->socket, $host);
+        } catch (AdapterException\RuntimeException $e) {
             throw new AdapterException\RuntimeException(
-                'Unable to connect to HTTPS server through proxy: could not negotiate secure connection.'
+                'Unable to connect to HTTPS server through proxy: could not negotiate secure connection.',
+                0,
+                $e
             );
         }
     }
