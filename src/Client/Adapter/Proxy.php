@@ -33,7 +33,7 @@ class Proxy extends Socket
      */
     protected $config = [
         'persistent'         => false,
-        'ssltransport'       => 'ssl',
+        'ssltransport'       => 'tls',
         'sslcert'            => null,
         'sslpassphrase'      => null,
         'sslverifypeer'      => true,

@@ -77,7 +77,7 @@ class Socket implements HttpAdapter, StreamInterface
      */
     protected $config = [
         'persistent'            => false,
-        'ssltransport'          => 'ssl',
+        'ssltransport'          => 'tls',
         'sslcert'               => null,
         'sslpassphrase'         => null,
         'sslverifypeer'         => true,
