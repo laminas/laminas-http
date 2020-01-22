@@ -15,6 +15,8 @@ use Laminas\Stdlib\ArrayUtils;
 use Laminas\Stdlib\ErrorHandler;
 use Traversable;
 
+use function stream_context_set_option;
+
 /**
  * HTTP Proxy-supporting Laminas\Http\Client adapter class, based on the default
  * socket based adapter.
@@ -274,6 +276,10 @@ class Proxy extends Socket
                 $response
             ));
         }
+
+        // provide hostname to ssl for SNI
+        $context = $this->getStreamContext();
+        stream_context_set_option($context, 'ssl', 'peer_name', $host);
 
         try {
             $this->enableCryptoTransport($this->config['ssltransport'], $this->socket, $host);
