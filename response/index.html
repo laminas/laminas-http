@@ -340,9 +340,10 @@
 <p><code>Laminas\Http\Response</code> is responsible for providing a fluent API that allows a
 developer to interact with all the various parts of an HTTP response.</p>
 <p>A typical HTTP Response looks like this:</p>
-<pre class=codehilite><code class=language-text>| VERSION | CODE | REASON |
+<pre class="highlight"><code class="language-text">| VERSION | CODE | REASON |
 |        HEADERS          |
 |         BODY            |</code></pre>
+
 <p>The first line of the response consists of the HTTP version, status code, and
 the reason string for the provided status code; this is called the Response
 Line. Next is a set of zero or more headers.  The remainder of the response is
@@ -355,7 +356,7 @@ specification of an HTTP response can be found in
 <p>Response objects can either be created from the provided <code>fromString()</code> factory,
 or, if you wish to have a completely empty object to start with, by
 instantiating the <code>Laminas\Http\Response</code> class with no arguments.</p>
-<pre class=codehilite><code class=language-php>use Laminas\Http\Response;
+<pre class="highlight"><code class="language-php">use Laminas\Http\Response;
 $response = Response::fromString(&lt;&lt;&lt;EOS
 HTTP/1.0 200 OK
 HeaderField1: header-field-value
@@ -384,6 +385,7 @@ $response-&gt;setContent(&lt;&lt;&lt;EOS
 &lt;/html&gt;
 EOS
 );</code></pre>
+
 <h2 id="configuration-options">Configuration Options</h2>
 <p>No configuration options are available.</p>
 <h2 id="available-methods">Available Methods</h2>
@@ -514,7 +516,7 @@ fully qualified class names and/or namespaces:</p>
 </table></div>
 <h2 id="examples">Examples</h2>
 <h3>Generating a Response object from a string</h3>
-<pre class=codehilite><code class=language-php>use Laminas\Http\Response;
+<pre class="highlight"><code class="language-php">use Laminas\Http\Response;
 $request = Response::fromString(&lt;&lt;&lt;EOS
 HTTP/1.0 200 OK
 HeaderField1: header-field-value
@@ -526,8 +528,9 @@ HeaderField2: header-field-value2
 &lt;/body&gt;
 &lt;/html&gt;
 EOS);</code></pre>
+
 <h3>Generating a formatted HTTP Response from a Response object</h3>
-<pre class=codehilite><code class=language-php>use Laminas\Http\Response;
+<pre class="highlight"><code class="language-php">use Laminas\Http\Response;
 $response = new Response();
 $response-&gt;setStatusCode(Response::STATUS_CODE_200);
 $response-&gt;getHeaders()-&gt;addHeaders([

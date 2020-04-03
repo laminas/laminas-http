@@ -467,7 +467,7 @@ connecting to requires special client setup. If so, please read the
 <a href="http://php.net/transports.inet">PHP manual chapter on SSL and TLS transport options</a>.</p>
 </blockquote>
 <h3>Changing the HTTPS transport layer</h3>
-<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
+<pre class="highlight"><code class="language-php">use Laminas\Http\Client;
 
 // Set the configuration parameters
 $config = [
@@ -480,9 +480,11 @@ $client = new Client('https://www.example.com', $config);
 
 // The following request will be sent over a TLS secure connection.
 $response = $client-&gt;send();</code></pre>
+
 <p>The result of the example above will be similar to opening a TCP connection
 using the following PHP command:</p>
-<pre class=codehilite><code class=language-php>fsockopen('tls://www.example.com', 443);</code></pre>
+<pre class="highlight"><code class="language-php">fsockopen('tls://www.example.com', 443);</code></pre>
+
 <h3>Customizing and accessing the Socket adapter stream context</h3>
 <p><code>Laminas\Http\Client\Adapter\Socket</code> provides direct access to the underlying
 <a href="http://php.net/stream.contexts">stream context</a> used to connect to the remote
@@ -503,7 +505,7 @@ stream, and to the SSL wrapper in case of HTTPS connections.</p>
   using regular PHP stream context functions.</li>
 </ul>
 <h4>Setting stream context options for the Socket adapter</h4>
-<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
+<pre class="highlight"><code class="language-php">use Laminas\Http\Client;
 
 // Array of options
 $options = [
@@ -544,6 +546,7 @@ $response = $client-&gt;send();
 // If everything went well, you can now access the context again:
 $opts = stream_context_get_options($adapter-&gt;getStreamContext());
 echo $opts['ssl']['peer_certificate'];</code></pre>
+
 <blockquote>
 <h4>Set stream context options prior to requests</h4>
 <p>Note that you must set any stream context options before using the adapter to
@@ -615,7 +618,7 @@ authentication.  Possible values are similar to the ones accepted by the
 <code>Laminas\Http\Client::setAuth()</code> method. Currently, only basic authentication
 (<code>Laminas\Http\Client::AUTH_BASIC</code>) is supported.</p>
 <h3>Using Laminas\Http\Client behind a proxy server</h3>
-<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
+<pre class="highlight"><code class="language-php">use Laminas\Http\Client;
 
 // Set the configuration parameters
 $config = [
@@ -630,6 +633,7 @@ $config = [
 $client = new Client('http://www.example.com', $config);
 
 // Continue working...</code></pre>
+
 <p>As mentioned, if <code>proxy_host</code> is not set or is set to a blank string, the
 connection will fall back to a regular direct connection. This allows you to
 write your application in a way that allows a proxy to be used optionally,
@@ -655,13 +659,14 @@ prior to 7.30.0. It leads to problems with removing the Transfer-Encoding
 header from the response. We encourage to update libcurl.</p>
 </blockquote>
 <h3>Setting cURL options</h3>
-<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
+<pre class="highlight"><code class="language-php">use Laminas\Http\Client;
 
 $config = [
     'adapter'     =&gt; Client\Adapter\Curl::class,
     'curloptions' =&gt; [CURLOPT_FOLLOWLOCATION =&gt; true],
 ];
 $client = new Client($uri, $config);</code></pre>
+
 <p>By default, the cURL adapter is configured to behave exactly like the <code>Socket</code>
 adapter, and it also accepts the same configuration parameters as the <code>Socket</code>
 and <code>Proxy</code> adapters. You can also change the cURL options by either specifying
@@ -715,7 +720,7 @@ method are:</p>
 </table></div>
 <h3>Transfering files by handle</h3>
 <p>You can use cURL to transfer very large files over HTTP by filehandle.</p>
-<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
+<pre class="highlight"><code class="language-php">use Laminas\Http\Client;
 
 $putFileSize   = filesize('filepath');
 $putFileHandle = fopen('filepath', 'r');
@@ -731,6 +736,7 @@ $adapter-&gt;setOptions([
     ],
 ]);
 $client-&gt;send();</code></pre>
+
 <h2 id="the-test-adapter">The Test adapter</h2>
 <p>Testing code that relies on HTTP connections poses difficulties.  For example,
 testing an application that pulls an RSS feed from a remote server will require
@@ -747,7 +753,7 @@ an individual response to always return from any request; <code>addResponse()</c
 aggregating a sequence of responses. In both cases, responses are returned
 without performing actual HTTP requests.</p>
 <h3>Testing against a single HTTP response stub</h3>
-<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
+<pre class="highlight"><code class="language-php">use Laminas\Http\Client;
 
 // Instantiate a new adapter and client
 $adapter = new Client\Adapter\Test();
@@ -758,14 +764,14 @@ $client  = new Client(
 
 // Set the expected response
 $adapter-&gt;setResponse(
-    &quot;HTTP/1.1 200 OK\r\n&quot;
-    . &quot;Content-type: text/xml\r\n&quot;
-    . &quot;\r\n&quot;
-    . '&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;'
-    . '&lt;rss version=&quot;2.0&quot; '
-    . '     xmlns:content=&quot;http://purl.org/rss/1.0/modules/content/&quot;'
-    . '     xmlns:wfw=&quot;http://wellformedweb.org/CommentAPI/&quot;'
-    . '     xmlns:dc=&quot;http://purl.org/dc/elements/1.1/&quot;&gt;'
+    "HTTP/1.1 200 OK\r\n"
+    . "Content-type: text/xml\r\n"
+    . "\r\n"
+    . '&lt;?xml version="1.0" encoding="UTF-8"?&gt;'
+    . '&lt;rss version="2.0" '
+    . '     xmlns:content="http://purl.org/rss/1.0/modules/content/"'
+    . '     xmlns:wfw="http://wellformedweb.org/CommentAPI/"'
+    . '     xmlns:dc="http://purl.org/dc/elements/1.1/"&gt;'
     . '  &lt;channel&gt;'
     . '    &lt;title&gt;Premature Optimization&lt;/title&gt;'
     // and so on...
@@ -774,6 +780,7 @@ $adapter-&gt;setResponse(
 
 $response = $client-&gt;send();
 // .. continue parsing $response..</code></pre>
+
 <p>The above example shows how you can preset your HTTP client to return the
 response you need. Then, you can continue testing your own code, without being
 dependent on a network connection, the server's response, etc. In this case, the
@@ -784,7 +791,7 @@ performing multiple HTTP transactions. In this case, it's not possible to use
 <code>setResponse()</code> alone because there's no opportunity to set the next response(s)
 your program might need before returning to the caller.</p>
 <h3>Testing Against Multiple HTTP Response Stubs</h3>
-<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
+<pre class="highlight"><code class="language-php">use Laminas\Http\Client;
 
 // Instantiate a new adapter and client
 $adapter = new Client\Adapter\Test();
@@ -795,10 +802,10 @@ $client = new Client(
 
 // Set the first expected response
 $adapter-&gt;setResponse(
-    &quot;HTTP/1.1 302 Found\r\n&quot;
-    . &quot;Location: /\r\n&quot;
-    . &quot;Content-Type: text/html\r\n&quot;
-    . &quot;\r\n&quot;
+    "HTTP/1.1 302 Found\r\n"
+    . "Location: /\r\n"
+    . "Content-Type: text/html\r\n"
+    . "\r\n"
     . '&lt;html&gt;'
     . '  &lt;head&gt;&lt;title&gt;Moved&lt;/title&gt;&lt;/head&gt;'
     . '  &lt;body&gt;&lt;p&gt;This page has moved.&lt;/p&gt;&lt;/body&gt;'
@@ -807,9 +814,9 @@ $adapter-&gt;setResponse(
 
 // Set the next successive response
 $adapter-&gt;addResponse(
-    &quot;HTTP/1.1 200 OK\r\n&quot;
-    . &quot;Content-Type: text/html\r\n&quot;
-    . &quot;\r\n&quot;
+    "HTTP/1.1 200 OK\r\n"
+    . "Content-Type: text/html\r\n"
+    . "\r\n"
     . '&lt;html&gt;'
     . '  &lt;head&gt;&lt;title&gt;My Pet Store Home Page&lt;/title&gt;&lt;/head&gt;'
     . '  &lt;body&gt;&lt;p&gt;...&lt;/p&gt;&lt;/body&gt;'
@@ -818,6 +825,7 @@ $adapter-&gt;addResponse(
 
 // inject the http client object ($client) into your object
 // being tested and then test your object's behavior below</code></pre>
+
 <p>The <code>setResponse()</code> method clears any responses in the adapter's buffer and sets
 the first response that will be returned. The <code>addResponse()</code> method will add
 successive responses.</p>
@@ -838,7 +846,7 @@ your object under test and test its behavior.</p>
 <code>connect()</code> to throw an <code>Laminas\Http\Client\Adapter\Exception\RuntimeException</code>.
 This can be useful when our application caches content from an external site (in
 case the site goes down) and you want to test this feature.</p>
-<pre class=codehilite><code class=language-php>use Laminas\Http\Client;
+<pre class="highlight"><code class="language-php">use Laminas\Http\Client;
 
 // Instantiate a new adapter and client
 $adapter = new Client\Adapter\Test();
@@ -859,6 +867,7 @@ try {
 
 // Further requests will work as expected until
 // you call setNextRequestWillFail(true) again</code></pre>
+
 <h2 id="creating-your-own-connection-adapters">Creating your own connection adapters</h2>
 <p><code>Laminas\Http\Client</code> has been designed so that you can create and use your own
 connection adapters. You could, for example, create a connection adapter that
@@ -868,7 +877,7 @@ them as needed in your application.</p>
 <code>Laminas\Http\Client\Adapter\AdapterInterface</code>. The following example shows the
 skeleton of a user-implemented adapter class. All the public functions defined
 in this example must be defined in your adapter as well.</p>
-<pre class=codehilite><code class=language-php>namespace MyApp\Http\Client\Adapter;
+<pre class="highlight"><code class="language-php">namespace MyApp\Http\Client\Adapter;
 
 use Laminas\Http\Client\Adapter\AdapterInterface;
 
@@ -938,8 +947,9 @@ class BananaProtocol implements AdapterInterface
         // Close the connection to the remote server - called last.
     }
 }</code></pre>
+
 <p>Use the adapter as you would any other:</p>
-<pre class=codehilite><code class=language-php>use MyApp\Http\Client\Adapter\BananaProtocol;
+<pre class="highlight"><code class="language-php">use MyApp\Http\Client\Adapter\BananaProtocol;
 use Laminas\Http\Client;
 
 $client = new Client([
