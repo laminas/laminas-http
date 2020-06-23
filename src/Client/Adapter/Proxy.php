@@ -15,6 +15,8 @@ use Laminas\Stdlib\ArrayUtils;
 use Laminas\Stdlib\ErrorHandler;
 use Traversable;
 
+use function stream_context_set_option;
+
 /**
  * HTTP Proxy-supporting Laminas\Http\Client adapter class, based on the default
  * socket based adapter.
@@ -33,7 +35,7 @@ class Proxy extends Socket
      */
     protected $config = [
         'persistent'         => false,
-        'ssltransport'       => 'ssl',
+        'ssltransport'       => 'tls',
         'sslcert'            => null,
         'sslpassphrase'      => null,
         'sslverifypeer'      => true,
@@ -275,26 +277,17 @@ class Proxy extends Socket
             ));
         }
 
-        // If all is good, switch socket to secure mode. We have to fall back
-        // through the different modes
-        $modes = [
-            STREAM_CRYPTO_METHOD_TLS_CLIENT,
-            STREAM_CRYPTO_METHOD_SSLv3_CLIENT,
-            STREAM_CRYPTO_METHOD_SSLv23_CLIENT,
-            STREAM_CRYPTO_METHOD_SSLv2_CLIENT,
-        ];
+        // provide hostname to ssl for SNI
+        $context = $this->getStreamContext();
+        stream_context_set_option($context, 'ssl', 'peer_name', $host);
 
-        $success = false;
-        foreach ($modes as $mode) {
-            $success = stream_socket_enable_crypto($this->socket, true, $mode);
-            if ($success) {
-                break;
-            }
-        }
-
-        if (! $success) {
+        try {
+            $this->enableCryptoTransport($this->config['ssltransport'], $this->socket, $host);
+        } catch (AdapterException\RuntimeException $e) {
             throw new AdapterException\RuntimeException(
-                'Unable to connect to HTTPS server through proxy: could not negotiate secure connection.'
+                'Unable to connect to HTTPS server through proxy: could not negotiate secure connection.',
+                0,
+                $e
             );
         }
     }

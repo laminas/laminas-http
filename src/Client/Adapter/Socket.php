@@ -16,6 +16,21 @@ use Laminas\Stdlib\ArrayUtils;
 use Laminas\Stdlib\ErrorHandler;
 use Traversable;
 
+use function extension_loaded;
+use function is_dir;
+use function is_file;
+use function openssl_error_string;
+use function sprintf;
+use function stream_socket_enable_crypto;
+use function version_compare;
+
+use const PHP_VERSION;
+use const STREAM_CRYPTO_METHOD_SSLv3_CLIENT;
+use const STREAM_CRYPTO_METHOD_TLS_CLIENT;
+use const STREAM_CRYPTO_METHOD_TLSv1_0_CLIENT;
+use const STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT;
+use const STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT;
+
 /**
  * A sockets based (stream\socket\client) adapter class for Laminas\Http\Client. Can be used
  * on almost every PHP environment, and does not require any special extensions.
@@ -62,7 +77,7 @@ class Socket implements HttpAdapter, StreamInterface
      */
     protected $config = [
         'persistent'            => false,
-        'ssltransport'          => 'ssl',
+        'ssltransport'          => 'tls',
         'sslcert'               => null,
         'sslpassphrase'         => null,
         'sslverifypeer'         => true,
@@ -308,50 +323,11 @@ class Socket implements HttpAdapter, StreamInterface
 
             if ($secure || $this->config['sslusecontext']) {
                 if ($this->setSslCryptoMethod) {
-                    if ($this->config['ssltransport']
-                        && isset(static::$sslCryptoTypes[$this->config['ssltransport']])
-                    ) {
-                        $sslCryptoMethod = static::$sslCryptoTypes[$this->config['ssltransport']];
-                    } else {
-                        $sslCryptoMethod = STREAM_CRYPTO_METHOD_SSLv3_CLIENT;
-                    }
-
-                    ErrorHandler::start();
-                    $test  = stream_socket_enable_crypto($this->socket, true, $sslCryptoMethod);
-                    $error = ErrorHandler::stop();
-                    if (! $test || $error) {
-                        // Error handling is kind of difficult when it comes to SSL
-                        $errorString = '';
-                        if (extension_loaded('openssl')) {
-                            while (($sslError = openssl_error_string()) != false) {
-                                $errorString .= sprintf('; SSL error: %s', $sslError);
-                            }
-                        }
+                    try {
+                        $this->enableCryptoTransport($this->config['ssltransport'], $this->socket, $host);
+                    } catch (AdapterException\RuntimeException $e) {
                         $this->close();
-
-                        if ((! $errorString) && $this->config['sslverifypeer']) {
-                            // There's good chance our error is due to sslcapath not being properly set
-                            if (! ($this->config['sslcafile'] || $this->config['sslcapath'])) {
-                                $errorString = 'make sure the "sslcafile" or "sslcapath" option are properly set for '
-                                    . 'the environment.';
-                            } elseif ($this->config['sslcafile'] && ! is_file($this->config['sslcafile'])) {
-                                $errorString = 'make sure the "sslcafile" option points to a valid SSL certificate '
-                                    . 'file';
-                            } elseif ($this->config['sslcapath'] && ! is_dir($this->config['sslcapath'])) {
-                                $errorString = 'make sure the "sslcapath" option points to a valid SSL certificate '
-                                    . 'directory';
-                            }
-                        }
-
-                        if ($errorString) {
-                            $errorString = sprintf(': %s', $errorString);
-                        }
-
-                        throw new AdapterException\RuntimeException(sprintf(
-                            'Unable to enable crypto on TCP connection %s%s',
-                            $host,
-                            $errorString
-                        ), 0, $error);
+                        throw  $e;
                     }
                 }
 
@@ -365,6 +341,70 @@ class Socket implements HttpAdapter, StreamInterface
         }
     }
 
+    /**
+     * @param string $sslTransport Transport name from $config['ssltransport']
+     * @param resource $socket
+     * @param string $host Host name used only for useful exception message
+     */
+    protected function enableCryptoTransport($sslTransport, $socket, $host)
+    {
+        $sslCryptoMethod = STREAM_CRYPTO_METHOD_TLS_CLIENT;
+        if (isset(static::$sslCryptoTypes[$sslTransport])) {
+            $sslCryptoMethod = static::$sslCryptoTypes[$this->config['ssltransport']];
+        }
+
+        // Since php 5.6.7 and up to 7.2.0 constant means tls 1.0 only, expand back to all versions
+        // We can do this because STREAM_CRYPTO_METHOD_TLS_ANY_CLIENT is available
+        // in enum but not registered as php constant.
+        // @see  https://github.com/php/php-src/blob/php-5.6.7/main/streams/php_stream_transport.h#L179
+        if (version_compare(PHP_VERSION, '7.2.0', '<')
+            && $sslCryptoMethod === STREAM_CRYPTO_METHOD_TLS_CLIENT
+        ) {
+            $sslCryptoMethod = STREAM_CRYPTO_METHOD_TLSv1_0_CLIENT;
+            $sslCryptoMethod |= STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT;
+            $sslCryptoMethod |= STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT;
+        }
+        ErrorHandler::start();
+        $test  = stream_socket_enable_crypto($socket, true, $sslCryptoMethod);
+        $error = ErrorHandler::stop();
+        if (! $test || $error) {
+            // Error handling is kind of difficult when it comes to SSL
+            $errorString = '';
+            if (extension_loaded('openssl')) {
+                while (($sslError = openssl_error_string()) != false) {
+                    $errorString .= sprintf('; SSL error: %s', $sslError);
+                }
+            }
+
+            if ((! $errorString) && $this->config['sslverifypeer']) {
+                // There's good chance our error is due to sslcapath not being properly set
+                if (! ($this->config['sslcafile'] || $this->config['sslcapath'])) {
+                    $errorString = 'make sure the "sslcafile" or "sslcapath" option are properly set for '
+                        . 'the environment.';
+                } elseif ($this->config['sslcafile'] && ! is_file($this->config['sslcafile'])) {
+                    $errorString = 'make sure the "sslcafile" option points to a valid SSL certificate '
+                        . 'file';
+                } elseif ($this->config['sslcapath'] && ! is_dir($this->config['sslcapath'])) {
+                    $errorString = 'make sure the "sslcapath" option points to a valid SSL certificate '
+                        . 'directory';
+                }
+            }
+
+            if ($errorString) {
+                $errorString = sprintf(': %s', $errorString);
+            }
+
+            throw new AdapterException\RuntimeException(
+                sprintf(
+                    'Unable to enable crypto on TCP connection %s%s',
+                    $host,
+                    $errorString
+                ),
+                0,
+                $error
+            );
+        }
+    }
 
     /**
      * Send request to the remote server
