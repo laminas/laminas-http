@@ -26,6 +26,7 @@ use Laminas\Uri\Http;
 use LaminasTest\Http\TestAsset\ExtendedClient;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
+use ReflectionProperty;
 
 class ClientTest extends TestCase
 {
@@ -637,5 +638,16 @@ class ClientTest extends TestCase
         $response = $client->getResponse();
 
         self::assertSame($response->getBody(), file_get_contents($tmpFile));
+    }
+
+    public function testDefaultUserAgentDoesNotUseEscapeCharacter()
+    {
+        $client = new Client();
+        $r      = new ReflectionProperty($client, 'config');
+        $r->setAccessible(true);
+        $config = $r->getValue($client);
+        $this->assertInternalType('array', $config);
+        $this->assertArrayHasKey('useragent', $config);
+        $this->assertSame('Laminas_Http_Client', $config['useragent']);
     }
 }
