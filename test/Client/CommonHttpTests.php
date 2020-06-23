@@ -150,7 +150,7 @@ abstract class CommonHttpTests extends TestCase
         $this->client->setUri($this->baseuri . 'testHeaders.php');
         $this->client->setParameterGet(['someinput' => 'somevalue']);
         $this->client->setHeaders([
-            'X-Powered-By' => 'My Glorious Golden Ass',
+            'X-Powered-By' => 'A lot of PHP',
         ]);
 
         $this->client->setMethod('TRACE');

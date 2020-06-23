@@ -136,7 +136,7 @@ class ProxyAdapterTest extends SocketTest
         $this->client->setUri($this->baseuri . 'testHeaders.php');
         $this->client->setParameterGet(['someinput' => 'somevalue']);
         $this->client->setHeaders([
-            'X-Powered-By' => 'My Glorious Golden Ass',
+            'X-Powered-By' => 'A lot of PHP',
         ]);
 
         $this->client->setMethod('TRACE');
@@ -153,8 +153,8 @@ class ProxyAdapterTest extends SocketTest
             . 'Host: ' . $host . "\r\n"
             . 'Connection: close' . "\r\n"
             . 'Accept-Encoding: gzip, deflate' . "\r\n"
-            . 'User-Agent: Laminas\Http\Client' . "\r\n"
-            . 'X-Powered-By: My Glorious Golden Ass' . "\r\n\r\n",
+            . 'User-Agent: Laminas_Http_Client' . "\r\n"
+            . 'X-Powered-By: A lot of PHP' . "\r\n\r\n",
             $this->client->getLastRawRequest()
         );
 
@@ -162,8 +162,8 @@ class ProxyAdapterTest extends SocketTest
             'TRACE /testHeaders.php?someinput=somevalue HTTP/1.1' . "\r\n"
             . 'Host: ' . $host . "\r\n"
             . 'Accept-Encoding: gzip, deflate' . "\r\n"
-            . 'User-Agent: Laminas\Http\Client' . "\r\n"
-            . 'X-Powered-By: My Glorious Golden Ass' . "\r\n"
+            . 'User-Agent: Laminas_Http_Client' . "\r\n"
+            . 'X-Powered-By: A lot of PHP' . "\r\n"
             . 'Connection: close' . "\r\n\r\n",
             $res->getBody()
         );
