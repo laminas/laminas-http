@@ -2,11 +2,11 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 2.12.0 - TBD
+## 2.12.0 - 2020-06-23
 
 ### Added
 
-- Nothing.
+- [#33](https://github.com/laminas/laminas-http/pull/33) adds a new header type, `Laminas\Http\Header\ContentSecurityPolicyReportOnly`, mapping to Content-Security-Policy-Report-Only headers, which can be used for experimenting with policies without impacting your application.
 
 ### Changed
 
