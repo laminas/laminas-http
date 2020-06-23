@@ -110,7 +110,7 @@ class Client implements DispatchableInterface
     protected $config = [
         'maxredirects'    => 5,
         'strictredirects' => false,
-        'useragent'       => Client::class,
+        'useragent'       => 'Laminas_Http_Client',
         'timeout'         => 10,
         'connecttimeout'  => null,
         'adapter'         => Socket::class,
