@@ -22,7 +22,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#31](https://github.com/laminas/laminas-http/pull/31) updates the socket and proxy adapters to retain the previous TLS defaults, which had broken with PHP 5.6.7+ due to a change in the meaning of the STREAM_CRYPTO_METHOD_TLS_CLIENT constant.
 
 ## 2.11.2 - 2019-12-30
 
