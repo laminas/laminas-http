@@ -108,8 +108,8 @@ use Laminas\Http\Header;
 // Fetch the container
 $headers = $client->getRequest()->getHeaders();
 
-// Setting a single header using a name and value. Will not overwrite any //
-previously-added headers of the same name.
+// Setting a single header using a name and value. Will not overwrite any
+// previously-added headers of the same name.
 $headers->addHeaderLine('Host', 'www.example.com');
 
 // You can also use a full header line:
