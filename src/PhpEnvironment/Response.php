@@ -8,6 +8,7 @@
 
 namespace Laminas\Http\PhpEnvironment;
 
+use Laminas\Http\Exception\RuntimeException;
 use Laminas\Http\Header\MultipleHeaderInterface;
 use Laminas\Http\Response as HttpResponse;
 
@@ -82,7 +83,7 @@ class Response extends HttpResponse
     public function sendHeaders()
     {
         if ($this->headersSent()) {
-            return $this;
+            throw new RuntimeException('Cannot send headers, headers already sent');
         }
 
         $status  = $this->renderStatusLine();
