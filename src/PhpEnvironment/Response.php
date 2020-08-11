@@ -106,7 +106,7 @@ class Response extends HttpResponse
     {
         if ($this->headersSent()) {
             if ($this->headersSentHandler) {
-                ($this->headersSentHandler)($this);
+                call_user_func($this->headersSentHandler, $this);
             }
 
             return $this;
