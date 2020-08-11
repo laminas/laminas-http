@@ -31,7 +31,7 @@ class Response extends HttpResponse
     protected $contentSent = false;
 
     /**
-     * @var bool
+     * @var callable
      */
     private $headersSentHandler;
 
