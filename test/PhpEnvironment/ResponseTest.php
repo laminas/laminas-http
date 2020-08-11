@@ -111,9 +111,6 @@ class ResponseTest extends TestCase
         $this->assertInstanceOf(Response::class, $response->sendHeaders());
     }
 
-    /**
-     * @runInSeparateProcesses
-     */
     public function testSendHeadersHeadersAlreadySentPassInvalidHandler()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -126,9 +123,6 @@ class ResponseTest extends TestCase
         $response->sendHeaders();
     }
 
-    /**
-     * @runInSeparateProcesses
-     */
     public function testSendHeadersHeadersAlreadySentPassValidHandler()
     {
         $this->expectException(RuntimeException::class);
