@@ -8,7 +8,7 @@
 
 namespace Laminas\Http\PhpEnvironment;
 
-use Laminas\Http\Exception\RuntimeException;
+use Laminas\Http\Exception\InvalidArgumentException;
 use Laminas\Http\Header\MultipleHeaderInterface;
 use Laminas\Http\Response as HttpResponse;
 
@@ -29,6 +29,11 @@ class Response extends HttpResponse
      * @var bool
      */
     protected $contentSent = false;
+
+    /**
+     * @var bool
+     */
+    private $headersSentHandler;
 
     /**
      * Return the HTTP version for this response
@@ -76,6 +81,23 @@ class Response extends HttpResponse
     }
 
     /**
+     * @param callable $handler
+     */
+    public function setHeadersSentHandler($handler)
+    {
+        if (! is_callable($handler)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Handler must be callable with passed response object in invokable parameter, received %s',
+                    gettype($handler)
+                )
+            );
+        }
+
+        $this->headersSentHandler = $handler;
+    }
+
+    /**
      * Send HTTP headers
      *
      * @return $this
@@ -83,7 +105,11 @@ class Response extends HttpResponse
     public function sendHeaders()
     {
         if ($this->headersSent()) {
-            throw new RuntimeException('Cannot send headers, headers already sent');
+            if ($this->headersSentHandler) {
+                ($this->headersSentHandler)($this);
+            }
+
+            return $this;
         }
 
         $status  = $this->renderStatusLine();

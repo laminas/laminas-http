@@ -114,14 +114,30 @@ class ResponseTest extends TestCase
     /**
      * @runInSeparateProcesses
      */
-    public function testSendHeadersHeadersAlreadySent()
+    public function testSendHeadersHeadersAlreadySentPassInvalidHandler()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Handler must be callable with passed response object in invokable parameter, received string'
+        );
+
+        $response = new Response();
+        $response->setHeadersSentHandler('foo');
+        $response->sendHeaders();
+    }
+
+    /**
+     * @runInSeparateProcesses
+     */
+    public function testSendHeadersHeadersAlreadySentPassValidHandler()
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Cannot send headers, headers already sent');
 
-        echo 'test';
-
         $response = new Response();
+        $response->setHeadersSentHandler(function ($response) {
+            throw new RuntimeException('Cannot send headers, headers already sent');
+        });
         $response->sendHeaders();
     }
 }
