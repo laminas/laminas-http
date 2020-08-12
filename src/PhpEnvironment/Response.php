@@ -31,7 +31,7 @@ class Response extends HttpResponse
     protected $contentSent = false;
 
     /**
-     * @var callable
+     * @var null|callable
      */
     private $headersSentHandler;
 
@@ -81,19 +81,10 @@ class Response extends HttpResponse
     }
 
     /**
-     * @param callable $handler
+     * @return void
      */
-    public function setHeadersSentHandler($handler)
+    public function setHeadersSentHandler(callable $handler)
     {
-        if (! is_callable($handler)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Handler must be callable with passed response object in invokable parameter, received %s',
-                    gettype($handler)
-                )
-            );
-        }
-
         $this->headersSentHandler = $handler;
     }
 
