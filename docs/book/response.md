@@ -141,7 +141,7 @@ EOS);
 
 ### handle Headers already sent
 
-Since 2.13.0, we can handle header already sent by pass callable via `Response::setHeadersSentHandler()`:
+> Available since version 2.13.0, we can handle header already sent by pass callable via `Response::setHeadersSentHandler()`:
 
 ```php
 use Laminas\Http\Response;
