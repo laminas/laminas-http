@@ -8,7 +8,6 @@
 
 namespace Laminas\Http\PhpEnvironment;
 
-use Laminas\Http\Exception\InvalidArgumentException;
 use Laminas\Http\Header\MultipleHeaderInterface;
 use Laminas\Http\Response as HttpResponse;
 
