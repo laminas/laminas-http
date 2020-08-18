@@ -139,17 +139,76 @@ $response->setContent(<<<EOS
 EOS);
 ```
 
-### handle Headers already sent
+### Handle "Headers already sent" errors
 
 > Available since version 2.13.0
 
-We can handle header already sent by pass callable via `Response::setHeadersSentHandler()`:
+By default, laminas-http's `Laminas\Http\PhpEnvironment\Response` class, which
+is used in laminas-mvc applications, tests to see if PHP has already emitted
+HTTP headers and started emitting content before it attempts to send headers
+from the response object. If it has, it silently ignores this fact.
+
+If you would like to capture that information (e.g., to log when it happens and
+which headers were not emitted, or to raise an exception), you can provide a
+callable to the `Response::setHeadersSentHandler()`, per the following example:
 
 ```php
-use Laminas\Http\Response;
+use Laminas\Http\PhpEnvironment\Response;
 
+// On a new instance
 $response = new Response();
 $response->setHeadersSentHandler(function ($response): void {
     throw new RuntimeException('Cannot send headers, headers already sent');
 });
+```
+
+If you are using laminas-mvc, we recommend creating a delegator factory for
+purposes of such injection. The delegator factory would look like this:
+
+```php
+// in module/Application/src/InjectSendHeadersHandlerDelegator.php:
+
+namespace Application;
+
+use Interop\Container\ContainerInterface;
+use Laminas\Http\PhpEnvironment\Response;
+use Laminas\ServiceManager\Factory\DelegatorFactoryInterface;
+use RuntimeException;
+
+class InjectSendHeadersHandlerDelegator implements DelegatorFactoryInterface
+{
+    public function __invoke(
+        ContainerInterface $container,
+        string $serviceName,
+        callable $factory
+    ); Response {
+        /** @var Response $response */
+        $response = $factory();
+        $response->setHeadersSentHandler(function (Response $response): void {
+            throw new RuntimeException('Cannot send headers, headers already sent');
+        });
+
+        return $response;
+    }
+}
+```
+
+You would then configure your container to use this instance with the following
+configuration:
+
+```php
+// in config/autoload/dependencies.global.php
+
+use Application\InjectSendHeadersHandlerDelegator;
+use Laminas\Http\PhpEnvironment\Response;
+
+return [
+    'service_manager' => [
+        'delegators' => [
+            Response::class => [
+                InjectSendHeadersHandlerDelegator::class,
+            ],
+        ],
+    ],
+];
 ```
