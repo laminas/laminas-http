@@ -105,13 +105,13 @@ class ResponseTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testSendHeadersHeadersNotAlreadySent()
+    public function testSendHeadersReturnsInstanceIfHeadersNotAlreadySent()
     {
         $response = new Response();
         $this->assertInstanceOf(Response::class, $response->sendHeaders());
     }
 
-    public function testSendHeadersHeadersAlreadySentPassValidHandler()
+    public function testSendHeadersInvokesHeadersSentHandlerIfHeadersAreAlreadySent()
     {
         $response = new Response();
         $response->setHeadersSentHandler(function ($response) {
