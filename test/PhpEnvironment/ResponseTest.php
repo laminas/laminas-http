@@ -9,6 +9,7 @@
 namespace LaminasTest\Http\PhpEnvironment;
 
 use Laminas\Http\Exception\InvalidArgumentException;
+use Laminas\Http\Exception\RuntimeException;
 use Laminas\Http\PhpEnvironment\Response;
 use PHPUnit\Framework\TestCase;
 
@@ -99,5 +100,27 @@ class ResponseTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
         $response->setVersion('laminas/2.0');
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testSendHeadersHeadersNotAlreadySent()
+    {
+        $response = new Response();
+        $this->assertInstanceOf(Response::class, $response->sendHeaders());
+    }
+
+    public function testSendHeadersHeadersAlreadySentPassValidHandler()
+    {
+        $response = new Response();
+        $response->setHeadersSentHandler(function ($response) {
+            throw new RuntimeException('Cannot send headers, headers already sent');
+        });
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Cannot send headers, headers already sent');
+
+        $response->sendHeaders();
     }
 }

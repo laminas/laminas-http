@@ -138,3 +138,18 @@ $response->setContent(<<<EOS
 </html>
 EOS);
 ```
+
+### handle Headers already sent
+
+> Available since version 2.13.0
+
+We can handle header already sent by pass callable via `Response::setHeadersSentHandler()`:
+
+```php
+use Laminas\Http\Response;
+
+$response = new Response();
+$response->setHeadersSentHandler(function ($response): void {
+    throw new RuntimeException('Cannot send headers, headers already sent');
+});
+```
