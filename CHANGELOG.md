@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#41](https://github.com/laminas/laminas-http/pull/41) adds a new method to `Laminas\Http\PhpEnvironment\Response`, `setHeadersSentHandler(callable $handler): void`. When a handler is injected, `sendHeaders()` will call it with the current response instance if it detects headers have already been sent (e.g., by the SAPI due to emitting content). Prior to this change, the class would silently ignore the fact, and simply not emit headers from the response instance. Now it is possible to log those headers, or raise an exception.
 
 ### Changed
 
