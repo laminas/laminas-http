@@ -1,52 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
-         bootstrap="vendor/autoload.php"
-         colors="true">
-    <testsuites>
-        <testsuite name="laminas-http Test Suite">
-            <directory>./test/</directory>
-        </testsuite>
-    </testsuites>
-
-    <groups>
-        <exclude>
-            <group>disable</group>
-        </exclude>
-    </groups>
-
-    <filter>
-        <whitelist addUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./src</directory>
-        </whitelist>
-    </filter>
-
-    <php>
-        <ini name="date.timezone" value="UTC"/>
-
-        <!-- OB_ENABLED should be enabled for some tests to check if all
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd" bootstrap="vendor/autoload.php" colors="true">
+  <coverage includeUncoveredFiles="true">
+    <include>
+      <directory suffix=".php">./src</directory>
+    </include>
+  </coverage>
+  <testsuites>
+    <testsuite name="laminas-http Test Suite">
+      <directory>./test/</directory>
+    </testsuite>
+  </testsuites>
+  <groups>
+    <exclude>
+      <group>disable</group>
+    </exclude>
+  </groups>
+  <php>
+    <ini name="date.timezone" value="UTC"/>
+    <!-- OB_ENABLED should be enabled for some tests to check if all
              functionality works as expected. Such tests include those for
              Laminas\Soap and Laminas\Session, which require that headers not be sent
              in order to work. -->
-        <env name="TESTS_LAMINAS_OB_ENABLED" value="false" />
-
-        <!-- Laminas\Http\Client tests
+    <env name="TESTS_LAMINAS_OB_ENABLED" value="false"/>
+    <!-- Laminas\Http\Client tests
 
              To enable the dynamic Laminas\Http\Client tests, you will need to
              symbolically link or copy the files in test/Client/_files to a
              directory under your web server(s) document root and set this
              constant to point to the URL of this directory. -->
-        <env name="TESTS_LAMINAS_HTTP_CLIENT_BASEURI" value="false" />
-        <env name="TESTS_LAMINAS_HTTP_CLIENT_ONLINE" value="false" />
-
-        <!-- Laminas\Http\Client\Proxy tests
+    <env name="TESTS_LAMINAS_HTTP_CLIENT_BASEURI" value="false"/>
+    <env name="TESTS_LAMINAS_HTTP_CLIENT_ONLINE" value="false"/>
+    <!-- Laminas\Http\Client\Proxy tests
 
              HTTP proxy to be used for testing the Proxy adapter. Set to a
              string of the form 'host:port'. Set to null to skip HTTP proxy
              tests. -->
-        <env name="TESTS_LAMINAS_HTTP_CLIENT_HTTP_PROXY" value="false" />
-        <env name="TESTS_LAMINAS_HTTP_CLIENT_HTTP_PROXY_USER" value="" />
-        <env name="TESTS_LAMINAS_HTTP_CLIENT_HTTP_PROXY_PASS" value="" />
-
-    </php>
+    <env name="TESTS_LAMINAS_HTTP_CLIENT_HTTP_PROXY" value="false"/>
+    <env name="TESTS_LAMINAS_HTTP_CLIENT_HTTP_PROXY_USER" value=""/>
+    <env name="TESTS_LAMINAS_HTTP_CLIENT_HTTP_PROXY_PASS" value=""/>
+  </php>
 </phpunit>
