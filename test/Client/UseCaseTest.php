@@ -56,7 +56,7 @@ class UseCaseTest extends TestCase
     /**
      * Set up the test case
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         if (getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI')
             && (filter_var(getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI'), FILTER_VALIDATE_BOOLEAN) != false)
@@ -75,7 +75,7 @@ class UseCaseTest extends TestCase
     /**
      * Clean up the test environment
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->client = null;
     }

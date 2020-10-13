@@ -47,7 +47,7 @@ class CurlTest extends CommonHttpTests
         ],
     ];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if (! extension_loaded('curl')) {
             $this->markTestSkipped('cURL is not installed, marking all Http Client Curl Adapter tests skipped.');

@@ -74,7 +74,7 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Set up the test case
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $baseUri = getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI');
 
@@ -106,7 +106,7 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Clean up the test environment
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->client = null;
         $this->_adapter = null;

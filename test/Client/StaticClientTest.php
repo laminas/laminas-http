@@ -31,7 +31,7 @@ class StaticClientTest extends TestCase
     /**
      * Set up the test case
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         if (getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI')
             && (filter_var(getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI'), FILTER_VALIDATE_BOOLEAN) != false)) {

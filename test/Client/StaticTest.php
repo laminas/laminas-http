@@ -45,7 +45,7 @@ class StaticTest extends TestCase
     /**
      * Set up the test suite before each test
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->_client = new MockClient('http://www.example.com');
     }
@@ -53,7 +53,7 @@ class StaticTest extends TestCase
     /**
      * Clean up after running a test
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->_client = null;
     }

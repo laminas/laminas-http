@@ -31,7 +31,7 @@ class ProxyAdapterTest extends SocketTest
     /** @var int */
     protected $port;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if (getenv('TESTS_LAMINAS_HTTP_CLIENT_HTTP_PROXY')
             && filter_var(getenv('TESTS_LAMINAS_HTTP_CLIENT_HTTP_PROXY'), FILTER_VALIDATE_BOOLEAN) === false
