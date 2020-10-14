@@ -176,8 +176,8 @@ class CurlTest extends CommonHttpTests
         $this->assertEquals(3, $this->client->getRedirectionsCount(), 'Redirection counter is not as expected');
 
         // Make sure the body does *not* contain the set parameters
-        $this->assertNotContains('swallow', $res->getBody());
-        $this->assertNotContains('Camelot', $res->getBody());
+        $this->assertStringNotContainsString('swallow', $res->getBody());
+        $this->assertStringNotContainsString('Camelot', $res->getBody());
     }
 
     /**
@@ -357,7 +357,7 @@ class CurlTest extends CommonHttpTests
         $adapter->setOptions(['timeout' => 2, 'maxredirects' => 1]);
         $adapter->connect('getlaminas.org');
 
-        $this->assertInternalType('resource', $adapter->getHandle());
+        $this->assertIsResource($adapter->getHandle());
     }
 
     /**

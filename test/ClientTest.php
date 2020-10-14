@@ -208,10 +208,10 @@ class ClientTest extends TestCase
 
         $rawRequest = $client->getLastRawRequest();
 
-        $this->assertNotContains('Accept-Encoding: gzip, deflate', $rawRequest, '', true);
-        $this->assertNotContains('Accept-Encoding: identity', $rawRequest, '', true);
+        $this->assertStringNotContainsString('Accept-Encoding: gzip, deflate', $rawRequest, '', true);
+        $this->assertStringNotContainsString('Accept-Encoding: identity', $rawRequest, '', true);
 
-        $this->assertContains('Accept-Encoding: foo', $rawRequest);
+        $this->assertStringContainsString('Accept-Encoding: foo', $rawRequest);
     }
 
     public function testEncodeAuthHeaderWorksAsExpected()
@@ -298,7 +298,7 @@ class ClientTest extends TestCase
         $client->setMethod('GET')->send();
 
         // the last request should contain the Authorization header
-        $this->assertContains($encoded, $client->getLastRawRequest());
+        $this->assertStringContainsString($encoded, $client->getLastRawRequest());
     }
 
     public function testIfClientDoesNotForwardAuthenticationToForeignHost()
@@ -329,7 +329,7 @@ class ClientTest extends TestCase
 
         // the last request should NOT contain the Authorization header,
         // because example.com is different from example.org
-        $this->assertNotContains($encoded, $client->getLastRawRequest());
+        $this->assertStringNotContainsString($encoded, $client->getLastRawRequest());
 
         // set up two responses that simulate a redirection from example.org to sub.example.org
         $testAdapter->setResponse(
@@ -349,7 +349,7 @@ class ClientTest extends TestCase
 
         // the last request should contain the Authorization header,
         // because sub.example.org is a subdomain unter example.org
-        $this->assertContains($encoded, $client->getLastRawRequest());
+        $this->assertStringContainsString($encoded, $client->getLastRawRequest());
 
         // set up two responses that simulate a rediration from sub.example.org to example.org
         $testAdapter->setResponse(
@@ -369,7 +369,7 @@ class ClientTest extends TestCase
 
         // the last request should NOT contain the Authorization header,
         // because example.org is not a subdomain unter sub.example.org
-        $this->assertNotContains($encoded, $client->getLastRawRequest());
+        $this->assertStringNotContainsString($encoded, $client->getLastRawRequest());
     }
 
     public function testAdapterAlwaysReachableIfSpecified()
@@ -426,9 +426,9 @@ class ClientTest extends TestCase
 
         $headers = $prepareHeadersReflection->invoke($client, $body, new Http('http://localhost:5984'));
 
-        $this->assertInternalType('array', $headers);
+        $this->assertIsArray($headers);
         $this->assertArrayHasKey('Authorization', $headers);
-        $this->assertContains('Digest', $headers['Authorization']);
+        $this->assertStringContainsString('Digest', $headers['Authorization']);
     }
 
     /**
@@ -440,14 +440,13 @@ class ClientTest extends TestCase
 
         $client->setAuth('username', 'password', ExtendedClient::AUTH_CUSTOM);
 
-        $this->assertAttributeEquals(
+        $this->assertEquals(
             [
                 'user'     => 'username',
                 'password' => 'password',
                 'type'     => ExtendedClient::AUTH_CUSTOM,
             ],
-            'auth',
-            $client
+            $client->auth
         );
     }
 
@@ -527,7 +526,7 @@ class ClientTest extends TestCase
         $client->setAdapter(Test::class);
         $client->send($request);
         $rawRequest = $client->getLastRawRequest();
-        $this->assertContains('foo=bar&baz=foo', $rawRequest);
+        $this->assertStringContainsString('foo=bar&baz=foo', $rawRequest);
     }
 
     public function uriDataProvider()
@@ -646,7 +645,7 @@ class ClientTest extends TestCase
         $r      = new ReflectionProperty($client, 'config');
         $r->setAccessible(true);
         $config = $r->getValue($client);
-        $this->assertInternalType('array', $config);
+        $this->assertIsArray($config);
         $this->assertArrayHasKey('useragent', $config);
         $this->assertSame('Laminas_Http_Client', $config['useragent']);
     }

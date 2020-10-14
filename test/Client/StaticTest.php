@@ -76,8 +76,7 @@ class StaticTest extends TestCase
         $this->assertEquals($uri->__toString(), $uristr, 'Returned Uri object does not hold the expected URI');
 
         $uri = $this->_client->getUri()->toString();
-        $this->assertInternalType(
-            'string',
+        $this->assertIsString(
             $uri,
             'Returned value expected to be a string, ' . gettype($uri) . ' returned'
         );
@@ -111,7 +110,7 @@ class StaticTest extends TestCase
         $this->_client->setMethod('GET');
         $this->_client->send();
 
-        $this->assertContains(
+        $this->assertStringContainsString(
             $qstr,
             $this->_client->getLastRawRequest(),
             'Request is expected to contain the entire query string'
@@ -174,7 +173,7 @@ class StaticTest extends TestCase
         $cookies = $this->_client->getCookies();
 
         // Check we got the right cookiejar
-        $this->assertInternalType('array', $cookies);
+        $this->assertIsArray($cookies);
         $this->assertContainsOnlyInstancesOf(SetCookie::class, $cookies);
         $this->assertCount(2, $cookies);
     }
@@ -574,7 +573,7 @@ class StaticTest extends TestCase
         $this->_client->addCookie('foo', 'bar=baz');
         $this->_client->send();
         $cookieValue = 'Cookie: foo=' . urlencode('bar=baz');
-        $this->assertContains(
+        $this->assertStringContainsString(
             $cookieValue,
             $this->_client->getLastRawRequest(),
             'Request is expected to contain the entire cookie "keyname=encoded_value"'
@@ -598,7 +597,7 @@ class StaticTest extends TestCase
         $this->_client->addCookie('foo', 'bar=baz');
         $this->_client->send();
         $cookieValue = 'Cookie: foo=bar=baz';
-        $this->assertContains(
+        $this->assertStringContainsString(
             $cookieValue,
             $this->_client->getLastRawRequest(),
             'Request is expected to contain the entire cookie "keyname=raw_value"'

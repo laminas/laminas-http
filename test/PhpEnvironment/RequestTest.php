@@ -311,7 +311,7 @@ class RequestTest extends TestCase
         $_SERVER = $server;
         $request = new Request();
 
-        $this->assertContains($name, $request->toString());
+        $this->assertStringContainsString($name, $request->toString());
     }
 
     /**

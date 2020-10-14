@@ -257,7 +257,7 @@ class SetCookieTest extends TestCase
             . 'Expires=Wed, 13-Jan-2021 22:23:01 GMT; Secure; HttpOnly'
         );
 
-        $this->assertInternalType('array', $setCookieHeaders);
+        $this->assertIsArray($setCookieHeaders);
 
         $setCookieHeader = $setCookieHeaders[0];
         $this->assertInstanceOf(MultipleHeaderInterface::class, $setCookieHeader);

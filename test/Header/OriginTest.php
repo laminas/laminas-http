@@ -17,13 +17,13 @@ use PHPUnit\Framework\TestCase;
 class OriginTest extends TestCase
 {
     /**
-     * @group 6484
+     * @group ZF#6484
      */
     public function testOriginFieldValueIsAlwaysAString()
     {
         $origin = new Origin();
 
-        $this->assertInternalType('string', $origin->getFieldValue());
+        $this->assertIsString($origin->getFieldValue());
     }
 
     public function testOriginFromStringCreatesValidOriginHeader()

@@ -335,7 +335,7 @@ abstract class CommonHttpTests extends TestCase
         $this->client->setMethod('POST');
         $res = $this->client->send();
 
-        $this->assertNotContains(
+        $this->assertStringNotContainsString(
             serialize($params),
             $res->getBody(),
             "returned body contains GET or POST parameters (it shouldn't!)"
@@ -369,8 +369,8 @@ abstract class CommonHttpTests extends TestCase
         $this->client->setMethod('POST');
         $res = $this->client->send();
 
-        $this->assertNotContains('cheese', $res->getBody(), 'The "cheese" GET parameter was expected to be unset');
-        $this->assertNotContains('alice', $res->getBody(), 'The "to" POST parameter was expected to be unset');
+        $this->assertStringNotContainsString('cheese', $res->getBody(), 'The "cheese" GET parameter was expected to be unset');
+        $this->assertStringNotContainsString('alice', $res->getBody(), 'The "to" POST parameter was expected to be unset');
     }
 
     /**
@@ -402,7 +402,7 @@ abstract class CommonHttpTests extends TestCase
         $body = strtolower($res->getBody());
 
         foreach ($headers as $key => $val) {
-            $this->assertContains(strtolower($key . ': ' . $val), $body);
+            $this->assertStringContainsString(strtolower($key . ': ' . $val), $body);
         }
     }
 
@@ -432,9 +432,9 @@ abstract class CommonHttpTests extends TestCase
 
         foreach ($headers as $key => $val) {
             if (is_string($key)) {
-                $this->assertContains(strtolower($key . ': ' . $val), $body);
+                $this->assertStringContainsString(strtolower($key . ': ' . $val), $body);
             } else {
-                $this->assertContains(strtolower($val), $body);
+                $this->assertStringContainsString(strtolower($val), $body);
             }
         }
     }
@@ -473,7 +473,7 @@ abstract class CommonHttpTests extends TestCase
                 $val = implode('; ', $val);
             }
 
-            $this->assertContains(strtolower($key . ': ' . $val), $body);
+            $this->assertStringContainsString(strtolower($key . ': ' . $val), $body);
         }
     }
 
@@ -499,8 +499,8 @@ abstract class CommonHttpTests extends TestCase
         $this->assertEquals(3, $this->client->getRedirectionsCount(), 'Redirection counter is not as expected');
 
         // Make sure the body does *not* contain the set parameters
-        $this->assertNotContains('swallow', $res->getBody());
-        $this->assertNotContains('Camelot', $res->getBody());
+        $this->assertStringNotContainsString('swallow', $res->getBody());
+        $this->assertStringNotContainsString('Camelot', $res->getBody());
     }
 
     /**
@@ -522,12 +522,12 @@ abstract class CommonHttpTests extends TestCase
         $this->assertEquals(3, $this->client->getRedirectionsCount(), 'Redirection counter is not as expected');
 
         // Make sure the body does *not* contain the set parameters
-        $this->assertNotContains('swallow', $res->getBody());
-        $this->assertNotContains('Camelot', $res->getBody());
+        $this->assertStringNotContainsString('swallow', $res->getBody());
+        $this->assertStringNotContainsString('Camelot', $res->getBody());
 
         // Check that we have received and persisted expected cookies
         $cookies = $this->client->getCookies();
-        $this->assertInternalType('array', $cookies, 'Client is not sending cookies on redirect');
+        $this->assertIsArray($cookies, 'Client is not sending cookies on redirect');
         $this->assertArrayHasKey('laminastestSessionCookie', $cookies, 'Client is not sending cookies on redirect');
         $this->assertArrayHasKey('laminastestLongLivedCookie', $cookies, 'Client is not sending cookies on redirect');
         $this->assertEquals('positive', $cookies['laminastestSessionCookie']->getValue());
@@ -558,8 +558,8 @@ abstract class CommonHttpTests extends TestCase
         $this->assertEquals(3, $this->client->getRedirectionsCount(), 'Redirection counter is not as expected');
 
         // Make sure the body *does* contain the set parameters
-        $this->assertContains('swallow', $res->getBody());
-        $this->assertContains('Camelot', $res->getBody());
+        $this->assertStringContainsString('swallow', $res->getBody());
+        $this->assertStringContainsString('Camelot', $res->getBody());
     }
 
     /**
@@ -950,7 +950,7 @@ abstract class CommonHttpTests extends TestCase
         $response = $this->client->send();
 
         $this->assertInstanceOf(Stream::class, $response, 'Request did not return stream response!');
-        $this->assertInternalType('resource', $response->getStream(), 'Request does not contain stream!');
+        $this->assertIsResource($response->getStream(), 'Request does not contain stream!');
 
         $streamName = $response->getStreamName();
 
@@ -977,7 +977,7 @@ abstract class CommonHttpTests extends TestCase
         $response = $this->client->send();
 
         $this->assertInstanceOf(Stream::class, $response, 'Request did not return stream response!');
-        $this->assertInternalType('resource', $response->getStream(), 'Request does not contain stream!');
+        $this->assertIsResource($response->getStream(), 'Request does not contain stream!');
 
         $body = $response->getBody();
 
@@ -998,7 +998,7 @@ abstract class CommonHttpTests extends TestCase
         $response = $this->client->send();
 
         $this->assertInstanceOf(Stream::class, $response, 'Request did not return stream response!');
-        $this->assertInternalType('resource', $response->getStream(), 'Request does not contain stream!');
+        $this->assertIsResource($response->getStream(), 'Request does not contain stream!');
 
         $this->assertEquals($outfile, $response->getStreamName());
 
@@ -1089,7 +1089,7 @@ abstract class CommonHttpTests extends TestCase
         $request->setQuery(new Parameters(['foo' => 'bar', 'baz' => 'bat']));
         $this->client->send($request);
         $rawRequest = $this->client->getLastRawRequest();
-        $this->assertContains('?foo=bar;baz=bat', $rawRequest);
+        $this->assertStringContainsString('?foo=bar;baz=bat', $rawRequest);
     }
 
     /**
