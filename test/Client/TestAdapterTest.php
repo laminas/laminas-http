@@ -189,7 +189,7 @@ class TestAdapterTest extends TestCase
                 $this->fail();
             } catch (\Exception $e) {
                 $this->assertInstanceOf(OutOfRangeException::class, $e);
-                $this->assertRegexp('/out of range/i', $e->getMessage());
+                $this->assertMatchesRegularExpression('/out of range/i', $e->getMessage());
             }
         }
     }

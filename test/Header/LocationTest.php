@@ -54,7 +54,7 @@ class LocationTest extends TestCase
     {
         $locationHeader = new Location();
         $locationHeader->setUri($uri);
-        $this->assertInstanceOf($expectedClass, $locationHeader->uri);
+        $this->assertInstanceOf($expectedClass, $locationHeader->uri());
     }
 
     /**
@@ -70,7 +70,7 @@ class LocationTest extends TestCase
         $uri = UriFactory::factory($uri);
         $locationHeader = new Location();
         $locationHeader->setUri($uri);
-        $this->assertInstanceOf($expectedClass, $locationHeader->uri);
+        $this->assertInstanceOf($expectedClass, $locationHeader->uri());
     }
 
     /**

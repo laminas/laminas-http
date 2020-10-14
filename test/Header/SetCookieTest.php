@@ -588,7 +588,7 @@ class SetCookieTest extends TestCase
         $cookie = new SetCookie($cookieName, $jsonData);
 
         $regExp = sprintf('#^%s=%s#', $cookieName, urlencode($jsonData));
-        $this->assertRegExp($regExp, $cookie->getFieldValue());
+        $this->assertMatchesRegularExpression($regExp, $cookie->getFieldValue());
 
         $cookieName = 'fooCookie';
         $jsonData = json_encode(['foo' => 'bar']);
@@ -597,7 +597,7 @@ class SetCookieTest extends TestCase
         $cookie->setDomain('example.org');
 
         $regExp = sprintf('#^%s=%s; Domain=#', $cookieName, urlencode($jsonData));
-        $this->assertRegExp($regExp, $cookie->getFieldValue());
+        $this->assertMatchesRegularExpression($regExp, $cookie->getFieldValue());
     }
 
     /**
