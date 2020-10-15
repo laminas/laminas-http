@@ -277,7 +277,7 @@ class CurlTest extends CommonHttpTests
 
         $this->assertEquals(
             ['curloptions' => ['foo' => 'bar', 'bar' => 'baz']],
-            $this->readAttribute($adapter, 'config')
+            $adapter->getConfig()
         );
     }
 
@@ -301,7 +301,7 @@ class CurlTest extends CommonHttpTests
 
         $this->assertEquals(
             ['curloptions' => ['foo' => 'bar', 'bar' => 'baz']],
-            $this->readAttribute($adapter, 'config')
+            $adapter->getConfig()
         );
     }
 
@@ -325,7 +325,7 @@ class CurlTest extends CommonHttpTests
 
         $this->assertEquals(
             $expected,
-            $this->readAttribute($adapter, 'config')
+            $adapter->getConfig()
         );
     }
 
@@ -344,7 +344,7 @@ class CurlTest extends CommonHttpTests
 
         $this->assertEquals(
             $expected,
-            $this->readAttribute($adapter, 'config')
+            $adapter->getConfig()
         );
     }
 
@@ -396,7 +396,7 @@ class CurlTest extends CommonHttpTests
             'Expecting request_header in curl_getinfo() return value'
         );
 
-        $this->assertContains($header, $curlInfo['request_header'], 'Expecting valid basic authorization header');
+        $this->assertStringContainsString($header, $curlInfo['request_header'], 'Expecting valid basic authorization header');
     }
 
     /**
@@ -467,7 +467,7 @@ class CurlTest extends CommonHttpTests
         ];
         $adapter->setOptions($options);
 
-        $config = $this->readAttribute($adapter, 'config');
+        $config = $adapter->getConfig();
         $this->assertEquals($options['sslcapath'], $config['sslcapath']);
         $this->assertEquals($options['sslcafile'], $config['sslcafile']);
     }

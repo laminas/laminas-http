@@ -325,7 +325,7 @@ abstract class CommonHttpTests extends TestCase
 
         $res = $this->client->send();
 
-        $this->assertContains(
+        $this->assertStringContainsString(
             serialize($params) . "\n" . serialize($params),
             $res->getBody(),
             'returned body does not contain all GET and POST parameters (it should!)'
