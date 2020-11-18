@@ -440,13 +440,17 @@ class ClientTest extends TestCase
 
         $client->setAuth('username', 'password', ExtendedClient::AUTH_CUSTOM);
 
+        $reflectedProperty = new ReflectionProperty($client, 'auth');
+        $reflectedProperty->setAccessible(true);
+        $customAuth = $reflectedProperty->getValue($client);
+
         $this->assertEquals(
             [
                 'user'     => 'username',
                 'password' => 'password',
                 'type'     => ExtendedClient::AUTH_CUSTOM,
             ],
-            $client->auth
+            $customAuth
         );
     }
 
