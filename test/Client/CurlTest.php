@@ -154,11 +154,11 @@ class CurlTest extends CommonHttpTests
         // Ignore curl warning: Invalid curl configuration option
         ErrorHandler::start();
 
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Unknown or erroreous cURL option');
+        $this->expectException(ValueError::class);
+        $this->expectExceptionMessage('Unknown or erroneous cURL option');
         try {
             $this->client->send();
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             var_dump($e);
         } finally {
             ErrorHandler::stop();
@@ -358,10 +358,8 @@ class CurlTest extends CommonHttpTests
         $adapter = new Adapter\Curl();
         $adapter->setOptions(['timeout' => 2, 'maxredirects' => 1]);
         $adapter->connect('getlaminas.org');
-        
         var_dump($adapter->getHandle());
-
-        $this->assertIsResource($adapter->getHandle());
+        $this->assertIsObject($adapter->getHandle());
     }
 
     /**
