@@ -396,7 +396,7 @@ class StaticTest extends TestCase
     }
 
     /**
-     * Test that POST data with multi-dimentional array is properly encoded as
+     * Test that POST data with multi-dimensional array is properly encoded as
      * multipart/form-data
      */
     public function testFormDataEncodingWithMultiArrayLaminas7038()
@@ -437,7 +437,7 @@ class StaticTest extends TestCase
         ) {
             $expected = trim($expected);
             $got = trim($got);
-            $this->assertRegExp(sprintf('/^%s$/', $expected), $got);
+            $this->assertMatchesRegularExpression(sprintf('/^%s$/', $expected), $got);
         }
     }
 
