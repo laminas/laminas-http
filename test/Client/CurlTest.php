@@ -158,6 +158,8 @@ class CurlTest extends CommonHttpTests
         $this->expectExceptionMessage('Unknown or erroreous cURL option');
         try {
             $this->client->send();
+        } catch(Exception $e) {
+            var_dump($e);
         } finally {
             ErrorHandler::stop();
         }
@@ -356,6 +358,8 @@ class CurlTest extends CommonHttpTests
         $adapter = new Adapter\Curl();
         $adapter->setOptions(['timeout' => 2, 'maxredirects' => 1]);
         $adapter->connect('getlaminas.org');
+        
+        var_dump($adapter->getHandle());
 
         $this->assertIsResource($adapter->getHandle());
     }
