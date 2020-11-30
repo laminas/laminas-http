@@ -369,8 +369,16 @@ abstract class CommonHttpTests extends TestCase
         $this->client->setMethod('POST');
         $res = $this->client->send();
 
-        $this->assertStringNotContainsString('cheese', $res->getBody(), 'The "cheese" GET parameter was expected to be unset');
-        $this->assertStringNotContainsString('alice', $res->getBody(), 'The "to" POST parameter was expected to be unset');
+        $this->assertStringNotContainsString(
+            'cheese',
+            $res->getBody(),
+            'The "cheese" GET parameter was expected to be unset'
+        );
+        $this->assertStringNotContainsString(
+            'alice',
+            $res->getBody(),
+            'The "to" POST parameter was expected to be unset'
+        );
     }
 
     /**

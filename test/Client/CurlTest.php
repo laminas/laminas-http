@@ -400,7 +400,11 @@ class CurlTest extends CommonHttpTests
             'Expecting request_header in curl_getinfo() return value'
         );
 
-        $this->assertStringContainsString($header, $curlInfo['request_header'], 'Expecting valid basic authorization header');
+        $this->assertStringContainsString(
+            $header,
+            $curlInfo['request_header'],
+            'Expecting valid basic authorization header'
+        );
     }
 
     /**
