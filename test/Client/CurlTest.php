@@ -154,7 +154,7 @@ class CurlTest extends CommonHttpTests
         // Ignore curl warning: Invalid curl configuration option
         ErrorHandler::start();
 
-        $this->expectException(ValueError::class);
+        $this->expectException(\ValueError::class);
         $this->expectExceptionMessage('Unknown or erroneous cURL option');
         try {
             $this->client->send();
@@ -359,7 +359,11 @@ class CurlTest extends CommonHttpTests
         $adapter->setOptions(['timeout' => 2, 'maxredirects' => 1]);
         $adapter->connect('getlaminas.org');
         var_dump($adapter->getHandle());
-        $this->assertIsObject($adapter->getHandle());
+        if (PHP_VERSION_ID < 80000) {
+            $this->assertIsResource($adapter->getHandle());
+        } else {
+            $this->assertIsObject($adapter->getHandle());
+        }
     }
 
     /**
