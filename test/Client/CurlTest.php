@@ -154,8 +154,13 @@ class CurlTest extends CommonHttpTests
         // Ignore curl warning: Invalid curl configuration option
         ErrorHandler::start();
 
-        $this->expectException(\ValueError::class);
-        $this->expectExceptionMessage('Unknown or erroneous cURL option');
+        if (PHP_VERSION_ID < 80000) {
+            $this->expectException(RuntimeException::class);
+            $this->expectExceptionMessage('Unknown or erroneous cURL option');
+        } else {
+            $this->expectException(\ValueError::class);
+            $this->expectExceptionMessage('curl_setopt(): Argument #2 ($option) is not a valid cURL option');
+        }
         try {
             $this->client->send();
         } catch (Exception $e) {
