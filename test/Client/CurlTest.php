@@ -163,8 +163,6 @@ class CurlTest extends CommonHttpTests
         }
         try {
             $this->client->send();
-        } catch (Exception $e) {
-            var_dump($e);
         } finally {
             ErrorHandler::stop();
         }
@@ -363,7 +361,6 @@ class CurlTest extends CommonHttpTests
         $adapter = new Adapter\Curl();
         $adapter->setOptions(['timeout' => 2, 'maxredirects' => 1]);
         $adapter->connect('getlaminas.org');
-        var_dump($adapter->getHandle());
         if (PHP_VERSION_ID < 80000) {
             $this->assertIsResource($adapter->getHandle());
         } else {
