@@ -156,7 +156,7 @@ class CurlTest extends CommonHttpTests
 
         if (PHP_VERSION_ID < 80000) {
             $this->expectException(RuntimeException::class);
-            $this->expectExceptionMessage('Unknown or erroneous cURL option');
+            $this->expectExceptionMessage('Unknown or erroreous cURL option');
         } else {
             $this->expectException(\ValueError::class);
             $this->expectExceptionMessage('curl_setopt(): Argument #2 ($option) is not a valid cURL option');
