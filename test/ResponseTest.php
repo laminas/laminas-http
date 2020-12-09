@@ -342,6 +342,8 @@ REQ;
             $responseData2 = $responseData . $this->makeChunk(10000000);
             $response->setContent($responseData2);
             $time2 = $this->getTimeForGetBody($response);
+            
+            print_r("Timing for run $i: $time1, $time2");
 
             $timings[] = floor($time2 / $time1);
         }
