@@ -343,8 +343,6 @@ REQ;
             $response->setContent($responseData2);
             $time2 = $this->getTimeForGetBody($response);
 
-            print_r("Timing for run $i: $time1, $time2");
-
             $timings[] = floor($time2 / $time1);
         }
 
@@ -352,7 +350,7 @@ REQ;
 
         // make sure that the worst case packet will have an equal timing as the baseline
         $errMsg = 'Chunked response is not parsing large packets efficiently! Timings:';
-        $this->assertLessThan(20, min($timings), $errMsg . print_r($timings, true));
+        $this->assertLessThan(25, min($timings), $errMsg . print_r($timings, true));
     }
 
     public function testLineBreaksCompatibility()
