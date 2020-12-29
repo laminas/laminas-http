@@ -248,7 +248,7 @@
             </div>
 
             
-            <div class="col-4 text-sm-right">
+            <div class="col-4 text-right">
                 
                     
 
@@ -343,7 +343,6 @@ developer to interact with all the various parts of an HTTP request.</p>
 <pre class="highlight"><code class="language-text">| METHOD | URI | VERSION |
 |        HEADERS         |
 |         BODY           |</code></pre>
-
 <p>In simplified terms, the request consists of a method, URI, and HTTP version
 number; together, they make up the "Request Line." This line is followed by zero
 or more HTTP headers, which is followed by an empty line and then the request
@@ -377,7 +376,6 @@ $request-&gt;getHeaders()-&gt;addHeaders([
     'HeaderField2' =&gt; 'header-field-value2',
 ]);
 $request-&gt;getPost()-&gt;set('foo', 'bar');</code></pre>
-
 <h2 id="configuration-options">Configuration Options</h2>
 <p>No configuration options are available.</p>
 <h2 id="available-methods">Available Methods</h2>
@@ -554,7 +552,6 @@ $request-&gt;getUri();       // returns Laminas\Uri\Http object
 $request-&gt;getUriString(); // returns '/foo'
 $request-&gt;getVersion();   // returns Request::VERSION_11 or '1.1'
 $request-&gt;getContent();   // returns 'Some Content'</code></pre>
-
 <h3>Retrieving and setting headers</h3>
 <pre class="highlight"><code class="language-php">use Laminas\Http\Request;
 use Laminas\Http\Header\Cookie;
@@ -565,7 +562,6 @@ $request-&gt;getHeaders()-&gt;addHeader(new Cookie(['foo' =&gt; 'bar']));
 foreach ($request-&gt;getHeaders() as $header) {
     printf("%s with value %s\n", $header-&gt;getFieldName(), $header-&gt;getFieldValue());
 }</code></pre>
-
 <h3>Retrieving and setting GET and POST values</h3>
 <pre class="highlight"><code class="language-php">use Laminas\Http\Request;
 
@@ -577,7 +573,6 @@ $request-&gt;getPost()-&gt;foo = 'Foo value';
 $request-&gt;getQuery()-&gt;bar = 'Bar value';
 $request-&gt;getPost('foo'); // returns 'Foo value'
 $request-&gt;getQuery()-&gt;offsetGet('bar'); // returns 'Bar value'</code></pre>
-
 <h3>Generating a formatted HTTP Request from a Request object</h3>
 <pre class="highlight"><code class="language-php">use Laminas\Http\Request;
 

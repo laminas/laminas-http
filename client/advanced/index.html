@@ -248,7 +248,7 @@
             </div>
 
             
-            <div class="col-4 text-sm-right">
+            <div class="col-4 text-right">
                 
                     
 
@@ -377,7 +377,6 @@ $client-&gt;setOptions(['strictredirects' =&gt; true]);
 
 // Non-strict Redirections
 $client-&gt;setOptions(['strictredirects' =&gt; false]);</code></pre>
-
 <p>You can always get the number of redirections done after sending a request
 using the <code>getRedirectionsCount()</code> method.</p>
 <h2 id="adding-cookies-and-using-cookie-persistence">Adding cookies and using cookie persistence</h2>
@@ -402,7 +401,6 @@ $cookies = [
     SetCookie::fromString('Set-Cookie: flavorTwo=vanilla'),
 ];
 $client-&gt;addCookie($cookies);</code></pre>
-
 <p>The <code>setCookies()</code> method works in a similar manner, except that it requires an
 array of cookie name/value pairs as its only argument, and also clears the
 cookie container before adding the new cookies:</p>
@@ -411,7 +409,6 @@ $client-&gt;setCookies([
     'flavor' =&gt; 'chocolate chips',
     'amount' =&gt; 10,
 ]);</code></pre>
-
 <p>See the <a href="../../headers/#setcookie">Headers documentation</a> for more detail on the
 <code>SetCookie</code> class.</p>
 <h3>Enabling Cookie Stickiness</h3>
@@ -435,7 +432,6 @@ $cookies-&gt;addCookiesFromResponse($response, $client-&gt;getUri());
 $client-&gt;setUri('http://example.com/read_member_news.php');
 $client-&gt;setCookies($cookies-&gt;getMatchingCookies($client-&gt;getUri()));
 $client-&gt;setMethod('GET');</code></pre>
-
 <p>See the chapter on <a href="../cookies/">cookies</a> for more detail.</p>
 <h2 id="setting-custom-request-headers">Setting custom request headers</h2>
 <p>Setting custom headers is performed by first fetching the header container from
@@ -468,7 +464,6 @@ $headers-&gt;addHeaders([
     // Raw header string:
     'Cookie: language=he',
 ]);</code></pre>
-
 <p><code>Laminas\Http\Client</code> also provides a convenience method for setting request
 headers, <code>setHeaders()</code>.  This method will create a new header container, add
 the specified headers, and then store the new header container in its
@@ -483,7 +478,6 @@ $client-&gt;setHeaders([
     ['Accept-Encoding' =&gt; 'gzip,deflate'],
     'X-Powered-By: Laminas',
 ]);</code></pre>
-
 <h2 id="file-uploads">File uploads</h2>
 <p>You can upload files through HTTP using the <code>setFileUpload()</code> method. This
 method takes a file name as the first parameter, a form name as the second
@@ -508,7 +502,6 @@ $client-&gt;setFileUpload('/tmp/Backup.tar.gz', 'bufile');
 // Send the files:
 $client-&gt;setMethod('POST');
 $client-&gt;send();</code></pre>
-
 <p>In the first example, the <code>$text</code> variable is uploaded and will be available as
 <code>$_FILES['upload']</code> on the server side. In the second example, the existing
 file <code>/tmp/Backup.tar.gz</code> is uploaded to the server and will be available as
@@ -535,7 +528,6 @@ $client-&gt;setMethod('POST');
 $client-&gt;setRawBody($xml);
 $client-&gt;setEncType('text/xml');
 $client-&gt;send();</code></pre>
-
 <p>The data should be available on the server side through PHP's <code>php://input</code>
 stream.</p>
 <blockquote>
@@ -560,7 +552,6 @@ $client-&gt;setAuth('shahar', 'myPassword!');
 
 // You can also specify username and password in the URI
 $client-&gt;setUri('http://christer:secret@example.com');</code></pre>
-
 <h2 id="sending-multiple-requests-with-the-same-client">Sending multiple requests with the same client</h2>
 <p><code>Laminas\Http\Client</code> was also designed specifically to handle several consecutive
 requests with the same object. This is useful in cases where a script requires
@@ -629,7 +620,6 @@ $response = $client-&gt;setMethod('GET')-&gt;send();
 
 // Store cookies in session, for next page
 $_SESSION['cookiejar'] = $cookieJar;</code></pre>
-
 <h2 id="data-streaming">Data streaming</h2>
 <p>By default, <code>Laminas\Http\Client</code> accepts and returns data as PHP strings.
 However, in many cases there are big files to be received, thus keeping them in

@@ -248,7 +248,7 @@
             </div>
 
             
-            <div class="col-4 text-sm-right">
+            <div class="col-4 text-right">
                 
                     
 
@@ -343,7 +343,6 @@ developer to interact with all the various parts of an HTTP response.</p>
 <pre class="highlight"><code class="language-text">| VERSION | CODE | REASON |
 |        HEADERS          |
 |         BODY            |</code></pre>
-
 <p>The first line of the response consists of the HTTP version, status code, and
 the reason string for the provided status code; this is called the Response
 Line. Next is a set of zero or more headers.  The remainder of the response is
@@ -385,7 +384,6 @@ $response-&gt;setContent(&lt;&lt;&lt;EOS
 &lt;/html&gt;
 EOS
 );</code></pre>
-
 <h2 id="configuration-options">Configuration Options</h2>
 <p>No configuration options are available.</p>
 <h2 id="available-methods">Available Methods</h2>
@@ -528,7 +526,6 @@ HeaderField2: header-field-value2
 &lt;/body&gt;
 &lt;/html&gt;
 EOS);</code></pre>
-
 <h3>Generating a formatted HTTP Response from a Response object</h3>
 <pre class="highlight"><code class="language-php">use Laminas\Http\Response;
 $response = new Response();
@@ -544,7 +541,6 @@ $response-&gt;setContent(&lt;&lt;&lt;EOS
 &lt;/body&gt;
 &lt;/html&gt;
 EOS);</code></pre>
-
 <h3>Handle "Headers already sent" errors</h3>
 <blockquote>
 <p>Available since version 2.13.0</p>
@@ -563,7 +559,6 @@ $response = new Response();
 $response-&gt;setHeadersSentHandler(function ($response): void {
     throw new RuntimeException('Cannot send headers, headers already sent');
 });</code></pre>
-
 <p>If you are using laminas-mvc, we recommend creating a delegator factory for
 purposes of such injection. The delegator factory would look like this:</p>
 <pre class="highlight"><code class="language-php">// in module/Application/src/InjectSendHeadersHandlerDelegator.php:
@@ -591,7 +586,6 @@ class InjectSendHeadersHandlerDelegator implements DelegatorFactoryInterface
         return $response;
     }
 }</code></pre>
-
 <p>You would then configure your container to use this instance with the following
 configuration:</p>
 <pre class="highlight"><code class="language-php">// in config/autoload/dependencies.global.php

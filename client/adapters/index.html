@@ -248,7 +248,7 @@
             </div>
 
             
-            <div class="col-4 text-sm-right">
+            <div class="col-4 text-right">
                 
                     
 
@@ -480,11 +480,9 @@ $client = new Client('https://www.example.com', $config);
 
 // The following request will be sent over a TLS secure connection.
 $response = $client-&gt;send();</code></pre>
-
 <p>The result of the example above will be similar to opening a TCP connection
 using the following PHP command:</p>
 <pre class="highlight"><code class="language-php">fsockopen('tls://www.example.com', 443);</code></pre>
-
 <h3>Customizing and accessing the Socket adapter stream context</h3>
 <p><code>Laminas\Http\Client\Adapter\Socket</code> provides direct access to the underlying
 <a href="http://php.net/stream.contexts">stream context</a> used to connect to the remote
@@ -546,7 +544,6 @@ $response = $client-&gt;send();
 // If everything went well, you can now access the context again:
 $opts = stream_context_get_options($adapter-&gt;getStreamContext());
 echo $opts['ssl']['peer_certificate'];</code></pre>
-
 <blockquote>
 <h4>Set stream context options prior to requests</h4>
 <p>Note that you must set any stream context options before using the adapter to
@@ -633,7 +630,6 @@ $config = [
 $client = new Client('http://www.example.com', $config);
 
 // Continue working...</code></pre>
-
 <p>As mentioned, if <code>proxy_host</code> is not set or is set to a blank string, the
 connection will fall back to a regular direct connection. This allows you to
 write your application in a way that allows a proxy to be used optionally,
@@ -666,7 +662,6 @@ $config = [
     'curloptions' =&gt; [CURLOPT_FOLLOWLOCATION =&gt; true],
 ];
 $client = new Client($uri, $config);</code></pre>
-
 <p>By default, the cURL adapter is configured to behave exactly like the <code>Socket</code>
 adapter, and it also accepts the same configuration parameters as the <code>Socket</code>
 and <code>Proxy</code> adapters. You can also change the cURL options by either specifying
@@ -736,7 +731,6 @@ $adapter-&gt;setOptions([
     ],
 ]);
 $client-&gt;send();</code></pre>
-
 <h2 id="the-test-adapter">The Test adapter</h2>
 <p>Testing code that relies on HTTP connections poses difficulties.  For example,
 testing an application that pulls an RSS feed from a remote server will require
@@ -780,7 +774,6 @@ $adapter-&gt;setResponse(
 
 $response = $client-&gt;send();
 // .. continue parsing $response..</code></pre>
-
 <p>The above example shows how you can preset your HTTP client to return the
 response you need. Then, you can continue testing your own code, without being
 dependent on a network connection, the server's response, etc. In this case, the
@@ -825,7 +818,6 @@ $adapter-&gt;addResponse(
 
 // inject the http client object ($client) into your object
 // being tested and then test your object's behavior below</code></pre>
-
 <p>The <code>setResponse()</code> method clears any responses in the adapter's buffer and sets
 the first response that will be returned. The <code>addResponse()</code> method will add
 successive responses.</p>
@@ -867,7 +859,6 @@ try {
 
 // Further requests will work as expected until
 // you call setNextRequestWillFail(true) again</code></pre>
-
 <h2 id="creating-your-own-connection-adapters">Creating your own connection adapters</h2>
 <p><code>Laminas\Http\Client</code> has been designed so that you can create and use your own
 connection adapters. You could, for example, create a connection adapter that
@@ -947,7 +938,6 @@ class BananaProtocol implements AdapterInterface
         // Close the connection to the remote server - called last.
     }
 }</code></pre>
-
 <p>Use the adapter as you would any other:</p>
 <pre class="highlight"><code class="language-php">use MyApp\Http\Client\Adapter\BananaProtocol;
 use Laminas\Http\Client;

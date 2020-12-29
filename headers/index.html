@@ -248,7 +248,7 @@
             </div>
 
             
-            <div class="col-4 text-sm-right">
+            <div class="col-4 text-right">
                 
                     
 
@@ -379,7 +379,6 @@ $requestHeaders  = $client-&gt;getRequest()-&gt;getHeaders();
 
 // The same method also works for retrieving Response headers
 $responseHeaders = $client-&gt;getResponse()-&gt;getHeaders();</code></pre>
-
 <p><code>Laminas\Http\Headers</code> can also extract headers from a string:</p>
 <pre class="highlight"><code class="language-php">use Laminas\Http\Headers;
 
@@ -394,7 +393,6 @@ $headers = Headers::fromString($headerString);
 //   (1) Laminas\Http\Header\Host
 //   (2) Laminas\Http\Header\ContentType
 //   (3) Laminas\Http\Header\ContentLength</code></pre>
-
 <p>Now that you have an instance of <code>Laminas\Http\Headers</code>, you can manipulate the
 individual headers it contains using the provided public API methods outlined in
 the <a href="#available-methods">Available Methods</a> section.</p>
@@ -906,7 +904,6 @@ $csp-&gt;setDirective('default-src', []); // No sources
 $csp-&gt;setDirective('img-src', ['*']);
 $csp-&gt;setDirective('object-src', ['media1.example.com', 'media2.example.com', '*.cdn.example.com']);
 $csp-&gt;setDirective('script-src', ['trustedscripts.example.com']);</code></pre>
-
 <h3>ContentTransferEncoding</h3>
 <p>No additional methods.</p>
 <h3>ContentType</h3>
@@ -1211,7 +1208,6 @@ $headers-&gt;has('Content-Type');
 // We can retrieve all instances of a specific header by using
 // the ``get`` method:
 $contentTypeHeaders = $headers-&gt;get('Content-Type');</code></pre>
-
 <p>There are three possibilities for the return value of the above call to the <code>get</code> method:</p>
 <ul>
 <li>If no <code>Content-Type</code> header was set in the <code>Request</code>, <code>get</code> will return <code>false</code>.</li>
@@ -1252,7 +1248,6 @@ $headers-&gt;addHeaders([
     // header content as that array key's value
     'Content-Type' =&gt; 'text/html',
 ]);</code></pre>
-
 <h3>Removing headers from a Headers object</h3>
 <p>We can remove all headers of a specific type using the <code>removeHeader</code> method,
 which accepts a single object implementing <code>Laminas\Http\Header\HeaderInterface</code></p>
