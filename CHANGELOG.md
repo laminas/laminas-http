@@ -2,27 +2,28 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 2.14.0 - TBD
+## 2.14.0 - 2020-12-29
 
-### Added
 
-- Nothing.
+-----
 
-### Changed
+### Release Notes for [2.14.0](https://github.com/laminas/laminas-http/milestone/2)
 
-- Nothing.
 
-### Deprecated
 
-- Nothing.
+### 2.14.0
 
-### Removed
+- Total issues resolved: **0**
+- Total pull requests resolved: **2**
+- Total contributors: **2**
 
-- Nothing.
+#### Enhancement,hacktoberfest-accepted
 
-### Fixed
+ - [45: PHP 8 support](https://github.com/laminas/laminas-http/pull/45) thanks to @ocean
 
-- Nothing.
+#### Enhancement
+
+ - [33: Add Content-Security-Policy-Report-Only header](https://github.com/laminas/laminas-http/pull/33) thanks to @xmorave2
 
 ## 2.13.0 - 2020-08-18
 
