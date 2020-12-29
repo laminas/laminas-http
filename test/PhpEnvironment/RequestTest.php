@@ -27,7 +27,7 @@ class RequestTest extends TestCase
     /**
      * Save the original environment and set up a clean one.
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->originalEnvironment = [
             'post'   => $_POST,
@@ -49,7 +49,7 @@ class RequestTest extends TestCase
     /**
      * Restore the original environment
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $_POST   = $this->originalEnvironment['post'];
         $_GET    = $this->originalEnvironment['get'];
@@ -311,7 +311,7 @@ class RequestTest extends TestCase
         $_SERVER = $server;
         $request = new Request();
 
-        $this->assertContains($name, $request->toString());
+        $this->assertStringContainsString($name, $request->toString());
     }
 
     /**

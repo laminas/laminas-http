@@ -33,7 +33,7 @@ class TestAdapterTest extends TestCase
     /**
      * Set up the test adapter before running the test
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->adapter = new Test();
     }
@@ -41,7 +41,7 @@ class TestAdapterTest extends TestCase
     /**
      * Tear down the test adapter after running the test
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->adapter = null;
     }
@@ -189,7 +189,7 @@ class TestAdapterTest extends TestCase
                 $this->fail();
             } catch (\Exception $e) {
                 $this->assertInstanceOf(OutOfRangeException::class, $e);
-                $this->assertRegexp('/out of range/i', $e->getMessage());
+                $this->assertMatchesRegularExpression('/out of range/i', $e->getMessage());
             }
         }
     }

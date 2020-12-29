@@ -45,7 +45,7 @@ class StaticTest extends TestCase
     /**
      * Set up the test suite before each test
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->_client = new MockClient('http://www.example.com');
     }
@@ -53,7 +53,7 @@ class StaticTest extends TestCase
     /**
      * Clean up after running a test
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->_client = null;
     }
@@ -76,8 +76,7 @@ class StaticTest extends TestCase
         $this->assertEquals($uri->__toString(), $uristr, 'Returned Uri object does not hold the expected URI');
 
         $uri = $this->_client->getUri()->toString();
-        $this->assertInternalType(
-            'string',
+        $this->assertIsString(
             $uri,
             'Returned value expected to be a string, ' . gettype($uri) . ' returned'
         );
@@ -111,7 +110,7 @@ class StaticTest extends TestCase
         $this->_client->setMethod('GET');
         $this->_client->send();
 
-        $this->assertContains(
+        $this->assertStringContainsString(
             $qstr,
             $this->_client->getLastRawRequest(),
             'Request is expected to contain the entire query string'
@@ -174,7 +173,7 @@ class StaticTest extends TestCase
         $cookies = $this->_client->getCookies();
 
         // Check we got the right cookiejar
-        $this->assertInternalType('array', $cookies);
+        $this->assertIsArray($cookies);
         $this->assertContainsOnlyInstancesOf(SetCookie::class, $cookies);
         $this->assertCount(2, $cookies);
     }
@@ -397,7 +396,7 @@ class StaticTest extends TestCase
     }
 
     /**
-     * Test that POST data with multi-dimentional array is properly encoded as
+     * Test that POST data with multi-dimensional array is properly encoded as
      * multipart/form-data
      */
     public function testFormDataEncodingWithMultiArrayLaminas7038()
@@ -438,7 +437,7 @@ class StaticTest extends TestCase
         ) {
             $expected = trim($expected);
             $got = trim($got);
-            $this->assertRegExp(sprintf('/^%s$/', $expected), $got);
+            $this->assertMatchesRegularExpression(sprintf('/^%s$/', $expected), $got);
         }
     }
 
@@ -574,7 +573,7 @@ class StaticTest extends TestCase
         $this->_client->addCookie('foo', 'bar=baz');
         $this->_client->send();
         $cookieValue = 'Cookie: foo=' . urlencode('bar=baz');
-        $this->assertContains(
+        $this->assertStringContainsString(
             $cookieValue,
             $this->_client->getLastRawRequest(),
             'Request is expected to contain the entire cookie "keyname=encoded_value"'
@@ -598,7 +597,7 @@ class StaticTest extends TestCase
         $this->_client->addCookie('foo', 'bar=baz');
         $this->_client->send();
         $cookieValue = 'Cookie: foo=bar=baz';
-        $this->assertContains(
+        $this->assertStringContainsString(
             $cookieValue,
             $this->_client->getLastRawRequest(),
             'Request is expected to contain the entire cookie "keyname=raw_value"'

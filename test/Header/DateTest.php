@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 
 class DateTest extends TestCase
 {
-    public function tearDown()
+    public function tearDown(): void
     {
         // set to RFC default date format
         Date::setDateFormat(Date::DATE_RFC1123);

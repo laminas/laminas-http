@@ -31,7 +31,7 @@ class StaticClientTest extends TestCase
     /**
      * Set up the test case
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         if (getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI')
             && (filter_var(getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI'), FILTER_VALIDATE_BOOLEAN) != false)) {
@@ -64,7 +64,7 @@ class StaticClientTest extends TestCase
     {
         $response = HTTPClient::get($this->baseuri . 'testGetData.php?foo');
         $this->assertTrue($response->isSuccess());
-        $this->assertContains('foo', $response->getBody());
+        $this->assertStringContainsString('foo', $response->getBody());
     }
 
     /**
@@ -74,8 +74,8 @@ class StaticClientTest extends TestCase
     {
         $response = HTTPClient::get($this->baseuri . 'testGetData.php', ['foo' => 'bar']);
         $this->assertTrue($response->isSuccess());
-        $this->assertContains('foo', $response->getBody());
-        $this->assertContains('bar', $response->getBody());
+        $this->assertStringContainsString('foo', $response->getBody());
+        $this->assertStringContainsString('bar', $response->getBody());
     }
 
     /**
@@ -93,9 +93,9 @@ class StaticClientTest extends TestCase
         );
 
         $this->assertTrue($response->isSuccess());
-        $this->assertContains('foo', $response->getBody());
-        $this->assertContains('bar', $response->getBody());
-        $this->assertContains($getBody, $response->getBody());
+        $this->assertStringContainsString('foo', $response->getBody());
+        $this->assertStringContainsString('bar', $response->getBody());
+        $this->assertStringContainsString($getBody, $response->getBody());
     }
 
     /**
@@ -105,8 +105,8 @@ class StaticClientTest extends TestCase
     {
         $response = HTTPClient::post($this->baseuri . 'testPostData.php', ['foo' => 'bar']);
         $this->assertTrue($response->isSuccess());
-        $this->assertContains('foo', $response->getBody());
-        $this->assertContains('bar', $response->getBody());
+        $this->assertStringContainsString('foo', $response->getBody());
+        $this->assertStringContainsString('bar', $response->getBody());
     }
 
     /**
@@ -120,8 +120,8 @@ class StaticClientTest extends TestCase
             ['Content-Type' => Client::ENC_URLENCODED]
         );
         $this->assertTrue($response->isSuccess());
-        $this->assertContains('foo', $response->getBody());
-        $this->assertContains('bar', $response->getBody());
+        $this->assertStringContainsString('foo', $response->getBody());
+        $this->assertStringContainsString('bar', $response->getBody());
     }
 
     /**
@@ -139,7 +139,7 @@ class StaticClientTest extends TestCase
         );
 
         $this->assertTrue($response->isSuccess());
-        $this->assertContains($postBody, $response->getBody());
+        $this->assertStringContainsString($postBody, $response->getBody());
     }
 
     /**
@@ -164,7 +164,7 @@ class StaticClientTest extends TestCase
 
         $rawRequest = $client->getLastRawRequest();
 
-        $this->assertContains('User-Agent: simplegettest', $rawRequest);
+        $this->assertStringContainsString('User-Agent: simplegettest', $rawRequest);
     }
 
     /**
@@ -189,6 +189,6 @@ class StaticClientTest extends TestCase
 
         $rawRequest = $client->getLastRawRequest();
 
-        $this->assertContains('User-Agent: simpleposttest', $rawRequest);
+        $this->assertStringContainsString('User-Agent: simpleposttest', $rawRequest);
     }
 }

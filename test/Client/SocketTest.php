@@ -357,7 +357,7 @@ class SocketTest extends CommonHttpTests
             'someTestBody'
         );
 
-        $this->assertContains('x-test-header', $requestString);
+        $this->assertStringContainsString('x-test-header', $requestString);
     }
 
     /**

@@ -257,7 +257,7 @@ class SetCookieTest extends TestCase
             . 'Expires=Wed, 13-Jan-2021 22:23:01 GMT; Secure; HttpOnly'
         );
 
-        $this->assertInternalType('array', $setCookieHeaders);
+        $this->assertIsArray($setCookieHeaders);
 
         $setCookieHeader = $setCookieHeaders[0];
         $this->assertInstanceOf(MultipleHeaderInterface::class, $setCookieHeader);
@@ -588,7 +588,7 @@ class SetCookieTest extends TestCase
         $cookie = new SetCookie($cookieName, $jsonData);
 
         $regExp = sprintf('#^%s=%s#', $cookieName, urlencode($jsonData));
-        $this->assertRegExp($regExp, $cookie->getFieldValue());
+        $this->assertMatchesRegularExpression($regExp, $cookie->getFieldValue());
 
         $cookieName = 'fooCookie';
         $jsonData = json_encode(['foo' => 'bar']);
@@ -597,7 +597,7 @@ class SetCookieTest extends TestCase
         $cookie->setDomain('example.org');
 
         $regExp = sprintf('#^%s=%s; Domain=#', $cookieName, urlencode($jsonData));
-        $this->assertRegExp($regExp, $cookie->getFieldValue());
+        $this->assertMatchesRegularExpression($regExp, $cookie->getFieldValue());
     }
 
     /**

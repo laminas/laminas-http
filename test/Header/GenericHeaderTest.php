@@ -51,7 +51,7 @@ class GenericHeaderTest extends TestCase
     }
 
     /**
-     * @group 7295
+     * @group ZF#7295
      */
     public function testDoesNotReplaceUnderscoresWithDashes()
     {

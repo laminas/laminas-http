@@ -47,7 +47,7 @@ class CurlTest extends CommonHttpTests
         ],
     ];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if (! extension_loaded('curl')) {
             $this->markTestSkipped('cURL is not installed, marking all Http Client Curl Adapter tests skipped.');
@@ -154,8 +154,13 @@ class CurlTest extends CommonHttpTests
         // Ignore curl warning: Invalid curl configuration option
         ErrorHandler::start();
 
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Unknown or erroreous cURL option');
+        if (PHP_VERSION_ID < 80000) {
+            $this->expectException(RuntimeException::class);
+            $this->expectExceptionMessage('Unknown or erroreous cURL option');
+        } else {
+            $this->expectException(\ValueError::class);
+            $this->expectExceptionMessage('curl_setopt(): Argument #2 ($option) is not a valid cURL option');
+        }
         try {
             $this->client->send();
         } finally {
@@ -176,8 +181,8 @@ class CurlTest extends CommonHttpTests
         $this->assertEquals(3, $this->client->getRedirectionsCount(), 'Redirection counter is not as expected');
 
         // Make sure the body does *not* contain the set parameters
-        $this->assertNotContains('swallow', $res->getBody());
-        $this->assertNotContains('Camelot', $res->getBody());
+        $this->assertStringNotContainsString('swallow', $res->getBody());
+        $this->assertStringNotContainsString('Camelot', $res->getBody());
     }
 
     /**
@@ -277,7 +282,7 @@ class CurlTest extends CommonHttpTests
 
         $this->assertEquals(
             ['curloptions' => ['foo' => 'bar', 'bar' => 'baz']],
-            $this->readAttribute($adapter, 'config')
+            $adapter->getConfig()
         );
     }
 
@@ -301,7 +306,7 @@ class CurlTest extends CommonHttpTests
 
         $this->assertEquals(
             ['curloptions' => ['foo' => 'bar', 'bar' => 'baz']],
-            $this->readAttribute($adapter, 'config')
+            $adapter->getConfig()
         );
     }
 
@@ -325,7 +330,7 @@ class CurlTest extends CommonHttpTests
 
         $this->assertEquals(
             $expected,
-            $this->readAttribute($adapter, 'config')
+            $adapter->getConfig()
         );
     }
 
@@ -344,7 +349,7 @@ class CurlTest extends CommonHttpTests
 
         $this->assertEquals(
             $expected,
-            $this->readAttribute($adapter, 'config')
+            $adapter->getConfig()
         );
     }
 
@@ -356,8 +361,11 @@ class CurlTest extends CommonHttpTests
         $adapter = new Adapter\Curl();
         $adapter->setOptions(['timeout' => 2, 'maxredirects' => 1]);
         $adapter->connect('getlaminas.org');
-
-        $this->assertInternalType('resource', $adapter->getHandle());
+        if (PHP_VERSION_ID < 80000) {
+            $this->assertIsResource($adapter->getHandle());
+        } else {
+            $this->assertIsObject($adapter->getHandle());
+        }
     }
 
     /**
@@ -396,7 +404,11 @@ class CurlTest extends CommonHttpTests
             'Expecting request_header in curl_getinfo() return value'
         );
 
-        $this->assertContains($header, $curlInfo['request_header'], 'Expecting valid basic authorization header');
+        $this->assertStringContainsString(
+            $header,
+            $curlInfo['request_header'],
+            'Expecting valid basic authorization header'
+        );
     }
 
     /**
@@ -467,7 +479,7 @@ class CurlTest extends CommonHttpTests
         ];
         $adapter->setOptions($options);
 
-        $config = $this->readAttribute($adapter, 'config');
+        $config = $adapter->getConfig();
         $this->assertEquals($options['sslcapath'], $config['sslcapath']);
         $this->assertEquals($options['sslcafile'], $config['sslcafile']);
     }
