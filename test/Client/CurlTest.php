@@ -365,6 +365,16 @@ class CurlTest extends CommonHttpTests
      */
     public function testHeadRequest()
     {
+        $this->client->setUri($this->baseuri . 'testRawPostData.php');
+        $adapter = new Adapter\Curl();
+        $this->client->setAdapter($adapter);
+        $this->client->setMethod('HEAD');
+        $this->client->send();
+        $this->assertEquals('', $this->client->getResponse()->getBody());
+    }
+
+    public function testHeadRequestWithContentLengthHeader()
+    {
         $this->client->setUri($this->baseuri . 'testHeadMethod.php');
         $adapter = new Adapter\Curl();
         $this->client->setAdapter($adapter);
