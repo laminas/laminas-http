@@ -387,6 +387,9 @@ class Curl implements HttpAdapter, StreamInterface
         curl_setopt($this->curl, CURLOPT_HTTP_VERSION, $curlHttp);
         curl_setopt($this->curl, $curlMethod, $curlValue);
 
+        // Set the CURLOPT_NOBODY flag for HEAD HTTP method
+        curl_setopt($this->curl, CURLOPT_NOBODY, $curlMethod === CURLOPT_CUSTOMREQUEST && $curlValue === 'HEAD');
+
         // Set the CURLINFO_HEADER_OUT flag so that we can retrieve the full request string later
         curl_setopt($this->curl, CURLINFO_HEADER_OUT, true);
 
