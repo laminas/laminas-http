@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url>
      <loc>https://docs.laminas.dev/laminas-http/</loc>
-     <lastmod>2020-12-29</lastmod>
+     <lastmod>2020-12-31</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://docs.laminas.dev/laminas-http/intro/</loc>
-     <lastmod>2020-12-29</lastmod>
+     <lastmod>2020-12-31</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://docs.laminas.dev/laminas-http/request/</loc>
-     <lastmod>2020-12-29</lastmod>
+     <lastmod>2020-12-31</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://docs.laminas.dev/laminas-http/response/</loc>
-     <lastmod>2020-12-29</lastmod>
+     <lastmod>2020-12-31</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://docs.laminas.dev/laminas-http/headers/</loc>
-     <lastmod>2020-12-29</lastmod>
+     <lastmod>2020-12-31</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://docs.laminas.dev/laminas-http/client/intro/</loc>
-     <lastmod>2020-12-29</lastmod>
+     <lastmod>2020-12-31</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://docs.laminas.dev/laminas-http/client/adapters/</loc>
-     <lastmod>2020-12-29</lastmod>
+     <lastmod>2020-12-31</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://docs.laminas.dev/laminas-http/client/static/</loc>
-     <lastmod>2020-12-29</lastmod>
+     <lastmod>2020-12-31</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://docs.laminas.dev/laminas-http/client/cookies/</loc>
-     <lastmod>2020-12-29</lastmod>
+     <lastmod>2020-12-31</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://docs.laminas.dev/laminas-http/client/advanced/</loc>
-     <lastmod>2020-12-29</lastmod>
+     <lastmod>2020-12-31</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>
