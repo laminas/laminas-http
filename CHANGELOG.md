@@ -2,27 +2,24 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 2.14.1 - TBD
+## 2.14.1 - 2020-12-31
 
-### Added
 
-- Nothing.
+-----
 
-### Changed
+### Release Notes for [2.14.1](https://github.com/laminas/laminas-http/milestone/4)
 
-- Nothing.
+2.14.x bugfix release (patch)
 
-### Deprecated
+### 2.14.1
 
-- Nothing.
+- Total issues resolved: **0**
+- Total pull requests resolved: **1**
+- Total contributors: **1**
 
-### Removed
+#### Bug
 
-- Nothing.
-
-### Fixed
-
-- Nothing.
+ - [46: fix Curl error &quot;transfer closed with ... bytes remaining to read&quot; with HEAD HTTP method](https://github.com/laminas/laminas-http/pull/46) thanks to @karneds
 
 ## 2.14.0 - 2020-12-29
 
