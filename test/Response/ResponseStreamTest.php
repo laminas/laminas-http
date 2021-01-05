@@ -13,6 +13,21 @@ use PHPUnit\Framework\TestCase;
 
 class ResponseStreamTest extends TestCase
 {
+    /** @var null|string */
+    private $tempFile;
+
+    public function setUp(): void
+    {
+        $this->tempFile = null;
+    }
+
+    public function tearDown(): void
+    {
+        if (null !== $this->tempFile && file_exists($this->tempFile)) {
+            unlink($this->tempFile);
+        }
+    }
+
     public function testResponseFactoryFromStringCreatesValidResponse()
     {
         $string = 'HTTP/1.0 200 OK' . "\r\n\r\n" . 'Foo Bar' . "\r\n";
@@ -76,6 +91,35 @@ class ResponseStreamTest extends TestCase
         $this->assertFalse($response->isServerError(), 'Response is an error, but isServerError() returned true');
         $this->assertTrue($response->isRedirect(), 'Response is an error, but isRedirect() returned false');
         $this->assertFalse($response->isSuccess(), 'Response is an error, but isSuccess() returned true');
+    }
+
+    /**
+     * @see https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-3007
+     */
+    public function testDestructionDoesNothingIfStreamIsNotAResourceAndStreamNameIsNotAString(): void
+    {
+        $this->tempFile = tempnam(sys_get_temp_dir(), 'lhrs');
+        $streamObject = new class($this->tempFile) {
+            private $tempFile;
+
+            public function __construct(string $tempFile)
+            {
+                $this->tempFile = $tempFile;
+            }
+
+            public function __toString()
+            {
+                return $this->tempFile;
+            }
+        };
+
+        $response = new Stream();
+        $response->setCleanup(true);
+        $response->setStreamName($streamObject);
+
+        unset($response);
+
+        $this->assertFileExists($this->tempFile);
     }
 
     /**
