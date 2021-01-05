@@ -24,6 +24,36 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
+## 2.14.3 - TBD
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 2.14.2 - 2021-01-05
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 2.14.2 - 2021-01-05
 
 ### Release Notes for [2.14.2](https://github.com/laminas/laminas-http/milestone/7)
@@ -234,15 +264,15 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [zendframework/zend-http#184](https://github.com/zendframework/zend-http/pull/184) fixes responses for request through the proxy with `HTTP/1.1 200 Connection established` header. 
+- [zendframework/zend-http#184](https://github.com/zendframework/zend-http/pull/184) fixes responses for request through the proxy with `HTTP/1.1 200 Connection established` header.
 
-- [zendframework/zend-http#187](https://github.com/zendframework/zend-http/pull/187) fixes infinite recursion on invalid header. Now `InvalidArgumentException` exception is thrown. 
+- [zendframework/zend-http#187](https://github.com/zendframework/zend-http/pull/187) fixes infinite recursion on invalid header. Now `InvalidArgumentException` exception is thrown.
 
-- [zendframework/zend-http#188](https://github.com/zendframework/zend-http/pull/188) fixes `Client::setCookies` method to properly handle array of `SetCookie` objects. Per [documentation](https://docs.laminas.dev/laminas-http/client/cookies/#usage) it should be allowed. 
+- [zendframework/zend-http#188](https://github.com/zendframework/zend-http/pull/188) fixes `Client::setCookies` method to properly handle array of `SetCookie` objects. Per [documentation](https://docs.laminas.dev/laminas-http/client/cookies/#usage) it should be allowed.
 
-- [zendframework/zend-http#189](https://github.com/zendframework/zend-http/pull/189) fixes `Headers::toArray` method to properly handle headers of the same type. Behaviour was different depends how header has been attached (`addHeader` or `addHeaderLine` broken before). 
+- [zendframework/zend-http#189](https://github.com/zendframework/zend-http/pull/189) fixes `Headers::toArray` method to properly handle headers of the same type. Behaviour was different depends how header has been attached (`addHeader` or `addHeaderLine` broken before).
 
-- [zendframework/zend-http#198](https://github.com/zendframework/zend-http/pull/198) fixes merging options in Curl adapter. It was not possible to override integer-key options (constants) set via constructor with method `setOptions`. 
+- [zendframework/zend-http#198](https://github.com/zendframework/zend-http/pull/198) fixes merging options in Curl adapter. It was not possible to override integer-key options (constants) set via constructor with method `setOptions`.
 
 - [zendframework/zend-http#198](https://github.com/zendframework/zend-http/pull/198) fixes allowed options type in `Proxy::setOptions`. `Traversable`, `array` or `Laminas\Config` object is expected.
 
