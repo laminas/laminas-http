@@ -24,6 +24,20 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
+## 2.14.2 - 2021-01-05
+
+### Release Notes for [2.14.2](https://github.com/laminas/laminas-http/milestone/7)
+
+2.14.x bugfix release (patch)
+
+- Total issues resolved: **0**
+- Total pull requests resolved: **1**
+- Total contributors: **1**
+
+#### Bug,Enhancement
+
+- [48: Security tightening: verify a stream file name is a string before unlinking](https://github.com/laminas/laminas-http/pull/48) thanks to @weierophinney
+
 ## 2.14.1 - 2020-12-31
 
 ### Release Notes for [2.14.1](https://github.com/laminas/laminas-http/milestone/4)
