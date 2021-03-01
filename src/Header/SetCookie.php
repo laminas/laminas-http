@@ -9,6 +9,7 @@
 namespace Laminas\Http\Header;
 
 use DateTime;
+use DateTimeInterface;
 use Laminas\Uri\UriFactory;
 
 use function array_key_exists;
@@ -231,16 +232,16 @@ class SetCookie implements MultipleHeaderInterface
      *
      * @todo Add validation of each one of the parameters (legal domain, etc.)
      *
-     * @param string|null              $name
-     * @param string|null              $value
-     * @param int|string|DateTime|null $expires
-     * @param string|null              $path
-     * @param string|null              $domain
-     * @param bool                     $secure
-     * @param bool                     $httponly
-     * @param int|null                 $maxAge
-     * @param int|null                 $version
-     * @param string|null              $sameSite
+     * @param string|null                       $name
+     * @param string|null                       $value
+     * @param int|string|DateTimeInterface|null $expires
+     * @param string|null                       $path
+     * @param string|null                       $domain
+     * @param bool                              $secure
+     * @param bool                              $httponly
+     * @param int|null                          $maxAge
+     * @param int|null                          $version
+     * @param string|null                       $sameSite
      */
     public function __construct(
         $name = null,
@@ -433,7 +434,7 @@ class SetCookie implements MultipleHeaderInterface
     }
 
     /**
-     * @param  int|string|DateTime|null $expires
+     * @param  int|string|DateTimeInterface|null $expires
      * @return $this
      * @throws Exception\InvalidArgumentException
      */
@@ -444,8 +445,8 @@ class SetCookie implements MultipleHeaderInterface
             return $this;
         }
 
-        if ($expires instanceof DateTime) {
-            $expires = $expires->format(DateTime::COOKIE);
+        if ($expires instanceof DateTimeInterface) {
+            $expires = $expires->format(DateTimeInterface::COOKIE);
         }
 
         $tsExpires = $expires;
