@@ -442,7 +442,7 @@ Method signature                                                      | Descript
 `getValue() : string`                                                 | Retrieve the cookie value.
 `setValue(string $value) : self`                                      | Set the cookie value.
 `getExpires() : int`                                                  | Retrieve the expiration date for the cookie.
-`setExpires(int|string $expires) : self`                              | Set the cookie expiration timestamp; null indicates a session cookie.
+`setExpires(int|string|DateTimeInterface $expires) : self`                              | Set the cookie expiration timestamp; null indicates a session cookie.
 `getPath() : string`                                                  | Retrieve the URI path the cookie is bound to.
 `setPath(string $path) : self`                                        | Set the URI path the cookie is bound to.
 `getDomain() : string`                                                | Retrieve the domain the cookie is bound to.
