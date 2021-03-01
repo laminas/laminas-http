@@ -9,6 +9,7 @@
 namespace LaminasTest\Http\Header;
 
 use DateTime;
+use DateTimeImmutable;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\Header\MultipleHeaderInterface;
@@ -309,6 +310,24 @@ class SetCookieTest extends TestCase
         $setCookieHeader->setName('myname');
         $setCookieHeader->setValue('myvalue');
         $setCookieHeader->setExpires(new DateTime('Wed, 13-Jan-2021 22:23:01 GMT'));
+        $setCookieHeader->setDomain('docs.foo.com');
+        $setCookieHeader->setPath('/accounts');
+        $setCookieHeader->setSecure(true);
+        $setCookieHeader->setHttponly(true);
+
+        $target = 'myname=myvalue; Expires=Wed, 13-Jan-2021 22:23:01 GMT;'
+            . ' Domain=docs.foo.com; Path=/accounts;'
+            . ' Secure; HttpOnly';
+
+        $this->assertEquals($target, $setCookieHeader->getFieldValue());
+    }
+
+    public function testSetCookieWithInstanceOfDateTimeInterfaceFieldValueReturnsProperValue()
+    {
+        $setCookieHeader = new SetCookie();
+        $setCookieHeader->setName('myname');
+        $setCookieHeader->setValue('myvalue');
+        $setCookieHeader->setExpires(new DateTimeImmutable('Wed, 13-Jan-2021 22:23:01 GMT'));
         $setCookieHeader->setDomain('docs.foo.com');
         $setCookieHeader->setPath('/accounts');
         $setCookieHeader->setSecure(true);
