@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 header("Content-type: text/plain; charset=UTF-8");
 @ob_end_flush();
 @ob_implicit_flush(true);

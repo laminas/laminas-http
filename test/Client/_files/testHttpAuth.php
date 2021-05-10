@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 $user = isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : null;
 $pass = isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : null;
 $guser = isset($_GET['user']) ? $_GET['user'] : null;
