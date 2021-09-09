@@ -9,6 +9,8 @@ use Laminas\Http\Header\Exception;
 use Laminas\Http\Header\GenericHeader;
 use Laminas\Http\Header\MultipleHeaderInterface;
 use Laminas\Loader\PluginClassLocator;
+// phpcs:ignore SlevomatCodingStandard.Namespaces.UnusedUses.UnusedUse
+use ReturnTypeWillChange;
 use Traversable;
 
 use function array_keys;
@@ -338,6 +340,7 @@ class Headers implements Countable, Iterator
      *
      * @return void
      */
+    #[ReturnTypeWillChange]
     public function next()
     {
         next($this->headers);
@@ -348,6 +351,7 @@ class Headers implements Countable, Iterator
      *
      * @return mixed
      */
+    #[ReturnTypeWillChange]
     public function key()
     {
         return key($this->headers);
@@ -358,6 +362,7 @@ class Headers implements Countable, Iterator
      *
      * @return bool
      */
+    #[ReturnTypeWillChange]
     public function valid()
     {
         return current($this->headers) !== false;
@@ -368,6 +373,7 @@ class Headers implements Countable, Iterator
      *
      * @return void
      */
+    #[ReturnTypeWillChange]
     public function rewind()
     {
         reset($this->headers);
@@ -378,6 +384,7 @@ class Headers implements Countable, Iterator
      *
      * @return array|Header\HeaderInterface
      */
+    #[ReturnTypeWillChange]
     public function current()
     {
         $current = current($this->headers);
@@ -393,6 +400,7 @@ class Headers implements Countable, Iterator
      *
      * @return int count of currently known headers
      */
+    #[ReturnTypeWillChange]
     public function count()
     {
         return count($this->headers);
