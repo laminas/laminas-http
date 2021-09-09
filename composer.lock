@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6156759afffef21f7325de36a76338df",
+    "content-hash": "3bfcee73d78e113600374665bbe4e8a0",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -221,16 +221,16 @@
         },
         {
             "name": "laminas/laminas-uri",
-            "version": "2.9.0",
+            "version": "2.9.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-uri.git",
-                "reference": "34c9386b7058bd52b3ea3b150bb34e0c97812c55"
+                "reference": "7e837dc15c8fd3949df7d1213246fd7c8640032b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-uri/zipball/34c9386b7058bd52b3ea3b150bb34e0c97812c55",
-                "reference": "34c9386b7058bd52b3ea3b150bb34e0c97812c55",
+                "url": "https://api.github.com/repos/laminas/laminas-uri/zipball/7e837dc15c8fd3949df7d1213246fd7c8640032b",
+                "reference": "7e837dc15c8fd3949df7d1213246fd7c8640032b",
                 "shasum": ""
             },
             "require": {
@@ -275,7 +275,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2021-09-09T13:57:23+00:00"
+            "time": "2021-09-09T18:37:15+00:00"
         },
         {
             "name": "laminas/laminas-validator",
