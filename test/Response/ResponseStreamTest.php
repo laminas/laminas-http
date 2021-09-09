@@ -1,15 +1,22 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\Response;
 
 use Laminas\Http\Response\Stream;
 use PHPUnit\Framework\TestCase;
+
+use function fgets;
+use function file_exists;
+use function fopen;
+use function fread;
+use function fwrite;
+use function md5;
+use function rewind;
+use function sys_get_temp_dir;
+use function tempnam;
+use function unlink;
+
+use const DIRECTORY_SEPARATOR;
 
 class ResponseStreamTest extends TestCase
 {
@@ -42,7 +49,6 @@ class ResponseStreamTest extends TestCase
 
     /**
      * @group 6027
-     *
      * @covers \Laminas\Http\Response\Stream::fromStream
      */
     public function testResponseFactoryFromEmptyStringCreatesValidResponse()
@@ -63,7 +69,7 @@ class ResponseStreamTest extends TestCase
         $headers = '';
         while (false !== ($newLine = fgets($stream))) {
             $headers .= $newLine;
-            if ($headers == "\n" || $headers == "\r\n") {
+            if ($headers === "\n" || $headers === "\r\n") {
                 break;
             }
         }
@@ -99,7 +105,8 @@ class ResponseStreamTest extends TestCase
     public function testDestructionDoesNothingIfStreamIsNotAResourceAndStreamNameIsNotAString(): void
     {
         $this->tempFile = tempnam(sys_get_temp_dir(), 'lhrs');
-        $streamObject = new class($this->tempFile) {
+        $streamObject   = new class ($this->tempFile) {
+            /** @var string */
             private $tempFile;
 
             public function __construct(string $tempFile)
@@ -107,7 +114,7 @@ class ResponseStreamTest extends TestCase
                 $this->tempFile = $tempFile;
             }
 
-            public function __toString()
+            public function __toString(): string
             {
                 return $this->tempFile;
             }
@@ -136,14 +143,14 @@ class ResponseStreamTest extends TestCase
         $data = '';
         while (false !== ($newLine = fgets($stream))) {
             $data .= $newLine;
-            if ($newLine == "\n" || $newLine == "\r\n") {
+            if ($newLine === "\n" || $newLine === "\r\n") {
                 break;
             }
         }
 
         $data .= fread($stream, 100); // Should accept also part of body as text
 
-        $return = [];
+        $return           = [];
         $return['stream'] = $stream;
         $return['data']   = $data;
 

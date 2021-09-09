@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http;
 
 use ArrayIterator;
@@ -20,6 +14,8 @@ use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\HeaderLoader;
 use Laminas\Http\Headers;
 use PHPUnit\Framework\TestCase;
+
+use function implode;
 
 class HeadersTest extends TestCase
 {
@@ -101,7 +97,7 @@ class HeadersTest extends TestCase
     public function testHeadersFromStringMultiHeaderWillAggregateLazyLoadedHeaders()
     {
         $headers = new Headers();
-        $pcl = $headers->getPluginClassLoader();
+        $pcl     = $headers->getPluginClassLoader();
         $pcl->registerPlugin('foo', GenericMultiHeader::class);
         $headers->addHeaderLine('foo: bar1,bar2,bar3');
         $headers->forceLoading();
@@ -135,7 +131,7 @@ class HeadersTest extends TestCase
     public function testHeadersAggregatesHeaderObjects()
     {
         $fakeHeader = new Header\GenericHeader('Fake', 'bar');
-        $headers = new Headers();
+        $headers    = new Headers();
         $headers->addHeader($fakeHeader);
         $this->assertEquals(1, $headers->count());
         $this->assertSame($fakeHeader, $headers->get('Fake'));
@@ -276,7 +272,7 @@ class HeadersTest extends TestCase
         $cookie2 = new Header\SetCookie('bar', 'baz');
         $headers->addHeader($cookie1);
         $headers->addHeader($cookie2);
-        $array   = $headers->toArray();
+        $array    = $headers->toArray();
         $expected = [
             'Set-Cookie' => [
                 $cookie1->getFieldValue(),
@@ -293,7 +289,7 @@ class HeadersTest extends TestCase
         $cookie2 = new Header\SetCookie('bar', 'baz');
         $headers->addHeader($cookie1);
         $headers->addHeader($cookie2);
-        $string  = $headers->toString();
+        $string   = $headers->toString();
         $expected = [
             'Set-Cookie: ' . $cookie1->getFieldValue(),
             'Set-Cookie: ' . $cookie2->getFieldValue(),
@@ -310,6 +306,7 @@ class HeadersTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
      */
     public function testCRLFAttack()

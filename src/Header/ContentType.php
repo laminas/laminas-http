@@ -1,34 +1,41 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Header;
 
 use stdClass;
 
+use function array_merge;
+use function array_shift;
+use function array_walk;
+use function count;
+use function explode;
+use function get_class;
+use function gettype;
+use function implode;
+use function is_object;
+use function is_string;
+use function preg_match;
+use function sprintf;
+use function strlen;
+use function strpos;
+use function strtolower;
+use function substr;
+use function trim;
+
 /**
- * @throws Exception\InvalidArgumentException
  * @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17
+ *
+ * @throws Exception\InvalidArgumentException
  */
 class ContentType implements HeaderInterface
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $mediaType;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $parameters = [];
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $value;
 
     /**
@@ -39,7 +46,7 @@ class ContentType implements HeaderInterface
      */
     public static function fromString($headerLine)
     {
-        list($name, $value) = GenericHeader::splitHeaderLine($headerLine);
+        [$name, $value] = GenericHeader::splitHeaderLine($headerLine);
 
         // check to ensure proper header type for this factory
         if (strtolower($name) !== 'content-type') {
@@ -68,6 +75,10 @@ class ContentType implements HeaderInterface
         return $header;
     }
 
+    /**
+     * @param null|string $value
+     * @param null|string $mediaType
+     */
     public function __construct($value = null, $mediaType = null)
     {
         if ($value !== null) {
@@ -95,21 +106,21 @@ class ContentType implements HeaderInterface
         foreach ($matchAgainst as $matchType) {
             $matchType = strtolower($matchType);
 
-            if ($mediaType == $matchType) {
+            if ($mediaType === $matchType) {
                 return $matchType;
             }
 
             $right = $this->getMediaTypeObjectFromString($matchType);
 
             // Is the right side a wildcard type?
-            if ($right->type == '*') {
+            if ($right->type === '*') {
                 if ($this->validateSubtype($right, $left)) {
                     return $matchType;
                 }
             }
 
             // Do the types match?
-            if ($right->type == $left->type) {
+            if ($right->type === $left->type) {
                 if ($this->validateSubtype($right, $left)) {
                     return $matchType;
                 }
@@ -213,7 +224,7 @@ class ContentType implements HeaderInterface
     {
         HeaderValue::assertValid($charset);
         $this->parameters['charset'] = $charset;
-        $this->value = null;
+        $this->value                 = null;
         return $this;
     }
 
@@ -284,12 +295,12 @@ class ContentType implements HeaderInterface
         if (! is_string($string)) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'Non-string mediatype "%s" provided',
-                (is_object($string) ? get_class($string) : gettype($string))
+                is_object($string) ? get_class($string) : gettype($string)
             ));
         }
 
         $parts = explode('/', $string, 2);
-        if (1 == count($parts)) {
+        if (1 === count($parts)) {
             throw new Exception\DomainException(sprintf(
                 'Invalid mediatype "%s" provided',
                 $string
@@ -305,13 +316,11 @@ class ContentType implements HeaderInterface
             $format  = array_shift($parts);
         }
 
-        $mediaType = (object) [
+        return (object) [
             'type'    => $type,
             'subtype' => $subtype,
             'format'  => $format,
         ];
-
-        return $mediaType;
     }
 
     /**
@@ -324,17 +333,17 @@ class ContentType implements HeaderInterface
     protected function validateSubtype($right, $left)
     {
         // Is the right side a wildcard subtype?
-        if ($right->subtype == '*') {
+        if ($right->subtype === '*') {
             return $this->validateFormat($right, $left);
         }
 
         // Do the right side and left side subtypes match?
-        if ($right->subtype == $left->subtype) {
+        if ($right->subtype === $left->subtype) {
             return $this->validateFormat($right, $left);
         }
 
         // Is the right side a partial wildcard?
-        if ('*' == substr($right->subtype, -1)) {
+        if ('*' === substr($right->subtype, -1)) {
             // validate partial-wildcard subtype
             if (! $this->validatePartialWildcard($right->subtype, $left->subtype)) {
                 return false;
@@ -344,7 +353,7 @@ class ContentType implements HeaderInterface
         }
 
         // Does the right side subtype match the left side format?
-        if ($right->subtype == $left->format) {
+        if ($right->subtype === $left->format) {
             return true;
         }
 
@@ -364,10 +373,10 @@ class ContentType implements HeaderInterface
     protected function validateFormat($right, $left)
     {
         if ($right->format && $left->format) {
-            if ($right->format == '*') {
+            if ($right->format === '*') {
                 return true;
             }
-            if ($right->format == $left->format) {
+            if ($right->format === $left->format) {
                 return true;
             }
             return false;
@@ -386,7 +395,7 @@ class ContentType implements HeaderInterface
     protected function validatePartialWildcard($right, $left)
     {
         $requiredSegment = substr($right, 0, strlen($right) - 1);
-        if ($requiredSegment == $left) {
+        if ($requiredSegment === $left) {
             return true;
         }
 

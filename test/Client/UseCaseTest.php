@@ -1,18 +1,18 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\Client;
 
+use Laminas\Http\Client as HTTPClient;
 use Laminas\Http\Client\Adapter\AdapterInterface;
 use Laminas\Http\Client\Adapter\Socket;
-use Laminas\Http\Client as HTTPClient;
 use Laminas\Http\Request;
 use PHPUnit\Framework\TestCase;
+
+use function filter_var;
+use function getenv;
+use function sprintf;
+
+use const FILTER_VALIDATE_BOOLEAN;
 
 /**
  * This are the test for the prototype of Laminas\Http\Client
@@ -58,8 +58,9 @@ class UseCaseTest extends TestCase
      */
     protected function setUp(): void
     {
-        if (getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI')
-            && (filter_var(getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI'), FILTER_VALIDATE_BOOLEAN) != false)
+        if (
+            getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI')
+            && (filter_var(getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI'), FILTER_VALIDATE_BOOLEAN) !== false)
         ) {
             $this->baseuri = getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI');
             $this->client  = new HTTPClient($this->baseuri);
@@ -95,7 +96,7 @@ class UseCaseTest extends TestCase
 
     public function testRequestHttpGet()
     {
-        $client = new HTTPClient();
+        $client  = new HTTPClient();
         $request = new Request();
         $request->setUri($this->baseuri);
         $request->setMethod(Request::METHOD_GET);

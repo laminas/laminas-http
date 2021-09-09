@@ -1,18 +1,28 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http;
 
+use ArrayIterator;
+use Laminas\Http\Header\HeaderInterface;
+use Laminas\Http\Headers;
 use Laminas\Stdlib\Parameters;
 use Laminas\Stdlib\ParametersInterface;
 use Laminas\Stdlib\RequestInterface;
 use Laminas\Uri\Exception as UriException;
 use Laminas\Uri\Http as HttpUri;
+
+use function array_key_exists;
+use function array_shift;
+use function defined;
+use function explode;
+use function implode;
+use function is_string;
+use function parse_str;
+use function parse_url;
+use function preg_match;
+use function sprintf;
+use function stristr;
+use function strtoupper;
 
 /**
  * HTTP Request
@@ -22,48 +32,37 @@ use Laminas\Uri\Http as HttpUri;
 class Request extends AbstractMessage implements RequestInterface
 {
     /**#@+
+     *
      * @const string METHOD constant names
      */
-    const METHOD_OPTIONS  = 'OPTIONS';
-    const METHOD_GET      = 'GET';
-    const METHOD_HEAD     = 'HEAD';
-    const METHOD_POST     = 'POST';
-    const METHOD_PUT      = 'PUT';
-    const METHOD_DELETE   = 'DELETE';
-    const METHOD_TRACE    = 'TRACE';
-    const METHOD_CONNECT  = 'CONNECT';
-    const METHOD_PATCH    = 'PATCH';
-    const METHOD_PROPFIND = 'PROPFIND';
+    public const METHOD_OPTIONS  = 'OPTIONS';
+    public const METHOD_GET      = 'GET';
+    public const METHOD_HEAD     = 'HEAD';
+    public const METHOD_POST     = 'POST';
+    public const METHOD_PUT      = 'PUT';
+    public const METHOD_DELETE   = 'DELETE';
+    public const METHOD_TRACE    = 'TRACE';
+    public const METHOD_CONNECT  = 'CONNECT';
+    public const METHOD_PATCH    = 'PATCH';
+    public const METHOD_PROPFIND = 'PROPFIND';
     /**#@-*/
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $method = self::METHOD_GET;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     protected $allowCustomMethods = true;
 
-    /**
-     * @var string|HttpUri
-     */
+    /** @var string|HttpUri */
     protected $uri;
 
-    /**
-     * @var ParametersInterface
-     */
+    /** @var ParametersInterface */
     protected $queryParams;
 
-    /**
-     * @var ParametersInterface
-     */
+    /** @var ParametersInterface */
     protected $postParams;
 
-    /**
-     * @var ParametersInterface
-     */
+    /** @var ParametersInterface */
     protected $fileParams;
 
     /**
@@ -82,8 +81,8 @@ class Request extends AbstractMessage implements RequestInterface
         $lines = explode("\r\n", $string);
 
         // first line must be Method/Uri/Version string
-        $matches   = null;
-        $methods   = $allowCustomMethods
+        $matches = null;
+        $methods = $allowCustomMethods
             ? '[\w-]+'
             : implode(
                 '|',
@@ -127,10 +126,10 @@ class Request extends AbstractMessage implements RequestInterface
         }
 
         $isHeader = true;
-        $headers = $rawBody = [];
+        $headers  = $rawBody = [];
         while ($lines) {
             $nextLine = array_shift($lines);
-            if ($nextLine == '') {
+            if ($nextLine === '') {
                 $isHeader = false;
                 continue;
             }
@@ -143,7 +142,8 @@ class Request extends AbstractMessage implements RequestInterface
                 continue;
             }
 
-            if (empty($rawBody)
+            if (
+                empty($rawBody)
                 && preg_match('/^[a-z0-9!#$%&\'*+.^_`|~-]+:$/i', $nextLine)
             ) {
                 throw new Exception\RuntimeException('CRLF injection detected');
@@ -209,7 +209,7 @@ class Request extends AbstractMessage implements RequestInterface
                     $e
                 );
             }
-        } elseif (! ($uri instanceof HttpUri)) {
+        } elseif (! $uri instanceof HttpUri) {
             throw new Exception\InvalidArgumentException(
                 'URI must be an instance of Laminas\Uri\Http or a string'
             );
@@ -249,7 +249,6 @@ class Request extends AbstractMessage implements RequestInterface
      * Provide an alternate Parameter Container implementation for query parameters in this object,
      * (this is NOT the primary API for value setting, for that see getQuery())
      *
-     * @param ParametersInterface $query
      * @return $this
      */
     public function setQuery(ParametersInterface $query)
@@ -282,7 +281,6 @@ class Request extends AbstractMessage implements RequestInterface
      * Provide an alternate Parameter Container implementation for post parameters in this object,
      * (this is NOT the primary API for value setting, for that see getPost())
      *
-     * @param ParametersInterface $post
      * @return $this
      */
     public function setPost(ParametersInterface $post)
@@ -326,7 +324,6 @@ class Request extends AbstractMessage implements RequestInterface
      * Provide an alternate Parameter Container implementation for file parameters in this object,
      * (this is NOT the primary API for value setting, for that see getFiles())
      *
-     * @param  ParametersInterface $files
      * @return $this
      */
     public function setFiles(ParametersInterface $files)
@@ -359,15 +356,16 @@ class Request extends AbstractMessage implements RequestInterface
      * Return the header container responsible for headers or all headers of a certain name/type
      *
      * @see \Laminas\Http\Headers::get()
+     *
      * @param  string|null $name    Header name to retrieve, or null to get the whole container.
      * @param  mixed|null  $default Default value to use when the requested header is missing.
-     * @return \Laminas\Http\Headers|bool|\Laminas\Http\Header\HeaderInterface|\ArrayIterator
+     * @return Headers|bool|HeaderInterface|ArrayIterator
      */
     public function getHeaders($name = null, $default = false)
     {
         if ($this->headers === null || is_string($this->headers)) {
             // this is only here for fromString lazy loading
-            $this->headers = (is_string($this->headers)) ? Headers::fromString($this->headers) : new Headers();
+            $this->headers = is_string($this->headers) ? Headers::fromString($this->headers) : new Headers();
         }
 
         if ($name === null) {
@@ -385,9 +383,10 @@ class Request extends AbstractMessage implements RequestInterface
      * Get all headers of a certain name/type.
      *
      * @see Request::getHeaders()
+     *
      * @param string|null           $name            Header name to retrieve, or null to get the whole container.
      * @param mixed|null            $default         Default value to use when the requested header is missing.
-     * @return \Laminas\Http\Headers|bool|\Laminas\Http\Header\HeaderInterface|\ArrayIterator
+     * @return Headers|bool|HeaderInterface|ArrayIterator
      */
     public function getHeader($name, $default = false)
     {
@@ -401,7 +400,7 @@ class Request extends AbstractMessage implements RequestInterface
      */
     public function isOptions()
     {
-        return ($this->method === self::METHOD_OPTIONS);
+        return $this->method === self::METHOD_OPTIONS;
     }
 
     /**
@@ -411,7 +410,7 @@ class Request extends AbstractMessage implements RequestInterface
      */
     public function isPropFind()
     {
-        return ($this->method === self::METHOD_PROPFIND);
+        return $this->method === self::METHOD_PROPFIND;
     }
 
     /**
@@ -421,7 +420,7 @@ class Request extends AbstractMessage implements RequestInterface
      */
     public function isGet()
     {
-        return ($this->method === self::METHOD_GET);
+        return $this->method === self::METHOD_GET;
     }
 
     /**
@@ -431,7 +430,7 @@ class Request extends AbstractMessage implements RequestInterface
      */
     public function isHead()
     {
-        return ($this->method === self::METHOD_HEAD);
+        return $this->method === self::METHOD_HEAD;
     }
 
     /**
@@ -441,7 +440,7 @@ class Request extends AbstractMessage implements RequestInterface
      */
     public function isPost()
     {
-        return ($this->method === self::METHOD_POST);
+        return $this->method === self::METHOD_POST;
     }
 
     /**
@@ -451,7 +450,7 @@ class Request extends AbstractMessage implements RequestInterface
      */
     public function isPut()
     {
-        return ($this->method === self::METHOD_PUT);
+        return $this->method === self::METHOD_PUT;
     }
 
     /**
@@ -461,7 +460,7 @@ class Request extends AbstractMessage implements RequestInterface
      */
     public function isDelete()
     {
-        return ($this->method === self::METHOD_DELETE);
+        return $this->method === self::METHOD_DELETE;
     }
 
     /**
@@ -471,7 +470,7 @@ class Request extends AbstractMessage implements RequestInterface
      */
     public function isTrace()
     {
-        return ($this->method === self::METHOD_TRACE);
+        return $this->method === self::METHOD_TRACE;
     }
 
     /**
@@ -481,7 +480,7 @@ class Request extends AbstractMessage implements RequestInterface
      */
     public function isConnect()
     {
-        return ($this->method === self::METHOD_CONNECT);
+        return $this->method === self::METHOD_CONNECT;
     }
 
     /**
@@ -491,7 +490,7 @@ class Request extends AbstractMessage implements RequestInterface
      */
     public function isPatch()
     {
-        return ($this->method === self::METHOD_PATCH);
+        return $this->method === self::METHOD_PATCH;
     }
 
     /**
@@ -504,7 +503,7 @@ class Request extends AbstractMessage implements RequestInterface
     public function isXmlHttpRequest()
     {
         $header = $this->getHeaders()->get('X_REQUESTED_WITH');
-        return false !== $header && $header->getFieldValue() == 'XMLHttpRequest';
+        return false !== $header && $header->getFieldValue() === 'XMLHttpRequest';
     }
 
     /**
@@ -533,7 +532,7 @@ class Request extends AbstractMessage implements RequestInterface
      */
     public function toString()
     {
-        $str = $this->renderRequestLine() . "\r\n";
+        $str  = $this->renderRequestLine() . "\r\n";
         $str .= $this->getHeaders()->toString();
         $str .= "\r\n";
         $str .= $this->getContent();

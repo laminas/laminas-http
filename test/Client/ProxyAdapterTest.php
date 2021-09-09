@@ -1,16 +1,20 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\Client;
 
 use Laminas\Http\Client;
 use Laminas\Http\Client\Adapter\Proxy;
 use Laminas\Http\Client\Adapter\Socket;
+use Laminas\Http\Request;
+
+use function array_keys;
+use function explode;
+use function filter_var;
+use function getenv;
+use function sprintf;
+use function trim;
+
+use const FILTER_VALIDATE_BOOLEAN;
 
 /**
  * Laminas_Http_Client_Adapter_Proxy test suite.
@@ -33,10 +37,11 @@ class ProxyAdapterTest extends SocketTest
 
     protected function setUp(): void
     {
-        if (getenv('TESTS_LAMINAS_HTTP_CLIENT_HTTP_PROXY')
+        if (
+            getenv('TESTS_LAMINAS_HTTP_CLIENT_HTTP_PROXY')
             && filter_var(getenv('TESTS_LAMINAS_HTTP_CLIENT_HTTP_PROXY'), FILTER_VALIDATE_BOOLEAN) === false
         ) {
-            list($host, $port) = explode(':', getenv('TESTS_LAMINAS_HTTP_CLIENT_HTTP_PROXY'), 2);
+            [$host, $port] = explode(':', getenv('TESTS_LAMINAS_HTTP_CLIENT_HTTP_PROXY'), 2);
 
             if (! $host) {
                 $this->markTestSkipped('No valid proxy host name or address specified.');
@@ -81,13 +86,13 @@ class ProxyAdapterTest extends SocketTest
      */
     public function testFallbackToSocket()
     {
-        $this->_adapter->setOptions([
+        $this->adapter->setOptions([
             'proxy_host' => null,
         ]);
 
         $this->client->setUri($this->baseuri . 'testGetLastRequest.php');
-        $res = $this->client->setMethod(\Laminas\Http\Request::METHOD_TRACE)->send();
-        if ($res->getStatusCode() == 405 || $res->getStatusCode() == 501) {
+        $res = $this->client->setMethod(Request::METHOD_TRACE)->send();
+        if ($res->getStatusCode() === 405 || $res->getStatusCode() === 501) {
             $this->markTestSkipped('Server does not allow the TRACE method');
         }
 
@@ -107,7 +112,7 @@ class ProxyAdapterTest extends SocketTest
 
     public function testDefaultConfig()
     {
-        $config = $this->_adapter->getConfig();
+        $config = $this->adapter->getConfig();
         $this->assertEquals(true, $config['sslverifypeer']);
         $this->assertEquals(false, $config['sslallowselfsigned']);
     }
@@ -141,12 +146,12 @@ class ProxyAdapterTest extends SocketTest
 
         $this->client->setMethod('TRACE');
         $res = $this->client->send();
-        if ($res->getStatusCode() == 405 || $res->getStatusCode() == 501) {
+        if ($res->getStatusCode() === 405 || $res->getStatusCode() === 501) {
             $this->markTestSkipped('Server does not allow the TRACE method');
         }
 
-        list($schema, $host) = explode('://', $this->baseuri);
-        $host = trim($host, '/');
+        [$schema, $host] = explode('://', $this->baseuri);
+        $host            = trim($host, '/');
 
         $this->assertSame(
             'TRACE ' . $this->baseuri . 'testHeaders.php?someinput=somevalue HTTP/1.1' . "\r\n"
@@ -174,9 +179,9 @@ class ProxyAdapterTest extends SocketTest
      */
     public function testProxyKeysCorrectlySetInProxyAdapter()
     {
-        $adapterConfig = $this->_adapter->getConfig();
-        $adapterHost = $adapterConfig['proxy_host'];
-        $adapterPort = $adapterConfig['proxy_port'];
+        $adapterConfig = $this->adapter->getConfig();
+        $adapterHost   = $adapterConfig['proxy_host'];
+        $adapterPort   = $adapterConfig['proxy_port'];
 
         $this->assertSame($this->host, $adapterHost);
         $this->assertSame($this->port, $adapterPort);
@@ -184,10 +189,10 @@ class ProxyAdapterTest extends SocketTest
 
     public function testProxyHasAllSocketConfigs()
     {
-        $socket = new Socket();
+        $socket       = new Socket();
         $socketConfig = $socket->getConfig();
-        $proxy = new Proxy();
-        $proxyConfig = $proxy->getConfig();
+        $proxy        = new Proxy();
+        $proxyConfig  = $proxy->getConfig();
         foreach (array_keys($socketConfig) as $socketConfigKey) {
             $this->assertArrayHasKey(
                 $socketConfigKey,

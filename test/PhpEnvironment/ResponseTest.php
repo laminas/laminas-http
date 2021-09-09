@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\PhpEnvironment;
 
 use Laminas\Http\Exception\InvalidArgumentException;
@@ -61,7 +55,7 @@ class ResponseTest extends TestCase
     {
         // HTTP/1.0
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.0';
-        $response = new Response();
+        $response                   = new Response();
         $this->assertSame(Response::VERSION_10, $response->getVersion());
     }
 
@@ -69,7 +63,7 @@ class ResponseTest extends TestCase
     {
         // HTTP/1.1
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
-        $response = new Response();
+        $response                   = new Response();
         $this->assertSame(Response::VERSION_11, $response->getVersion());
     }
 
@@ -77,7 +71,7 @@ class ResponseTest extends TestCase
     {
         // unknown protocol or version -> fallback to HTTP/1.0
         $_SERVER['SERVER_PROTOCOL'] = 'laminas/2.0';
-        $response = new Response();
+        $response                   = new Response();
         $this->assertSame(Response::VERSION_10, $response->getVersion());
     }
 

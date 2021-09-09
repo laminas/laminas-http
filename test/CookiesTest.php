@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http;
 
 use Laminas\Http\Cookies;
@@ -20,8 +14,8 @@ class CookiesTest extends TestCase
     public function testFromResponseInSetCookie()
     {
         $response = new Response();
-        $headers = new Headers();
-        $header = new SetCookie('foo', 'bar');
+        $headers  = new Headers();
+        $header   = new SetCookie('foo', 'bar');
         $header->setDomain('www.zend.com');
         $header->setPath('/');
         $headers->addHeader($header);
@@ -34,8 +28,8 @@ class CookiesTest extends TestCase
     public function testFromResponseInCookie()
     {
         $response = new Response();
-        $headers = new Headers();
-        $header = new SetCookie('foo', 'bar');
+        $headers  = new Headers();
+        $header   = new SetCookie('foo', 'bar');
         $header->setDomain('www.zend.com');
         $header->setPath('/');
         $headers->addHeader($header);
@@ -47,17 +41,17 @@ class CookiesTest extends TestCase
 
     public function testRequestCanHaveArrayCookies()
     {
-        $_COOKIE = [
+        $_COOKIE    = [
             'test' => [
                 'a' => 'value_a',
                 'b' => 'value_b',
             ],
         ];
-        $request = new Request();
+        $request    = new Request();
         $fieldValue = $request->getCookie('test')->getFieldValue();
         $this->assertSame('test[a]=value_a; test[b]=value_b', $fieldValue);
 
-        $_COOKIE = [
+        $_COOKIE    = [
             'test' => [
                 'a' => [
                     'a1' => 'va1',
@@ -69,7 +63,7 @@ class CookiesTest extends TestCase
                 ],
             ],
         ];
-        $request = new Request();
+        $request    = new Request();
         $fieldValue = $request->getCookie('test')->getFieldValue();
         $this->assertSame('test[a][a1]=va1; test[a][a2]=va2; test[b][b1]=vb1; test[b][b2]=vb2', $fieldValue);
     }

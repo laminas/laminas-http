@@ -1,17 +1,18 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\Client;
 
 use Laminas\Http\Client;
 use Laminas\Http\ClientStatic as HTTPClient;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+
+use function filter_var;
+use function getenv;
+use function sprintf;
+use function substr;
+
+use const FILTER_VALIDATE_BOOLEAN;
 
 /**
  * This are the test for the prototype of Laminas\Http\Client
@@ -33,10 +34,12 @@ class StaticClientTest extends TestCase
      */
     protected function setUp(): void
     {
-        if (getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI')
-            && (filter_var(getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI'), FILTER_VALIDATE_BOOLEAN) != false)) {
+        if (
+            getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI')
+            && (filter_var(getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI'), FILTER_VALIDATE_BOOLEAN) !== false)
+        ) {
             $this->baseuri = getenv('TESTS_LAMINAS_HTTP_CLIENT_BASEURI');
-            if (substr($this->baseuri, -1) != '/') {
+            if (substr($this->baseuri, -1) !== '/') {
                 $this->baseuri .= '/';
             }
         } else {
@@ -158,7 +161,7 @@ class StaticClientTest extends TestCase
         HTTPClient::get($testUri, [], [], null, $config);
 
         $reflectedClass = new ReflectionClass(HTTPClient::class);
-        $property = $reflectedClass->getProperty('client');
+        $property       = $reflectedClass->getProperty('client');
         $property->setAccessible(true);
         $client = $property->getValue();
 
@@ -183,7 +186,7 @@ class StaticClientTest extends TestCase
         HTTPClient::post($testUri, ['foo' => 'bar'], [], null, $config);
 
         $reflectedClass = new ReflectionClass(HTTPClient::class);
-        $property = $reflectedClass->getProperty('client');
+        $property       = $reflectedClass->getProperty('client');
         $property->setAccessible(true);
         $client = $property->getValue();
 

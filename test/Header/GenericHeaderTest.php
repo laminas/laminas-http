@@ -1,22 +1,17 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\Header;
 
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\GenericHeader;
 use PHPUnit\Framework\TestCase;
 
+use function ord;
+
 class GenericHeaderTest extends TestCase
 {
     /**
      * @dataProvider validFieldNameChars
-     *
      * @param string $name
      */
     public function testValidFieldName($name)
@@ -34,7 +29,6 @@ class GenericHeaderTest extends TestCase
 
     /**
      * @dataProvider invalidFieldNameChars
-     *
      * @param string $name
      */
     public function testInvalidFieldName($name)
@@ -61,6 +55,7 @@ class GenericHeaderTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
      */
     public function testPreventsCRLFAttackViaFromString()
@@ -71,6 +66,7 @@ class GenericHeaderTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
      */
     public function testPreventsCRLFAttackViaConstructor()
@@ -81,6 +77,7 @@ class GenericHeaderTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
      */
     public function testProtectsFromCRLFAttackViaSetFieldName()
@@ -93,6 +90,7 @@ class GenericHeaderTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
      */
     public function testProtectsFromCRLFAttackViaSetFieldValue()

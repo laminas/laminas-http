@@ -1,26 +1,42 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\Client;
 
 use ArrayObject;
+use Laminas\Http\Client as HTTPClient;
 use Laminas\Http\Client\Adapter\Exception as ClientAdapterException;
 use Laminas\Http\Client\Adapter\Test;
-use Laminas\Http\Client as HTTPClient;
 use Laminas\Http\Client\Exception as ClientException;
 use Laminas\Http\Exception\InvalidArgumentException;
 use Laminas\Http\Exception\RuntimeException;
 use Laminas\Http\Header\SetCookie;
+use Laminas\Http\Response\Stream;
 use Laminas\Uri\Http as UriHttp;
 use LaminasTest\Http\Client\TestAsset\MockAdapter;
 use LaminasTest\Http\Client\TestAsset\MockClient;
 use PHPUnit\Framework\TestCase;
 use stdClass;
+
+use function array_shift;
+use function count;
+use function explode;
+use function fclose;
+use function file;
+use function file_get_contents;
+use function filesize;
+use function getenv;
+use function gettype;
+use function is_file;
+use function preg_match;
+use function realpath;
+use function sprintf;
+use function sys_get_temp_dir;
+use function tempnam;
+use function trim;
+use function unlink;
+use function urlencode;
+
+use const DIRECTORY_SEPARATOR;
 
 /**
  * This Testsuite includes all Laminas_Http_Client tests that do not rely
@@ -237,8 +253,8 @@ class StaticTest extends TestCase
     public function testConfigSetAsTraversable()
     {
         $config = new ArrayObject([
-            'timeout'  => 400,
-            'nested'   => [
+            'timeout' => 400,
+            'nested'  => [
                 'item' => 'value',
             ],
         ]);
@@ -246,15 +262,14 @@ class StaticTest extends TestCase
         $this->_client->setOptions($config);
 
         $hasConfig = $this->_client->config;
-        $this->assertEquals($config->timeout, $hasConfig['timeout']);
-        $this->assertEquals($config->nested->item, $hasConfig['nested']['item']);
+        $this->assertEquals($config['timeout'], $hasConfig['timeout']);
+        $this->assertEquals($config['nested']['item'], $hasConfig['nested']['item']);
     }
 
     /**
      * Test that passing invalid variables to setConfig() causes an exception
      *
      * @dataProvider invalidConfigProvider
-     *
      * @param mixed $config
      */
     public function testConfigSetInvalid($config)
@@ -384,7 +399,6 @@ class StaticTest extends TestCase
      * the request method.
      *
      * @dataProvider invalidMethodProvider
-     *
      * @param string $method
      */
     public function testSettingInvalidMethodThrowsException($method)
@@ -432,11 +446,12 @@ class StaticTest extends TestCase
 
         $this->assertEquals(count($expectedLines), count($gotLines));
 
-        while (($expected = array_shift($expectedLines))
+        while (
+            ($expected = array_shift($expectedLines))
             && ($got = array_shift($gotLines))
         ) {
             $expected = trim($expected);
-            $got = trim($got);
+            $got      = trim($got);
             $this->assertMatchesRegularExpression(sprintf('/^%s$/', $expected), $got);
         }
     }
@@ -489,7 +504,7 @@ class StaticTest extends TestCase
                 HTTPClient::class
             ));
         }
-        $url = 'http://www.example.com/';
+        $url    = 'http://www.example.com/';
         $config = [
             'outputstream' => realpath(__DIR__ . '/_files/laminas_http_client_stream.file'),
         ];
@@ -511,7 +526,7 @@ class StaticTest extends TestCase
         if (! getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE')) {
             $this->markTestSkipped('Laminas\Http\Client online tests are not enabled');
         }
-        $url = 'http://www.example.com/';
+        $url        = 'http://www.example.com/';
         $outputFile = @tempnam(@sys_get_temp_dir(), 'zht');
         if (! is_file($outputFile)) {
             $this->markTestSkipped('Failed to create a temporary file');
@@ -523,7 +538,7 @@ class StaticTest extends TestCase
 
         $result = $client->send();
 
-        $this->assertInstanceOf('Laminas\Http\Response\Stream', $result);
+        $this->assertInstanceOf(Stream::class, $result);
         if (DIRECTORY_SEPARATOR === '\\') {
             $this->assertFalse(@unlink($outputFile), 'Deleting an open file should fail on Windows');
         }
@@ -545,7 +560,7 @@ class StaticTest extends TestCase
             ));
         }
 
-        $url = 'http://www.example.com';
+        $url    = 'http://www.example.com';
         $config = [
             'outputstream' => '/path/to/bogus/file.ext',
         ];

@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\Header;
 
 use Laminas\Http\Exception\RuntimeException;
@@ -16,6 +10,8 @@ use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\Header\MultipleHeaderInterface;
 use Laminas\Http\Headers;
 use PHPUnit\Framework\TestCase;
+
+use function implode;
 
 class ContentSecurityPolicyTest extends TestCase
 {
@@ -101,6 +97,7 @@ class ContentSecurityPolicyTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
      */
     public function testPreventsCRLFAttackViaFromString()
@@ -111,6 +108,7 @@ class ContentSecurityPolicyTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
      */
     public function testPreventsCRLFAttackViaDirective()
@@ -189,10 +187,11 @@ class ContentSecurityPolicyTest extends TestCase
         );
     }
 
-    public static function validDirectives()
+    /** @psalm-return array<array-key, array{0: string, 1: string[], 2: string}> */
+    public static function validDirectives(): array
     {
         return [
-            ['child-src', ["'self'"],"Content-Security-Policy: child-src 'self';"],
+            ['child-src', ["'self'"], "Content-Security-Policy: child-src 'self';"],
             ['manifest-src', ["'self'"], "Content-Security-Policy: manifest-src 'self';"],
             ['worker-src', ["'self'"], "Content-Security-Policy: worker-src 'self';"],
             ['prefetch-src', ["'self'"], "Content-Security-Policy: prefetch-src 'self';"],
@@ -205,12 +204,12 @@ class ContentSecurityPolicyTest extends TestCase
             [
                 'form-action',
                 ['http://*.example.com', "'self'"],
-                "Content-Security-Policy: form-action http://*.example.com 'self';"
+                "Content-Security-Policy: form-action http://*.example.com 'self';",
             ],
             [
                 'frame-ancestors',
                 ['http://*.example.com', "'self'"],
-                "Content-Security-Policy: frame-ancestors http://*.example.com 'self';"
+                "Content-Security-Policy: frame-ancestors http://*.example.com 'self';",
             ],
             ['navigate-to', ['example.com'], 'Content-Security-Policy: navigate-to example.com;'],
             ['sandbox', ['allow-forms'], 'Content-Security-Policy: sandbox allow-forms;'],
@@ -225,7 +224,6 @@ class ContentSecurityPolicyTest extends TestCase
 
     /**
      * @dataProvider validDirectives
-     *
      * @param string $directive
      * @param string[] $values
      * @param string $expected
@@ -243,7 +241,6 @@ class ContentSecurityPolicyTest extends TestCase
 
     /**
      * @dataProvider validDirectives
-     *
      * @param string $directive
      * @param string[] $values
      * @param string $header
@@ -267,7 +264,6 @@ class ContentSecurityPolicyTest extends TestCase
 
     /**
      * @dataProvider directivesWithoutValue
-     *
      * @param string $directive
      */
     public function testExceptionWhenProvideValueWithDirectiveWithoutValue($directive)

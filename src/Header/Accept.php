@@ -1,14 +1,12 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Header;
 
 use Laminas\Http\Header\Accept\FieldValuePart;
+
+use function strpos;
+use function substr;
+use function trim;
 
 /**
  * Accept Header
@@ -17,9 +15,7 @@ use Laminas\Http\Header\Accept\FieldValuePart;
  */
 class Accept extends AbstractAccept
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $regexAddType = '#^([a-zA-Z+-]+|\*)/(\*|[a-zA-Z0-9+-]+)$#';
 
     /**
@@ -69,9 +65,10 @@ class Accept extends AbstractAccept
     /**
      * Parse the keys contained in the header line
      *
+     * @see    \Laminas\Http\Header\AbstractAccept::parseFieldValuePart()
+     *
      * @param  string $fieldValuePart
      * @return FieldValuePart\AcceptFieldValuePart
-     * @see    \Laminas\Http\Header\AbstractAccept::parseFieldValuePart()
      */
     protected function parseFieldValuePart($fieldValuePart)
     {
@@ -92,13 +89,13 @@ class Accept extends AbstractAccept
             $subtypeWhole = $format = $subtype = trim(substr($fieldValuePart, strpos($fieldValuePart, '/') + 1));
         } else {
             $subtypeWhole = '';
-            $format = '*';
-            $subtype = '*';
+            $format       = '*';
+            $subtype      = '*';
         }
 
         $pos = strpos($subtype, '+');
         if (false !== $pos) {
-            $format = trim(substr($subtype, $pos + 1));
+            $format  = trim(substr($subtype, $pos + 1));
             $subtype = trim(substr($subtype, 0, $pos));
         }
 
@@ -108,7 +105,7 @@ class Accept extends AbstractAccept
             'subtype'    => $subtype,
             'subtypeRaw' => $subtypeWhole,
             'format'     => $format,
-            'priority'   => isset($params['q']) ? $params['q'] : 1,
+            'priority'   => $params['q'] ?? 1,
             'params'     => $params,
             'raw'        => trim($raw),
         ];

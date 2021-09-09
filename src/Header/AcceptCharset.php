@@ -1,14 +1,9 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Header;
 
 use Laminas\Http\Header\Accept\FieldValuePart;
+use Laminas\Http\Header\Accept\FieldValuePart\CharsetFieldValuePart;
 
 /**
  * Accept Charset Header
@@ -17,6 +12,7 @@ use Laminas\Http\Header\Accept\FieldValuePart;
  */
 class AcceptCharset extends AbstractAccept
 {
+    /** @var string */
     protected $regexAddType = '#^([a-zA-Z0-9+-]+|\*)$#';
 
     /**
@@ -65,9 +61,10 @@ class AcceptCharset extends AbstractAccept
     /**
      * Parse the keys contained in the header line
      *
-     * @param string $fieldValuePart
-     * @return \Laminas\Http\Header\Accept\FieldValuePart\CharsetFieldValuePart
      * @see \Laminas\Http\Header\AbstractAccept::parseFieldValuePart()
+     *
+     * @param string $fieldValuePart
+     * @return CharsetFieldValuePart
      */
     protected function parseFieldValuePart($fieldValuePart)
     {

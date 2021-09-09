@@ -1,16 +1,27 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Response;
 
 use Laminas\Http\Exception;
+use Laminas\Http\Header\ContentLength;
 use Laminas\Http\Response;
 use Laminas\Stdlib\ErrorHandler;
+
+use function array_shift;
+use function explode;
+use function fgets;
+use function file_exists;
+use function get_resource_type;
+use function implode;
+use function is_resource;
+use function is_string;
+use function sprintf;
+use function stream_get_contents;
+use function strlen;
+use function trim;
+use function unlink;
+
+use const E_WARNING;
 
 /**
  * Represents an HTTP response message as PHP stream resource
@@ -165,7 +176,7 @@ class Stream extends Response
             $nextLine        = array_shift($responseArray);
             $headersString  .= $nextLine . "\n";
             $nextLineTrimmed = trim($nextLine);
-            if ($nextLineTrimmed == '') {
+            if ($nextLineTrimmed === '') {
                 $headerComplete = true;
                 break;
             }
@@ -174,7 +185,7 @@ class Stream extends Response
         if (! $headerComplete) {
             while (false !== ($nextLine = fgets($stream))) {
                 $headersString .= trim($nextLine) . "\r\n";
-                if ($nextLine == "\r\n" || $nextLine == "\n") {
+                if ($nextLine === "\r\n" || $nextLine === "\n") {
                     $headerComplete = true;
                     break;
                 }
@@ -198,7 +209,7 @@ class Stream extends Response
 
         $headers = $response->getHeaders();
         foreach ($headers as $header) {
-            if ($header instanceof \Laminas\Http\Header\ContentLength) {
+            if ($header instanceof ContentLength) {
                 $response->setContentLength((int) $header->getFieldValue());
                 $contentLength = $response->getContentLength();
                 if (strlen($response->content) > $contentLength) {
@@ -267,14 +278,14 @@ class Stream extends Response
             $bytes = -1; // Read the whole buffer
         }
 
-        if (! is_resource($this->stream) || $bytes == 0) {
+        if (! is_resource($this->stream) || $bytes === 0) {
             return '';
         }
 
         $this->content         .= stream_get_contents($this->stream, $bytes);
         $this->contentStreamed += strlen($this->content);
 
-        if ($this->getContentLength() == $this->contentStreamed) {
+        if ($this->getContentLength() === $this->contentStreamed) {
             $this->stream = null;
         }
     }

@@ -1,14 +1,17 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Header;
 
 use Laminas\Http\Request;
+
+use function array_keys;
+use function explode;
+use function implode;
+use function preg_match;
+use function sprintf;
+use function strtolower;
+use function strtoupper;
+use function trim;
 
 /**
  * Allow Header
@@ -45,7 +48,7 @@ class Allow implements HeaderInterface
      */
     public static function fromString($headerLine)
     {
-        list($name, $value) = GenericHeader::splitHeaderLine($headerLine);
+        [$name, $value] = GenericHeader::splitHeaderLine($headerLine);
 
         // check to ensure proper header type for this factory
         if (strtolower($name) !== 'allow') {

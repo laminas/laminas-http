@@ -1,12 +1,15 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Header;
+
+use function array_pad;
+use function array_walk;
+use function explode;
+use function implode;
+use function in_array;
+use function sprintf;
+use function strcasecmp;
+use function trim;
 
 /**
  * Feature Policy (based on Editor’s Draft, 28 November 2019)
@@ -18,9 +21,9 @@ class FeaturePolicy implements HeaderInterface
     /**
      * Valid directive names
      *
-     * @var string[]
-     *
      * @see https://github.com/w3c/webappsec-feature-policy/blob/master/features.md
+     *
+     * @var string[]
      */
     protected $validDirectiveNames = [
         // Standardized Features
@@ -120,9 +123,9 @@ class FeaturePolicy implements HeaderInterface
      */
     public static function fromString($headerLine)
     {
-        $header = new static();
-        $headerName = $header->getFieldName();
-        list($name, $value) = GenericHeader::splitHeaderLine($headerLine);
+        $header         = new static();
+        $headerName     = $header->getFieldName();
+        [$name, $value] = GenericHeader::splitHeaderLine($headerLine);
         // Ensure the proper header name
         if (strcasecmp($name, $headerName) !== 0) {
             throw new Exception\InvalidArgumentException(sprintf(
@@ -136,7 +139,7 @@ class FeaturePolicy implements HeaderInterface
         foreach ($tokens as $token) {
             $token = trim($token);
             if ($token) {
-                list($directiveName, $directiveValue) = array_pad(explode(' ', $token, 2), 2, null);
+                [$directiveName, $directiveValue] = array_pad(explode(' ', $token, 2), 2, null);
                 if (! isset($header->directives[$directiveName])) {
                     $header->setDirective(
                         $directiveName,

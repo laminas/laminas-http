@@ -1,14 +1,13 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Header;
 
 use Laminas\Http\Header\Accept\FieldValuePart;
+use Laminas\Http\Header\Accept\FieldValuePart\LanguageFieldValuePart;
+
+use function strpos;
+use function substr;
+use function trim;
 
 /**
  * Accept Language Header
@@ -17,6 +16,7 @@ use Laminas\Http\Header\Accept\FieldValuePart;
  */
 class AcceptLanguage extends AbstractAccept
 {
+    /** @var string */
     protected $regexAddType = '#^([a-zA-Z0-9+-]+|\*)$#';
 
     /**
@@ -65,9 +65,10 @@ class AcceptLanguage extends AbstractAccept
     /**
      * Parse the keys contained in the header line
      *
-     * @param string $fieldValuePart
-     * @return \Laminas\Http\Header\Accept\FieldValuePart\LanguageFieldValuePart
      * @see \Laminas\Http\Header\AbstractAccept::parseFieldValuePart()
+     *
+     * @param string $fieldValuePart
+     * @return LanguageFieldValuePart
      */
     protected function parseFieldValuePart($fieldValuePart)
     {
@@ -88,8 +89,8 @@ class AcceptLanguage extends AbstractAccept
             $subtypeWhole = $format = $subtype = trim(substr($fieldValuePart, strpos($fieldValuePart, '-') + 1));
         } else {
             $subtypeWhole = '';
-            $format = '*';
-            $subtype = '*';
+            $format       = '*';
+            $subtype      = '*';
         }
 
         $aggregated = [
@@ -98,7 +99,7 @@ class AcceptLanguage extends AbstractAccept
             'subtype'    => $subtype,
             'subtypeRaw' => $subtypeWhole,
             'format'     => $format,
-            'priority'   => isset($params['q']) ? $params['q'] : 1,
+            'priority'   => $params['q'] ?? 1,
             'params'     => $params,
             'raw'        => trim($raw),
         ];

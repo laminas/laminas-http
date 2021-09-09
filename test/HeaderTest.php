@@ -1,22 +1,20 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http;
 
 use Laminas\Http\Exception\InvalidArgumentException;
 use Laminas\Http\Header;
 use PHPUnit\Framework\TestCase;
 
+use function strtolower;
+use function strtoupper;
+
 class HeaderTest extends TestCase
 {
-    public function header()
+    /** @psalm-return iterable<string, array{0: class-string, 1: string}> */
+    public function header(): iterable
     {
-        // @codingStandardsIgnoreStart
+        // phpcs:disable Generic.Files.LineLength.TooLong
         yield Header\AcceptRanges::class            => [Header\AcceptRanges::class, 'Accept-Ranges'];
         yield Header\AuthenticationInfo::class      => [Header\AuthenticationInfo::class, 'Authentication-Info'];
         yield Header\Authorization::class           => [Header\Authorization::class, 'Authorization'];
@@ -53,12 +51,12 @@ class HeaderTest extends TestCase
         yield Header\Via::class                     => [Header\Via::class, 'Via'];
         yield Header\Warning::class                 => [Header\Warning::class, 'Warning'];
         yield Header\WWWAuthenticate::class         => [Header\WWWAuthenticate::class, 'WWW-Authenticate'];
-        // @codingStandardsIgnoreEnd
+        // phpcs:enable
     }
 
     /**
+     * phpcs:ignore SlevomatCodingStandard.Namespaces.UnusedUses.MismatchingCaseSensitivity
      * @dataProvider header
-     *
      * @param string $class
      * @param string $name
      */
@@ -70,8 +68,8 @@ class HeaderTest extends TestCase
     }
 
     /**
+     * phpcs:ignore SlevomatCodingStandard.Namespaces.UnusedUses.MismatchingCaseSensitivity
      * @dataProvider header
-     *
      * @param string $class
      * @param string $name
      */
@@ -85,8 +83,8 @@ class HeaderTest extends TestCase
     }
 
     /**
+     * phpcs:ignore SlevomatCodingStandard.Namespaces.UnusedUses.MismatchingCaseSensitivity
      * @dataProvider header
-     *
      * @param string $class
      * @param string $name
      */
@@ -100,8 +98,8 @@ class HeaderTest extends TestCase
     }
 
     /**
+     * phpcs:ignore SlevomatCodingStandard.Namespaces.UnusedUses.MismatchingCaseSensitivity
      * @dataProvider header
-     *
      * @param string $class
      * @param string $name
      */
@@ -114,8 +112,8 @@ class HeaderTest extends TestCase
     }
 
     /**
+     * phpcs:ignore SlevomatCodingStandard.Namespaces.UnusedUses.MismatchingCaseSensitivity
      * @dataProvider header
-     *
      * @param string $class
      * @param string $name
      *
@@ -131,8 +129,8 @@ class HeaderTest extends TestCase
     }
 
     /**
+     * phpcs:ignore SlevomatCodingStandard.Namespaces.UnusedUses.MismatchingCaseSensitivity
      * @dataProvider header
-     *
      * @param string $class
      * @param string $name
      */
@@ -145,8 +143,8 @@ class HeaderTest extends TestCase
     }
 
     /**
+     * phpcs:ignore SlevomatCodingStandard.Namespaces.UnusedUses.MismatchingCaseSensitivity
      * @dataProvider header
-     *
      * @param string $class
      * @param string $name
      */

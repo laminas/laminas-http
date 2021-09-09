@@ -1,17 +1,77 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Client\Adapter;
 
 use Laminas\Http\Client\Adapter\AdapterInterface as HttpAdapter;
 use Laminas\Http\Client\Adapter\Exception as AdapterException;
 use Laminas\Stdlib\ArrayUtils;
+use Laminas\Uri\Uri;
 use Traversable;
+
+use function array_key_exists;
+use function base64_decode;
+use function curl_close;
+use function curl_errno;
+use function curl_error;
+use function curl_exec;
+use function curl_getinfo;
+use function curl_init;
+use function curl_setopt;
+use function defined;
+use function extension_loaded;
+use function gettype;
+use function in_array;
+use function intval;
+use function is_array;
+use function is_numeric;
+use function is_resource;
+use function preg_match;
+use function preg_replace;
+use function preg_split;
+use function sprintf;
+use function str_replace;
+use function strlen;
+use function strtolower;
+use function substr;
+use function substr_replace;
+
+use const CURL_HTTP_VERSION_1_0;
+use const CURL_HTTP_VERSION_1_1;
+use const CURLAUTH_BASIC;
+use const CURLINFO_HEADER_OUT;
+use const CURLINFO_HEADER_SIZE;
+use const CURLOPT_CAINFO;
+use const CURLOPT_CAPATH;
+use const CURLOPT_CONNECTTIMEOUT;
+use const CURLOPT_CONNECTTIMEOUT_MS;
+use const CURLOPT_CUSTOMREQUEST;
+use const CURLOPT_ENCODING;
+use const CURLOPT_FILE;
+use const CURLOPT_HEADER;
+use const CURLOPT_HEADERFUNCTION;
+use const CURLOPT_HTTP_VERSION;
+use const CURLOPT_HTTPAUTH;
+use const CURLOPT_HTTPGET;
+use const CURLOPT_HTTPHEADER;
+use const CURLOPT_INFILE;
+use const CURLOPT_INFILESIZE;
+use const CURLOPT_MAXREDIRS;
+use const CURLOPT_NOBODY;
+use const CURLOPT_PORT;
+use const CURLOPT_POST;
+use const CURLOPT_POSTFIELDS;
+use const CURLOPT_PROXY;
+use const CURLOPT_PROXYPORT;
+use const CURLOPT_PROXYUSERPWD;
+use const CURLOPT_RETURNTRANSFER;
+use const CURLOPT_SSL_VERIFYPEER;
+use const CURLOPT_SSLCERT;
+use const CURLOPT_SSLCERTPASSWD;
+use const CURLOPT_TIMEOUT;
+use const CURLOPT_TIMEOUT_MS;
+use const CURLOPT_UPLOAD;
+use const CURLOPT_URL;
+use const CURLOPT_USERPWD;
 
 /**
  * An adapter class for Laminas\Http\Client based on the curl extension.
@@ -24,7 +84,7 @@ class Curl implements HttpAdapter, StreamInterface
      *
      * @var int
      */
-    const ERROR_OPERATION_TIMEDOUT = 28;
+    public const ERROR_OPERATION_TIMEDOUT = 28;
 
     /**
      * Parameters array
@@ -187,7 +247,7 @@ class Curl implements HttpAdapter, StreamInterface
      * @param  int     $port
      * @param  bool $secure
      * @return void
-     * @throws AdapterException\RuntimeException if unable to connect
+     * @throws AdapterException\RuntimeException If unable to connect.
      */
     public function connect($host, $port = 80, $secure = false)
     {
@@ -198,7 +258,7 @@ class Curl implements HttpAdapter, StreamInterface
 
         // Do the actual connection
         $this->curl = curl_init();
-        if ($port != 80) {
+        if ($port !== 80) {
             curl_setopt($this->curl, CURLOPT_PORT, intval($port));
         }
 
@@ -273,7 +333,7 @@ class Curl implements HttpAdapter, StreamInterface
      * Send request to the remote server
      *
      * @param  string        $method
-     * @param  \Laminas\Uri\Uri $uri
+     * @param Uri $uri
      * @param  float         $httpVersion
      * @param  array         $headers
      * @param  string        $body
@@ -281,8 +341,8 @@ class Curl implements HttpAdapter, StreamInterface
      * @throws AdapterException\RuntimeException If connection fails, connected
      *     to wrong host, no PUT file defined, unsupported method, or unsupported
      *     cURL option.
-     * @throws AdapterException\InvalidArgumentException if $method is currently not supported
-     * @throws AdapterException\TimeoutException if connection timed out
+     * @throws AdapterException\InvalidArgumentException If $method is currently not supported.
+     * @throws AdapterException\TimeoutException If connection timed out.
      */
     public function write($method, $uri, $httpVersion = 1.1, $headers = [], $body = '')
     {
@@ -291,7 +351,7 @@ class Curl implements HttpAdapter, StreamInterface
             throw new AdapterException\RuntimeException('Trying to write but we are not connected');
         }
 
-        if ($this->connectedTo[0] != $uri->getHost() || $this->connectedTo[1] != $uri->getPort()) {
+        if ($this->connectedTo[0] !== $uri->getHost() || $this->connectedTo[1] !== $uri->getPort()) {
             throw new AdapterException\RuntimeException('Trying to write but we are connected to the wrong host');
         }
 
@@ -318,7 +378,8 @@ class Curl implements HttpAdapter, StreamInterface
                 if (isset($this->config['curloptions'][CURLOPT_INFILE])) {
                     // Now we will probably already have Content-Length set, so that we have to delete it
                     // from $headers at this point:
-                    if (! isset($headers['Content-Length'])
+                    if (
+                        ! isset($headers['Content-Length'])
                         && ! isset($this->config['curloptions'][CURLOPT_INFILESIZE])
                     ) {
                         throw new AdapterException\RuntimeException(
@@ -339,33 +400,33 @@ class Curl implements HttpAdapter, StreamInterface
                     $curlMethod = CURLOPT_UPLOAD;
                 } else {
                     $curlMethod = CURLOPT_CUSTOMREQUEST;
-                    $curlValue = 'PUT';
+                    $curlValue  = 'PUT';
                 }
                 break;
 
             case 'PATCH':
                 $curlMethod = CURLOPT_CUSTOMREQUEST;
-                $curlValue = 'PATCH';
+                $curlValue  = 'PATCH';
                 break;
 
             case 'DELETE':
                 $curlMethod = CURLOPT_CUSTOMREQUEST;
-                $curlValue = 'DELETE';
+                $curlValue  = 'DELETE';
                 break;
 
             case 'OPTIONS':
                 $curlMethod = CURLOPT_CUSTOMREQUEST;
-                $curlValue = 'OPTIONS';
+                $curlValue  = 'OPTIONS';
                 break;
 
             case 'TRACE':
                 $curlMethod = CURLOPT_CUSTOMREQUEST;
-                $curlValue = 'TRACE';
+                $curlValue  = 'TRACE';
                 break;
 
             case 'HEAD':
                 $curlMethod = CURLOPT_CUSTOMREQUEST;
-                $curlValue = 'HEAD';
+                $curlValue  = 'HEAD';
                 break;
 
             default:
@@ -376,12 +437,12 @@ class Curl implements HttpAdapter, StreamInterface
                 ));
         }
 
-        if (is_resource($body) && $curlMethod != CURLOPT_UPLOAD) {
+        if (is_resource($body) && $curlMethod !== CURLOPT_UPLOAD) {
             throw new AdapterException\RuntimeException('Streaming requests are allowed only with PUT');
         }
 
         // get http version to use
-        $curlHttp = $httpVersion == 1.1 ? CURL_HTTP_VERSION_1_1 : CURL_HTTP_VERSION_1_0;
+        $curlHttp = $httpVersion === 1.1 ? CURL_HTTP_VERSION_1_1 : CURL_HTTP_VERSION_1_0;
 
         // mark as HTTP request and set HTTP method
         curl_setopt($this->curl, CURLOPT_HTTP_VERSION, $curlHttp);
@@ -408,7 +469,7 @@ class Curl implements HttpAdapter, StreamInterface
         }
 
         // Treating basic auth headers in a special way
-        if (array_key_exists('Authorization', $headers) && 'Basic' == substr($headers['Authorization'], 0, 5)) {
+        if (array_key_exists('Authorization', $headers) && 'Basic' === substr($headers['Authorization'], 0, 5)) {
             curl_setopt($this->curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
             curl_setopt($this->curl, CURLOPT_USERPWD, base64_decode(substr($headers['Authorization'], 6)));
             unset($headers['Authorization']);
@@ -427,9 +488,10 @@ class Curl implements HttpAdapter, StreamInterface
 
         /**
          * Make sure POSTFIELDS is set after $curlMethod is set:
+         *
          * @link http://de2.php.net/manual/en/function.curl-setopt.php#81161
          */
-        if ($curlMethod == CURLOPT_UPLOAD) {
+        if ($curlMethod === CURLOPT_UPLOAD) {
             // this covers a PUT by file-handle:
             // Make the setting of this options explicit (rather than setting it through the loop following a bit lower)
             // to group common functionality together.
@@ -445,7 +507,7 @@ class Curl implements HttpAdapter, StreamInterface
         if (isset($this->config['curloptions'])) {
             foreach ((array) $this->config['curloptions'] as $k => $v) {
                 if (! in_array($k, $this->invalidOverwritableCurlOptions)) {
-                    if (curl_setopt($this->curl, $k, $v) == false) {
+                    if (curl_setopt($this->curl, $k, $v) === false) {
                         throw new AdapterException\RuntimeException(sprintf(
                             'Unknown or erroreous cURL option "%s" set',
                             $k
@@ -483,15 +545,16 @@ class Curl implements HttpAdapter, StreamInterface
 
         // separating header from body because it is dangerous to accidentially replace strings in the body
         $responseHeaderSize = curl_getinfo($this->curl, CURLINFO_HEADER_SIZE);
-        $responseHeaders = substr($this->response, 0, $responseHeaderSize);
+        $responseHeaders    = substr($this->response, 0, $responseHeaderSize);
 
         // cURL automatically decodes chunked-messages, this means we have to
         // disallow the Laminas\Http\Response to do it again.
         $responseHeaders = preg_replace("/Transfer-Encoding:\s*chunked\\r\\n/i", '', $responseHeaders);
 
         // cURL can automatically handle content encoding; prevent double-decoding from occurring
-        if (isset($this->config['curloptions'][CURLOPT_ENCODING])
-            && '' == $this->config['curloptions'][CURLOPT_ENCODING]
+        if (
+            isset($this->config['curloptions'][CURLOPT_ENCODING])
+            && '' === $this->config['curloptions'][CURLOPT_ENCODING]
         ) {
             $responseHeaders = preg_replace("/Content-Encoding:\s*gzip\\r\\n/i", '', $responseHeaders);
         }
@@ -532,14 +595,13 @@ class Curl implements HttpAdapter, StreamInterface
 
     /**
      * Close the connection to the server
-     *
      */
     public function close()
     {
         if (is_resource($this->curl)) {
             curl_close($this->curl);
         }
-        $this->curl         = null;
+        $this->curl        = null;
         $this->connectedTo = [null, null];
     }
 

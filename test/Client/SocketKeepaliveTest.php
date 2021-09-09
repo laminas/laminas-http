@@ -1,12 +1,8 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\Client;
+
+use Laminas\Http\Client\Adapter\Socket;
 
 /**
  * This Testsuite includes all Laminas_Http_Client that require a working web
@@ -24,8 +20,6 @@ namespace LaminasTest\Http\Client;
  * @group      Laminas_Http
  * @group      Laminas_Http_Client
  */
-use Laminas\Http\Client\Adapter\Socket;
-
 class SocketKeepaliveTest extends SocketTest
 {
     /**

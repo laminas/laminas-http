@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http;
 
 use Laminas\Http\Exception\InvalidArgumentException;
@@ -15,16 +9,40 @@ use Laminas\Http\Headers;
 use Laminas\Http\Response;
 use PHPUnit\Framework\TestCase;
 
+use function array_shift;
+use function count;
+use function file_get_contents;
+use function floor;
+use function md5;
+use function microtime;
+use function min;
+use function print_r;
+use function sprintf;
+use function str_repeat;
+use function str_replace;
+use function strtolower;
+
+use const DIRECTORY_SEPARATOR;
+
 class ResponseTest extends TestCase
 {
-    public function validHttpVersions()
+    /** @psalm-return iterable<string, array{0: string}> */
+    public function validHttpVersions(): iterable
     {
         yield 'http/1.0' => ['1.0'];
         yield 'http/1.1' => ['1.1'];
         yield 'http/2'   => ['2'];
     }
 
-    public function validResponseHttpVersionProvider()
+    /**
+     * @psalm-return iterable<string, array{
+     *     response: string,
+     *     expectedVersion: string,
+     *     expectedStatus: string,
+     *     expectedContent: string
+     * }>
+     */
+    public function validResponseHttpVersionProvider(): iterable
     {
         $responseTemplate = "HTTP/%s 200 OK\r\n\r\nFoo Bar";
         foreach ($this->validHttpVersions() as $testCase => $data) {
@@ -88,8 +106,8 @@ class ResponseTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('A valid response status line was not found in the provided string');
-        $string = 'HTTP/2.0 200 OK' . "\r\n\r\n" . 'Foo Bar';
-        $response = \Laminas\Http\Response::fromString($string);
+        $string   = 'HTTP/2.0 200 OK' . "\r\n\r\n" . 'Foo Bar';
+        $response = Response::fromString($string);
     }
 
     public function testResponseUsesHeadersContainerByDefault()
@@ -101,14 +119,15 @@ class ResponseTest extends TestCase
     public function testRequestCanSetHeaders()
     {
         $response = new Response();
-        $headers = new Headers();
+        $headers  = new Headers();
 
         $ret = $response->setHeaders($headers);
         $this->assertInstanceOf(Response::class, $ret);
         $this->assertSame($headers, $response->getHeaders());
     }
 
-    public function validStatusCode()
+    /** @psalm-return iterable<int, array{0: int}> */
+    public function validStatusCode(): iterable
     {
         for ($i = 100; $i <= 599; ++$i) {
             yield $i => [$i];
@@ -117,7 +136,6 @@ class ResponseTest extends TestCase
 
     /**
      * @dataProvider validStatusCode
-     *
      * @param int $statusCode
      */
     public function testResponseCanSetStatusCode($statusCode)
@@ -162,7 +180,7 @@ class ResponseTest extends TestCase
 
     public function testResponseEndsAtStatusCode()
     {
-        $string = 'HTTP/1.0 200' . "\r\n\r\n" . 'Foo Bar';
+        $string   = 'HTTP/1.0 200' . "\r\n\r\n" . 'Foo Bar';
         $response = Response::fromString($string);
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('Foo Bar', $response->getContent());
@@ -302,7 +320,6 @@ REQ;
     }
 
     /**
-     * @param Response $response
      * @return float the time that calling the getBody function took on the response
      */
     private function getTimeForGetBody(Response $response)
@@ -356,10 +373,10 @@ REQ;
     public function testLineBreaksCompatibility()
     {
         $responseTestLf = $this->readResponse('response_lfonly');
-        $resLf = Response::fromString($responseTestLf);
+        $resLf          = Response::fromString($responseTestLf);
 
         $responseTestCrlf = $this->readResponse('response_crlf');
-        $resCrlf = Response::fromString($responseTestCrlf);
+        $resCrlf          = Response::fromString($responseTestCrlf);
 
         $this->assertEquals(
             $resLf->getHeaders()->toString(),
@@ -374,7 +391,7 @@ REQ;
     public function test404IsClientErrorAndNotFound()
     {
         $responseTest = $this->readResponse('response_404');
-        $response = Response::fromString($responseTest);
+        $response     = Response::fromString($responseTest);
 
         $this->assertEquals(404, $response->getStatusCode(), 'Response code is expected to be 404, but it\'s not.');
         $this->assertTrue($response->isClientError(), 'Response is an error, but isClientError() returned false');
@@ -391,7 +408,7 @@ REQ;
     public function test410IsGone()
     {
         $responseTest = $this->readResponse('response_410');
-        $response = Response::fromString($responseTest);
+        $response     = Response::fromString($responseTest);
 
         $this->assertEquals(410, $response->getStatusCode(), 'Response code is expected to be 410, but it\'s not.');
         $this->assertTrue($response->isClientError(), 'Response is an error, but isClientError() returned false');
@@ -408,7 +425,7 @@ REQ;
     public function test500isError()
     {
         $responseTest = $this->readResponse('response_500');
-        $response = Response::fromString($responseTest);
+        $response     = Response::fromString($responseTest);
 
         $this->assertEquals(500, $response->getStatusCode(), 'Response code is expected to be 500, but it\'s not.');
         $this->assertFalse($response->isClientError(), 'Response is an error, but isClientError() returned true');
@@ -499,7 +516,7 @@ REQ;
     public function testToString()
     {
         $responseStr = $this->readResponse('response_404');
-        $response = Response::fromString($responseStr);
+        $response    = Response::fromString($responseStr);
 
         $this->assertEquals(
             strtolower(str_replace("\n", "\r\n", $responseStr)),
@@ -516,7 +533,7 @@ REQ;
     public function testToStringGzip()
     {
         $responseStr = $this->readResponse('response_gzip');
-        $response = Response::fromString($responseStr);
+        $response    = Response::fromString($responseStr);
 
         $this->assertEquals(
             strtolower($responseStr),
@@ -533,7 +550,7 @@ REQ;
     public function testGetHeaders()
     {
         $response = Response::fromString($this->readResponse('response_deflate'));
-        $headers = $response->getHeaders();
+        $headers  = $response->getHeaders();
 
         $this->assertEquals(8, count($headers), 'Header count is not as expected');
         $this->assertEquals('Apache', $headers->get('Server')->getFieldValue(), 'Server header is not as expected');
@@ -553,7 +570,7 @@ REQ;
     public function testUnknownCode()
     {
         $responseStr = $this->readResponse('response_unknown');
-        $response = Response::fromString($responseStr);
+        $response    = Response::fromString($responseStr);
         $this->assertEquals(550, $response->getStatusCode());
     }
 
@@ -613,6 +630,7 @@ REQ;
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
      */
     public function testPreventsCRLFAttackWhenDeserializing()
@@ -626,7 +644,7 @@ REQ;
     public function test100ContinueFromString()
     {
         $fixture = 'TOKEN=EC%XXXXXXXXXXXXX&TIMESTAMP=2017%2d10%2d10T09%3a02%3a55Z'
-            ."&CORRELATIONID=XXXXXXXXXX&ACK=Success&VERSION=65%2e1&BUILD=XXXXXXXXXX\r\n";
+            . "&CORRELATIONID=XXXXXXXXXX&ACK=Success&VERSION=65%2e1&BUILD=XXXXXXXXXX\r\n";
 
         $request = Response::fromString($this->readResponse('response_100_continue'));
         $this->assertEquals(Response::STATUS_CODE_200, $request->getStatusCode());

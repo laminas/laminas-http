@@ -1,27 +1,26 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Header;
 
+use function strtolower;
+
 /**
- * @throws Exception\InvalidArgumentException
  * @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.11
+ *
+ * @throws Exception\InvalidArgumentException
  */
 class ContentEncoding implements HeaderInterface
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $value;
 
+    /**
+     * @param string $headerLine
+     * @return static
+     */
     public static function fromString($headerLine)
     {
-        list($name, $value) = GenericHeader::splitHeaderLine($headerLine);
+        [$name, $value] = GenericHeader::splitHeaderLine($headerLine);
 
         // check to ensure proper header type for this factory
         if (strtolower($name) !== 'content-encoding') {
@@ -34,6 +33,7 @@ class ContentEncoding implements HeaderInterface
         return new static($value);
     }
 
+    /** @param null|string $value */
     public function __construct($value = null)
     {
         if ($value !== null) {
@@ -42,16 +42,19 @@ class ContentEncoding implements HeaderInterface
         }
     }
 
+    /** @return string */
     public function getFieldName()
     {
         return 'Content-Encoding';
     }
 
+    /** @return string */
     public function getFieldValue()
     {
         return (string) $this->value;
     }
 
+    /** @return string */
     public function toString()
     {
         return 'Content-Encoding: ' . $this->getFieldValue();
