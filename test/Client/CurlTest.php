@@ -111,13 +111,13 @@ class CurlTest extends CommonHttpTests
             'nested'  => [
                 'item' => 'value',
             ],
-        ], ArrayObject::ARRAY_AS_PROPS);
+        ]);
 
         $this->adapter->setOptions($config);
 
         $hasConfig = $this->adapter->getConfig();
-        $this->assertEquals($config->timeout, $hasConfig['timeout']);
-        $this->assertEquals($config->nested->item, $hasConfig['nested']['item']);
+        $this->assertEquals($config['timeout'], $hasConfig['timeout']);
+        $this->assertEquals($config['nested']['item'], $hasConfig['nested']['item']);
     }
 
     /** @psalm-return array<string, array{0: int|string}> */
@@ -584,6 +584,6 @@ class CurlTest extends CommonHttpTests
         $response = $this->client->getResponse();
 
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('HTTP/1.1 200 OK', trim(strstr($response, "\n", true)));
+        $this->assertMatchesRegularExpression('#^HTTP/1.(0|1) 200 OK$#', trim(strstr($response, "\n", true)));
     }
 }

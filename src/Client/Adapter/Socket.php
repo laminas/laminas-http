@@ -230,7 +230,7 @@ class Socket implements HttpAdapter, StreamInterface
         // If we are connected to the wrong host, disconnect first
         $connectedTo   = $this->connectedTo[0] ?? '';
         $connectedHost = strpos($connectedTo, '://')
-            ? substr($connectedTo, strpos($connectedTo, '://') + 3, strlen($this->connectedTo))
+            ? substr($connectedTo, strpos($connectedTo, '://') + 3, strlen($connectedTo))
             : $connectedTo;
 
         if ($connectedHost !== $host || $this->connectedTo[1] !== $port) {

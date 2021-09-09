@@ -150,13 +150,13 @@ class SocketTest extends CommonHttpTests
             'nested'  => [
                 'item' => 'value',
             ],
-        ], ArrayObject::ARRAY_AS_PROPS);
+        ]);
 
         $this->adapter->setOptions($config);
 
         $hasConfig = $this->adapter->getConfig();
-        $this->assertEquals($config->timeout, $hasConfig['timeout']);
-        $this->assertEquals($config->nested->item, $hasConfig['nested']['item']);
+        $this->assertEquals($config['timeout'], $hasConfig['timeout']);
+        $this->assertEquals($config['nested']['item'], $hasConfig['nested']['item']);
     }
 
     /**
