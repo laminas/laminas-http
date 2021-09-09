@@ -21,7 +21,11 @@ cp .laminas-ci/phpunit.xml phpunit.xml
 apt update -qq
 # Hack because apache2 package attempts to write to 000-default.conf twice
 apt-get install -o Dpkg::Options::="--force-confnew" -y apache2
-apt install -y "php${PHP_VERSION}-fpm"
+if [[ "${PHP_VERSION}" == "8.1" ]];then
+    switch_sapi -v 8.1 -s fpm:apache
+else
+    apt install -y "php${PHP_VERSION}-fpm"
+fi
 
 # Enable required modules
 a2enmod rewrite actions proxy_fcgi setenvif alias
