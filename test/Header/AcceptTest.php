@@ -130,12 +130,12 @@ class AcceptTest extends TestCase
     {
         $values = [
             'invalidPrio' => false,
-            -0.0001       => false,
-            1.0001        => false,
-            1.000         => true,
-            0.999         => true,
-            0.000         => true,
-            0.001         => true,
+            '-0.0001'     => false,
+            '1.0001'      => false,
+            '1.000'       => true,
+            '0.999'       => true,
+            '0.000'       => true,
+            '0.001'       => true,
             1             => true,
             0             => true,
         ];

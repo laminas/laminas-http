@@ -35,7 +35,7 @@ class DateTest extends TestCase
         $this->assertInstanceOf(HeaderInterface::class, $dateHeader);
         $this->assertInstanceOf(Date::class, $dateHeader);
 
-        $date     = new DateTime(null, new DateTimeZone('GMT'));
+        $date     = new DateTime('now', new DateTimeZone('GMT'));
         $interval = $dateHeader->date()->diff($date, 1);
 
         if (PHP_VERSION_ID >= 70200) {
@@ -54,7 +54,7 @@ class DateTest extends TestCase
         $this->assertInstanceOf(HeaderInterface::class, $dateHeader);
         $this->assertInstanceOf(Date::class, $dateHeader);
 
-        $date     = new DateTime(null, new DateTimeZone('GMT'));
+        $date     = new DateTime('now', new DateTimeZone('GMT'));
         $interval = $dateHeader->date()->diff($date, 1);
 
         if (PHP_VERSION_ID >= 70200) {

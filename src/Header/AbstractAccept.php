@@ -194,7 +194,7 @@ abstract class AbstractAccept implements HeaderInterface
                     $value = substr(substr($value, 1), 0, -1);
                 }
 
-                $params[trim($explode[0])] = stripslashes($value);
+                $params[trim($explode[0])] = stripslashes($value ?? '');
             }
         }
 

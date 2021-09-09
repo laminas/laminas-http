@@ -234,7 +234,7 @@ class Request extends HttpRequest
         $headers = [];
 
         foreach ($server as $key => $value) {
-            if ($value || (! is_array($value) && strlen($value))) {
+            if ($value || (! is_array($value) && strlen($value ?? ''))) {
                 if (strpos($key, 'HTTP_') === 0) {
                     if (strpos($key, 'HTTP_COOKIE') === 0) {
                         // Cookies are handled using the $_COOKIE superglobal
@@ -518,7 +518,7 @@ class Request extends HttpRequest
             }
 
             $baseUrl  = '/';
-            $basename = basename($filename);
+            $basename = basename($filename ?? '');
             if ($basename) {
                 $path     = $phpSelf ? trim($phpSelf, '/') : '';
                 $basePos  = strpos($path, $basename) ?: 0;

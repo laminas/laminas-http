@@ -343,7 +343,7 @@ class Client implements DispatchableInterface
             // reasons, see #4215 for a discussion - currently authentication is also
             // cleared for peer subdomains due to technical limits
             $nextHost = $this->getRequest()->getUri()->getHost();
-            if (! preg_match('/' . preg_quote($lastHost, '/') . '$/i', $nextHost)) {
+            if (! empty($lastHost) && ! preg_match('/' . preg_quote($lastHost, '/') . '$/i', $nextHost)) {
                 $this->clearAuth();
             }
 
@@ -914,7 +914,7 @@ class Client implements DispatchableInterface
 
                 if (! empty($queryArray)) {
                     $newUri      = $uri->toString();
-                    $queryString = http_build_query($queryArray, null, $this->getArgSeparator());
+                    $queryString = http_build_query($queryArray, '', $this->getArgSeparator());
 
                     if ($this->config['rfc3986strict']) {
                         $queryString = str_replace('+', '%20', $queryString);
@@ -1323,7 +1323,7 @@ class Client implements DispatchableInterface
                 $body .= '--' . $boundary . '--' . "\r\n";
             } elseif (stripos($this->getEncType(), self::ENC_URLENCODED) === 0) {
                 // Encode body as application/x-www-form-urlencoded
-                $body = http_build_query($this->getRequest()->getPost()->toArray(), null, '&');
+                $body = http_build_query($this->getRequest()->getPost()->toArray(), '', '&');
             } else {
                 throw new RuntimeException(sprintf(
                     'Cannot handle content type \'%s\' automatically',
