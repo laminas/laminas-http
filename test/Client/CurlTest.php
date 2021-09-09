@@ -8,7 +8,7 @@
 
 namespace LaminasTest\Http\Client;
 
-use Laminas\Config\Config;
+use ArrayObject;
 use Laminas\Http\Client;
 use Laminas\Http\Client\Adapter;
 use Laminas\Http\Client\Adapter\Curl;
@@ -78,13 +78,13 @@ class CurlTest extends CommonHttpTests
     }
 
     /**
-     * Test that a Laminas_Config object can be used to set configuration
+     * Test that a Traversable object can be used to set configuration
      *
-     * @link https://getlaminas.org/issues/browse/Laminas-5577
+     * @link https://framework.zend.com/issues/browse/ZEND-5577
      */
-    public function testConfigSetAsLaminasConfig()
+    public function testConfigSetAsTraversable()
     {
-        $config = new Config([
+        $config = new ArrayObject([
             'timeout'  => 400,
             'nested'   => [
                 'item' => 'value',
