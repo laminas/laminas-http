@@ -1,25 +1,42 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Header;
 
 use DateTime;
+use Laminas\Uri\Uri;
 use Laminas\Uri\UriFactory;
 
 use function array_key_exists;
+use function array_pop;
+use function count;
 use function gettype;
+use function gmdate;
+use function is_int;
+use function is_numeric;
 use function is_scalar;
+use function is_string;
+use function max;
+use function preg_match;
+use function preg_quote;
+use function preg_split;
+use function sprintf;
+use function str_replace;
+use function strpos;
+use function strrpos;
 use function strtolower;
+use function strtotime;
+use function time;
+use function urldecode;
+use function urlencode;
+
+use const PHP_INT_MAX;
+use const PHP_INT_SIZE;
 
 /**
- * @throws Exception\InvalidArgumentException
  * @see http://www.ietf.org/rfc/rfc2109.txt
  * @see http://www.w3.org/Protocols/rfc2109/rfc2109
+ *
+ * @throws Exception\InvalidArgumentException
  */
 class SetCookie implements MultipleHeaderInterface
 {
@@ -27,27 +44,27 @@ class SetCookie implements MultipleHeaderInterface
      * Cookie will not be sent for any cross-domain requests whatsoever.
      * Even if the user simply navigates to the target site with a regular link, the cookie will not be sent.
      */
-    const SAME_SITE_STRICT = 'Strict';
+    public const SAME_SITE_STRICT = 'Strict';
 
     /**
      * Cookie will not be passed for any cross-domain requests unless it's a regular link that navigates user
      * to the target site.
      * Other requests methods (such as POST and PUT) and XHR requests will not contain this cookie.
      */
-    const SAME_SITE_LAX = 'Lax';
+    public const SAME_SITE_LAX = 'Lax';
 
     /**
      * Cookie will be sent with same-site and cross-site requests.
      */
-    const SAME_SITE_NONE = 'None';
+    public const SAME_SITE_NONE = 'None';
 
     /**
      * @internal
      */
-    const SAME_SITE_ALLOWED_VALUES = [
+    public const SAME_SITE_ALLOWED_VALUES = [
         'strict' => self::SAME_SITE_STRICT,
-        'lax' => self::SAME_SITE_LAX,
-        'none' => self::SAME_SITE_NONE,
+        'lax'    => self::SAME_SITE_LAX,
+        'none'   => self::SAME_SITE_NONE,
     ];
 
     /**
@@ -113,25 +130,19 @@ class SetCookie implements MultipleHeaderInterface
      */
     protected $quoteFieldValue = false;
 
-    /**
-     * @var bool|null
-     */
+    /** @var bool|null */
     protected $httponly;
 
-    /**
-     * @var string|null
-     */
+    /** @var string|null */
     protected $sameSite;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     protected $encodeValue = true;
 
     /**
      * @static
      * @throws Exception\InvalidArgumentException
-     * @param  $headerLine
+     * @param  string $headerLine
      * @param  bool $bypassHeaderFieldName
      * @return array|SetCookie
      */
@@ -140,28 +151,28 @@ class SetCookie implements MultipleHeaderInterface
         static $setCookieProcessor = null;
 
         if ($setCookieProcessor === null) {
-            $setCookieClass = get_called_class();
+            $setCookieClass     = static::class;
             $setCookieProcessor = function ($headerLine) use ($setCookieClass) {
                 /** @var SetCookie $header */
-                $header = new $setCookieClass();
+                $header        = new $setCookieClass();
                 $keyValuePairs = preg_split('#;\s*#', $headerLine);
 
                 foreach ($keyValuePairs as $keyValue) {
                     if (preg_match('#^(?P<headerKey>[^=]+)=\s*("?)(?P<headerValue>[^"]*)\2#', $keyValue, $matches)) {
-                        $headerKey  = $matches['headerKey'];
+                        $headerKey   = $matches['headerKey'];
                         $headerValue = $matches['headerValue'];
                     } else {
-                        $headerKey = $keyValue;
+                        $headerKey   = $keyValue;
                         $headerValue = null;
                     }
 
                     // First K=V pair is always the cookie name and value
                     if ($header->getName() === null) {
                         $header->setName($headerKey);
-                        $header->setValue(urldecode($headerValue));
+                        $header->setValue(urldecode($headerValue ?? ''));
 
                         // set no encode value if raw and encoded values are the same
-                        if (urldecode($headerValue) === $headerValue) {
+                        if (urldecode($headerValue ?? '') === $headerValue) {
                             $header->setEncodeValue(false);
                         }
                         continue;
@@ -202,11 +213,11 @@ class SetCookie implements MultipleHeaderInterface
             };
         }
 
-        list($name, $value) = GenericHeader::splitHeaderLine($headerLine);
+        [$name, $value] = GenericHeader::splitHeaderLine($headerLine);
         HeaderValue::assertValid($value);
 
         // some sites return set-cookie::value, this is to get rid of the second :
-        $name = strtolower($name) == 'set-cookie:' ? 'set-cookie' : $name;
+        $name = strtolower($name) === 'set-cookie:' ? 'set-cookie' : $name;
 
         // check to ensure proper header type for this factory
         if (strtolower($name) !== 'set-cookie') {
@@ -230,7 +241,6 @@ class SetCookie implements MultipleHeaderInterface
      * Cookie object constructor
      *
      * @todo Add validation of each one of the parameters (legal domain, etc.)
-     *
      * @param string|null              $name
      * @param string|null              $value
      * @param int|string|DateTime|null $expires
@@ -298,16 +308,17 @@ class SetCookie implements MultipleHeaderInterface
      */
     public function getFieldValue()
     {
-        if ($this->getName() == '') {
+        $name = $this->getName();
+        if ($name === '' || $name === null) {
             return '';
         }
 
-        $value = $this->encodeValue ? urlencode($this->getValue()) : $this->getValue();
+        $value = $this->encodeValue ? urlencode($this->getValue() ?? '') : $this->getValue();
         if ($this->hasQuoteFieldValue()) {
             $value = '"' . $value . '"';
         }
 
-        $fieldValue = $this->getName() . '=' . $value;
+        $fieldValue = $name . '=' . $value;
 
         $version = $this->getVersion();
         if ($version !== null) {
@@ -606,7 +617,7 @@ class SetCookie implements MultipleHeaderInterface
      */
     public function isSessionCookie()
     {
-        return ($this->expires === null);
+        return $this->expires === null;
     }
 
     /**
@@ -674,7 +685,7 @@ class SetCookie implements MultipleHeaderInterface
     /**
      * Checks whether the cookie should be sent or not in a specific scenario
      *
-     * @param string|\Laminas\Uri\Uri $uri URI to check against (secure, domain, path)
+     * @param string|Uri $uri URI to check against (secure, domain, path)
      * @param bool $matchSessionCookies Whether to send session cookies
      * @param int|null $now Override the current time when checking for expiry time
      * @return bool
@@ -687,12 +698,12 @@ class SetCookie implements MultipleHeaderInterface
         }
 
         // Make sure we have a valid Laminas_Uri_Http object
-        if (! ($uri->isValid() && ($uri->getScheme() == 'http' || $uri->getScheme() == 'https'))) {
+        if (! ($uri->isValid() && ($uri->getScheme() === 'http' || $uri->getScheme() === 'https'))) {
             throw new Exception\InvalidArgumentException('Passed URI is not a valid HTTP or HTTPS URI');
         }
 
         // Check that the cookie is secure (if required) and not expired
-        if ($this->secure && $uri->getScheme() != 'https') {
+        if ($this->secure && $uri->getScheme() !== 'https') {
             return false;
         }
         if ($this->isExpired($now)) {
@@ -728,9 +739,9 @@ class SetCookie implements MultipleHeaderInterface
     public static function matchCookieDomain($cookieDomain, $host)
     {
         $cookieDomain = strtolower($cookieDomain);
-        $host = strtolower($host);
+        $host         = strtolower($host);
         // Check for either exact match or suffix match
-        return $cookieDomain == $host
+        return $cookieDomain === $host
             || preg_match('/' . preg_quote($cookieDomain) . '$/', $host);
     }
 
@@ -745,7 +756,7 @@ class SetCookie implements MultipleHeaderInterface
      */
     public static function matchCookiePath($cookiePath, $path)
     {
-        return (strpos($path, $cookiePath) === 0);
+        return strpos($path, $cookiePath) === 0;
     }
 
     /**
@@ -764,7 +775,7 @@ class SetCookie implements MultipleHeaderInterface
     public function toStringMultipleHeaders(array $headers)
     {
         $headerLine = $this->toString();
-        /* @var $header SetCookie */
+        /** @var SetCookie $header */
         foreach ($headers as $header) {
             if (! $header instanceof SetCookie) {
                 throw new Exception\RuntimeException(

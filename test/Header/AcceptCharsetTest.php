@@ -1,17 +1,13 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\Header;
 
 use Laminas\Http\Header\AcceptCharset;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
 use PHPUnit\Framework\TestCase;
+
+use function array_shift;
 
 class AcceptCharsetTest extends TestCase
 {
@@ -55,8 +51,9 @@ class AcceptCharsetTest extends TestCase
         $this->assertEquals('Accept-Charset: iso-8859-5;q=0.8, unicode-1-1', $acceptCharsetHeader->toString());
     }
 
-    /** Implementation specific tests here */
+    // Implementation specific tests here
 
+    // phpcs:ignore Squiz.Commenting.FunctionComment.WrongStyle
     public function testCanParseCommaSeparatedValues()
     {
         $header = AcceptCharset::fromString('Accept-Charset: iso-8859-5;q=0.8,unicode-1-1');
@@ -91,6 +88,7 @@ class AcceptCharsetTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
      */
     public function testPreventsCRLFAttackViaFromString()
@@ -101,6 +99,7 @@ class AcceptCharsetTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
      */
     public function testPreventsCRLFAttackViaSetters()

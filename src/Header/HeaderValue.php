@@ -1,12 +1,9 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Header;
+
+use function ord;
+use function strlen;
 
 final class HeaderValue
 {
@@ -27,6 +24,7 @@ final class HeaderValue
      * between visible characters.
      *
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @param string $value
      * @return string
      */
@@ -43,7 +41,8 @@ final class HeaderValue
             // 32-126, 128-254 === visible
             // 127 === DEL
             // 255 === null byte
-            if (($ascii < 32 && $ascii !== 9)
+            if (
+                ($ascii < 32 && $ascii !== 9)
                 || $ascii === 127
                 || $ascii > 254
             ) {
@@ -64,6 +63,7 @@ final class HeaderValue
      * between visible characters.
      *
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @param string $value
      * @return bool
      */
@@ -79,7 +79,8 @@ final class HeaderValue
             // 32-126, 128-254 === visible
             // 127 === DEL
             // 255 === null byte
-            if (($ascii < 32 && $ascii !== 9)
+            if (
+                ($ascii < 32 && $ascii !== 9)
                 || $ascii === 127
                 || $ascii > 254
             ) {
@@ -94,7 +95,7 @@ final class HeaderValue
      * Assert a header value is valid.
      *
      * @param string $value
-     * @throws Exception\RuntimeException for invalid values
+     * @throws Exception\RuntimeException For invalid values.
      * @return void
      */
     public static function assertValid($value)

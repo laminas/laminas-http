@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Header\Accept\FieldValuePart;
 
 /**
@@ -15,16 +9,19 @@ namespace Laminas\Http\Header\Accept\FieldValuePart;
  */
 class LanguageFieldValuePart extends AbstractFieldValuePart
 {
+    /** @return string */
     public function getLanguage()
     {
         return $this->getInternalValues()->typeString;
     }
 
+    /** @return string */
     public function getPrimaryTag()
     {
         return $this->getInternalValues()->type;
     }
 
+    /** @return string */
     public function getSubTag()
     {
         return $this->getInternalValues()->subtype;

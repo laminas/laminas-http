@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\Header;
 
 use ArrayObject;
@@ -57,7 +51,7 @@ class CookieTest extends TestCase
 
     public function testCookieGetFieldValueReturnsProperValue()
     {
-        $cookieHeader = new Cookie();
+        $cookieHeader      = new Cookie();
         $cookieHeader->foo = 'bar';
         $this->assertEquals('foo=bar', $cookieHeader->getFieldValue());
     }
@@ -72,6 +66,7 @@ class CookieTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
      */
     public function testPreventsCRLFAttackViaFromString()
@@ -82,10 +77,9 @@ class CookieTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
-     *
      * @dataProvider valuesProvider
-     *
      * @param mixed $value
      * @param string $serialized
      */
@@ -95,7 +89,8 @@ class CookieTest extends TestCase
         $this->assertEquals('Cookie: ' . $serialized, $header->toString());
     }
 
-    public function valuesProvider()
+    /** @psalm-return array<string, array{0:string, 1: string}> */
+    public function valuesProvider(): array
     {
         return [
             // Description => [raw value, serialized]

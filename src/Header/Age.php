@@ -1,12 +1,12 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Header;
+
+use function is_int;
+use function is_numeric;
+use function strtolower;
+
+use const PHP_INT_MAX;
 
 /**
  * Age HTTP Header
@@ -31,7 +31,7 @@ class Age implements HeaderInterface
      */
     public static function fromString($headerLine)
     {
-        list($name, $value) = GenericHeader::splitHeaderLine($headerLine);
+        [$name, $value] = GenericHeader::splitHeaderLine($headerLine);
 
         // check to ensure proper header type for this factory
         if (strtolower($name) !== 'age') {
@@ -41,6 +41,7 @@ class Age implements HeaderInterface
         return new static($value);
     }
 
+    /** @param null|int $deltaSeconds */
     public function __construct($deltaSeconds = null)
     {
         if ($deltaSeconds !== null) {
@@ -101,6 +102,6 @@ class Age implements HeaderInterface
      */
     public function toString()
     {
-        return 'Age: ' . (($this->deltaSeconds >= PHP_INT_MAX) ? '2147483648' : $this->deltaSeconds);
+        return 'Age: ' . ($this->deltaSeconds >= PHP_INT_MAX ? '2147483648' : $this->deltaSeconds);
     }
 }

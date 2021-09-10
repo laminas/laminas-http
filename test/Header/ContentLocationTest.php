@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\Header;
 
 use Laminas\Http\Header\ContentLocation;
@@ -41,12 +35,13 @@ class ContentLocationTest extends TestCase
         $this->assertEquals('Content-Location: http://www.example.com/path?query', $contentLocationHeader->toString());
     }
 
-    /** Implementation specific tests here */
+    // Implementation specific tests here
 
+    // phpcs:ignore Squiz.Commenting.FunctionComment.WrongStyle
     public function testContentLocationCanSetAndAccessAbsoluteUri()
     {
         $contentLocationHeader = ContentLocation::fromString('Content-Location: http://www.example.com/path');
-        $uri = $contentLocationHeader->uri();
+        $uri                   = $contentLocationHeader->uri();
         $this->assertInstanceOf(UriInterface::class, $uri);
         $this->assertTrue($uri->isAbsolute());
         $this->assertEquals('http://www.example.com/path', $contentLocationHeader->getUri());
@@ -55,7 +50,7 @@ class ContentLocationTest extends TestCase
     public function testContentLocationCanSetAndAccessRelativeUri()
     {
         $contentLocationHeader = ContentLocation::fromString('Content-Location: /path/to');
-        $uri = $contentLocationHeader->uri();
+        $uri                   = $contentLocationHeader->uri();
         $this->assertInstanceOf(UriInterface::class, $uri);
         $this->assertFalse($uri->isAbsolute());
         $this->assertEquals('/path/to', $contentLocationHeader->getUri());
@@ -63,6 +58,7 @@ class ContentLocationTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
      */
     public function testPreventsCRLFAttackViaFromString()

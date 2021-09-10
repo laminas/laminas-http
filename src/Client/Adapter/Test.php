@@ -1,16 +1,17 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Client\Adapter;
 
 use Laminas\Http\Response;
 use Laminas\Stdlib\ArrayUtils;
+use Laminas\Uri\Uri;
 use Traversable;
+
+use function count;
+use function gettype;
+use function is_array;
+use function is_string;
+use function strtolower;
 
 /**
  * A testing-purposes adapter.
@@ -62,7 +63,7 @@ class Test implements AdapterInterface
      * Set the nextRequestWillFail flag
      *
      * @param  bool $flag
-     * @return \Laminas\Http\Client\Adapter\Test
+     * @return Test
      */
     public function setNextRequestWillFail($flag)
     {
@@ -94,7 +95,6 @@ class Test implements AdapterInterface
         }
     }
 
-
     /**
      * Connect to the remote server
      *
@@ -115,7 +115,7 @@ class Test implements AdapterInterface
      * Send request to the remote server
      *
      * @param string        $method
-     * @param \Laminas\Uri\Uri $uri
+     * @param Uri $uri
      * @param string        $httpVer
      * @param array         $headers
      * @param string        $body
@@ -128,8 +128,8 @@ class Test implements AdapterInterface
         if (empty($path)) {
             $path = '/';
         }
-        $query = $uri->getQuery();
-        $path .= $query ? '?' . $query : '';
+        $query   = $uri->getQuery();
+        $path   .= $query ? '?' . $query : '';
         $request = $method . ' ' . $path . ' HTTP/' . $httpVer . "\r\n";
         foreach ($headers as $k => $v) {
             if (is_string($k)) {
@@ -161,7 +161,6 @@ class Test implements AdapterInterface
 
     /**
      * Close the connection (dummy)
-     *
      */
     public function close()
     {
@@ -170,7 +169,7 @@ class Test implements AdapterInterface
     /**
      * Set the HTTP response(s) to be returned by this adapter
      *
-     * @param \Laminas\Http\Response|array|string $response
+     * @param Response|array|string $response
      */
     public function setResponse($response)
     {
@@ -178,7 +177,7 @@ class Test implements AdapterInterface
             $response = $response->toString();
         }
 
-        $this->responses = (array) $response;
+        $this->responses     = (array) $response;
         $this->responseIndex = 0;
     }
 

@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Header;
 
 /**
@@ -16,10 +10,11 @@ interface HeaderInterface
     /**
      * Factory to generate a header object from a string
      *
+     * @see http://tools.ietf.org/html/rfc2616#section-4.2
+     *
      * @param string $headerLine
      * @return static
      * @throws Exception\InvalidArgumentException If the header does not match RFC 2616 definition.
-     * @see http://tools.ietf.org/html/rfc2616#section-4.2
      */
     public static function fromString($headerLine);
 

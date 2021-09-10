@@ -19,17 +19,25 @@ cp .laminas-ci/phpunit.xml phpunit.xml
 
 # Install dependendies
 apt update -qq
-apt install -y apache2 php${PHP_VERSION}-fpm
+# Hack because apache2 package attempts to write to 000-default.conf twice
+apt-get install -o Dpkg::Options::="--force-confnew" -y apache2
+if [[ "${PHP_VERSION}" == "8.1" ]];then
+    # This might not be necessary
+    # switch_sapi -v 8.1 -s fpm:apache
+    echo "Skipping FPM installation on PHP 8.1"
+else
+    apt install -y "php${PHP_VERSION}-fpm"
+fi
 
 # Enable required modules
 a2enmod rewrite actions proxy_fcgi setenvif alias
-a2enconf php${PHP_VERSION}-fpm
+a2enconf "php${PHP_VERSION}-fpm"
 
 # Setup and start php-fpm
-echo "cgi.fix_pathinfo = 1" >> /etc/php/${PHP_VERSION}/fpm/php.ini
-sed -i -e "s,www-data,${TEST_USER},g" /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf
+echo "cgi.fix_pathinfo = 1" >> "/etc/php/${PHP_VERSION}/fpm/php.ini"
+sed -i -e "s,www-data,${TEST_USER},g" "/etc/php/${PHP_VERSION}/fpm/pool.d/www.conf"
 sed -i -e "s,www-data,${TEST_USER},g" /etc/apache2/envvars
-service php${PHP_VERSION}-fpm start
+service "php${PHP_VERSION}-fpm" start
 
 # configure apache virtual hosts
 echo "ServerName 127.0.0.1" >> /etc/apache2/apache2.conf

@@ -1,14 +1,9 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\Client;
 
-use Laminas\Config\Config;
+use ArrayObject;
+use Exception;
 use Laminas\Http\Client;
 use Laminas\Http\Client\Adapter;
 use Laminas\Http\Client\Adapter\Curl;
@@ -16,6 +11,33 @@ use Laminas\Http\Client\Adapter\Exception\InvalidArgumentException;
 use Laminas\Http\Client\Adapter\Exception\RuntimeException;
 use Laminas\Http\Client\Adapter\Exception\TimeoutException;
 use Laminas\Stdlib\ErrorHandler;
+use ValueError;
+
+use function base64_encode;
+use function curl_getinfo;
+use function explode;
+use function extension_loaded;
+use function file_get_contents;
+use function filesize;
+use function fopen;
+use function getenv;
+use function gzcompress;
+use function strstr;
+use function trim;
+
+use const CURLOPT_ENCODING;
+use const CURLOPT_FOLLOWLOCATION;
+use const CURLOPT_INFILE;
+use const CURLOPT_INFILESIZE;
+use const CURLOPT_POSTFIELDS;
+use const CURLOPT_PROXY;
+use const CURLOPT_PROXYPORT;
+use const CURLOPT_PROXYUSERPWD;
+use const CURLOPT_SSL_VERIFYPEER;
+use const CURLOPT_TIMEOUT;
+use const DIRECTORY_SEPARATOR;
+use const PHP_INT_MAX;
+use const PHP_VERSION_ID;
 
 /**
  * This Testsuite includes all Laminas_Http_Client that require a working web
@@ -69,36 +91,37 @@ class CurlTest extends CommonHttpTests
             'someoption' => 'hasvalue',
         ];
 
-        $this->_adapter->setOptions($config);
+        $this->adapter->setOptions($config);
 
-        $hasConfig = $this->_adapter->getConfig();
+        $hasConfig = $this->adapter->getConfig();
         foreach ($config as $k => $v) {
             $this->assertEquals($v, $hasConfig[$k]);
         }
     }
 
     /**
-     * Test that a Laminas_Config object can be used to set configuration
+     * Test that a Traversable object can be used to set configuration
      *
-     * @link https://getlaminas.org/issues/browse/Laminas-5577
+     * @link https://framework.zend.com/issues/browse/ZEND-5577
      */
-    public function testConfigSetAsLaminasConfig()
+    public function testConfigSetAsTraversable()
     {
-        $config = new Config([
-            'timeout'  => 400,
-            'nested'   => [
+        $config = new ArrayObject([
+            'timeout' => 400,
+            'nested'  => [
                 'item' => 'value',
             ],
         ]);
 
-        $this->_adapter->setOptions($config);
+        $this->adapter->setOptions($config);
 
-        $hasConfig = $this->_adapter->getConfig();
-        $this->assertEquals($config->timeout, $hasConfig['timeout']);
-        $this->assertEquals($config->nested->item, $hasConfig['nested']['item']);
+        $hasConfig = $this->adapter->getConfig();
+        $this->assertEquals($config['timeout'], $hasConfig['timeout']);
+        $this->assertEquals($config['nested']['item'], $hasConfig['nested']['item']);
     }
 
-    public function provideValidTimeoutConfig()
+    /** @psalm-return array<string, array{0: int|string}> */
+    public function provideValidTimeoutConfig(): array
     {
         return [
             'integer' => [10],
@@ -108,6 +131,7 @@ class CurlTest extends CommonHttpTests
 
     /**
      * @dataProvider provideValidTimeoutConfig
+     * @param int|string $timeout
      */
     public function testPassValidTimeout($timeout)
     {
@@ -132,7 +156,6 @@ class CurlTest extends CommonHttpTests
      * Check that an exception is thrown when trying to set invalid config
      *
      * @dataProvider invalidConfigProvider
-     *
      * @param mixed $config
      */
     public function testSetConfigInvalidConfig($config)
@@ -140,12 +163,12 @@ class CurlTest extends CommonHttpTests
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Array or Traversable object expected');
 
-        $this->_adapter->setOptions($config);
+        $this->adapter->setOptions($config);
     }
 
     public function testSettingInvalidCurlOption()
     {
-        $config = [
+        $config       = [
             'adapter'     => Curl::class,
             'curloptions' => [-PHP_INT_MAX => true],
         ];
@@ -158,7 +181,7 @@ class CurlTest extends CommonHttpTests
             $this->expectException(RuntimeException::class);
             $this->expectExceptionMessage('Unknown or erroreous cURL option');
         } else {
-            $this->expectException(\ValueError::class);
+            $this->expectException(ValueError::class);
             $this->expectExceptionMessage('curl_setopt(): Argument #2 ($option) is not a valid cURL option');
         }
         try {
@@ -216,8 +239,9 @@ class CurlTest extends CommonHttpTests
     }
 
     /**
-     * @group Laminas-3758
      * @link https://getlaminas.org/issues/browse/Laminas-3758
+     *
+     * @group Laminas-3758
      */
     public function testPutFileContentWithHttpClient()
     {
@@ -232,8 +256,9 @@ class CurlTest extends CommonHttpTests
     }
 
     /**
-     * @group Laminas-3758
      * @link https://getlaminas.org/issues/browse/Laminas-3758
+     *
+     * @group Laminas-3758
      */
     public function testPutFileHandleWithHttpClient()
     {
@@ -241,9 +266,9 @@ class CurlTest extends CommonHttpTests
         $putFileContents = file_get_contents(__DIR__ . '/_files/staticFile.jpg');
 
         // Method 2: Using a File-Handle to the file to PUT the data
-        $putFilePath = __DIR__ . '/_files/staticFile.jpg';
+        $putFilePath   = __DIR__ . '/_files/staticFile.jpg';
         $putFileHandle = fopen($putFilePath, 'r');
-        $putFileSize = filesize($putFilePath);
+        $putFileSize   = filesize($putFilePath);
 
         $adapter = new Adapter\Curl();
         $this->client->setAdapter($adapter);
@@ -323,8 +348,8 @@ class CurlTest extends CommonHttpTests
         $expected = [
             'curloptions' => [
                 CURLOPT_PROXYUSERPWD => 'foo:baz',
-                CURLOPT_PROXY => 'localhost',
-                CURLOPT_PROXYPORT => 80,
+                CURLOPT_PROXY        => 'localhost',
+                CURLOPT_PROXYPORT    => 80,
             ],
         ];
 
@@ -455,10 +480,11 @@ class CurlTest extends CommonHttpTests
     }
 
     /**
-     * @group Laminas-7683
      * @see https://github.com/zendframework/zend-http/pull/53
      *
      * Note: The headers stored in Laminas7683-chunked.php are case insensitive
+     *
+     * @group Laminas-7683
      */
     public function testNoCaseSensitiveHeaderName()
     {
@@ -528,7 +554,7 @@ class CurlTest extends CommonHttpTests
         $error = null;
         try {
             $this->client->send();
-        } catch (\Exception $x) {
+        } catch (Exception $x) {
             $error = $x;
         }
         $this->assertNotNull($error, 'Failed to detect timeout in cURL adapter');
@@ -544,7 +570,7 @@ class CurlTest extends CommonHttpTests
             $this->markTestSkipped('Proxy is not configured');
         }
 
-        list($proxyHost, $proxyPort) = explode(':', $proxy);
+        [$proxyHost, $proxyPort] = explode(':', $proxy);
 
         $this->client->setAdapter(new Adapter\Curl());
         $this->client->setOptions([
@@ -558,6 +584,6 @@ class CurlTest extends CommonHttpTests
         $response = $this->client->getResponse();
 
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame('HTTP/1.1 200 OK', trim(strstr($response, "\n", true)));
+        $this->assertMatchesRegularExpression('#^HTTP/1.(0|1) 200 OK$#', trim(strstr($response, "\n", true)));
     }
 }

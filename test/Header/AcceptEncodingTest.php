@@ -1,17 +1,13 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\Header;
 
 use Laminas\Http\Header\AcceptEncoding;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
 use PHPUnit\Framework\TestCase;
+
+use function array_shift;
 
 class AcceptEncodingTest extends TestCase
 {
@@ -55,8 +51,9 @@ class AcceptEncodingTest extends TestCase
         $this->assertEquals('Accept-Encoding: compress;q=0.5, gzip', $acceptEncodingHeader->toString());
     }
 
-    /** Implementation specific tests here */
+    // Implementation specific tests here
 
+    // phpcs:ignore Squiz.Commenting.FunctionComment.WrongStyle
     public function testCanParseCommaSeparatedValues()
     {
         $header = AcceptEncoding::fromString('Accept-Encoding: compress;q=0.5,gzip');
@@ -92,6 +89,7 @@ class AcceptEncodingTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
      */
     public function testPreventsCRLFAttackViaFromString()
@@ -102,6 +100,7 @@ class AcceptEncodingTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
      */
     public function testPreventsCRLFAttackViaSetters()

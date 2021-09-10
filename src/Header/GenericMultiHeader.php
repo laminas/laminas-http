@@ -1,18 +1,20 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Header;
+
+use function explode;
+use function implode;
+use function strpos;
 
 class GenericMultiHeader extends GenericHeader implements MultipleHeaderInterface
 {
+    /**
+     * @param string $headerLine
+     * @return static|static[]
+     */
     public static function fromString($headerLine)
     {
-        list($fieldName, $fieldValue) = GenericHeader::splitHeaderLine($headerLine);
+        [$fieldName, $fieldValue] = GenericHeader::splitHeaderLine($headerLine);
 
         if (strpos($fieldValue, ',')) {
             $headers = [];
@@ -21,14 +23,14 @@ class GenericMultiHeader extends GenericHeader implements MultipleHeaderInterfac
             }
             return $headers;
         } else {
-            $header = new static($fieldName, $fieldValue);
-            return $header;
+            return new static($fieldName, $fieldValue);
         }
     }
 
+    /** @return string */
     public function toStringMultipleHeaders(array $headers)
     {
-        $name  = $this->getFieldName();
+        $name   = $this->getFieldName();
         $values = [$this->getFieldValue()];
         foreach ($headers as $header) {
             if (! $header instanceof static) {

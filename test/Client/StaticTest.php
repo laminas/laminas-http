@@ -1,26 +1,42 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\Client;
 
-use Laminas\Config\Config;
+use ArrayObject;
+use Laminas\Http\Client as HTTPClient;
 use Laminas\Http\Client\Adapter\Exception as ClientAdapterException;
 use Laminas\Http\Client\Adapter\Test;
-use Laminas\Http\Client as HTTPClient;
 use Laminas\Http\Client\Exception as ClientException;
 use Laminas\Http\Exception\InvalidArgumentException;
 use Laminas\Http\Exception\RuntimeException;
 use Laminas\Http\Header\SetCookie;
+use Laminas\Http\Response\Stream;
 use Laminas\Uri\Http as UriHttp;
 use LaminasTest\Http\Client\TestAsset\MockAdapter;
 use LaminasTest\Http\Client\TestAsset\MockClient;
 use PHPUnit\Framework\TestCase;
 use stdClass;
+
+use function array_shift;
+use function count;
+use function explode;
+use function fclose;
+use function file;
+use function file_get_contents;
+use function filesize;
+use function getenv;
+use function gettype;
+use function is_file;
+use function preg_match;
+use function realpath;
+use function sprintf;
+use function sys_get_temp_dir;
+use function tempnam;
+use function trim;
+use function unlink;
+use function urlencode;
+
+use const DIRECTORY_SEPARATOR;
 
 /**
  * This Testsuite includes all Laminas_Http_Client tests that do not rely
@@ -33,21 +49,19 @@ use stdClass;
  */
 class StaticTest extends TestCase
 {
-    // @codingStandardsIgnoreStart
     /**
      * Common HTTP client
      *
      * @var HTTPClient
      */
-    protected $_client;
-    // @codingStandardsIgnoreEnd
+    protected $client;
 
     /**
      * Set up the test suite before each test
      */
     public function setUp(): void
     {
-        $this->_client = new MockClient('http://www.example.com');
+        $this->client = new MockClient('http://www.example.com');
     }
 
     /**
@@ -55,7 +69,7 @@ class StaticTest extends TestCase
      */
     public function tearDown(): void
     {
-        $this->_client = null;
+        $this->client = null;
     }
 
     /**
@@ -69,13 +83,13 @@ class StaticTest extends TestCase
     {
         $uristr = 'https://www.zend.com:80/';
 
-        $this->_client->setUri($uristr);
+        $this->client->setUri($uristr);
 
-        $uri = $this->_client->getUri();
+        $uri = $this->client->getUri();
         $this->assertInstanceOf(UriHttp::class, $uri, 'Returned value is not a Uri object as expected');
         $this->assertEquals($uri->__toString(), $uristr, 'Returned Uri object does not hold the expected URI');
 
-        $uri = $this->_client->getUri()->toString();
+        $uri = $this->client->getUri()->toString();
         $this->assertIsString(
             $uri,
             'Returned value expected to be a string, ' . gettype($uri) . ' returned'
@@ -90,9 +104,9 @@ class StaticTest extends TestCase
     {
         $uriobj = new UriHttp('https://www.zend.com:80/');
 
-        $this->_client->setUri($uriobj);
+        $this->client->setUri($uriobj);
 
-        $uri = $this->_client->getUri();
+        $uri = $this->client->getUri();
         $this->assertInstanceOf(UriHttp::class, $uri, 'Returned value is not a Uri object as expected');
         $this->assertEquals($uri, $uriobj, 'Returned object is not the excepted Uri object');
     }
@@ -105,14 +119,14 @@ class StaticTest extends TestCase
     {
         $qstr = 'foo=bar&foo=baz';
 
-        $this->_client->setUri('http://example.com/test/?' . $qstr);
-        $this->_client->setAdapter(Test::class);
-        $this->_client->setMethod('GET');
-        $this->_client->send();
+        $this->client->setUri('http://example.com/test/?' . $qstr);
+        $this->client->setAdapter(Test::class);
+        $this->client->setMethod('GET');
+        $this->client->send();
 
         $this->assertStringContainsString(
             $qstr,
-            $this->_client->getLastRawRequest(),
+            $this->client->getLastRawRequest(),
             'Request is expected to contain the entire query string'
         );
     }
@@ -126,18 +140,18 @@ class StaticTest extends TestCase
      */
     public function testGetHeader()
     {
-        $this->_client->setHeaders([
+        $this->client->setHeaders([
             'Accept-encoding' => 'gzip,deflate',
             'Accept-language' => 'en,de,*',
         ]);
 
         $this->assertEquals(
-            $this->_client->getHeader('Accept-encoding'),
+            $this->client->getHeader('Accept-encoding'),
             'gzip, deflate',
             'Returned value of header is not as expected'
         );
         $this->assertEquals(
-            $this->_client->getHeader('X-Fake-Header'),
+            $this->client->getHeader('X-Fake-Header'),
             null,
             'Non-existing header should not return a value'
         );
@@ -156,7 +170,7 @@ class StaticTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid or not supported authentication type: \'SuperStrongAlgo\'');
 
-        $this->_client->setAuth('shahar', '1234', 'SuperStrongAlgo');
+        $this->client->setAuth('shahar', '1234', 'SuperStrongAlgo');
     }
 
     /**
@@ -168,9 +182,9 @@ class StaticTest extends TestCase
      */
     public function testSetNewCookies()
     {
-        $this->_client->addCookie('cookie', 'value');
-        $this->_client->addCookie('chocolate', 'chips');
-        $cookies = $this->_client->getCookies();
+        $this->client->addCookie('cookie', 'value');
+        $this->client->addCookie('chocolate', 'chips');
+        $cookies = $this->client->getCookies();
 
         // Check we got the right cookiejar
         $this->assertIsArray($cookies);
@@ -184,13 +198,13 @@ class StaticTest extends TestCase
     public function testUnsetCookies()
     {
         // Set the cookie jar just like in testSetNewCookieJar
-        $this->_client->addCookie('cookie', 'value');
-        $this->_client->addCookie('chocolate', 'chips');
-        $cookies = $this->_client->getCookies();
+        $this->client->addCookie('cookie', 'value');
+        $this->client->addCookie('chocolate', 'chips');
+        $cookies = $this->client->getCookies();
 
         // Try unsetting the cookies
-        $this->_client->clearCookies();
-        $cookies = $this->_client->getCookies();
+        $this->client->clearCookies();
+        $cookies = $this->client->getCookies();
 
         $this->assertEquals([], $cookies, 'Cookies are expected to be an empty array but it is not');
     }
@@ -203,7 +217,7 @@ class StaticTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid parameter type passed as Cookie');
 
-        $this->_client->addCookie('cookie');
+        $this->client->addCookie('cookie');
     }
 
     /**
@@ -220,9 +234,9 @@ class StaticTest extends TestCase
             'someoption' => 'hasvalue',
         ];
 
-        $this->_client->setOptions($config);
+        $this->client->setOptions($config);
 
-        $hasConfig = $this->_client->config;
+        $hasConfig = $this->client->config;
 
         foreach ($config as $k => $v) {
             $this->assertEquals($v, $hasConfig[$k]);
@@ -230,31 +244,30 @@ class StaticTest extends TestCase
     }
 
     /**
-     * Test that a Laminas_Config object can be used to set configuration
+     * Test that a Traversable object can be used to set configuration
      *
-     * @link https://getlaminas.org/issues/browse/Laminas-5577
+     * @link https://framework.zend.com/issues/browse/ZEND-5577
      */
-    public function testConfigSetAsLaminasConfig()
+    public function testConfigSetAsTraversable()
     {
-        $config = new Config([
-            'timeout'  => 400,
-            'nested'   => [
+        $config = new ArrayObject([
+            'timeout' => 400,
+            'nested'  => [
                 'item' => 'value',
             ],
         ]);
 
-        $this->_client->setOptions($config);
+        $this->client->setOptions($config);
 
-        $hasConfig = $this->_client->config;
-        $this->assertEquals($config->timeout, $hasConfig['timeout']);
-        $this->assertEquals($config->nested->item, $hasConfig['nested']['item']);
+        $hasConfig = $this->client->config;
+        $this->assertEquals($config['timeout'], $hasConfig['timeout']);
+        $this->assertEquals($config['nested']['item'], $hasConfig['nested']['item']);
     }
 
     /**
      * Test that passing invalid variables to setConfig() causes an exception
      *
      * @dataProvider invalidConfigProvider
-     *
      * @param mixed $config
      */
     public function testConfigSetInvalid($config)
@@ -262,7 +275,7 @@ class StaticTest extends TestCase
         $this->expectException(ClientException\InvalidArgumentException::class);
         $this->expectExceptionMessage('Config parameter is not valid');
 
-        $this->_client->setOptions($config);
+        $this->client->setOptions($config);
     }
 
     /**
@@ -276,13 +289,13 @@ class StaticTest extends TestCase
         $adapter = new MockAdapter();
 
         // test that config passes when we set the adapter
-        $this->_client->setOptions(['param' => 'value1']);
-        $this->_client->setAdapter($adapter);
+        $this->client->setOptions(['param' => 'value1']);
+        $this->client->setAdapter($adapter);
         $adapterCfg = $adapter->config;
         $this->assertEquals('value1', $adapterCfg['param']);
 
         // test that adapter config value changes when we set client config
-        $this->_client->setOptions(['param' => 'value2']);
+        $this->client->setOptions(['param' => 'value2']);
         $adapterCfg = $adapter->config;
         $this->assertEquals('value2', $adapterCfg['param']);
     }
@@ -299,18 +312,18 @@ class StaticTest extends TestCase
         // First, make sure we get null before the request
         $this->assertEquals(
             null,
-            $this->_client->getLastRawResponse(),
+            $this->client->getLastRawResponse(),
             'getLastRawResponse() is still expected to return null'
         );
 
         // Now, test we get a proper response after the request
-        $this->_client->setUri('http://example.com/foo/bar');
-        $this->_client->setAdapter(Test::class);
+        $this->client->setUri('http://example.com/foo/bar');
+        $this->client->setAdapter(Test::class);
 
-        $response = $this->_client->send();
+        $response = $this->client->send();
         $this->assertSame(
             $response,
-            $this->_client->getResponse(),
+            $this->client->getResponse(),
             'Response is expected to be identical to the result of getResponse()'
         );
     }
@@ -321,14 +334,14 @@ class StaticTest extends TestCase
     public function testGetLastRawResponseWhenNotStoring()
     {
         // Now, test we get a proper response after the request
-        $this->_client->setUri('http://example.com/foo/bar');
-        $this->_client->setAdapter(Test::class);
-        $this->_client->setOptions(['storeresponse' => false]);
+        $this->client->setUri('http://example.com/foo/bar');
+        $this->client->setAdapter(Test::class);
+        $this->client->setOptions(['storeresponse' => false]);
 
-        $this->_client->send();
+        $this->client->send();
 
         $this->assertNull(
-            $this->_client->getLastRawResponse(),
+            $this->client->getLastRawResponse(),
             'getLastRawResponse is expected to be null when not storing'
         );
     }
@@ -348,11 +361,11 @@ class StaticTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Cannot handle content type \'x-foo/something-fake\' automatically');
 
-        $this->_client->setEncType('x-foo/something-fake');
-        $this->_client->setParameterPost(['parameter' => 'value']);
-        $this->_client->setMethod('POST');
+        $this->client->setEncType('x-foo/something-fake');
+        $this->client->setParameterPost(['parameter' => 'value']);
+        $this->client->setMethod('POST');
         // This should throw an exception
-        $this->_client->send();
+        $this->client->send();
     }
 
     /**
@@ -370,13 +383,13 @@ class StaticTest extends TestCase
         $this->expectExceptionMessage('Unable to connect to 255.255.255.255:80');
 
         // Try to connect to an invalid host
-        $this->_client->setUri('http://255.255.255.255');
+        $this->client->setUri('http://255.255.255.255');
 
         // Reduce timeout to 3 seconds to avoid waiting
-        $this->_client->setOptions(['timeout' => 3]);
+        $this->client->setOptions(['timeout' => 3]);
 
         // This call should cause an exception
-        $this->_client->send();
+        $this->client->send();
     }
 
     /**
@@ -384,7 +397,6 @@ class StaticTest extends TestCase
      * the request method.
      *
      * @dataProvider invalidMethodProvider
-     *
      * @param string $method
      */
     public function testSettingInvalidMethodThrowsException($method)
@@ -392,7 +404,7 @@ class StaticTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid HTTP method passed');
 
-        $this->_client->setMethod($method);
+        $this->client->setMethod($method);
     }
 
     /**
@@ -407,11 +419,11 @@ class StaticTest extends TestCase
                 HTTPClient::class
             ));
         }
-        $this->_client->setAdapter(Test::class);
-        $this->_client->setUri('http://example.com');
-        $this->_client->setEncType(HTTPClient::ENC_FORMDATA);
+        $this->client->setAdapter(Test::class);
+        $this->client->setUri('http://example.com');
+        $this->client->setEncType(HTTPClient::ENC_FORMDATA);
 
-        $this->_client->setParameterPost([
+        $this->client->setParameterPost([
             'test' => [
                 'v0.1',
                 'v0.2',
@@ -423,20 +435,21 @@ class StaticTest extends TestCase
             ],
         ]);
 
-        $this->_client->setMethod('POST');
-        $this->_client->send();
+        $this->client->setMethod('POST');
+        $this->client->send();
 
         $expectedLines = file(__DIR__ . '/_files/Laminas7038-multipartarrayrequest.txt');
 
-        $gotLines = explode("\n", $this->_client->getLastRawRequest());
+        $gotLines = explode("\n", $this->client->getLastRawRequest());
 
         $this->assertEquals(count($expectedLines), count($gotLines));
 
-        while (($expected = array_shift($expectedLines))
+        while (
+            ($expected = array_shift($expectedLines))
             && ($got = array_shift($gotLines))
         ) {
             $expected = trim($expected);
-            $got = trim($got);
+            $got      = trim($got);
             $this->assertMatchesRegularExpression(sprintf('/^%s$/', $expected), $got);
         }
     }
@@ -458,16 +471,16 @@ class StaticTest extends TestCase
                 HTTPClient::class
             ));
         }
-        $this->_client->setAdapter(Test::class);
-        $this->_client->setUri('http://example.com');
+        $this->client->setAdapter(Test::class);
+        $this->client->setUri('http://example.com');
 
         $bodyFile = __DIR__ . '/_files/Laminas2098-multibytepostdata.txt';
 
-        $this->_client->setRawBody(file_get_contents($bodyFile));
-        $this->_client->setEncType('text/plain');
-        $this->_client->setMethod('POST');
-        $this->_client->send();
-        $request = $this->_client->getLastRawRequest();
+        $this->client->setRawBody(file_get_contents($bodyFile));
+        $this->client->setEncType('text/plain');
+        $this->client->setMethod('POST');
+        $this->client->send();
+        $request = $this->client->getLastRawRequest();
 
         if (! preg_match('/^content-length:\s+(\d+)/mi', $request, $match)) {
             $this->fail('Unable to find content-length header in request');
@@ -489,7 +502,7 @@ class StaticTest extends TestCase
                 HTTPClient::class
             ));
         }
-        $url = 'http://www.example.com/';
+        $url    = 'http://www.example.com/';
         $config = [
             'outputstream' => realpath(__DIR__ . '/_files/laminas_http_client_stream.file'),
         ];
@@ -511,7 +524,7 @@ class StaticTest extends TestCase
         if (! getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE')) {
             $this->markTestSkipped('Laminas\Http\Client online tests are not enabled');
         }
-        $url = 'http://www.example.com/';
+        $url        = 'http://www.example.com/';
         $outputFile = @tempnam(@sys_get_temp_dir(), 'zht');
         if (! is_file($outputFile)) {
             $this->markTestSkipped('Failed to create a temporary file');
@@ -523,7 +536,7 @@ class StaticTest extends TestCase
 
         $result = $client->send();
 
-        $this->assertInstanceOf('Laminas\Http\Response\Stream', $result);
+        $this->assertInstanceOf(Stream::class, $result);
         if (DIRECTORY_SEPARATOR === '\\') {
             $this->assertFalse(@unlink($outputFile), 'Deleting an open file should fail on Windows');
         }
@@ -545,7 +558,7 @@ class StaticTest extends TestCase
             ));
         }
 
-        $url = 'http://www.example.com';
+        $url    = 'http://www.example.com';
         $config = [
             'outputstream' => '/path/to/bogus/file.ext',
         ];
@@ -570,12 +583,12 @@ class StaticTest extends TestCase
                 HTTPClient::class
             ));
         }
-        $this->_client->addCookie('foo', 'bar=baz');
-        $this->_client->send();
+        $this->client->addCookie('foo', 'bar=baz');
+        $this->client->send();
         $cookieValue = 'Cookie: foo=' . urlencode('bar=baz');
         $this->assertStringContainsString(
             $cookieValue,
-            $this->_client->getLastRawRequest(),
+            $this->client->getLastRawRequest(),
             'Request is expected to contain the entire cookie "keyname=encoded_value"'
         );
     }
@@ -593,13 +606,13 @@ class StaticTest extends TestCase
                 HTTPClient::class
             ));
         }
-        $this->_client->setOptions(['encodecookies' => false]);
-        $this->_client->addCookie('foo', 'bar=baz');
-        $this->_client->send();
+        $this->client->setOptions(['encodecookies' => false]);
+        $this->client->addCookie('foo', 'bar=baz');
+        $this->client->send();
         $cookieValue = 'Cookie: foo=bar=baz';
         $this->assertStringContainsString(
             $cookieValue,
-            $this->_client->getLastRawRequest(),
+            $this->client->getLastRawRequest(),
             'Request is expected to contain the entire cookie "keyname=raw_value"'
         );
     }

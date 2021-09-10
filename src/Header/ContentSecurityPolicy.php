@@ -1,12 +1,16 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Header;
+
+use function array_pad;
+use function array_walk;
+use function explode;
+use function implode;
+use function in_array;
+use function sprintf;
+use function str_replace;
+use function strcasecmp;
+use function trim;
 
 /**
  * Content Security Policy Level 3 Header
@@ -99,7 +103,8 @@ class ContentSecurityPolicy implements MultipleHeaderInterface
             ));
         }
 
-        if ($name === 'block-all-mixed-content'
+        if (
+            $name === 'block-all-mixed-content'
             || $name === 'upgrade-insecure-requests'
         ) {
             if ($sources) {
@@ -140,11 +145,11 @@ class ContentSecurityPolicy implements MultipleHeaderInterface
      */
     public static function fromString($headerLine)
     {
-        $header = new static();
-        $headerName = $header->getFieldName();
-        list($name, $value) = GenericHeader::splitHeaderLine($headerLine);
+        $header         = new static();
+        $headerName     = $header->getFieldName();
+        [$name, $value] = GenericHeader::splitHeaderLine($headerLine);
         // Ensure the proper header name
-        if (strcasecmp($name, $headerName) != 0) {
+        if (strcasecmp($name, $headerName) !== 0) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'Invalid header line for %s string: "%s"',
                 $headerName,
@@ -156,7 +161,7 @@ class ContentSecurityPolicy implements MultipleHeaderInterface
         foreach ($tokens as $token) {
             $token = trim($token);
             if ($token) {
-                list($directiveName, $directiveValue) = array_pad(explode(' ', $token, 2), 2, null);
+                [$directiveName, $directiveValue] = array_pad(explode(' ', $token, 2), 2, null);
                 if (! isset($header->directives[$directiveName])) {
                     $header->setDirective(
                         $directiveName,
@@ -202,6 +207,7 @@ class ContentSecurityPolicy implements MultipleHeaderInterface
         return sprintf('%s: %s', $this->getFieldName(), $this->getFieldValue());
     }
 
+    /** @return string */
     public function toStringMultipleHeaders(array $headers)
     {
         $strings = [$this->toString()];

@@ -1,20 +1,21 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\Client;
 
-use Laminas\Config\Config;
+use ArrayObject;
 use Laminas\Http\Client\Adapter;
 use Laminas\Http\Client\Adapter\Exception\InvalidArgumentException;
 use Laminas\Http\Client\Adapter\Exception\RuntimeException;
 use Laminas\Http\Client\Adapter\Socket;
 use Laminas\Uri\Uri;
 use stdClass;
+
+use function fopen;
+use function get_resource_type;
+use function md5;
+use function microtime;
+use function stream_context_create;
+use function stream_context_get_options;
 
 /**
  * This Testsuite includes all Laminas_Http_Client that require a working web
@@ -49,6 +50,7 @@ class SocketTest extends CommonHttpTests
 
     /**
      * Test that we can set a valid configuration array with some options
+     *
      * @group ZHC001
      */
     public function testConfigSetAsArray()
@@ -58,9 +60,9 @@ class SocketTest extends CommonHttpTests
             'someoption' => 'hasvalue',
         ];
 
-        $this->_adapter->setOptions($config);
+        $this->adapter->setOptions($config);
 
-        $hasConfig = $this->_adapter->getConfig();
+        $hasConfig = $this->adapter->getConfig();
         foreach ($config as $k => $v) {
             $this->assertEquals($v, $hasConfig[$k]);
         }
@@ -68,7 +70,7 @@ class SocketTest extends CommonHttpTests
 
     public function testDefaultConfig()
     {
-        $config = $this->_adapter->getConfig();
+        $config = $this->adapter->getConfig();
         $this->assertEquals(true, $config['sslverifypeer']);
         $this->assertEquals(false, $config['sslallowselfsigned']);
         $this->assertEquals(true, $config['sslverifypeername']);
@@ -77,14 +79,14 @@ class SocketTest extends CommonHttpTests
     public function testConnectingViaSslEnforcesDefaultSslOptionsOnContext()
     {
         $config = ['timeout' => 30];
-        $this->_adapter->setOptions($config);
+        $this->adapter->setOptions($config);
         try {
-            $this->_adapter->connect('localhost', 443, true);
+            $this->adapter->connect('localhost', 443, true);
         } catch (RuntimeException $e) {
             // Test is designed to allow connect failure because we're interested
             // only in the stream context state created within that method.
         }
-        $context = $this->_adapter->getStreamContext();
+        $context = $this->adapter->getStreamContext();
         $options = stream_context_get_options($context);
         $this->assertTrue($options['ssl']['verify_peer']);
         $this->assertFalse($options['ssl']['allow_self_signed']);
@@ -99,14 +101,14 @@ class SocketTest extends CommonHttpTests
             'sslallowselfsigned' => true,
             'sslverifypeername'  => false,
         ];
-        $this->_adapter->setOptions($config);
+        $this->adapter->setOptions($config);
         try {
-            $this->_adapter->connect('localhost', 443, true);
+            $this->adapter->connect('localhost', 443, true);
         } catch (RuntimeException $e) {
             // Test is designed to allow connect failure because we're interested
             // only in the stream context state created within that method.
         }
-        $context = $this->_adapter->getStreamContext();
+        $context = $this->adapter->getStreamContext();
         $options = stream_context_get_options($context);
         $this->assertFalse($options['ssl']['verify_peer']);
         $this->assertTrue($options['ssl']['allow_self_signed']);
@@ -124,44 +126,43 @@ class SocketTest extends CommonHttpTests
             'timeout'   => 30,
             'sslcafile' => __DIR__ . '/_files/ca-bundle.crt',
         ];
-        $this->_adapter->setOptions($config);
+        $this->adapter->setOptions($config);
         try {
-            $this->_adapter->connect('localhost', 443, true);
+            $this->adapter->connect('localhost', 443, true);
         } catch (RuntimeException $e) {
             // Test is designed to allow connect failure because we're interested
             // only in the stream context state created within that method.
         }
-        $context = $this->_adapter->getStreamContext();
+        $context = $this->adapter->getStreamContext();
         $options = stream_context_get_options($context);
         $this->assertEquals($config['sslcafile'], $options['ssl']['cafile']);
     }
 
     /**
-     * Test that a Laminas\Config object can be used to set configuration
+     * Test that a Traversable object can be used to set configuration
      *
-     * @link https://getlaminas.org/issues/browse/Laminas-5577
+     * @link https://framework.zend.com/issues/browse/ZEND-5577
      */
-    public function testConfigSetAsLaminasConfig()
+    public function testConfigSetAsTraversable()
     {
-        $config = new Config([
-            'timeout'  => 400,
-            'nested'   => [
+        $config = new ArrayObject([
+            'timeout' => 400,
+            'nested'  => [
                 'item' => 'value',
             ],
         ]);
 
-        $this->_adapter->setOptions($config);
+        $this->adapter->setOptions($config);
 
-        $hasConfig = $this->_adapter->getConfig();
-        $this->assertEquals($config->timeout, $hasConfig['timeout']);
-        $this->assertEquals($config->nested->item, $hasConfig['nested']['item']);
+        $hasConfig = $this->adapter->getConfig();
+        $this->assertEquals($config['timeout'], $hasConfig['timeout']);
+        $this->assertEquals($config['nested']['item'], $hasConfig['nested']['item']);
     }
 
     /**
      * Check that an exception is thrown when trying to set invalid config
      *
      * @dataProvider invalidConfigProvider
-     *
      * @param mixed $config
      */
     public function testSetConfigInvalidConfig($config)
@@ -169,10 +170,11 @@ class SocketTest extends CommonHttpTests
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Array or Laminas\Config object expected');
 
-        $this->_adapter->setOptions($config);
+        $this->adapter->setOptions($config);
     }
 
-    public function provideValidTimeoutConfig()
+    /** @psalm-return array<string, array{0: int|string}> */
+    public function provideValidTimeoutConfig(): array
     {
         return [
             'integer' => [10],
@@ -182,6 +184,7 @@ class SocketTest extends CommonHttpTests
 
     /**
      * @dataProvider provideValidTimeoutConfig
+     * @param int|string $timeout
      */
     public function testPassValidTimeout($timeout)
     {
@@ -202,15 +205,14 @@ class SocketTest extends CommonHttpTests
         $adapter->connect('getlaminas.org');
     }
 
-    /**
-     * Stream context related tests
-     */
+    // Stream context related tests
 
+    // phpcs:ignore Squiz.Commenting.FunctionComment.WrongStyle
     public function testGetNewStreamContext()
     {
         $adapterClass = $this->config['adapter'];
-        $adapter = new $adapterClass();
-        $context = $adapter->getStreamContext();
+        $adapter      = new $adapterClass();
+        $context      = $adapter->getStreamContext();
 
         $this->assertEquals('stream-context', get_resource_type($context));
     }
@@ -218,8 +220,8 @@ class SocketTest extends CommonHttpTests
     public function testSetNewStreamContextResource()
     {
         $adapterClass = $this->config['adapter'];
-        $adapter = new $adapterClass();
-        $context = stream_context_create();
+        $adapter      = new $adapterClass();
+        $context      = stream_context_create();
 
         $adapter->setStreamContext($context);
 
@@ -229,12 +231,12 @@ class SocketTest extends CommonHttpTests
     public function testSetNewStreamContextOptions()
     {
         $adapterClass = $this->config['adapter'];
-        $adapter = new $adapterClass();
-        $options = [
+        $adapter      = new $adapterClass();
+        $options      = [
             'socket' => [
                 'bindto' => '1.2.3.4:0',
             ],
-            'ssl' => [
+            'ssl'    => [
                 'capath'            => null,
                 'verify_peer'       => true,
                 'allow_self_signed' => false,
@@ -251,7 +253,6 @@ class SocketTest extends CommonHttpTests
      * Test that setting invalid options / context causes an exception
      *
      * @dataProvider invalidContextProvider
-     *
      * @param mixed $invalid
      */
     public function testSetInvalidContextOptions($invalid)
@@ -260,21 +261,21 @@ class SocketTest extends CommonHttpTests
         $this->expectExceptionMessage('Expecting either a stream context resource or array');
 
         $adapterClass = $this->config['adapter'];
-        $adapter = new $adapterClass();
+        $adapter      = new $adapterClass();
         $adapter->setStreamContext($invalid);
     }
 
     public function testSetHttpsStreamContextParam()
     {
-        if ($this->client->getUri()->getScheme() != 'https') {
+        if ($this->client->getUri()->getScheme() !== 'https') {
             $this->markTestSkipped();
         }
 
         $adapterClass = $this->config['adapter'];
-        $adapter = new $adapterClass();
+        $adapter      = new $adapterClass();
         $adapter->setStreamContext([
             'ssl' => [
-                'capture_peer_cert' => true,
+                'capture_peer_cert'  => true,
                 'capture_peer_chain' => true,
             ],
         ]);
@@ -306,7 +307,7 @@ class SocketTest extends CommonHttpTests
             $this->assertEquals(Adapter\Exception\TimeoutException::READ_TIMEOUT, $e->getCode());
         }
 
-        $time = (microtime(true) - $start);
+        $time = microtime(true) - $start;
 
         // We should be very close to 1 second
         $this->assertLessThan(2, $time);
@@ -337,9 +338,9 @@ class SocketTest extends CommonHttpTests
      */
     public function testAllowsZeroWrittenBytes()
     {
-        $this->_adapter->connect('localhost');
+        $this->adapter->connect('localhost');
         require_once __DIR__ . '/_files/fwrite.php';
-        $this->_adapter->write('GET', new Uri('tcp://localhost:80/'), '1.1', [], 'test body');
+        $this->adapter->write('GET', new Uri('tcp://localhost:80/'), '1.1', [], 'test body');
     }
 
     /**
@@ -348,8 +349,8 @@ class SocketTest extends CommonHttpTests
      */
     public function testCaseInsensitiveHeaders()
     {
-        $this->_adapter->connect('localhost');
-        $requestString = $this->_adapter->write(
+        $this->adapter->connect('localhost');
+        $requestString = $this->adapter->write(
             'GET',
             new Uri('tcp://localhost:80/'),
             '1.1',

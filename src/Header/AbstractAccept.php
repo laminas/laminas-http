@@ -1,14 +1,32 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Header;
 
 use stdClass;
+
+use function array_intersect;
+use function array_shift;
+use function array_walk;
+use function count;
+use function explode;
+use function implode;
+use function is_float;
+use function is_int;
+use function is_numeric;
+use function is_string;
+use function preg_match;
+use function preg_match_all;
+use function preg_replace_callback;
+use function sprintf;
+use function str_split;
+use function stripslashes;
+use function strlen;
+use function strpos;
+use function strtolower;
+use function substr;
+use function trim;
+use function usort;
+use function version_compare;
 
 /**
  * Abstract Accept Header
@@ -31,17 +49,14 @@ use stdClass;
  *                                      |--|                   parameter value
  *                        |---|                                priority
  *
- *
  * @see        http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1
- * @author     Dolf Schimmel - Freeaqingme
  */
 abstract class AbstractAccept implements HeaderInterface
 {
-    /**
-     * @var stdClass[]
-     */
+    /** @var stdClass[] */
     protected $fieldValueParts = [];
 
+    /** @var string */
     protected $regexAddType;
 
     /**
@@ -59,7 +74,7 @@ abstract class AbstractAccept implements HeaderInterface
     public function parseHeaderLine($headerLine)
     {
         if (strpos($headerLine, ':') !== false) {
-            list($name, $value) = GenericHeader::splitHeaderLine($headerLine);
+            [$name, $value] = GenericHeader::splitHeaderLine($headerLine);
             if (strtolower($name) !== strtolower($this->getFieldName())) {
                 $value = $headerLine; // This is just for preserve the BC.
             }
@@ -91,13 +106,14 @@ abstract class AbstractAccept implements HeaderInterface
      * Parse the Field Value Parts represented by a header line
      *
      * @param string  $headerLine
-     * @throws Exception\InvalidArgumentException If header is invalid
+     * @throws Exception\InvalidArgumentException If header is invalid.
      * @return array
      */
     public function getFieldValuePartsFromHeaderLine($headerLine)
     {
         // process multiple accept values, they may be between quotes
-        if (! preg_match_all('/(?:[^,"]|"(?:[^\\\"]|\\\.)*")+/', $headerLine, $values)
+        if (
+            ! preg_match_all('/(?:[^,"]|"(?:[^\\\"]|\\\.)*")+/', $headerLine, $values)
                 || ! isset($values[0])
         ) {
             throw new Exception\InvalidArgumentException(
@@ -133,7 +149,7 @@ abstract class AbstractAccept implements HeaderInterface
             $fieldValuePart = trim(substr($fieldValuePart, 0, $pos));
         }
 
-        $format = '*';
+        $format  = '*';
         $subtype = '*';
 
         return (object) [
@@ -142,7 +158,7 @@ abstract class AbstractAccept implements HeaderInterface
             'subtype'    => $subtype,
             'subtypeRaw' => $subtypeWhole,
             'format'     => $format,
-            'priority'   => isset($params['q']) ? $params['q'] : 1,
+            'priority'   => $params['q'] ?? 1,
             'params'     => $params,
             'raw'        => trim($raw),
         ];
@@ -157,7 +173,7 @@ abstract class AbstractAccept implements HeaderInterface
     protected function getParametersFromFieldValuePart($fieldValuePart)
     {
         $params = [];
-        if ((($pos = strpos($fieldValuePart, ';')) !== false)) {
+        if (($pos = strpos($fieldValuePart, ';')) !== false) {
             preg_match_all('/(?:[^;"]|"(?:[^\\\"]|\\\.)*")+/', $fieldValuePart, $paramsStrings);
 
             if (isset($paramsStrings[0])) {
@@ -174,11 +190,11 @@ abstract class AbstractAccept implements HeaderInterface
                     $value = null;
                 }
 
-                if (isset($value[0]) && $value[0] == '"' && substr($value, -1) == '"') {
+                if (isset($value[0]) && $value[0] === '"' && substr($value, -1) === '"') {
                     $value = substr(substr($value, 1), 0, -1);
                 }
 
-                $params[trim($explode[0])] = stripslashes($value);
+                $params[trim($explode[0])] = stripslashes($value ?? '');
             }
         }
 
@@ -227,7 +243,7 @@ abstract class AbstractAccept implements HeaderInterface
             $value
         );
 
-        if ($escaped == $value && ! array_intersect(str_split($value), $separators)) {
+        if ($escaped === $value && ! array_intersect(str_split($value), $separators)) {
             $value = $key . ($value ? '=' . $value : '');
         } else {
             $value = $key . ($value ? '="' . $escaped . '"' : '');
@@ -255,7 +271,8 @@ abstract class AbstractAccept implements HeaderInterface
             ));
         }
 
-        if (! is_int($priority) && ! is_float($priority) && ! is_numeric($priority)
+        if (
+            ! is_int($priority) && ! is_float($priority) && ! is_numeric($priority)
             || $priority > 1 || $priority < 0
         ) {
             throw new Exception\InvalidArgumentException(sprintf(
@@ -265,7 +282,7 @@ abstract class AbstractAccept implements HeaderInterface
             ));
         }
 
-        if ($priority != 1) {
+        if ($priority !== 1) {
             $params = ['q' => sprintf('%01.1f', $priority)] + $params;
         }
 
@@ -303,7 +320,7 @@ abstract class AbstractAccept implements HeaderInterface
 
         foreach ($this->getPrioritized() as $left) {
             foreach ($matchAgainst as $right) {
-                if ($right->type == '*' || $left->type == '*') {
+                if ($right->type === '*' || $left->type === '*') {
                     if ($this->matchAcceptParams($left, $right)) {
                         $left->setMatchedAgainst($right);
 
@@ -311,9 +328,10 @@ abstract class AbstractAccept implements HeaderInterface
                     }
                 }
 
-                if ($left->type == $right->type) {
-                    if (($left->subtype == $right->subtype || ($right->subtype == '*' || $left->subtype == '*'))
-                        && ($left->format == $right->format || $right->format == '*' || $left->format == '*')
+                if ($left->type === $right->type) {
+                    if (
+                        ($left->subtype === $right->subtype || ($right->subtype === '*' || $left->subtype === '*'))
+                        && ($left->format === $right->format || $right->format === '*' || $left->format === '*')
                     ) {
                         if ($this->matchAcceptParams($left, $right)) {
                             $left->setMatchedAgainst($right);
@@ -346,7 +364,8 @@ abstract class AbstractAccept implements HeaderInterface
                         $pieces
                     );
 
-                    if (count($pieces) == 3
+                    if (
+                        count($pieces) === 3
                         && (version_compare($pieces[1], $match1->params[$key], '<=')
                             xor version_compare($pieces[2], $match1->params[$key], '>='))
                     ) {
@@ -354,9 +373,9 @@ abstract class AbstractAccept implements HeaderInterface
                     }
                 } elseif (strpos($value, '|')) {
                     $options = explode('|', $value);
-                    $good = false;
+                    $good    = false;
                     foreach ($options as $option) {
-                        if ($option == $match1->params[$key]) {
+                        if ($option === $match1->params[$key]) {
                             $good = true;
                             break;
                         }
@@ -365,7 +384,7 @@ abstract class AbstractAccept implements HeaderInterface
                     if (! $good) {
                         return false;
                     }
-                } elseif ($match1->params[$key] != $value) {
+                } elseif ($match1->params[$key] !== $value) {
                     return false;
                 }
             }
@@ -378,18 +397,18 @@ abstract class AbstractAccept implements HeaderInterface
      * Add a key/value combination to the internal queue
      *
      * @param stdClass $value
-     * @return number
+     * @return void
      */
     protected function addFieldValuePartToQueue($value)
     {
         $this->fieldValueParts[] = $value;
-        $this->sorted = false;
+        $this->sorted            = false;
     }
 
     /**
      * Sort the internal Field Value Parts
      *
-     * @See rfc2616 sect 14.1
+     * @see rfc2616 sect 14.1
      * Media ranges can be overridden by more specific media ranges or
      * specific media types. If more than one media range applies to a given
      * type, the most specific reference has precedence. For example,
@@ -403,11 +422,11 @@ abstract class AbstractAccept implements HeaderInterface
      * 3) text/*
      * 4) * /*
      *
-     * @return number
+     * @return void
      */
     protected function sortFieldValueParts()
     {
-        $sort = function ($a, $b) {
+        $sort = static function (object $a, object $b): int {
             // If A has higher precedence than B, return -1.
             if ($a->priority > $b->priority) {
                 return -1;
@@ -418,26 +437,26 @@ abstract class AbstractAccept implements HeaderInterface
             // Asterisks
             $values = ['type', 'subtype', 'format'];
             foreach ($values as $value) {
-                if ($a->$value == '*' && $b->$value != '*') {
+                if ($a->$value === '*' && $b->$value !== '*') {
                     return 1;
-                } elseif ($b->$value == '*' && $a->$value != '*') {
+                } elseif ($b->$value === '*' && $a->$value !== '*') {
                     return -1;
                 }
             }
 
-            if ($a->type == 'application' && $b->type != 'application') {
+            if ($a->type === 'application' && $b->type !== 'application') {
                 return -1;
-            } elseif ($b->type == 'application' && $a->type != 'application') {
+            } elseif ($b->type === 'application' && $a->type !== 'application') {
                 return 1;
             }
 
             // @todo count number of dots in case of type==application in subtype
 
             // So far they're still the same. Longest string length may be more specific
-            if (strlen($a->raw) == strlen($b->raw)) {
+            if (strlen($a->raw) === strlen($b->raw)) {
                 return 0;
             }
-            return (strlen($a->raw) > strlen($b->raw)) ? -1 : 1;
+            return strlen($a->raw) > strlen($b->raw) ? -1 : 1;
         };
 
         usort($this->fieldValueParts, $sort);

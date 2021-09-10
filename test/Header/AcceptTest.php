@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\Header;
 
 use Laminas\Http\Header\Accept;
@@ -14,6 +8,9 @@ use Laminas\Http\Header\Accept\FieldValuePart\AcceptFieldValuePart;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
 use PHPUnit\Framework\TestCase;
+
+use function addslashes;
+use function array_shift;
 
 class AcceptTest extends TestCase
 {
@@ -65,8 +62,9 @@ class AcceptTest extends TestCase
         $acceptHeader->addMediaType('\\', 0.9);
     }
 
-    /** Implementation specific tests here */
+    // Implementation specific tests here
 
+    // phpcs:ignore Squiz.Commenting.FunctionComment.WrongStyle
     public function testCanParseCommaSeparatedValues()
     {
         $header = Accept::fromString('Accept: text/plain; q=0.5, text/html, text/x-dvi; q=0.8, text/x-c');
@@ -132,12 +130,12 @@ class AcceptTest extends TestCase
     {
         $values = [
             'invalidPrio' => false,
-            -0.0001       => false,
-            1.0001        => false,
-            1.000         => true,
-            0.999         => true,
-            0.000         => true,
-            0.001         => true,
+            '-0.0001'     => false,
+            '1.0001'      => false,
+            '1.000'       => true,
+            '0.999'       => true,
+            '0.000'       => true,
+            '0.001'       => true,
             1             => true,
             0             => true,
         ];
@@ -192,7 +190,7 @@ class AcceptTest extends TestCase
 
     public function testParsingAndAssemblingQuotedStrings()
     {
-        $acceptStr = 'Accept: application/vnd.foobar+html;q=1;version="2'
+        $acceptStr    = 'Accept: application/vnd.foobar+html;q=1;version="2'
                    . '\"";level="foo;, bar", text/json;level=1, text/xml;level=2;q=0.4';
         $acceptHeader = Accept::fromString($acceptStr);
 
@@ -201,7 +199,7 @@ class AcceptTest extends TestCase
 
     public function testMatchReturnsMatchedAgainstObject()
     {
-        $acceptStr = 'Accept: text/html;q=1; version=23; level=5, text/json;level=1,text/xml;level=2;q=0.4';
+        $acceptStr    = 'Accept: text/html;q=1; version=23; level=5, text/json;level=1,text/xml;level=2;q=0.4';
         $acceptHeader = Accept::fromString($acceptStr);
 
         $res = $acceptHeader->match('text/html; _randomValue=foobar');
@@ -211,7 +209,7 @@ class AcceptTest extends TestCase
             $res->getMatchedAgainst()->getParams()->_randomValue
         );
 
-        $acceptStr = 'Accept: */*; ';
+        $acceptStr    = 'Accept: */*; ';
         $acceptHeader = Accept::fromString($acceptStr);
 
         $res = $acceptHeader->match('text/html; _foo=bar');
@@ -225,7 +223,7 @@ class AcceptTest extends TestCase
 
     public function testVersioning()
     {
-        $acceptStr = 'Accept: text/html;q=1; version=23; level=5, text/json;level=1,text/xml;level=2;q=0.4';
+        $acceptStr    = 'Accept: text/html;q=1; version=23; level=5, text/json;level=1,text/xml;level=2;q=0.4';
         $acceptHeader = Accept::fromString($acceptStr);
 
         $expected = [
@@ -273,7 +271,7 @@ class AcceptTest extends TestCase
         $this->assertFalse($acceptHeader->match('*/*; version=20-22'));
 
         $acceptHeader = Accept::fromString('Accept: */*; version=21');
-        $res = $acceptHeader->match('*/*; version=20-22');
+        $res          = $acceptHeader->match('*/*; version=20-22');
         $this->assertInstanceOf(AcceptFieldValuePart::class, $res);
         $this->assertEquals('21', $res->getParams()->version);
     }
@@ -292,9 +290,7 @@ class AcceptTest extends TestCase
      * @group 3740
      * @covers Laminas\Http\Header\AbstractAccept::matchAcceptParams()
      * @covers Laminas\Http\Header\AbstractAccept::getParametersFromFieldValuePart()
-     *
      * @dataProvider provideParamRanges
-     *
      * @param string $range
      * @param string $input
      * @param bool $success
@@ -338,7 +334,7 @@ class AcceptTest extends TestCase
 
     public function testVersioningAndPriorization()
     {
-        $acceptStr = 'Accept: text/html; version=23, text/json; version=15.3; q=0.9,text/html;level=2;q=0.4';
+        $acceptStr    = 'Accept: text/html; version=23, text/json; version=15.3; q=0.9,text/html;level=2;q=0.4';
         $acceptHeader = Accept::fromString($acceptStr);
 
         $expected = [
@@ -407,27 +403,27 @@ class AcceptTest extends TestCase
     public function testPrioritizing2()
     {
         $accept = Accept::fromString("Accept: application/text, \tapplication/*");
-        $res = $accept->getPrioritized();
+        $res    = $accept->getPrioritized();
         $this->assertEquals('application/text', $res[0]->raw);
         $this->assertEquals('application/*', $res[1]->raw);
 
         $accept = Accept::fromString("Accept: \tapplication/*, application/text");
-        $res = $accept->getPrioritized();
+        $res    = $accept->getPrioritized();
         $this->assertEquals('application/text', $res[0]->raw);
         $this->assertEquals('application/*', $res[1]->raw);
 
         $accept = Accept::fromString('Accept: text/xml, application/xml');
-        $res = $accept->getPrioritized();
+        $res    = $accept->getPrioritized();
         $this->assertEquals('application/xml', $res[0]->raw);
         $this->assertEquals('text/xml', $res[1]->raw);
 
         $accept = Accept::fromString('Accept: application/xml, text/xml');
-        $res = $accept->getPrioritized();
+        $res    = $accept->getPrioritized();
         $this->assertEquals('application/xml', $res[0]->raw);
         $this->assertEquals('text/xml', $res[1]->raw);
 
         $accept = Accept::fromString('Accept: application/vnd.foobar+xml; q=0.9, text/xml');
-        $res = $accept->getPrioritized();
+        $res    = $accept->getPrioritized();
         $this->assertEquals(1.0, $res[0]->getPriority());
         $this->assertEquals(0.9, $res[1]->getPriority());
         $this->assertEquals('application/vnd.foobar+xml', $res[1]->getTypeString());
@@ -436,7 +432,7 @@ class AcceptTest extends TestCase
         $this->assertEquals('xml', $res[1]->getFormat());
 
         $accept = Accept::fromString('Accept: text/xml, application/vnd.foobar+xml; version="\'Ѿ"');
-        $res = $accept->getPrioritized();
+        $res    = $accept->getPrioritized();
         $this->assertEquals('application/vnd.foobar+xml; version="\'Ѿ"', $res[0]->getRaw());
     }
 
@@ -461,6 +457,7 @@ class AcceptTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
      */
     public function testPreventsCRLFAttackViaFromString()

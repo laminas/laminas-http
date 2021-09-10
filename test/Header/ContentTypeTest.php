@@ -1,17 +1,14 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\Header;
 
 use Laminas\Http\Header\ContentType;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
 use PHPUnit\Framework\TestCase;
+
+use function implode;
+use function strtolower;
 
 class ContentTypeTest extends TestCase
 {
@@ -43,29 +40,29 @@ class ContentTypeTest extends TestCase
         $this->assertEquals('Content-Type: application/atom+xml; charset=ISO-8859-1', $header->toString());
     }
 
-    /** Implementation specific tests here */
+    // Implementation specific tests here
 
-    public function wildcardMatches()
+    /** @psalm-return array<string, array{0: string}> */
+    public function wildcardMatches(): array
     {
         return [
-            'wildcard' => ['*/*'],
-            'wildcard-format' => ['*/*+*'],
-            'wildcard-type-subtype-fixed-format' => ['*/*+json'],
+            'wildcard'                                            => ['*/*'],
+            'wildcard-format'                                     => ['*/*+*'],
+            'wildcard-type-subtype-fixed-format'                  => ['*/*+json'],
             'wildcard-type-partial-wildcard-subtype-fixed-format' => ['*/vnd.*+json'],
-            'wildcard-type-format-subtype' => ['*/json'],
-            'fixed-type-wildcard-subtype' => ['application/*'],
-            'fixed-type-wildcard-subtype-fixed-format' => ['application/*+json'],
-            'fixed-type-format-subtype' => ['application/json'],
-            'fixed-type-fixed-subtype-wildcard-format' => ['application/vnd.foobar+*'],
-            'fixed-type-partial-wildcard-subtype-fixed-format' => ['application/vnd.*+json'],
-            'fixed' => ['application/vnd.foobar+json'],
-            'fixed-mixed-case' => ['APPLICATION/vnd.FooBar+json'],
+            'wildcard-type-format-subtype'                        => ['*/json'],
+            'fixed-type-wildcard-subtype'                         => ['application/*'],
+            'fixed-type-wildcard-subtype-fixed-format'            => ['application/*+json'],
+            'fixed-type-format-subtype'                           => ['application/json'],
+            'fixed-type-fixed-subtype-wildcard-format'            => ['application/vnd.foobar+*'],
+            'fixed-type-partial-wildcard-subtype-fixed-format'    => ['application/vnd.*+json'],
+            'fixed'                                               => ['application/vnd.foobar+json'],
+            'fixed-mixed-case'                                    => ['APPLICATION/vnd.FooBar+json'],
         ];
     }
 
     /**
      * @dataProvider wildcardMatches
-     *
      * @param string $matchAgainst
      */
     public function testMatchWildCard($matchAgainst)
@@ -75,22 +72,22 @@ class ContentTypeTest extends TestCase
         $this->assertEquals(strtolower($matchAgainst), $result);
     }
 
-    public function invalidMatches()
+    /** @psalm-return array<string, array{0: string}> */
+    public function invalidMatches(): array
     {
         return [
-            'format' => ['application/vnd.foobar+xml'],
-            'wildcard-subtype' => ['application/vendor.*+json'],
-            'subtype' => ['application/vendor.foobar+json'],
-            'type' => ['text/vnd.foobar+json'],
-            'wildcard-type-format' => ['*/vnd.foobar+xml'],
+            'format'                         => ['application/vnd.foobar+xml'],
+            'wildcard-subtype'               => ['application/vendor.*+json'],
+            'subtype'                        => ['application/vendor.foobar+json'],
+            'type'                           => ['text/vnd.foobar+json'],
+            'wildcard-type-format'           => ['*/vnd.foobar+xml'],
             'wildcard-type-wildcard-subtype' => ['*/vendor.*+json'],
-            'wildcard-type-subtype' => ['*/vendor.foobar+json'],
+            'wildcard-type-subtype'          => ['*/vendor.foobar+json'],
         ];
     }
 
     /**
      * @dataProvider invalidMatches
-     *
      * @param string $matchAgainst
      */
     public function testFailedMatches($matchAgainst)
@@ -100,7 +97,8 @@ class ContentTypeTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function multipleCriteria()
+    /** @psalm-return array<string, array{0: string|string[]}> */
+    public function multipleCriteria(): array
     {
         $criteria = [
             'application/vnd.foobar+xml',
@@ -109,14 +107,13 @@ class ContentTypeTest extends TestCase
             '*/vnd.foobar+json',
         ];
         return [
-            'array' => [$criteria],
+            'array'  => [$criteria],
             'string' => [implode(',', $criteria)],
         ];
     }
 
     /**
      * @dataProvider multipleCriteria
-     *
      * @param array|string $criteria
      */
     public function testReturnsMatchingMediaTypeOfFirstCriteriaToValidate($criteria)
@@ -126,19 +123,19 @@ class ContentTypeTest extends TestCase
         $this->assertEquals('application/vnd.*+json', $result);
     }
 
-    public function contentTypeParameterExamples()
+    /** @psalm-return array<string, array{0: string, 1: string}> */
+    public function contentTypeParameterExamples(): array
     {
         return [
-            'no-quotes' => ['Content-Type: foo/bar; param=baz', 'baz'],
-            'with-quotes' => ['Content-Type: foo/bar; param="baz"', 'baz'],
-            'with-equals' => ['Content-Type: foo/bar; param=baz=bat', 'baz=bat'],
+            'no-quotes'              => ['Content-Type: foo/bar; param=baz', 'baz'],
+            'with-quotes'            => ['Content-Type: foo/bar; param="baz"', 'baz'],
+            'with-equals'            => ['Content-Type: foo/bar; param=baz=bat', 'baz=bat'],
             'with-equals-and-quotes' => ['Content-Type: foo/bar; param="baz=bat"', 'baz=bat'],
         ];
     }
 
     /**
      * @dataProvider contentTypeParameterExamples
-     *
      * @param string $headerString
      * @param string $expectedParameterValue
      */
@@ -154,6 +151,7 @@ class ContentTypeTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
      */
     public function testPreventsCRLFAttackViaFromString()
@@ -164,6 +162,7 @@ class ContentTypeTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
      */
     public function testPreventsCRLFAttackViaConstructor()

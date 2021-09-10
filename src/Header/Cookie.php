@@ -1,14 +1,20 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Header;
 
 use ArrayObject;
+
+use function array_key_exists;
+use function array_merge;
+use function count;
+use function explode;
+use function implode;
+use function is_array;
+use function preg_split;
+use function sprintf;
+use function strtolower;
+use function urldecode;
+use function urlencode;
 
 /**
  * @see http://www.ietf.org/rfc/rfc2109.txt
@@ -16,8 +22,13 @@ use ArrayObject;
  */
 class Cookie extends ArrayObject implements HeaderInterface
 {
+    /** @var bool */
     protected $encodeValue = true;
 
+    /**
+     * @param SetCookie[] $setCookieClass
+     * @return static
+     */
     public static function fromSetCookieArray(array $setCookies)
     {
         $nvPairs = [];
@@ -43,11 +54,15 @@ class Cookie extends ArrayObject implements HeaderInterface
         return new static($nvPairs);
     }
 
+    /**
+     * @param string $headerLine
+     * @return static
+     */
     public static function fromString($headerLine)
     {
         $header = new static();
 
-        list($name, $value) = GenericHeader::splitHeaderLine($headerLine);
+        [$name, $value] = GenericHeader::splitHeaderLine($headerLine);
 
         // check to ensure proper header type for this factory
         if (strtolower($name) !== 'cookie') {
@@ -59,10 +74,10 @@ class Cookie extends ArrayObject implements HeaderInterface
         $arrayInfo = [];
         foreach ($nvPairs as $nvPair) {
             $parts = explode('=', $nvPair, 2);
-            if (count($parts) != 2) {
+            if (count($parts) !== 2) {
                 throw new Exception\RuntimeException('Malformed Cookie header found');
             }
-            list($name, $value) = $parts;
+            [$name, $value]   = $parts;
             $arrayInfo[$name] = urldecode($value);
         }
 
@@ -78,7 +93,6 @@ class Cookie extends ArrayObject implements HeaderInterface
 
     /**
      * @param bool $encodeValue
-     *
      * @return $this
      */
     public function setEncodeValue($encodeValue)
@@ -95,22 +109,29 @@ class Cookie extends ArrayObject implements HeaderInterface
         return $this->encodeValue;
     }
 
+    /** @return string */
     public function getFieldName()
     {
         return 'Cookie';
     }
 
+    /** @return string */
     public function getFieldValue()
     {
         $nvPairs = [];
 
         foreach ($this->flattenCookies($this) as $name => $value) {
-            $nvPairs[] = $name . '=' . (($this->encodeValue) ? urlencode($value) : $value);
+            $nvPairs[] = $name . '=' . ($this->encodeValue ? urlencode($value) : $value);
         }
 
         return implode('; ', $nvPairs);
     }
 
+    /**
+     * @param iterable<string, string> $data
+     * @param null|string $prefix
+     * @return array<string, string>
+     */
     protected function flattenCookies($data, $prefix = null)
     {
         $result = [];
@@ -126,6 +147,7 @@ class Cookie extends ArrayObject implements HeaderInterface
         return $result;
     }
 
+    /** @return string */
     public function toString()
     {
         return 'Cookie: ' . $this->getFieldValue();

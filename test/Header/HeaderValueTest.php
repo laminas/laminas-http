@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\Header;
 
 use Laminas\Http\Header\Exception\InvalidArgumentException;
@@ -16,8 +10,10 @@ class HeaderValueTest extends TestCase
 {
     /**
      * Data for filter value
+     *
+     * @psalm-return array<array-key, array{0: string, 1: string}>
      */
-    public function getFilterValues()
+    public function getFilterValues(): array
     {
         return [
             ["This is a\n test", 'This is a test'],
@@ -36,9 +32,7 @@ class HeaderValueTest extends TestCase
 
     /**
      * @group ZF2015-04
-     *
      * @dataProvider getFilterValues
-     *
      * @param string $value
      * @param string $expected
      */
@@ -47,7 +41,8 @@ class HeaderValueTest extends TestCase
         $this->assertEquals($expected, HeaderValue::filter($value));
     }
 
-    public function validateValues()
+    /** @psalm-return array<array-key, array{0: string, 1: string}> */
+    public function validateValues(): array
     {
         return [
             ["This is a\n test", 'assertFalse'],
@@ -66,9 +61,7 @@ class HeaderValueTest extends TestCase
 
     /**
      * @group ZF2015-04
-     *
      * @dataProvider validateValues
-     *
      * @param string $value
      * @param string $assertion
      */
@@ -77,7 +70,8 @@ class HeaderValueTest extends TestCase
         $this->{$assertion}(HeaderValue::isValid($value));
     }
 
-    public function assertValues()
+    /** @psalm-return array<array-key, array{0: string}> */
+    public function assertValues(): array
     {
         return [
             ["This is a\n test"],
@@ -95,9 +89,7 @@ class HeaderValueTest extends TestCase
 
     /**
      * @group ZF2015-04
-     *
      * @dataProvider assertValues
-     *
      * @param string $value
      */
     public function testAssertValidRaisesExceptionForInvalidValue($value)

@@ -1,12 +1,8 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Header;
+
+use function strtolower;
 
 /**
  * Accept Ranges Header
@@ -15,11 +11,16 @@ namespace Laminas\Http\Header;
  */
 class AcceptRanges implements HeaderInterface
 {
+    /** @var null|string */
     protected $rangeUnit;
 
+    /**
+     * @param string $headerLine
+     * @return static
+     */
     public static function fromString($headerLine)
     {
-        list($name, $value) = GenericHeader::splitHeaderLine($headerLine);
+        [$name, $value] = GenericHeader::splitHeaderLine($headerLine);
 
         // check to ensure proper header type for this factory
         if (strtolower($name) !== 'accept-ranges') {
@@ -31,6 +32,7 @@ class AcceptRanges implements HeaderInterface
         return new static($value);
     }
 
+    /** @param null|string $rangeUnit */
     public function __construct($rangeUnit = null)
     {
         if ($rangeUnit !== null) {
@@ -38,16 +40,22 @@ class AcceptRanges implements HeaderInterface
         }
     }
 
+    /** @return string */
     public function getFieldName()
     {
         return 'Accept-Ranges';
     }
 
+    /** @return string */
     public function getFieldValue()
     {
         return $this->getRangeUnit();
     }
 
+    /**
+     * @param string $rangeUnit
+     * @return static
+     */
     public function setRangeUnit($rangeUnit)
     {
         HeaderValue::assertValid($rangeUnit);
@@ -55,11 +63,13 @@ class AcceptRanges implements HeaderInterface
         return $this;
     }
 
+    /** @return string */
     public function getRangeUnit()
     {
         return (string) $this->rangeUnit;
     }
 
+    /** @return string */
     public function toString()
     {
         return 'Accept-Ranges: ' . $this->getFieldValue();

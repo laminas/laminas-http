@@ -1,27 +1,28 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Header;
 
+use function implode;
+use function sprintf;
+use function strtolower;
+
 /**
- * @throws Exception\InvalidArgumentException
  * @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.33
+ *
+ * @throws Exception\InvalidArgumentException
  */
 class ProxyAuthenticate implements MultipleHeaderInterface
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $value;
 
+    /**
+     * @param string $headerLine
+     * @return static
+     */
     public static function fromString($headerLine)
     {
-        list($name, $value) = GenericHeader::splitHeaderLine($headerLine);
+        [$name, $value] = GenericHeader::splitHeaderLine($headerLine);
 
         // check to ensure proper header type for this factory
         if (strtolower($name) !== 'proxy-authenticate') {
@@ -35,6 +36,7 @@ class ProxyAuthenticate implements MultipleHeaderInterface
         return new static($value);
     }
 
+    /** @param null|string $value */
     public function __construct($value = null)
     {
         if ($value !== null) {
@@ -43,21 +45,25 @@ class ProxyAuthenticate implements MultipleHeaderInterface
         }
     }
 
+    /** @return string */
     public function getFieldName()
     {
         return 'Proxy-Authenticate';
     }
 
+    /** @return string */
     public function getFieldValue()
     {
         return (string) $this->value;
     }
 
+    /** @return string */
     public function toString()
     {
         return 'Proxy-Authenticate: ' . $this->getFieldValue();
     }
 
+    /** @return string */
     public function toStringMultipleHeaders(array $headers)
     {
         $strings = [$this->toString()];

@@ -1,24 +1,50 @@
-<?php
-
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
+<?php // phpcs:disable WebimpressCodingStandard.NamingConventions.AbstractClass.Prefix
 
 namespace LaminasTest\Http\Client;
 
 use Exception;
+use Laminas\Http\Client as HTTPClient;
 use Laminas\Http\Client\Adapter;
 use Laminas\Http\Client\Adapter\AdapterInterface;
 use Laminas\Http\Client\Adapter\Exception as AdapterException;
 use Laminas\Http\Client\Adapter\Socket;
-use Laminas\Http\Client as HTTPClient;
 use Laminas\Http\Request;
 use Laminas\Http\Response\Stream;
 use Laminas\Stdlib\Parameters;
 use PHPUnit\Framework\TestCase;
 use stdClass;
+
+use function array_merge;
+use function basename;
+use function ceil;
+use function dirname;
+use function file_get_contents;
+use function filesize;
+use function filter_var;
+use function finfo_open;
+use function fopen;
+use function function_exists;
+use function getenv;
+use function implode;
+use function ini_get;
+use function is_array;
+use function is_string;
+use function microtime;
+use function mime_content_type;
+use function rtrim;
+use function serialize;
+use function sprintf;
+use function str_replace;
+use function stream_get_contents;
+use function strlen;
+use function strpos;
+use function strtolower;
+use function substr;
+use function sys_get_temp_dir;
+use function tempnam;
+
+use const FILEINFO_MIME;
+use const FILTER_VALIDATE_URL;
 
 /**
  * This Testsuite includes all Laminas_Http_Client that require a working web
@@ -53,14 +79,12 @@ abstract class CommonHttpTests extends TestCase
      */
     protected $client;
 
-    // @codingStandardsIgnoreStart
     /**
      * Common HTTP client adapter
      *
      * @var AdapterInterface
      */
-    protected $_adapter;
-    // @codingStandardsIgnoreEnd
+    protected $adapter;
 
     /**
      * Configuration array
@@ -91,9 +115,9 @@ abstract class CommonHttpTests extends TestCase
 
             $uri = $this->baseuri . $name . '.php';
 
-            $this->_adapter = new $this->config['adapter']();
-            $this->client = new HTTPClient($uri, $this->config);
-            $this->client->setAdapter($this->_adapter);
+            $this->adapter = new $this->config['adapter']();
+            $this->client  = new HTTPClient($uri, $this->config);
+            $this->client->setAdapter($this->adapter);
         } else {
             // Skip tests
             $this->markTestSkipped(sprintf(
@@ -108,15 +132,14 @@ abstract class CommonHttpTests extends TestCase
      */
     protected function tearDown(): void
     {
-        $this->client = null;
-        $this->_adapter = null;
+        $this->client  = null;
+        $this->adapter = null;
     }
 
-    /**
-     * Simple request tests
-     */
+    // Simple request tests
 
-    public function methodProvider()
+    /** @psalm-return array<array-key, array{0: Request::METHOD_*}> */
+    public function methodProvider(): array
     {
         return [
             [Request::METHOD_GET],
@@ -132,7 +155,6 @@ abstract class CommonHttpTests extends TestCase
      * Test simple requests
      *
      * @dataProvider methodProvider
-     *
      * @param string $method
      */
     public function testSimpleRequests($method)
@@ -155,7 +177,7 @@ abstract class CommonHttpTests extends TestCase
 
         $this->client->setMethod('TRACE');
         $res = $this->client->send();
-        if ($res->getStatusCode() == 405 || $res->getStatusCode() == 501) {
+        if ($res->getStatusCode() === 405 || $res->getStatusCode() === 501) {
             $this->markTestSkipped('Server does not allow the TRACE method');
         }
 
@@ -174,7 +196,6 @@ abstract class CommonHttpTests extends TestCase
      * Test we can properly send GET parameters
      *
      * @dataProvider parameterArrayProvider
-     *
      * @param array $params
      */
     public function testGetData(array $params)
@@ -190,7 +211,6 @@ abstract class CommonHttpTests extends TestCase
      * application/x-www-form-urlencoded content type
      *
      * @dataProvider parameterArrayProvider
-     *
      * @param array $params
      */
     public function testPostDataUrlEncoded(array $params)
@@ -211,7 +231,6 @@ abstract class CommonHttpTests extends TestCase
      * application/x-www-form-urlencoded content type
      *
      * @dataProvider parameterArrayProvider
-     *
      * @param array $params
      */
     public function testPatchData(array $params)
@@ -233,7 +252,6 @@ abstract class CommonHttpTests extends TestCase
      * application/x-www-form-urlencoded content type
      *
      * @dataProvider parameterArrayProvider
-     *
      * @param array $params
      */
     public function testDeleteData(array $params)
@@ -255,7 +273,6 @@ abstract class CommonHttpTests extends TestCase
      * application/x-www-form-urlencoded content type
      *
      * @dataProvider parameterArrayProvider
-     *
      * @param array $params
      */
     public function testOptionsData(array $params)
@@ -277,7 +294,6 @@ abstract class CommonHttpTests extends TestCase
      * multipart/form-data content type
      *
      * @dataProvider parameterArrayProvider
-     *
      * @param array $params
      */
     public function testPostDataMultipart(array $params)
@@ -310,10 +326,10 @@ abstract class CommonHttpTests extends TestCase
     public function testResetParameters()
     {
         $params = [
-            'quest' => 'To seek the holy grail',
-            'YourMother' => 'Was a hamster',
+            'quest'        => 'To seek the holy grail',
+            'YourMother'   => 'Was a hamster',
             'specialChars' => '<>$+ &?=[]^%',
-            'array' => ['firstItem', 'secondItem', '3rdItem'],
+            'array'        => ['firstItem', 'secondItem', '3rdItem'],
         ];
 
         $headers = ['X-Foo' => 'bar'];
@@ -340,8 +356,10 @@ abstract class CommonHttpTests extends TestCase
             $res->getBody(),
             "returned body contains GET or POST parameters (it shouldn't!)"
         );
+        // phpcs:disable WebimpressCodingStandard.NamingConventions.ValidVariableName.NotCamelCaps
         $headerXFoo = $this->client->getHeader('X-Foo');
         $this->assertEmpty($headerXFoo, 'Header not preserved by reset');
+        // phpcs:enable
     }
 
     /**
@@ -394,16 +412,16 @@ abstract class CommonHttpTests extends TestCase
 
         $headers = [
             'Accept-encoding' => 'gzip, deflate',
-            'X-baz' => 'Foo',
-            'X-powered-by' => 'A large wooden badger',
-            'Accept' => 'text/xml, text/html, */*',
+            'X-baz'           => 'Foo',
+            'X-powered-by'    => 'A large wooden badger',
+            'Accept'          => 'text/xml, text/html, */*',
         ];
 
         $this->client->setHeaders($headers);
         $this->client->setMethod('TRACE');
 
         $res = $this->client->send();
-        if ($res->getStatusCode() == 405 || $res->getStatusCode() == 501) {
+        if ($res->getStatusCode() === 405 || $res->getStatusCode() === 501) {
             $this->markTestSkipped('Server does not allow the TRACE method');
         }
 
@@ -423,8 +441,8 @@ abstract class CommonHttpTests extends TestCase
 
         $headers = [
             'Accept-encoding' => 'gzip, deflate',
-            'X-baz' => 'Foo',
-            'X-powered-by' => 'A large wooden badger',
+            'X-baz'           => 'Foo',
+            'X-powered-by'    => 'A large wooden badger',
             'Accept: text/xml, text/html, */*',
         ];
 
@@ -432,7 +450,7 @@ abstract class CommonHttpTests extends TestCase
         $this->client->setMethod('TRACE');
 
         $res = $this->client->send();
-        if ($res->getStatusCode() == 405 || $res->getStatusCode() == 501) {
+        if ($res->getStatusCode() === 405 || $res->getStatusCode() === 501) {
             $this->markTestSkipped('Server does not allow the TRACE method');
         }
 
@@ -455,13 +473,13 @@ abstract class CommonHttpTests extends TestCase
         $this->client->setUri($this->baseuri . 'testHeaders.php');
         $headers = [
             'Accept-encoding' => 'gzip, deflate',
-            'X-baz' => 'Foo',
-            'X-powered-by' => [
+            'X-baz'           => 'Foo',
+            'X-powered-by'    => [
                 'A large wooden badger',
                 'My Shiny Metal Ass',
                 'Dark Matter',
             ],
-            'Cookie' => [
+            'Cookie'          => [
                 'foo=bar',
                 'baz=waka',
             ],
@@ -471,7 +489,7 @@ abstract class CommonHttpTests extends TestCase
         $this->client->setMethod('TRACE');
 
         $res = $this->client->send();
-        if ($res->getStatusCode() == 405 || $res->getStatusCode() == 501) {
+        if ($res->getStatusCode() === 405 || $res->getStatusCode() === 501) {
             $this->markTestSkipped('Server does not allow the TRACE method');
         }
         $body = strtolower($res->getBody());
@@ -512,8 +530,9 @@ abstract class CommonHttpTests extends TestCase
     }
 
     /**
-     * @group Laminas-4136
      * @link  https://getlaminas.org/issues/browse/Laminas-122
+     *
+     * @group Laminas-4136
      */
     public function testRedirectPersistsCookies()
     {
@@ -623,8 +642,8 @@ abstract class CommonHttpTests extends TestCase
         $this->client->setOptions(['maxredirects' => 1]);
 
         // Get the host and port part of our baseuri
-        $port = $this->client->getUri()->getPort() == 80 ? '' : ':' . $this->client->getUri()->getPort();
-        $uri = $this->client->getUri()->getScheme() . '://' . $this->client->getUri()->getHost() . $port;
+        $port = $this->client->getUri()->getPort() === 80 ? '' : ':' . $this->client->getUri()->getPort();
+        $uri  = $this->client->getUri()->getScheme() . '://' . $this->client->getUri()->getHost() . $port;
 
         $res = $this->client->send();
 
@@ -749,8 +768,8 @@ abstract class CommonHttpTests extends TestCase
 
         $cookies = [
             'chocolate' => 'chips',
-            'crumble' => 'apple',
-            'another' => 'cookie',
+            'crumble'   => 'apple',
+            'another'   => 'cookie',
         ];
 
         $this->client->setCookies($cookies);
@@ -891,7 +910,7 @@ abstract class CommonHttpTests extends TestCase
     {
         $this->client->setUri($this->baseuri . 'staticFile.jpg');
 
-        $got = $this->client->send()->getBody();
+        $got      = $this->client->send()->getBody();
         $expected = $this->getTestFileContents('staticFile.jpg');
 
         $this->assertEquals($expected, $got, 'Downloaded file does not seem to match!');
@@ -941,7 +960,7 @@ abstract class CommonHttpTests extends TestCase
     {
         $this->client->setUri($this->baseuri . 'Laminas4238-zerolineresponse.txt');
 
-        $got = $this->client->send()->getBody();
+        $got      = $this->client->send()->getBody();
         $expected = $this->getTestFileContents('Laminas4238-zerolineresponse.txt');
         $this->assertEquals($expected, $got);
     }
@@ -963,7 +982,7 @@ abstract class CommonHttpTests extends TestCase
         $streamName = $response->getStreamName();
 
         $streamRead = stream_get_contents($response->getStream());
-        $fileRead = file_get_contents($streamName);
+        $fileRead   = file_get_contents($streamName);
 
         $expected = $this->getTestFileContents('staticFile.jpg');
 
@@ -1011,7 +1030,7 @@ abstract class CommonHttpTests extends TestCase
         $this->assertEquals($outfile, $response->getStreamName());
 
         $streamRead = stream_get_contents($response->getStream());
-        $fileRead = file_get_contents($outfile);
+        $fileRead   = file_get_contents($outfile);
 
         $expected = $this->getTestFileContents('staticFile.jpg');
 
@@ -1029,7 +1048,7 @@ abstract class CommonHttpTests extends TestCase
         $this->client->setRawBody($data);
         $this->client->setEncType('image/jpeg');
         $this->client->setMethod('PUT');
-        $res = $this->client->send();
+        $res      = $this->client->send();
         $expected = $this->getTestFileContents('staticFile.jpg');
         $this->assertEquals($expected, $res->getBody(), 'Response body does not contain the expected data');
     }
@@ -1051,7 +1070,7 @@ abstract class CommonHttpTests extends TestCase
 
         $clen = $response->getHeaders()->get('Content-Length');
 
-        if (! (is_array($clen))) {
+        if (! is_array($clen)) {
             $this->markTestSkipped("Didn't get multiple Content-length headers");
         }
 
@@ -1060,9 +1079,7 @@ abstract class CommonHttpTests extends TestCase
 
     /**
      * @group Laminas-78
-     *
      * @dataProvider parameterArrayProvider
-     *
      * @param array $params
      */
     public function testContentTypeAdditionlInfo(array $params)
@@ -1121,18 +1138,18 @@ abstract class CommonHttpTests extends TestCase
         return [
             [
                 [
-                    'quest' => 'To seek the holy grail',
-                    'YourMother' => 'Was a hamster',
+                    'quest'        => 'To seek the holy grail',
+                    'YourMother'   => 'Was a hamster',
                     'specialChars' => '<>$+ &?=[]^%',
-                    'array' => ['firstItem', 'secondItem', '3rdItem'],
+                    'array'        => ['firstItem', 'secondItem', '3rdItem'],
                 ],
             ],
             [
                 [
-                    'someData' => [
+                    'someData'      => [
                         '1',
                         '2',
-                        'key' => 'value',
+                        'key'     => 'value',
                         'nesting' => [
                             'a' => 'AAA',
                             'b' => 'BBB',
@@ -1194,10 +1211,10 @@ abstract class CommonHttpTests extends TestCase
             ->setMethod('GET')
             ->setOptions([
                 'connecttimeout' => $connectTimeout,
-                'timeout' => $executeTimeout,
+                'timeout'        => $executeTimeout,
             ]);
         $timeoutException = null;
-        $startTime = microtime(true);
+        $startTime        = microtime(true);
         try {
             $this->client->send();
         } catch (Exception $x) {
@@ -1227,10 +1244,10 @@ abstract class CommonHttpTests extends TestCase
             ->setMethod('GET')
             ->setOptions([
                 'connecttimeout' => $connectTimeout,
-                'timeout' => $executeTimeout,
+                'timeout'        => $executeTimeout,
             ]);
         $timeoutException = null;
-        $startTime = microtime(true);
+        $startTime        = microtime(true);
         try {
             $this->client->send();
         } catch (Exception $x) {

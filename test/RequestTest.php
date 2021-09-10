@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http;
 
 use Laminas\Http\Exception\InvalidArgumentException;
@@ -19,11 +13,14 @@ use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use stdClass;
 
+use function strtolower;
+use function substr;
+
 class RequestTest extends TestCase
 {
     public function testRequestFromStringFactoryCreatesValidRequest()
     {
-        $string = "GET /foo?myparam=myvalue HTTP/1.1\r\n\r\nSome Content";
+        $string  = "GET /foo?myparam=myvalue HTTP/1.1\r\n\r\nSome Content";
         $request = Request::fromString($string);
 
         $this->assertEquals(Request::METHOD_GET, $request->getMethod());
@@ -44,7 +41,7 @@ class RequestTest extends TestCase
     public function testRequestAllowsSettingOfParameterContainer()
     {
         $request = new Request();
-        $p = new Parameters();
+        $p       = new Parameters();
         $request->setQuery($p);
         $request->setPost($p);
         $request->setFiles($p);
@@ -61,7 +58,7 @@ class RequestTest extends TestCase
     public function testRetrievingASingleValueForParameters()
     {
         $request = new Request();
-        $p = new Parameters([
+        $p       = new Parameters([
             'foo' => 'bar',
         ]);
         $request->setQuery($p);
@@ -73,7 +70,7 @@ class RequestTest extends TestCase
         $this->assertSame('bar', $request->getFiles('foo'));
 
         $headers = new Headers();
-        $h = new GenericHeader('foo', 'bar');
+        $h       = new GenericHeader('foo', 'bar');
         $headers->addHeader($h);
 
         $request->setHeaders($headers);
@@ -85,7 +82,7 @@ class RequestTest extends TestCase
     public function testParameterRetrievalDefaultValue()
     {
         $request = new Request();
-        $p = new Parameters([
+        $p       = new Parameters([
             'foo' => 'bar',
         ]);
         $request->setQuery($p);
@@ -139,7 +136,6 @@ class RequestTest extends TestCase
 
     /**
      * @dataProvider uriDataProvider
-     *
      * @param string $uri
      */
     public function testRequestCanSetAndRetrieveUri($uri)
@@ -152,7 +148,8 @@ class RequestTest extends TestCase
         $this->assertEquals($uri, $request->getUriString());
     }
 
-    public function uriDataProvider()
+    /** @psalm-return array<array-key, array{0: string}> */
+    public function uriDataProvider(): array
     {
         return [
             ['/foo'],
@@ -189,7 +186,6 @@ class RequestTest extends TestCase
 
     /**
      * @dataProvider getMethods
-     *
      * @param string $methodName
      */
     public function testRequestMethodCheckWorksForAllMethods($methodName)
@@ -245,7 +241,7 @@ class RequestTest extends TestCase
     public function testRequestsWithoutHttpVersionAreOK()
     {
         $requestString = 'GET http://www.domain.com/index.php';
-        $request = Request::fromString($requestString);
+        $request       = Request::fromString($requestString);
         $this->assertEquals($request::METHOD_GET, $request->getMethod());
     }
 
@@ -257,13 +253,13 @@ class RequestTest extends TestCase
     public function getMethods($providerContext, $trueMethod = null)
     {
         $refClass = new ReflectionClass(Request::class);
-        $return = [];
+        $return   = [];
         foreach ($refClass->getConstants() as $cName => $cValue) {
-            if (substr($cName, 0, 6) == 'METHOD') {
+            if (substr($cName, 0, 6) === 'METHOD') {
                 if ($providerContext) {
                     $return[] = [$cValue];
                 } else {
-                    $return[strtolower($cValue)] = $trueMethod == $cValue;
+                    $return[strtolower($cValue)] = $trueMethod === $cValue;
                 }
             }
         }
@@ -326,6 +322,7 @@ class RequestTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
      */
     public function testCRLFAttack()

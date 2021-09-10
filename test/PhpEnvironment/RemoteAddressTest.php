@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\PhpEnvironment;
 
 use Laminas\Http\PhpEnvironment\RemoteAddress as RemoteAddr;
@@ -20,9 +14,7 @@ class RemoteAddressTest extends TestCase
      */
     protected $originalEnvironment;
 
-    /**
-     * @var RemoteAddr
-     */
+    /** @var RemoteAddr */
     protected $remoteAddress;
 
     /**
@@ -96,7 +88,7 @@ class RemoteAddressTest extends TestCase
             '192.168.0.10',
             '10.0.0.1',
         ]);
-        $_SERVER['REMOTE_ADDR'] = '192.168.0.10';
+        $_SERVER['REMOTE_ADDR']          = '192.168.0.10';
         $_SERVER['HTTP_X_FORWARDED_FOR'] = '8.8.8.8, 10.0.0.1';
         $this->assertEquals('8.8.8.8', $this->remoteAddress->getIpAddress());
     }
@@ -108,7 +100,7 @@ class RemoteAddressTest extends TestCase
             '10.0.0.1',
         ]);
         // the REMOTE_ADDR is not in the trusted IPs, possible attack here
-        $_SERVER['REMOTE_ADDR'] = '1.1.1.1';
+        $_SERVER['REMOTE_ADDR']          = '1.1.1.1';
         $_SERVER['HTTP_X_FORWARDED_FOR'] = '8.8.8.8, 10.0.0.1';
         $this->assertEquals('1.1.1.1', $this->remoteAddress->getIpAddress());
     }

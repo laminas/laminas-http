@@ -1,17 +1,13 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\Header;
 
 use Laminas\Http\Header\AcceptLanguage;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
 use PHPUnit\Framework\TestCase;
+
+use function array_shift;
 
 class AcceptLanguageTest extends TestCase
 {
@@ -55,8 +51,9 @@ class AcceptLanguageTest extends TestCase
         $this->assertEquals('Accept-Language: da;q=0.8, en-gb', $acceptLanguageHeader->toString());
     }
 
-    /** Implementation specific tests here */
+    // Implementation specific tests here
 
+    // phpcs:ignore Squiz.Commenting.FunctionComment.WrongStyle
     public function testCanParseCommaSeparatedValues()
     {
         $header = AcceptLanguage::fromString('Accept-Language: da;q=0.8, en-gb');
@@ -94,7 +91,7 @@ class AcceptLanguageTest extends TestCase
     public function testWildcards()
     {
         $accept = AcceptLanguage::fromString('*, en-*, en-us');
-        $res = $accept->getPrioritized();
+        $res    = $accept->getPrioritized();
 
         $this->assertEquals('en-us', $res[0]->getLanguage());
         $this->assertEquals('en', $res[0]->getPrimaryTag());
@@ -108,6 +105,7 @@ class AcceptLanguageTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
      */
     public function testPreventsCRLFAttackViaFromString()
@@ -118,6 +116,7 @@ class AcceptLanguageTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
      */
     public function testPreventsCRLFAttackViaSetters()

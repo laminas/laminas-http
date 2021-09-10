@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\Header;
 
 use DateTime;
@@ -14,6 +8,10 @@ use Laminas\Http\Header\Date;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
 use PHPUnit\Framework\TestCase;
+
+use function time;
+
+use const PHP_VERSION_ID;
 
 class DateTest extends TestCase
 {
@@ -37,7 +35,7 @@ class DateTest extends TestCase
         $this->assertInstanceOf(HeaderInterface::class, $dateHeader);
         $this->assertInstanceOf(Date::class, $dateHeader);
 
-        $date     = new DateTime(null, new DateTimeZone('GMT'));
+        $date     = new DateTime('now', new DateTimeZone('GMT'));
         $interval = $dateHeader->date()->diff($date, 1);
 
         if (PHP_VERSION_ID >= 70200) {
@@ -56,7 +54,7 @@ class DateTest extends TestCase
         $this->assertInstanceOf(HeaderInterface::class, $dateHeader);
         $this->assertInstanceOf(Date::class, $dateHeader);
 
-        $date     = new DateTime(null, new DateTimeZone('GMT'));
+        $date     = new DateTime('now', new DateTimeZone('GMT'));
         $interval = $dateHeader->date()->diff($date, 1);
 
         if (PHP_VERSION_ID >= 70200) {
@@ -100,8 +98,9 @@ class DateTest extends TestCase
         $this->assertEquals('Date: Sun, 06 Nov 1994 08:49:37 GMT', $dateHeader->toString());
     }
 
-    /** Implementation specific tests here */
+    // Implementation specific tests here
 
+    // phpcs:ignore Squiz.Commenting.FunctionComment.WrongStyle
     public function testDateReturnsDateTimeObject()
     {
         $dateHeader = new Date();
@@ -151,6 +150,7 @@ class DateTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
      */
     public function testPreventsCRLFAttackViaFromString()

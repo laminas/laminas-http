@@ -1,16 +1,20 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http;
 
 use ArrayIterator;
 use Laminas\Http\Header\SetCookie;
+use Laminas\Http\Headers;
 use Laminas\Uri;
+
+use function array_keys;
+use function array_merge;
+use function count;
+use function is_array;
+use function is_string;
+use function sprintf;
+use function strrpos;
+use function substr;
 
 /**
  * A Laminas\Http\Cookies object is designed to contain and maintain HTTP cookies, and should
@@ -35,50 +39,44 @@ class Cookies extends Headers
     /**
      * Return cookie(s) as a Laminas\Http\Cookie object
      */
-    const COOKIE_OBJECT = 0;
+    public const COOKIE_OBJECT = 0;
 
     /**
      * Return cookie(s) as a string (suitable for sending in an HTTP request)
      */
-    const COOKIE_STRING_ARRAY = 1;
+    public const COOKIE_STRING_ARRAY = 1;
 
     /**
      * Return all cookies as one long string (suitable for sending in an HTTP request)
      */
-    const COOKIE_STRING_CONCAT = 2;
+    public const COOKIE_STRING_CONCAT = 2;
 
     /**
      * Return all cookies as one long string (strict mode)
      *  - Single space after the semi-colon separating each cookie
      *  - Remove trailing semi-colon, if any
      */
-    const COOKIE_STRING_CONCAT_STRICT = 3;
+    public const COOKIE_STRING_CONCAT_STRICT = 3;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $cookies = [];
 
-    /**
-     * @var \Laminas\Http\Headers
-     */
+    /** @var Headers */
     protected $headers;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $rawCookies;
 
     /**
      * @static
      * @throws Exception\RuntimeException
-     * @param $string
+     * @param string $string
      * @return void
      */
     public static function fromString($string)
     {
         throw new Exception\RuntimeException(
-            __CLASS__ . '::' . __FUNCTION__ . ' should not be used as a factory, use '
+            self::class . '::' . __FUNCTION__ . ' should not be used as a factory, use '
             . __NAMESPACE__ . '\Headers::fromString() instead.'
         );
     }
@@ -107,7 +105,7 @@ class Cookies extends Headers
                 $this->cookies[$domain][$path] = [];
             }
             $this->cookies[$domain][$path][$cookie->getName()] = $cookie;
-            $this->rawCookies[] = $cookie;
+            $this->rawCookies[]                                = $cookie;
         } else {
             throw new Exception\InvalidArgumentException('Supplient argument is not a valid cookie string or object');
         }
@@ -116,7 +114,6 @@ class Cookies extends Headers
     /**
      * Parse an HTTP response, adding all the cookies set in that response
      *
-     * @param Response $response
      * @param Uri\Uri|string $refUri Requested URI
      */
     public function addCookiesFromResponse(Response $response, $refUri)
@@ -140,8 +137,7 @@ class Cookies extends Headers
      */
     public function getAllCookies($retAs = self::COOKIE_OBJECT)
     {
-        $cookies = $this->_flattenCookiesArray($this->cookies, $retAs);
-        return $cookies;
+        return $this->_flattenCookiesArray($this->cookies, $retAs);
     }
 
     /**
@@ -153,7 +149,7 @@ class Cookies extends Headers
      * @param bool $matchSessionCookies Whether to send session cookies
      * @param int $retAs Whether to return cookies as objects of \Laminas\Http\Header\Cookie or as strings
      * @param int $now Override the current time when checking for expiry time
-     * @throws Exception\InvalidArgumentException if invalid URI specified
+     * @throws Exception\InvalidArgumentException If invalid URI specified.
      * @return array|string
      */
     public function getMatchingCookies(
@@ -197,7 +193,7 @@ class Cookies extends Headers
      * @param Uri\Uri|string $uri The uri (domain and path) to match
      * @param string $cookieName The cookie's name
      * @param int $retAs Whether to return cookies as objects of \Laminas\Http\Header\SetCookie or as strings
-     * @throws Exception\InvalidArgumentException if invalid URI specified or invalid $retAs value
+     * @throws Exception\InvalidArgumentException If invalid URI specified or invalid $retAs value.
      * @return SetCookie|string
      */
     public function getCookie($uri, $cookieName, $retAs = self::COOKIE_OBJECT)
@@ -214,9 +210,9 @@ class Cookies extends Headers
         }
 
         // Get correct cookie path
-        $path = $uri->getPath();
+        $path         = $uri->getPath() ?? '';
         $lastSlashPos = strrpos($path, '/') ?: 0;
-        $path = substr($path, 0, $lastSlashPos);
+        $path         = substr($path, 0, $lastSlashPos);
         if (! $path) {
             $path = '/';
         }
@@ -247,7 +243,7 @@ class Cookies extends Headers
      * Helper function to recursively flatten an array. Should be used when exporting the
      * cookies array (or parts of it)
      *
-     * @param \Laminas\Http\Header\SetCookie|array $ptr
+     * @param SetCookie|array $ptr
      * @param int $retAs What value to return
      * @return array|string
      */
@@ -256,9 +252,9 @@ class Cookies extends Headers
     {
         // @codingStandardsIgnoreEnd
         if (is_array($ptr)) {
-            $ret = ($retAs == self::COOKIE_STRING_CONCAT ? '' : []);
+            $ret = $retAs === self::COOKIE_STRING_CONCAT ? '' : [];
             foreach ($ptr as $item) {
-                if ($retAs == self::COOKIE_STRING_CONCAT) {
+                if ($retAs === self::COOKIE_STRING_CONCAT) {
                     $ret .= $this->_flattenCookiesArray($item, $retAs);
                 } else {
                     $ret = array_merge($ret, $this->_flattenCookiesArray($item, $retAs));
@@ -278,8 +274,6 @@ class Cookies extends Headers
                     return [$ptr];
             }
         }
-
-        return;
     }
 
     /**
@@ -356,7 +350,7 @@ class Cookies extends Headers
      */
     public function isEmpty()
     {
-        return count($this) == 0;
+        return count($this) === 0;
     }
 
     /**

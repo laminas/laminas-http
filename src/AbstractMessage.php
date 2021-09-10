@@ -1,14 +1,11 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http;
 
 use Laminas\Stdlib\Message;
+
+use function in_array;
+use function is_string;
 
 /**
  * HTTP standard message (Request/Response)
@@ -18,21 +15,18 @@ use Laminas\Stdlib\Message;
 abstract class AbstractMessage extends Message
 {
     /**#@+
+     *
      * @const string Version constant numbers
      */
-    const VERSION_10 = '1.0';
-    const VERSION_11 = '1.1';
-    const VERSION_2  = '2';
+    public const VERSION_10 = '1.0';
+    public const VERSION_11 = '1.1';
+    public const VERSION_2  = '2';
     /**#@-*/
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $version = self::VERSION_11;
 
-    /**
-     * @var Headers|null
-     */
+    /** @var Headers|null */
     protected $headers;
 
     /**
@@ -69,7 +63,7 @@ abstract class AbstractMessage extends Message
      * (this is NOT the primary API for value setting, for that see getHeaders())
      *
      * @see    getHeaders()
-     * @param  Headers $headers
+     *
      * @return $this
      */
     public function setHeaders(Headers $headers)
@@ -87,7 +81,7 @@ abstract class AbstractMessage extends Message
     {
         if ($this->headers === null || is_string($this->headers)) {
             // this is only here for fromString lazy loading
-            $this->headers = (is_string($this->headers)) ? Headers::fromString($this->headers) : new Headers();
+            $this->headers = is_string($this->headers) ? Headers::fromString($this->headers) : new Headers();
         }
 
         return $this->headers;

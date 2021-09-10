@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Client\Adapter;
 
 use Laminas\Http\Client;
@@ -13,9 +7,25 @@ use Laminas\Http\Client\Adapter\Exception as AdapterException;
 use Laminas\Http\Response;
 use Laminas\Stdlib\ArrayUtils;
 use Laminas\Stdlib\ErrorHandler;
+use Laminas\Uri\Uri;
 use Traversable;
 
+use function base64_encode;
+use function fgets;
+use function fwrite;
+use function gettype;
+use function is_array;
+use function is_resource;
+use function is_string;
+use function preg_match;
+use function rtrim;
+use function sprintf;
 use function stream_context_set_option;
+use function stream_copy_to_stream;
+use function strlen;
+use function strpos;
+use function strtolower;
+use function substr;
 
 /**
  * HTTP Proxy-supporting Laminas\Http\Client adapter class, based on the default
@@ -107,7 +117,7 @@ class Proxy extends Socket
         /* Url might require stream context even if proxy connection doesn't */
         if ($secure) {
             $this->config['sslusecontext'] = true;
-            $this->setSslCryptoMethod = false;
+            $this->setSslCryptoMethod      = false;
         }
 
         // Connect (a non-secure connection) to the proxy server
@@ -122,7 +132,7 @@ class Proxy extends Socket
      * Send request to the proxy server
      *
      * @param string        $method
-     * @param \Laminas\Uri\Uri $uri
+     * @param Uri $uri
      * @param string        $httpVer
      * @param array         $headers
      * @param string        $body
@@ -144,7 +154,7 @@ class Proxy extends Socket
         $host = $this->config['proxy_host'];
         $port = $this->config['proxy_port'];
 
-        $isSecure = strtolower($uri->getScheme()) === 'https';
+        $isSecure      = strtolower($uri->getScheme()) === 'https';
         $connectedHost = ($isSecure ? $this->config['ssltransport'] : 'tcp') . '://' . $host;
 
         if ($this->connectedTo[1] !== $port || $this->connectedTo[0] !== $connectedHost) {
@@ -175,7 +185,7 @@ class Proxy extends Socket
             $headers['Authorization'] = 'Basic ' . base64_encode($uri->getUserInfo());
         }
 
-        $path = $uri->getPath();
+        $path  = $uri->getPath();
         $query = $uri->getQuery();
         $path .= $query ? '?' . $query : '';
 
@@ -210,7 +220,7 @@ class Proxy extends Socket
         }
 
         if (is_resource($body)) {
-            if (stream_copy_to_stream($body, $this->socket) == 0) {
+            if (stream_copy_to_stream($body, $this->socket) === 0) {
                 throw new AdapterException\RuntimeException('Error writing request to server');
             }
         }
@@ -255,7 +265,7 @@ class Proxy extends Socket
         }
 
         // Read response headers only
-        $response = '';
+        $response  = '';
         $gotStatus = false;
         ErrorHandler::start();
         while ($line = fgets($this->socket)) {
@@ -270,7 +280,7 @@ class Proxy extends Socket
         ErrorHandler::stop();
 
         // Check that the response from the proxy is 200
-        if (Response::fromString($response)->getStatusCode() != 200) {
+        if (Response::fromString($response)->getStatusCode() !== 200) {
             throw new AdapterException\RuntimeException(sprintf(
                 'Unable to connect to HTTPS proxy. Server response: %s',
                 $response

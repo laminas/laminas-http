@@ -1,12 +1,8 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Header\Accept\FieldValuePart;
+
+use stdClass;
 
 /**
  * Field Value Part
@@ -17,12 +13,14 @@ abstract class AbstractFieldValuePart
 {
     /**
      * Internal object used for value retrieval
+     *
      * @var object
      */
     private $internalValues;
 
     /**
      * A Field Value Part this Field Value Part matched against.
+     *
      * @var AbstractFieldValuePart
      */
     protected $matchedAgainst;
@@ -38,7 +36,6 @@ abstract class AbstractFieldValuePart
     /**
      * Set a Field Value Part this Field Value Part matched against.
      *
-     * @param AbstractFieldValuePart $matchedAgainst
      * @return $this
      */
     public function setMatchedAgainst(AbstractFieldValuePart $matchedAgainst)
@@ -82,7 +79,7 @@ abstract class AbstractFieldValuePart
     }
 
     /**
-     * @return \stdClass $params
+     * @return stdClass $params
      */
     public function getParams()
     {

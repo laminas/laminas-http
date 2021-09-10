@@ -1,12 +1,10 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Header;
+
+use function date;
+
+use const DATE_W3C;
 
 /**
  * Expires Header
@@ -25,6 +23,10 @@ class Expires extends AbstractDate
         return 'Expires';
     }
 
+    /**
+     * @param int|string|DateTime $date
+     * @return static
+     */
     public function setDate($date)
     {
         if ($date === '0' || $date === 0) {

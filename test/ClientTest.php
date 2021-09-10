@@ -1,10 +1,4 @@
-<?php
-
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
+<?php // phpcs:disable WebimpressCodingStandard.NamingConventions.ValidVariableName.NotCamelCaps
 
 namespace LaminasTest\Http;
 
@@ -28,6 +22,16 @@ use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 use ReflectionProperty;
 
+use function base64_encode;
+use function count;
+use function file_get_contents;
+use function ini_get;
+use function ini_set;
+use function json_encode;
+use function strlen;
+use function sys_get_temp_dir;
+use function tempnam;
+
 class ClientTest extends TestCase
 {
     public function testIfCookiesAreSticky()
@@ -44,13 +48,13 @@ class ClientTest extends TestCase
             . 'Accept-Language: en-US,en;q=0.5' . "\r\n"
             . 'Accept-Encoding: gzip, deflate' . "\r\n"
             . 'Connection: keep-alive' . "\r\n";
-        $request = Request::fromString($requestString);
+        $request       = Request::fromString($requestString);
 
         $client = new Client('http://www.domain.com/');
         $client->setRequest($request);
         $client->addCookie($initialCookies);
 
-        $cookies = new Cookies($client->getRequest()->getHeaders());
+        $cookies    = new Cookies($client->getRequest()->getHeaders());
         $rawHeaders = 'HTTP/1.1 200 OK' . "\r\n"
             . 'Access-Control-Allow-Origin: *' . "\r\n"
             . 'Content-Encoding: gzip' . "\r\n"
@@ -62,7 +66,7 @@ class ClientTest extends TestCase
             . 'Vary: Accept-Encoding' . "\r\n"
             . 'X-Powered-By: PHP/5.3.10-1ubuntu3.4' . "\r\n"
             . 'Connection: keep-alive' . "\r\n";
-        $response = Response::fromString($rawHeaders);
+        $response   = Response::fromString($rawHeaders);
         $client->setResponse($response);
 
         $cookies->addCookiesFromResponse($client->getResponse(), $client->getUri());
@@ -91,7 +95,7 @@ class ClientTest extends TestCase
             . 'Accept-Language: en-US,en;q=0.5' . "\r\n"
             . 'Accept-Encoding: gzip, deflate' . "\r\n"
             . 'Connection: keep-alive' . "\r\n";
-        $request = Request::fromString($requestString);
+        $request       = Request::fromString($requestString);
 
         $adapter = new Test();
 
@@ -108,7 +112,7 @@ class ClientTest extends TestCase
             . 'Vary: Accept-Encoding' . "\r\n"
             . 'X-Powered-By: PHP/5.3.10-1ubuntu3.4' . "\r\n"
             . 'Connection: keep-alive' . "\r\n";
-        $response = Response::fromString($rawHeaders);
+        $response   = Response::fromString($rawHeaders);
         $client->getAdapter()->setResponse($response);
 
         $headers = $method->invoke($client, $requestString, $client->getUri());
@@ -177,7 +181,7 @@ class ClientTest extends TestCase
     public function testArgSeparatorDefaultsToIniSetting()
     {
         $argSeparator = ini_get('arg_separator.output');
-        $client = new Client();
+        $client       = new Client();
         $this->assertEquals($argSeparator, $client->getArgSeparator());
     }
 
@@ -255,8 +259,8 @@ class ClientTest extends TestCase
 
         // create a client which allows one redirect at most!
         $client = new Client('http://www.example.org/part1', [
-            'adapter' => $testAdapter,
-            'maxredirects' => 1,
+            'adapter'       => $testAdapter,
+            'maxredirects'  => 1,
             'storeresponse' => true,
         ]);
 
@@ -271,9 +275,9 @@ class ClientTest extends TestCase
     public function testIfClientDoesNotLooseAuthenticationOnRedirect()
     {
         // set up user credentials
-        $user = 'username123';
+        $user     = 'username123';
         $password = 'password456';
-        $encoded = Client::encodeAuthHeader($user, $password, Client::AUTH_BASIC);
+        $encoded  = Client::encodeAuthHeader($user, $password, Client::AUTH_BASIC);
 
         // set up two responses that simulate a redirection
         $testAdapter = new Test();
@@ -289,7 +293,7 @@ class ClientTest extends TestCase
 
         // create client with HTTP basic authentication
         $client = new Client('http://www.example.org/part1', [
-            'adapter' => $testAdapter,
+            'adapter'      => $testAdapter,
             'maxredirects' => 1,
         ]);
         $client->setAuth($user, $password, Client::AUTH_BASIC);
@@ -304,12 +308,12 @@ class ClientTest extends TestCase
     public function testIfClientDoesNotForwardAuthenticationToForeignHost()
     {
         // set up user credentials
-        $user = 'username123';
+        $user     = 'username123';
         $password = 'password456';
-        $encoded = Client::encodeAuthHeader($user, $password, Client::AUTH_BASIC);
+        $encoded  = Client::encodeAuthHeader($user, $password, Client::AUTH_BASIC);
 
         $testAdapter = new Test();
-        $client = new Client(null, ['adapter' => $testAdapter]);
+        $client      = new Client(null, ['adapter' => $testAdapter]);
 
         // set up two responses that simulate a redirection from example.org to example.com
         $testAdapter->setResponse(
@@ -375,7 +379,7 @@ class ClientTest extends TestCase
     public function testAdapterAlwaysReachableIfSpecified()
     {
         $testAdapter = new Test();
-        $client = new Client('http://www.example.org/', [
+        $client      = new Client('http://www.example.org/', [
             'adapter' => $testAdapter,
         ]);
 
@@ -386,7 +390,7 @@ class ClientTest extends TestCase
     {
         $body = json_encode(['foofoo' => 'barbar']);
 
-        $client = new Client();
+        $client                   = new Client();
         $prepareHeadersReflection = new ReflectionMethod($client, 'prepareHeaders');
         $prepareHeadersReflection->setAccessible(true);
 
@@ -412,7 +416,7 @@ class ClientTest extends TestCase
     {
         $body = json_encode(['foofoo' => 'barbar']);
 
-        $client = new Client();
+        $client                   = new Client();
         $prepareHeadersReflection = new ReflectionMethod($client, 'prepareHeaders');
         $prepareHeadersReflection->setAccessible(true);
 
@@ -533,10 +537,11 @@ class ClientTest extends TestCase
         $this->assertStringContainsString('foo=bar&baz=foo', $rawRequest);
     }
 
-    public function uriDataProvider()
+    /** @psalm-return array<string, array{0: string, 1: bool}> */
+    public function uriDataProvider(): array
     {
         return [
-            'valid-relative' => ['/example', true],
+            'valid-relative'   => ['/example', true],
             'invalid-absolute' => ['http://localhost/example', false],
         ];
     }
@@ -544,8 +549,10 @@ class ClientTest extends TestCase
     /**
      * @dataProvider uriDataProvider
      */
-    public function testUriCorrectlyDeterminesWhetherOrNotItIsAValidRelativeUri($uri, $isValidRelativeURI)
-    {
+    public function testUriCorrectlyDeterminesWhetherOrNotItIsAValidRelativeUri(
+        string $uri,
+        bool $isValidRelativeURI
+    ): void {
         $client = new Client($uri);
         $this->assertSame($isValidRelativeURI, $client->getUri()->isValidRelative());
 
@@ -554,19 +561,22 @@ class ClientTest extends TestCase
         $this->assertSame($isValidRelativeURI, $client->getUri()->isValidRelative());
     }
 
-    public function portChangeDataProvider()
+    /** @psalm-return array<string, array{0: string, 1: int}> */
+    public function portChangeDataProvider(): array
     {
         return [
             'default-https' => ['https://localhost/example', 443],
-            'default-http' => ['http://localhost/example', 80]
+            'default-http'  => ['http://localhost/example', 80],
         ];
     }
 
     /**
      * @dataProvider portChangeDataProvider
      */
-    public function testUriPortIsSetToAppropriateDefaultValueWhenAnUriOmittingThePortIsProvided($absoluteURI, $port)
-    {
+    public function testUriPortIsSetToAppropriateDefaultValueWhenAnUriOmittingThePortIsProvided(
+        string $absoluteURI,
+        int $port
+    ): void {
         $client = new Client();
         $client->getUri()->setPort(null);
 
@@ -588,13 +598,15 @@ class ClientTest extends TestCase
         $this->assertNull($client->getUri()->getPort());
     }
 
-    public function cookies()
+    /** @psalm-return iterable<string, array{0: array<string, string>|SetCookie[]}> */
+    public function cookies(): iterable
     {
         yield 'name-value' => [['cookie-name' => 'cookie-value']];
         yield 'SetCookie' => [[new SetCookie('cookie-name', 'cookie-value')]];
     }
 
     /**
+     * phpcs:ignore SlevomatCodingStandard.Namespaces.UnusedUses.MismatchingCaseSensitivity
      * @dataProvider cookies
      */
     public function testSetCookies(array $cookies)

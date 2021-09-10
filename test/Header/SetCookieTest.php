@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\Header;
 
 use DateTime;
@@ -15,8 +9,16 @@ use Laminas\Http\Header\MultipleHeaderInterface;
 use Laminas\Http\Header\SetCookie;
 use PHPUnit\Framework\TestCase;
 
+use function gmdate;
+use function json_encode;
+use function sprintf;
 use function strtolower;
+use function strtotime;
 use function strtoupper;
+use function time;
+use function urlencode;
+
+use const PHP_INT_SIZE;
 
 class SetCookieTest extends TestCase
 {
@@ -213,7 +215,7 @@ class SetCookieTest extends TestCase
         $this->assertEquals('Wed, 13-Jan-2021 22:23:01 GMT', $setCookieHeader->getExpires());
         $this->assertTrue($setCookieHeader->isSecure());
         $this->assertTrue($setCookieHeader->isHttponly());
-        $this->assertEquals(setCookie::SAME_SITE_STRICT, $setCookieHeader->getSameSite());
+        $this->assertEquals(SetCookie::SAME_SITE_STRICT, $setCookieHeader->getSameSite());
 
         $setCookieHeader = SetCookie::fromString(
             'set-cookie: myname=myvalue; Domain=docs.foo.com; Path=/accounts;'
@@ -227,7 +229,7 @@ class SetCookieTest extends TestCase
         $this->assertEquals('Wed, 13-Jan-2021 22:23:01 GMT', $setCookieHeader->getExpires());
         $this->assertTrue($setCookieHeader->isSecure());
         $this->assertTrue($setCookieHeader->isHttponly());
-        $this->assertEquals(setCookie::SAME_SITE_STRICT, $setCookieHeader->getSameSite());
+        $this->assertEquals(SetCookie::SAME_SITE_STRICT, $setCookieHeader->getSameSite());
     }
 
     public function testFieldValueWithSameSiteCaseInsensitive()
@@ -351,14 +353,14 @@ class SetCookieTest extends TestCase
         $setCookieHeader->setHttponly(true);
 
         $appendCookie = new SetCookie('othername', 'othervalue');
-        $headerLine = $setCookieHeader->toStringMultipleHeaders([$appendCookie]);
+        $headerLine   = $setCookieHeader->toStringMultipleHeaders([$appendCookie]);
 
         $target = 'Set-Cookie: myname=myvalue; Expires=Wed, 13-Jan-2021 22:23:01 GMT;'
             . ' Domain=docs.foo.com; Path=/accounts;'
             . ' Secure; HttpOnly, othername=othervalue';
         $this->assertNotEquals($target, $headerLine);
 
-        $target = 'Set-Cookie: myname=myvalue; Expires=Wed, 13-Jan-2021 22:23:01 GMT;'
+        $target  = 'Set-Cookie: myname=myvalue; Expires=Wed, 13-Jan-2021 22:23:01 GMT;'
             . ' Domain=docs.foo.com; Path=/accounts;'
             . ' Secure; HttpOnly';
         $target .= "\n";
@@ -528,7 +530,6 @@ class SetCookieTest extends TestCase
 
     /**
      * @dataProvider validCookieWithInfoProvider
-     *
      * @param string $cStr
      * @param array $info
      * @param string $expected
@@ -545,7 +546,6 @@ class SetCookieTest extends TestCase
 
     /**
      * @dataProvider validCookieWithInfoProvider
-     *
      * @param string $cStr
      * @param array $info
      * @param string $expected
@@ -561,10 +561,10 @@ class SetCookieTest extends TestCase
 
     public function testRfcCompatibility()
     {
-        $name = 'myname';
-        $value = 'myvalue';
+        $name           = 'myname';
+        $value          = 'myvalue';
         $formatUnquoted = '%s: %s=%s';
-        $formatQuoted = '%s: %s="%s"';
+        $formatQuoted   = '%s: %s="%s"';
 
         $cookie = new SetCookie($name, $value);
 
@@ -583,7 +583,7 @@ class SetCookieTest extends TestCase
     public function testSetJsonValue()
     {
         $cookieName = 'fooCookie';
-        $jsonData = json_encode(['foo' => 'bar']);
+        $jsonData   = json_encode(['foo' => 'bar']);
 
         $cookie = new SetCookie($cookieName, $jsonData);
 
@@ -591,7 +591,7 @@ class SetCookieTest extends TestCase
         $this->assertMatchesRegularExpression($regExp, $cookie->getFieldValue());
 
         $cookieName = 'fooCookie';
-        $jsonData = json_encode(['foo' => 'bar']);
+        $jsonData   = json_encode(['foo' => 'bar']);
 
         $cookie = new SetCookie($cookieName, $jsonData);
         $cookie->setDomain('example.org');
@@ -602,6 +602,7 @@ class SetCookieTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
      */
     public function testPreventsCRLFAttackViaFromString()
@@ -612,6 +613,7 @@ class SetCookieTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
      */
     public function testPreventsCRLFAttackViaConstructor()
@@ -646,7 +648,8 @@ class SetCookieTest extends TestCase
         $this->assertSame('test=a:b', $header->getFieldValue());
     }
 
-    public function setterInjections()
+    /** @psalm-return array<string, array{0: string, 1: string}> */
+    public function setterInjections(): array
     {
         return [
             'name'   => ['setName', "\r\nThis\rIs\nThe\r\nName"],
@@ -657,10 +660,9 @@ class SetCookieTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
-     *
      * @dataProvider setterInjections
-     *
      * @param string $method
      * @param string $value
      */
@@ -678,7 +680,7 @@ class SetCookieTest extends TestCase
      */
     public static function validCookieWithInfoProvider()
     {
-        $now = time();
+        $now       = time();
         $yesterday = $now - (3600 * 24);
 
         return [
@@ -853,29 +855,29 @@ class SetCookieTest extends TestCase
             [
                 'Set-Cookie: emptykey; Domain=docs.foo.com; Max-Age=foo;',
                 [
-                    'name'    => 'myname',
-                    'value'   => '',
-                    'domain'  => 'docs.foo.com',
+                    'name'   => 'myname',
+                    'value'  => '',
+                    'domain' => 'docs.foo.com',
                 ],
-                'emptykey=; Domain=docs.foo.com'
+                'emptykey=; Domain=docs.foo.com',
             ],
             [
                 'Set-Cookie: emptykey; Domain=docs.foo.com; Max-Age=-1480312904;',
                 [
-                    'name'    => 'myname',
-                    'value'   => '',
-                    'domain'  => 'docs.foo.com',
+                    'name'   => 'myname',
+                    'value'  => '',
+                    'domain' => 'docs.foo.com',
                 ],
-                'emptykey=; Max-Age=0; Domain=docs.foo.com'
+                'emptykey=; Max-Age=0; Domain=docs.foo.com',
             ],
             [
                 'Set-Cookie: emptykey; Domain=docs.foo.com; Max-Age=100;',
                 [
-                    'name'    => 'myname',
-                    'value'   => '',
-                    'domain'  => 'docs.foo.com',
+                    'name'   => 'myname',
+                    'value'  => '',
+                    'domain' => 'docs.foo.com',
                 ],
-                'emptykey=; Max-Age=100; Domain=docs.foo.com'
+                'emptykey=; Max-Age=100; Domain=docs.foo.com',
             ],
         ];
     }

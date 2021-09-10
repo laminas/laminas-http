@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\PhpEnvironment;
 
 use Laminas\Http\Exception\InvalidArgumentException;
@@ -14,6 +8,9 @@ use Laminas\Http\Headers;
 use Laminas\Http\PhpEnvironment\Request;
 use Laminas\Stdlib\Parameters;
 use PHPUnit\Framework\TestCase;
+
+use function md5;
+use function parse_url;
 
 class RequestTest extends TestCase
 {
@@ -61,8 +58,14 @@ class RequestTest extends TestCase
 
     /**
      * Data provider for testing base URL and path detection.
+     *
+     * @psalm-return array<array-key, array{
+     *     0: array<string, null|string>,
+     *     1: string,
+     *     2: string
+     * }>
      */
-    public static function baseUrlAndPathProvider()
+    public static function baseUrlAndPathProvider(): array
     {
         return [
             [
@@ -156,10 +159,10 @@ class RequestTest extends TestCase
             ],
             [
                 [
-                    'SCRIPT_NAME'     => '/~username/public/index.php',
-                    'REQUEST_URI'     => '/~username/public/',
-                    'PHP_SELF'        => '/~username/public/index.php',
-                    'SCRIPT_FILENAME' => '/Users/username/Sites/public/index.php',
+                    'SCRIPT_NAME'      => '/~username/public/index.php',
+                    'REQUEST_URI'      => '/~username/public/',
+                    'PHP_SELF'         => '/~username/public/index.php',
+                    'SCRIPT_FILENAME'  => '/Users/username/Sites/public/index.php',
                     'ORIG_SCRIPT_NAME' => null,
                 ],
                 '/~username/public',
@@ -168,10 +171,10 @@ class RequestTest extends TestCase
             // Laminas-206
             [
                 [
-                    'SCRIPT_NAME'     => '/laminastut/index.php',
-                    'REQUEST_URI'     => '/laminastut/',
-                    'PHP_SELF'        => '/laminastut/index.php',
-                    'SCRIPT_FILENAME' => 'c:/LaminasTutorial/public/index.php',
+                    'SCRIPT_NAME'      => '/laminastut/index.php',
+                    'REQUEST_URI'      => '/laminastut/',
+                    'PHP_SELF'         => '/laminastut/index.php',
+                    'SCRIPT_FILENAME'  => 'c:/LaminasTutorial/public/index.php',
                     'ORIG_SCRIPT_NAME' => null,
                 ],
                 '/laminastut',
@@ -198,8 +201,8 @@ class RequestTest extends TestCase
             // Test when url quert contains a full http url
             [
                 [
-                    'REQUEST_URI' => '/html/index.php?url=http://test.example.com/path/&foo=bar',
-                    'PHP_SELF' => '/html/index.php',
+                    'REQUEST_URI'     => '/html/index.php?url=http://test.example.com/path/&foo=bar',
+                    'PHP_SELF'        => '/html/index.php',
                     'SCRIPT_FILENAME' => '/var/web/html/index.php',
                 ],
                 '/html/index.php',
@@ -210,7 +213,6 @@ class RequestTest extends TestCase
 
     /**
      * @dataProvider baseUrlAndPathProvider
-     *
      * @param array  $server
      * @param string $baseUrl
      * @param string $basePath
@@ -226,8 +228,14 @@ class RequestTest extends TestCase
 
     /**
      * Data provider for testing server provided headers.
+     *
+     * @psalm-return array<array-key, array{
+     *     0: array<string, string|int>,
+     *     1: string,
+     *     2: string|int
+     * }>
      */
-    public static function serverHeaderProvider()
+    public static function serverHeaderProvider(): array
     {
         return [
             [
@@ -284,7 +292,6 @@ class RequestTest extends TestCase
 
     /**
      * @dataProvider serverHeaderProvider
-     *
      * @param array  $server
      * @param string $name
      * @param string $value
@@ -302,7 +309,6 @@ class RequestTest extends TestCase
 
     /**
      * @dataProvider serverHeaderProvider
-     *
      * @param array  $server
      * @param string $name
      */
@@ -316,8 +322,15 @@ class RequestTest extends TestCase
 
     /**
      * Data provider for testing server hostname.
+     *
+     * @psalm-return array<array-key, array{
+     *     0: array<string, string>,
+     *     1: string,
+     *     2: string,
+     *     3: string
+     * }>
      */
-    public static function serverHostnameProvider()
+    public static function serverHostnameProvider(): array
     {
         return [
             [
@@ -331,7 +344,7 @@ class RequestTest extends TestCase
             ],
             [
                 [
-                    'HTTP_HOST' => 'test.example.com',
+                    'HTTP_HOST'   => 'test.example.com',
                     'REQUEST_URI' => 'http://test.example.com/news',
                 ],
                 'test.example.com',
@@ -341,7 +354,7 @@ class RequestTest extends TestCase
             [
                 [
                     'SERVER_NAME' => 'test.example.com',
-                    'HTTP_HOST' => 'requested.example.com',
+                    'HTTP_HOST'   => 'requested.example.com',
                     'REQUEST_URI' => 'http://test.example.com/news',
                 ],
                 'requested.example.com',
@@ -351,7 +364,7 @@ class RequestTest extends TestCase
             [
                 [
                     'SERVER_NAME' => 'test.example.com',
-                    'HTTP_HOST' => '<script>alert("Spoofed host");</script>',
+                    'HTTP_HOST'   => '<script>alert("Spoofed host");</script>',
                     'REQUEST_URI' => 'http://test.example.com/news',
                 ],
                 'test.example.com',
@@ -405,10 +418,10 @@ class RequestTest extends TestCase
             // Test for HTTPS requests which are forwarded over a reverse proxy/load balancer
             [
                 [
-                    'SERVER_NAME' => 'test.example.com',
-                    'SERVER_PORT' => '443',
+                    'SERVER_NAME'            => 'test.example.com',
+                    'SERVER_PORT'            => '443',
                     'HTTP_X_FORWARDED_PROTO' => 'https',
-                    'REQUEST_URI' => 'https://test.example.com/news',
+                    'REQUEST_URI'            => 'https://test.example.com/news',
                 ],
                 'test.example.com',
                 '443',
@@ -429,7 +442,6 @@ class RequestTest extends TestCase
 
     /**
      * @dataProvider serverHostnameProvider
-     *
      * @param array $server
      * @param string $expectedHost
      * @param string $expectedPort
@@ -468,20 +480,20 @@ class RequestTest extends TestCase
             [
                 [
                     'file' => [
-                        'name' => 'test1.txt',
-                        'type' => 'text/plain',
+                        'name'     => 'test1.txt',
+                        'type'     => 'text/plain',
                         'tmp_name' => '/tmp/phpXXX',
-                        'error' => 0,
-                        'size' => 1,
+                        'error'    => 0,
+                        'size'     => 1,
                     ],
                 ],
                 [
                     'file' => [
-                        'name' => 'test1.txt',
-                        'type' => 'text/plain',
+                        'name'     => 'test1.txt',
+                        'type'     => 'text/plain',
                         'tmp_name' => '/tmp/phpXXX',
-                        'error' => 0,
-                        'size' => 1,
+                        'error'    => 0,
+                        'size'     => 1,
                     ],
                 ],
             ],
@@ -490,11 +502,11 @@ class RequestTest extends TestCase
             [
                 [
                     'file' => [
-                        'name' => [
+                        'name'     => [
                             0 => 'test1.txt',
                             1 => 'test2.txt',
                         ],
-                        'type' => [
+                        'type'     => [
                             0 => 'text/plain',
                             1 => 'text/plain',
                         ],
@@ -502,11 +514,11 @@ class RequestTest extends TestCase
                             0 => '/tmp/phpXXX',
                             1 => '/tmp/phpXXX',
                         ],
-                        'error' => [
+                        'error'    => [
                             0 => 0,
                             1 => 0,
                         ],
-                        'size' => [
+                        'size'     => [
                             0 => 1,
                             1 => 1,
                         ],
@@ -515,18 +527,18 @@ class RequestTest extends TestCase
                 [
                     'file' => [
                         0 => [
-                            'name' => 'test1.txt',
-                            'type' => 'text/plain',
+                            'name'     => 'test1.txt',
+                            'type'     => 'text/plain',
                             'tmp_name' => '/tmp/phpXXX',
-                            'error' => 0,
-                            'size' => 1,
+                            'error'    => 0,
+                            'size'     => 1,
                         ],
                         1 => [
-                            'name' => 'test2.txt',
-                            'type' => 'text/plain',
+                            'name'     => 'test2.txt',
+                            'type'     => 'text/plain',
                             'tmp_name' => '/tmp/phpXXX',
-                            'error' => 0,
-                            'size' => 1,
+                            'error'    => 0,
+                            'size'     => 1,
                         ],
                     ],
                 ],
@@ -536,11 +548,11 @@ class RequestTest extends TestCase
             [
                 [
                     'file' => [
-                        'name' => [
+                        'name'     => [
                             'one' => 'test1.txt',
                             'two' => 'test2.txt',
                         ],
-                        'type' => [
+                        'type'     => [
                             'one' => 'text/plain',
                             'two' => 'text/plain',
                         ],
@@ -548,31 +560,31 @@ class RequestTest extends TestCase
                             'one' => '/tmp/phpXXX',
                             'two' => '/tmp/phpXXX',
                         ],
-                        'error' => [
+                        'error'    => [
                             'one' => 0,
                             'two' => 0,
                         ],
-                        'size' => [
+                        'size'     => [
                             'one' => 1,
                             'two' => 1,
                         ],
-                      ],
+                    ],
                 ],
                 [
                     'file' => [
                         'one' => [
-                            'name' => 'test1.txt',
-                            'type' => 'text/plain',
+                            'name'     => 'test1.txt',
+                            'type'     => 'text/plain',
                             'tmp_name' => '/tmp/phpXXX',
-                            'error' => 0,
-                            'size' => 1,
+                            'error'    => 0,
+                            'size'     => 1,
                         ],
                         'two' => [
-                            'name' => 'test2.txt',
-                            'type' => 'text/plain',
+                            'name'     => 'test2.txt',
+                            'type'     => 'text/plain',
                             'tmp_name' => '/tmp/phpXXX',
-                            'error' => 0,
-                            'size' => 1,
+                            'error'    => 0,
+                            'size'     => 1,
                         ],
                     ],
                 ],
@@ -582,7 +594,7 @@ class RequestTest extends TestCase
             [
                 [
                     'file' => [
-                        'name' => [
+                        'name'     => [
                             0 => 'test_0.txt',
                             1 => [
                                 0 => 'test_10.txt',
@@ -593,7 +605,7 @@ class RequestTest extends TestCase
                                 ],
                             ],
                         ],
-                        'type' => [
+                        'type'     => [
                             0 => 'text/plain',
                             1 => [
                                 0 => 'text/plain',
@@ -615,7 +627,7 @@ class RequestTest extends TestCase
                                 ],
                             ],
                         ],
-                        'error' => [
+                        'error'    => [
                             0 => 0,
                             1 => [
                                 0 => 0,
@@ -626,7 +638,7 @@ class RequestTest extends TestCase
                                 ],
                             ],
                         ],
-                        'size' => [
+                        'size'     => [
                             0 => 1,
                             1 => [
                                 0 => 1,
@@ -642,29 +654,29 @@ class RequestTest extends TestCase
                 [
                     'file' => [
                         0 => [
-                            'name' => 'test_0.txt',
-                            'type' => 'text/plain',
+                            'name'     => 'test_0.txt',
+                            'type'     => 'text/plain',
                             'tmp_name' => '/tmp/phpXXX',
-                            'error' => 0,
-                            'size' => 1,
+                            'error'    => 0,
+                            'size'     => 1,
                         ],
                         1 => [
                             0 => [
-                                'name' => 'test_10.txt',
-                                'type' => 'text/plain',
+                                'name'     => 'test_10.txt',
+                                'type'     => 'text/plain',
                                 'tmp_name' => '/tmp/phpXXX',
-                                'error' => 0,
-                                'size' => 1,
+                                'error'    => 0,
+                                'size'     => 1,
                             ],
                         ],
                         2 => [
                             0 => [
                                 0 => [
-                                    'name' => 'test_200.txt',
-                                    'type' => 'text/plain',
+                                    'name'     => 'test_200.txt',
+                                    'type'     => 'text/plain',
                                     'tmp_name' => '/tmp/phpXXX',
-                                    'error' => 0,
-                                    'size' => 1,
+                                    'error'    => 0,
+                                    'size'     => 1,
                                 ],
                             ],
                         ],
@@ -676,13 +688,12 @@ class RequestTest extends TestCase
 
     /**
      * @dataProvider filesProvider
-     *
      * @param array $files
      * @param array $expectedFiles
      */
     public function testRequestMapsPhpFies(array $files, array $expectedFiles)
     {
-        $_FILES = $files;
+        $_FILES  = $files;
         $request = new Request();
         $this->assertEquals($expectedFiles, $request->getFiles()->toArray());
     }
@@ -690,7 +701,7 @@ class RequestTest extends TestCase
     public function testParameterRetrievalDefaultValue()
     {
         $request = new Request();
-        $p = new Parameters([
+        $p       = new Parameters([
             'foo' => 'bar',
         ]);
         $request->setQuery($p);
@@ -712,7 +723,7 @@ class RequestTest extends TestCase
     public function testRetrievingASingleValueForParameters()
     {
         $request = new Request();
-        $p = new Parameters([
+        $p       = new Parameters([
             'foo' => 'bar',
         ]);
         $request->setQuery($p);
@@ -728,7 +739,7 @@ class RequestTest extends TestCase
         $this->assertSame('bar', $request->getEnv('foo'));
 
         $headers = new Headers();
-        $h = new GenericHeader('foo', 'bar');
+        $h       = new GenericHeader('foo', 'bar');
         $headers->addHeader($h);
 
         $request->setHeaders($headers);

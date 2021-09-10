@@ -1,29 +1,29 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Header;
 
 use Laminas\Uri\UriFactory;
 
+use function explode;
+use function strtolower;
+
 /**
- * @throws Exception\InvalidArgumentException
  * @see http://tools.ietf.org/id/draft-abarth-origin-03.html#rfc.section.2
+ *
+ * @throws Exception\InvalidArgumentException
  */
 class Origin implements HeaderInterface
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $value = '';
 
+    /**
+     * @param string $headerLine
+     * @return static
+     */
     public static function fromString($headerLine)
     {
-        list($name, $value) = explode(': ', $headerLine, 2);
+        [$name, $value] = explode(': ', $headerLine, 2);
 
         // check to ensure proper header type for this factory
         if (strtolower($name) !== 'origin') {
@@ -49,16 +49,19 @@ class Origin implements HeaderInterface
         }
     }
 
+    /** @return string */
     public function getFieldName()
     {
         return 'Origin';
     }
 
+    /** @return string */
     public function getFieldValue()
     {
         return (string) $this->value;
     }
 
+    /** @return string */
     public function toString()
     {
         return 'Origin: ' . $this->getFieldValue();

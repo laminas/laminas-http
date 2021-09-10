@@ -1,15 +1,17 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Header;
 
 use DateTime;
 use DateTimeZone;
+use Exception;
+use Laminas\Http\Header\Exception\InvalidArgumentException;
+
+use function is_numeric;
+use function is_string;
+use function sprintf;
+use function strtolower;
+use function strtotime;
 
 /**
  * Abstract Date/Time Header
@@ -29,11 +31,12 @@ abstract class AbstractDate implements HeaderInterface
 {
     /**
      * Date formats according to RFC 2616
+     *
      * @link http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.3
      */
-    const DATE_RFC1123 = 0;
-    const DATE_RFC1036 = 1;
-    const DATE_ANSIC   = 2;
+    public const DATE_RFC1123 = 0;
+    public const DATE_RFC1036 = 1;
+    public const DATE_ANSIC   = 2;
 
     /**
      * Date instance for this header
@@ -52,6 +55,7 @@ abstract class AbstractDate implements HeaderInterface
     /**
      * Date formats defined by RFC 2616. RFC 1123 date is required
      * RFC 1036 and ANSI C formats are provided for compatibility with old servers/clients
+     *
      * @link http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.3
      *
      * @var array
@@ -67,17 +71,17 @@ abstract class AbstractDate implements HeaderInterface
      *
      * @param string $headerLine
      * @return static
-     * @throws Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public static function fromString($headerLine)
     {
         $dateHeader = new static();
 
-        list($name, $date) = GenericHeader::splitHeaderLine($headerLine);
+        [$name, $date] = GenericHeader::splitHeaderLine($headerLine);
 
         // check to ensure proper header type for this factory
         if (strtolower($name) !== strtolower($dateHeader->getFieldName())) {
-            throw new Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Invalid header line for "' . $dateHeader->getFieldName() . '" header string'
             );
         }
@@ -92,7 +96,7 @@ abstract class AbstractDate implements HeaderInterface
      *
      * @param int|string $time
      * @return static
-     * @throws Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public static function fromTimeString($time)
     {
@@ -104,14 +108,14 @@ abstract class AbstractDate implements HeaderInterface
      *
      * @param int $time
      * @return static
-     * @throws Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public static function fromTimestamp($time)
     {
         $dateHeader = new static();
 
         if (! $time || ! is_numeric($time)) {
-            throw new Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Invalid time for "' . $dateHeader->getFieldName() . '" header string'
             );
         }
@@ -125,12 +129,12 @@ abstract class AbstractDate implements HeaderInterface
      * Set date output format
      *
      * @param int $format
-     * @throws Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public static function setDateFormat($format)
     {
         if (! isset(static::$dateFormats[$format])) {
-            throw new Exception\InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'No constant defined for provided date format: %s',
                 $format
             ));
@@ -154,22 +158,22 @@ abstract class AbstractDate implements HeaderInterface
      *
      * @param string|DateTime $date
      * @return $this
-     * @throws Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setDate($date)
     {
         if (is_string($date)) {
             try {
                 $date = new DateTime($date, new DateTimeZone('GMT'));
-            } catch (\Exception $e) {
-                throw new Exception\InvalidArgumentException(
+            } catch (Exception $e) {
+                throw new InvalidArgumentException(
                     sprintf('Invalid date passed as string (%s)', (string) $date),
                     $e->getCode(),
                     $e
                 );
             }
-        } elseif (! ($date instanceof DateTime)) {
-            throw new Exception\InvalidArgumentException('Date must be an instance of \DateTime or a string');
+        } elseif (! $date instanceof DateTime) {
+            throw new InvalidArgumentException('Date must be an instance of \DateTime or a string');
         }
 
         $date->setTimezone(new DateTimeZone('GMT'));
@@ -196,7 +200,7 @@ abstract class AbstractDate implements HeaderInterface
     public function date()
     {
         if ($this->date === null) {
-            $this->date = new DateTime(null, new DateTimeZone('GMT'));
+            $this->date = new DateTime('now', new DateTimeZone('GMT'));
         }
         return $this->date;
     }
@@ -204,32 +208,33 @@ abstract class AbstractDate implements HeaderInterface
     /**
      * Compare provided date to date for this header
      * Returns < 0 if date in header is less than $date; > 0 if it's greater, and 0 if they are equal.
+     *
      * @see \strcmp()
      *
      * @param string|DateTime $date
      * @return int
-     * @throws Exception\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function compareTo($date)
     {
         if (is_string($date)) {
             try {
                 $date = new DateTime($date, new DateTimeZone('GMT'));
-            } catch (\Exception $e) {
-                throw new Exception\InvalidArgumentException(
+            } catch (Exception $e) {
+                throw new InvalidArgumentException(
                     sprintf('Invalid Date passed as string (%s)', (string) $date),
                     $e->getCode(),
                     $e
                 );
             }
-        } elseif (! ($date instanceof DateTime)) {
-            throw new Exception\InvalidArgumentException('Date must be an instance of \DateTime or a string');
+        } elseif (! $date instanceof DateTime) {
+            throw new InvalidArgumentException('Date must be an instance of \DateTime or a string');
         }
 
         $dateTimestamp = $date->getTimestamp();
         $thisTimestamp = $this->date()->getTimestamp();
 
-        return ($thisTimestamp === $dateTimestamp) ? 0 : (($thisTimestamp > $dateTimestamp) ? 1 : -1);
+        return $thisTimestamp === $dateTimestamp ? 0 : ($thisTimestamp > $dateTimestamp ? 1 : -1);
     }
 
     /**

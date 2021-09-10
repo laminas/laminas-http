@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\Header;
 
 use Laminas\Http\Header\Allow;
@@ -43,7 +37,7 @@ class AllowTest extends TestCase
 
     public function testAllowListAllDefinedMethods()
     {
-        $methods = [
+        $methods     = [
             'OPTIONS' => false,
             'GET'     => true,
             'HEAD'    => false,
@@ -87,6 +81,7 @@ class AllowTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
      */
     public function testPreventsCRLFAttackViaFromString()
@@ -97,20 +92,20 @@ class AllowTest extends TestCase
         Allow::fromString("Allow: GET\r\n\r\nevilContent");
     }
 
-    public function injectionMethods()
+    /** @psalm-return array<string, array{0: string|string[]}> */
+    public function injectionMethods(): array
     {
         return [
             'string' => ["\rG\r\nE\nT"],
-            'array' => [["\rG\r\nE\nT"]],
+            'array'  => [["\rG\r\nE\nT"]],
         ];
     }
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
-     *
      * @dataProvider injectionMethods
-     *
      * @param array|string $methods
      */
     public function testPreventsCRLFAttackViaAllowMethods($methods)
@@ -124,10 +119,9 @@ class AllowTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     *
      * @group ZF2015-04
-     *
      * @dataProvider injectionMethods
-     *
      * @param array|string $methods
      */
     public function testPreventsCRLFAttackViaDisallowMethods($methods)

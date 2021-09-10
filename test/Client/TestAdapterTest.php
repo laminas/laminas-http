@@ -1,13 +1,8 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\Http\Client;
 
+use Exception;
 use Laminas\Http\Client\Adapter\Exception\InvalidArgumentException;
 use Laminas\Http\Client\Adapter\Exception\OutOfRangeException;
 use Laminas\Http\Client\Adapter\Exception\RuntimeException;
@@ -119,7 +114,6 @@ class TestAdapterTest extends TestCase
      * Test that responses could be added as strings
      *
      * @dataProvider validHttpResponseProvider
-     *
      * @param string $testResponse
      */
     public function testAddResponseAsString($testResponse)
@@ -187,7 +181,7 @@ class TestAdapterTest extends TestCase
             try {
                 $this->adapter->setResponseIndex($i);
                 $this->fail();
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->assertInstanceOf(OutOfRangeException::class, $e);
                 $this->assertMatchesRegularExpression('/out of range/i', $e->getMessage());
             }

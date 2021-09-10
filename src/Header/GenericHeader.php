@@ -1,26 +1,22 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-http for the canonical source repository
- * @copyright https://github.com/laminas/laminas-http/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-http/blob/master/LICENSE.md New BSD License
- */
-
 namespace Laminas\Http\Header;
+
+use function count;
+use function explode;
+use function is_string;
+use function ltrim;
+use function preg_match;
 
 /**
  * Content-Location Header
  */
 class GenericHeader implements HeaderInterface
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $fieldName;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $fieldValue;
 
     /**
@@ -31,7 +27,7 @@ class GenericHeader implements HeaderInterface
      */
     public static function fromString($headerLine)
     {
-        list($fieldName, $fieldValue) = GenericHeader::splitHeaderLine($headerLine);
+        [$fieldName, $fieldValue] = self::splitHeaderLine($headerLine);
 
         return new static($fieldName, $fieldValue);
     }
@@ -41,7 +37,7 @@ class GenericHeader implements HeaderInterface
      *
      * @param string $headerLine
      * @return string[] `name` in the first index and `value` in the second.
-     * @throws Exception\InvalidArgumentException If header does not match with the format ``name:value``
+     * @throws Exception\InvalidArgumentException If header does not match with the format ``name:value``.
      */
     public static function splitHeaderLine($headerLine)
     {
