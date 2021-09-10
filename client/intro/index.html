@@ -390,7 +390,7 @@ $client = new Client();
 
 $response = $client-&gt;send($request);</code></pre>
 <blockquote>
-<h3>URL validation</h3>
+<h3 id="url-validation">URL validation</h3>
 <p><code>Laminas\Http\Client</code> uses <code>Laminas\Uri\Http</code> to validate URLs. See the
 <a href="https://docs.laminas.dev/laminas-uri/">laminas-uri</a>
 documentation for more information.</p>
@@ -494,13 +494,13 @@ configuration can be used for adapter configuration. See the
 <a href="../adapters/">adapters</a> section for more information on the adapter-specific
 options available.</p>
 <h2 id="examples">Examples</h2>
-<h3>Performing a GET request</h3>
+<h3 id="performing-a-get-request">Performing a GET request</h3>
 <p>GET is the default method used, and requires no special configuration.</p>
 <pre class="highlight"><code class="language-php">use Laminas\Http\Client;
 
 $client = new Client('http://example.org');
 $response = $client-&gt;send();</code></pre>
-<h3>Using request methods other than GET</h3>
+<h3 id="using-request-methods-other-than-get">Using request methods other than GET</h3>
 <p>The request method can be set using <code>setMethod()</code>. If no method is specified,
 the method set by the last <code>setMethod()</code> call is used. If <code>setMethod()</code> was
 never called, the default request method is <code>GET</code>.</p>
@@ -522,7 +522,7 @@ $client = new Client('http://example.org');
 // Performing a POST request
 $client-&gt;setMethod(Request::METHOD_POST);
 $response = $client-&gt;send();</code></pre>
-<h3>Setting query parameters</h3>
+<h3 id="setting-query-parameters">Setting query parameters</h3>
 <p>Adding query parameters to an HTTP request can be done either by specifying them
 as part of the URL, or by using the <code>setParameterGet()</code> method. This method
 takes the query parameters as an associative array of name/value pairs.</p>
@@ -539,7 +539,7 @@ $client-&gt;setParameterGet([
     'last_name'   =&gt; 'Rodríguez',
     'made_in'     =&gt; 'Mexico',
 ]);</code></pre>
-<h3>Setting form-encoded body parameters</h3>
+<h3 id="setting-form-encoded-body-parameters">Setting form-encoded body parameters</h3>
 <p>While query parameters can be sent with every request method, other methods can
 accept parameters via the request body. In many cases, these are
 <code>application/x-www-form-urlencoded</code> parameters; laminas-http allows you to specify
@@ -558,7 +558,7 @@ $client-&gt;setParameterPost([
 <p>Note that when sending <code>POST</code> requests (or an request allowing a request body),
 you can set both query and <code>POST</code> parameters. On the other hand, setting POST
 parameters on a <code>GET</code> request will not trigger an error, rendering it useless.</p>
-<h3>Connecting to SSL URLs</h3>
+<h3 id="connecting-to-ssl-urls">Connecting to SSL URLs</h3>
 <p>If you are trying to connect to an SSL or TLS (https) URL and are using the
 default (<code>Laminas\Http\Client\Adapter\Socket</code>) adapter, you may need to set the
 <code>sslcapath</code> configuration option in order to allow PHP to validate the SSL
@@ -644,16 +644,6 @@ if ($response-&gt;isSuccess()) {
 </nav>
 
 
-
-
-    <div class="help-wanted">
-        <p>
-            Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/laminas/laminas-http/edit/master/docs/book/client/intro.md" target="_blank" class="help-wanted__link">
-                Edit this page on GitHub!
-            </a>
-        </p>
-    </div>
 
                 
             </div>

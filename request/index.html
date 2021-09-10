@@ -541,7 +541,7 @@ fully qualified class names and/or namespaces:</p>
 </tbody>
 </table></div>
 <h2 id="examples">Examples</h2>
-<h3>Generating a Request object from a string</h3>
+<h3 id="generating-a-request-object-from-a-string">Generating a Request object from a string</h3>
 <pre class="highlight"><code class="language-php">use Laminas\Http\Request;
 
 $string = "GET /foo HTTP/1.1\r\n\r\nSome Content";
@@ -552,7 +552,7 @@ $request-&gt;getUri();       // returns Laminas\Uri\Http object
 $request-&gt;getUriString(); // returns '/foo'
 $request-&gt;getVersion();   // returns Request::VERSION_11 or '1.1'
 $request-&gt;getContent();   // returns 'Some Content'</code></pre>
-<h3>Retrieving and setting headers</h3>
+<h3 id="retrieving-and-setting-headers">Retrieving and setting headers</h3>
 <pre class="highlight"><code class="language-php">use Laminas\Http\Request;
 use Laminas\Http\Header\Cookie;
 
@@ -562,7 +562,7 @@ $request-&gt;getHeaders()-&gt;addHeader(new Cookie(['foo' =&gt; 'bar']));
 foreach ($request-&gt;getHeaders() as $header) {
     printf("%s with value %s\n", $header-&gt;getFieldName(), $header-&gt;getFieldValue());
 }</code></pre>
-<h3>Retrieving and setting GET and POST values</h3>
+<h3 id="retrieving-and-setting-get-and-post-values">Retrieving and setting GET and POST values</h3>
 <pre class="highlight"><code class="language-php">use Laminas\Http\Request;
 
 $request = new Request();
@@ -573,7 +573,7 @@ $request-&gt;getPost()-&gt;foo = 'Foo value';
 $request-&gt;getQuery()-&gt;bar = 'Bar value';
 $request-&gt;getPost('foo'); // returns 'Foo value'
 $request-&gt;getQuery()-&gt;offsetGet('bar'); // returns 'Bar value'</code></pre>
-<h3>Generating a formatted HTTP Request from a Request object</h3>
+<h3 id="generating-a-formatted-http-request-from-a-request-object">Generating a formatted HTTP Request from a Request object</h3>
 <pre class="highlight"><code class="language-php">use Laminas\Http\Request;
 
 $request = new Request();
@@ -622,16 +622,6 @@ foo=bar
 </nav>
 
 
-
-
-    <div class="help-wanted">
-        <p>
-            Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/laminas/laminas-http/edit/master/docs/book/request.md" target="_blank" class="help-wanted__link">
-                Edit this page on GitHub!
-            </a>
-        </p>
-    </div>
 
                 
             </div>

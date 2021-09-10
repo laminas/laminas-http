@@ -411,7 +411,7 @@ $client-&gt;setCookies([
 ]);</code></pre>
 <p>See the <a href="../../headers/#setcookie">Headers documentation</a> for more detail on the
 <code>SetCookie</code> class.</p>
-<h3>Enabling Cookie Stickiness</h3>
+<h3 id="enabling-cookie-stickiness">Enabling Cookie Stickiness</h3>
 <p><code>Laminas\Http\Client</code> also provides a means for simplifying cookie "stickiness"
 &mdash; i.e., having the client internally store all sent and received cookies,
 and resending them on subsequent requests. &mdash; via the <code>Laminas\Http\Cookies</code>
@@ -508,7 +508,7 @@ file <code>/tmp/Backup.tar.gz</code> is uploaded to the server and will be avail
 <code>$_FILES['bufile']</code>. The content type will be guessed automatically if
 possible, defaulting to <code>application/octet-stream</code>.</p>
 <blockquote>
-<h3>Uploading files</h3>
+<h3 id="uploading-files">Uploading files</h3>
 <p>When uploading files, the HTTP request <code>Content-Type</code> is automatically set to
 <code>multipart/form-data</code>.  Keep in mind that you must send a POST or PUT request
 in order to upload files; most servers will ignore the request body on other
@@ -531,7 +531,7 @@ $client-&gt;send();</code></pre>
 <p>The data should be available on the server side through PHP's <code>php://input</code>
 stream.</p>
 <blockquote>
-<h3>Raw POST data overrides other content</h3>
+<h3 id="raw-post-data-overrides-other-content">Raw POST data overrides other content</h3>
 <p>Setting raw POST data for a request will override any POST parameters or file
 uploads; you should not try to use both on the same request. Keep in mind
 that most servers will ignore the request body unless you send a POST
@@ -567,7 +567,7 @@ all the request-specific parameters are cleared, you should use the
 <code>resetParameters()</code> method. This ensures that GET and POST parameters, request
 body, and request headers are reset and are not reused in the next request.</p>
 <blockquote>
-<h3>Resetting parameters</h3>
+<h3 id="resetting-parameters">Resetting parameters</h3>
 <p>Note that cookies are not reset by default when the <code>resetParameters()</code>
 method is used. To clean all cookies as well, use <code>resetParameters(true)</code>, or
 call <code>clearCookies()</code> after calling <code>resetParameters()</code>.</p>
@@ -582,7 +582,7 @@ consecutive requests might be performed in more than one script in your
 application, it might be a good idea to store the <code>Cookies</code> object in the user's
 session. This way, you will only need to authenticate the user once every
 session.</p>
-<h3>Performing consecutive requests with one client</h3>
+<h3 id="performing-consecutive-requests-with-one-client">Performing consecutive requests with one client</h3>
 <pre class="highlight"><code class="language-php">use Laminas\Http\Client;
 use Laminas\Http\Cookies;
 
@@ -673,16 +673,6 @@ $client-&gt;setStream('my/downloads/myfile')-&gt;send();</code></pre>
 </nav>
 
 
-
-
-    <div class="help-wanted">
-        <p>
-            Found a mistake or want to contribute to the documentation?
-            <a href="https://github.com/laminas/laminas-http/edit/master/docs/book/client/advanced.md" target="_blank" class="help-wanted__link">
-                Edit this page on GitHub!
-            </a>
-        </p>
-    </div>
 
                 
             </div>
