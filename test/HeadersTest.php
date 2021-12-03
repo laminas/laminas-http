@@ -16,6 +16,7 @@ use Laminas\Http\Headers;
 use PHPUnit\Framework\TestCase;
 
 use function implode;
+use function sprintf;
 
 class HeadersTest extends TestCase
 {
@@ -438,5 +439,19 @@ class HeadersTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid header value detected');
         $headers->get('Location');
+    }
+
+    public function testToArrayCanHandleIteratorExtensionForMultipleHeaderValue()
+    {
+        $headerValue = 'cookie1=value1; Expires=Sun, 02-Jan-2022 08:54:16 GMT; Domain=.example.org; Path=/;'
+        . ' Secure; SameSite=Lax, cookie2=value2; Expires=Sun, 02-Jan-2022 08:54:16 GMT; Domain=.example.org; Path=/;'
+        . ' Secure; SameSite=Lax, cookie3=value3; Expires=Sun, 02-Jan-2022 08:54:16 GMT; Domain=.example.org; Path=/;'
+        . ' Secure; SameSite=Lax';
+        $headers     = Headers::fromString(sprintf('Set-Cookie: %s', $headerValue));
+
+        $headersArray = $headers->toArray();
+        self::assertCount(1, $headersArray);
+        self::assertArrayHasKey('Set-Cookie', $headersArray);
+        self::assertEquals($headerValue, implode(', ', $headersArray['Set-Cookie']));
     }
 }

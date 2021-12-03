@@ -23,8 +23,10 @@ use function gettype;
 use function in_array;
 use function intval;
 use function is_array;
+use function is_float;
 use function is_numeric;
 use function is_resource;
+use function number_format;
 use function preg_match;
 use function preg_replace;
 use function preg_split;
@@ -334,7 +336,7 @@ class Curl implements HttpAdapter, StreamInterface
      *
      * @param  string        $method
      * @param Uri $uri
-     * @param  float         $httpVersion
+     * @param  float|string  $httpVersion
      * @param  array         $headers
      * @param  string        $body
      * @return string        $request
@@ -344,8 +346,12 @@ class Curl implements HttpAdapter, StreamInterface
      * @throws AdapterException\InvalidArgumentException If $method is currently not supported.
      * @throws AdapterException\TimeoutException If connection timed out.
      */
-    public function write($method, $uri, $httpVersion = 1.1, $headers = [], $body = '')
+    public function write($method, $uri, $httpVersion = '1.1', $headers = [], $body = '')
     {
+        if (is_float($httpVersion)) {
+            $httpVersion = number_format($httpVersion, 1, '.', '');
+        }
+
         // Make sure we're properly connected
         if (! $this->curl) {
             throw new AdapterException\RuntimeException('Trying to write but we are not connected');
@@ -442,7 +448,7 @@ class Curl implements HttpAdapter, StreamInterface
         }
 
         // get http version to use
-        $curlHttp = $httpVersion === 1.1 ? CURL_HTTP_VERSION_1_1 : CURL_HTTP_VERSION_1_0;
+        $curlHttp = $httpVersion === '1.1' ? CURL_HTTP_VERSION_1_1 : CURL_HTTP_VERSION_1_0;
 
         // mark as HTTP request and set HTTP method
         curl_setopt($this->curl, CURLOPT_HTTP_VERSION, $curlHttp);

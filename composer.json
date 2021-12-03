@@ -27,6 +27,7 @@
         "laminas/laminas-validator": "^2.15"
     },
     "require-dev": {
+        "ext-curl": "*",
         "laminas/laminas-coding-standard": "~2.2.1",
         "phpunit/phpunit": "^9.5.5"
     },
