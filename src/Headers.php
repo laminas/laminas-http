@@ -439,13 +439,15 @@ class Headers implements Countable, Iterator
      */
     public function toArray()
     {
+        if ($this->headers === []) {
+            return [];
+        }
+
+        $this->forceLoading();
+
         $headers = [];
         /** @var Header\HeaderInterface $header */
-        foreach ($this->headers as $index => $header) {
-            if (is_array($header)) {
-                $header = $this->lazyLoadHeader($index);
-            }
-
+        foreach ($this->headers as $header) {
             if ($header instanceof Header\MultipleHeaderInterface) {
                 $name = $header->getFieldName();
                 if (! isset($headers[$name])) {
@@ -456,6 +458,7 @@ class Headers implements Countable, Iterator
                 $headers[$header->getFieldName()] = $header->getFieldValue();
             }
         }
+
         return $headers;
     }
 
