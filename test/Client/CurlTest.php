@@ -16,7 +16,6 @@ use ValueError;
 use function base64_encode;
 use function curl_getinfo;
 use function explode;
-use function extension_loaded;
 use function file_get_contents;
 use function filesize;
 use function fopen;
@@ -71,9 +70,6 @@ class CurlTest extends CommonHttpTests
 
     protected function setUp(): void
     {
-        if (! extension_loaded('curl')) {
-            $this->markTestSkipped('cURL is not installed, marking all Http Client Curl Adapter tests skipped.');
-        }
         parent::setUp();
     }
 
