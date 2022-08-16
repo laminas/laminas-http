@@ -217,6 +217,7 @@ class ContentSecurityPolicyTest extends TestCase
             // Other directives
             ['block-all-mixed-content', [], 'Content-Security-Policy: block-all-mixed-content;'],
             ['require-sri-for', ['script', 'style'], 'Content-Security-Policy: require-sri-for script style;'],
+            ['require-trusted-types-for', ['script'], 'Content-Security-Policy: require-trusted-types-for script;'],
             ['trusted-types', ['*'], 'Content-Security-Policy: trusted-types *;'],
             ['upgrade-insecure-requests', [], 'Content-Security-Policy: upgrade-insecure-requests;'],
         ];
