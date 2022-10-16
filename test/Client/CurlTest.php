@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LaminasTest\Http\Client;
 
 use ArrayObject;
@@ -580,6 +582,6 @@ class CurlTest extends CommonHttpTests
         $response = $this->client->getResponse();
 
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertMatchesRegularExpression('#^HTTP/1.(0|1) 200 OK$#', trim(strstr($response, "\n", true)));
+        $this->assertMatchesRegularExpression('#^HTTP/1.(0|1) 200 OK$#', trim(strstr((string) $response, "\n", true)));
     }
 }
