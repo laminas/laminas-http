@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LaminasTest\Http\Response;
 
 use Laminas\Http\Response\Stream;

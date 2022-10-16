@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LaminasTest\Http\PhpEnvironment;
 
 use Laminas\Http\Exception\InvalidArgumentException;

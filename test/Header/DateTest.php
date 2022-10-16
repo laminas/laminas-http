@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LaminasTest\Http\Header;
 
 use DateTime;
@@ -36,7 +38,7 @@ class DateTest extends TestCase
         $this->assertInstanceOf(Date::class, $dateHeader);
 
         $date     = new DateTime('now', new DateTimeZone('GMT'));
-        $interval = $dateHeader->date()->diff($date, 1);
+        $interval = $dateHeader->date()->diff($date, true);
 
         if (PHP_VERSION_ID >= 70200) {
             $this->assertSame('+11 hours 59 minutes 59 seconds', $interval->format('%R%H hours %I minutes %S seconds'));
@@ -55,7 +57,7 @@ class DateTest extends TestCase
         $this->assertInstanceOf(Date::class, $dateHeader);
 
         $date     = new DateTime('now', new DateTimeZone('GMT'));
-        $interval = $dateHeader->date()->diff($date, 1);
+        $interval = $dateHeader->date()->diff($date, true);
 
         if (PHP_VERSION_ID >= 70200) {
             $this->assertSame('+11 hours 59 minutes 59 seconds', $interval->format('%R%H hours %I minutes %S seconds'));
