@@ -288,6 +288,22 @@ REQ;
         $this->assertEquals('c830dd74bb502443cf12514c185ff174', md5($res->getContent()));
     }
 
+    /**
+     * Make sure there no confusion with complient "deflate" responses.
+     *
+     * @link https://framework.zend.com/issues/browse/ZF-12457.html
+     */
+    public function testStandardDeflateResponseLaminas12457()
+    {
+        $responseTest = file_get_contents(__DIR__ . '/_files/response_deflate_iis_valid');
+
+        $res = Response::fromString($responseTest);
+
+        $this->assertEquals('deflate', $res->getHeaders()->get('Content-encoding')->getFieldValue());
+        $this->assertEquals('45d5eff9ad2393ace1be090688f3f354', md5($res->getBody()));
+        $this->assertEquals('dd1b1a3b315dffe2352b0f13c287fbac', md5($res->getContent()));
+    }
+
     public function testChunkedResponse()
     {
         $responseTest = file_get_contents(__DIR__ . '/_files/response_chunked');
