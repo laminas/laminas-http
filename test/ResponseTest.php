@@ -300,8 +300,8 @@ REQ;
         $res = Response::fromString($responseTest);
 
         $this->assertEquals('deflate', $res->getHeaders()->get('Content-encoding')->getFieldValue());
-        $this->assertEquals('45d5eff9ad2393ace1be090688f3f354', md5($res->getBody()));
-        $this->assertEquals('dd1b1a3b315dffe2352b0f13c287fbac', md5($res->getContent()));
+        $this->assertEquals('fa2f670a2da7cd7f0aee953ce5785fa8', md5($res->getBody()));
+        $this->assertEquals('992ec500e8332df89bbd9b8e998ec8c9', md5($res->getContent()));
     }
 
     public function testChunkedResponse()
