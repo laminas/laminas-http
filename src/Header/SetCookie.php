@@ -264,8 +264,6 @@ class SetCookie implements MultipleHeaderInterface
         $version = null,
         $sameSite = null
     ) {
-        $this->type = 'Cookie';
-
         $this->setName($name)
              ->setValue($value)
              ->setVersion($version)
