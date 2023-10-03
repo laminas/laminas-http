@@ -505,6 +505,29 @@ class ClientTest extends TestCase
         $this->assertSame(Client::ENC_URLENCODED, $client->getEncType());
     }
 
+    public function testClientEmptyPostPut()
+    {
+        $client                   = new Client();
+        $prepareHeadersReflection = new ReflectionMethod($client, 'prepareHeaders');
+        $prepareHeadersReflection->setAccessible(true);
+        $request = new Request();
+        $request->setMethod(Request::METHOD_POST);
+        $client->setRequest($request);
+        $this->assertSame($client->getRequest(), $request);
+        $headers = $prepareHeadersReflection->invoke($client, '', new Http('http://localhost:5984'));
+        $this->assertIsArray($headers);
+        $this->assertArrayHasKey('Content-Length', $headers);
+        $this->assertSame($headers['Content-Length'], 0);
+        $request = new Request();
+        $request->setMethod(Request::METHOD_PUT);
+        $client->setRequest($request);
+        $this->assertSame($client->getRequest(), $request);
+        $headers = $prepareHeadersReflection->invoke($client, '', new Http('http://localhost:5984'));
+        $this->assertIsArray($headers);
+        $this->assertArrayHasKey('Content-Length', $headers);
+        $this->assertSame($headers['Content-Length'], 0);
+    }
+
     /**
      * @group 7332
      */

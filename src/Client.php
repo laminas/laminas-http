@@ -1255,6 +1255,10 @@ class Client implements DispatchableInterface
             } else {
                 $headers['Content-Length'] = strlen($body);
             }
+        } else {
+            if ($this->getMethod() === 'POST' || $this->getMethod() === 'PUT') {
+                $headers['Content-Length'] = 0;
+            }
         }
 
         // Merge the headers of the request (if any)
