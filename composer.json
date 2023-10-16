@@ -16,6 +16,16 @@
         "chat": "https://laminas.dev/chat",
         "forum": "https://discourse.laminas.dev"
     },
+    "repositories": [
+        {
+            "type" : "vcs",
+            "url" : "git@github.com:glo71317/laminas-loader.git"
+        },
+        {
+            "type" : "vcs",
+            "url" : "git@github.com:glo71317/laminas-uri.git"
+        }
+    ],
     "config": {
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
@@ -23,10 +33,10 @@
         "sort-packages": true
     },
     "require": {
-        "php": "~8.0.0 || ~8.1.0 || ~8.2.0",
-        "laminas/laminas-loader": "^2.8",
+        "php": "~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0",
+        "laminas/laminas-loader": "dev-php8.3_support",
         "laminas/laminas-stdlib": "^3.6",
-        "laminas/laminas-uri": "^2.9.1",
+        "laminas/laminas-uri": "dev-php_8.3",
         "laminas/laminas-validator": "^2.15"
     },
     "require-dev": {
@@ -59,5 +69,6 @@
     },
     "conflict": {
         "zendframework/zend-http": "*"
-    }
+    },
+    "minimum-stability": "dev"
 }
