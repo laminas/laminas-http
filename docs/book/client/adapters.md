@@ -241,7 +241,7 @@ choice for a HTTP adapter. It supports secure connections, proxies, and multiple
 authentication mechanisms. In particular, it is very performant with regards to
 transfering large files.
 
-> #### Known issue with libcurl prior to 7.30.0
+> ### Known issue with libcurl prior to 7.30.0
 >
 > There is an issue with [incorrect headers length detection in libcurl](https://github.com/bagder/curl/pull/60)
 > prior to 7.30.0. It leads to problems with removing the Transfer-Encoding
