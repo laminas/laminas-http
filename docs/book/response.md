@@ -103,7 +103,7 @@ Method signature                                                       | Descrip
 
 ## Examples
 
-### Generating a Response object from a string
+### Generating a Response Object from a String
 
 ```php
 use Laminas\Http\Response;
@@ -120,7 +120,7 @@ HeaderField2: header-field-value2
 EOS);
 ```
 
-### Generating a formatted HTTP Response from a Response object
+### Generating a Formatted HTTP Response from a Response Object
 
 ```php
 use Laminas\Http\Response;
@@ -139,9 +139,10 @@ $response->setContent(<<<EOS
 EOS);
 ```
 
-### Handle "Headers already sent" errors
+### Handle "Headers already sent" Errors
 
-> Available since version 2.13.0
+INFO: **New Feature**
+Available since version 2.13.0
 
 By default, laminas-http's `Laminas\Http\PhpEnvironment\Response` class, which
 is used in laminas-mvc applications, tests to see if PHP has already emitted

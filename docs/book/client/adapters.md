@@ -20,7 +20,7 @@ the value of the `adapter` option may be one of:
 - an adapter instance
 - the fully qualified class name of an adapter
 
-## The Socket adapter
+## The Socket Adapter
 
 The default connection adapter used when none is specified is the
 `Laminas\Http\Client\Adapter\Socket` adapter.  The `Socket` adapter is based on
@@ -43,8 +43,7 @@ Parameter            | Description                                              
 `sslusecontext`      | Enables proxied connections to use SSL even if the proxy connection itself does not. | boolean       | `FALSE`
 `sslverifypeername`  | Whether to verify the peer name                                                      | boolean       | `TRUE`
 
-> ### Persistent TCP connections
->
+> INFO: **Persistent TCP Connections**
 > Using persistent TCP connections can potentially speed up HTTP requests, but
 > in most use cases, will have little positive effect and might overload the
 > HTTP server you are connecting to. It is recommended to use persistent TCP
@@ -58,15 +57,12 @@ Parameter            | Description                                              
 > Keep-Alive HTTP requests as described in [the client configuration section](intro.md#configuration);
 > otherwise persistent connections might have little or no effect.
 
-> ### HTTPS SSL stream parameters
->
-> `ssltransport`, `sslcert` and `sslpassphrase` are only relevant when
-> connecting using HTTPS.  While the default SSL/TLS settings should work for
-> most applications, you might need to change them if the server you are
-> connecting to requires special client setup. If so, please read the
-> [PHP manual chapter on SSL and TLS transport options](http://php.net/transports.inet).
+INFO: **HTTPS SSL Stream Parameters**
+`ssltransport`, `sslcert` and `sslpassphrase` are only relevant when connecting using HTTPS.
+While the default SSL/TLS settings should work for most applications, you might need to change them if the server you are connecting to requires special client setup.
+If so, please read the [PHP manual chapter on SSL and TLS transport options](http://php.net/transports.inet).
 
-### Changing the HTTPS transport layer
+### Changing the HTTPS Transport Layer
 
 ```php
 use Laminas\Http\Client;
@@ -91,7 +87,7 @@ using the following PHP command:
 fsockopen('tls://www.example.com', 443);
 ```
 
-### Customizing and accessing the Socket adapter stream context
+### Customizing and Accessing the Socket Adapter Stream Context
 
 `Laminas\Http\Client\Adapter\Socket` provides direct access to the underlying
 [stream context](http://php.net/stream.contexts) used to connect to the remote
@@ -112,7 +108,7 @@ You can access the stream context using the following methods of
   return it. You can then set or get the value of different context options
   using regular PHP stream context functions.
 
-#### Setting stream context options for the Socket adapter
+#### Setting Stream Context Options for the Socket Adapter
 
 ```php
 use Laminas\Http\Client;
@@ -158,15 +154,12 @@ $opts = stream_context_get_options($adapter->getStreamContext());
 echo $opts['ssl']['peer_certificate'];
 ```
 
-> #### Set stream context options prior to requests
->
-> Note that you must set any stream context options before using the adapter to
-> perform actual requests. If no context is set before performing HTTP requests
-> with the `Socket` adapter, a default stream context will be created. This
-> context resource could be accessed after performing any requests using the
-> `getStreamContext()` method.
+INFO: **Set Stream Context Options Prior to Requests**
+Note that you must set any stream context options before using the adapter to perform actual requests.
+If no context is set before performing HTTP requests with the `Socket` adapter, a default stream context will be created.
+This context resource could be accessed after performing any requests using the `getStreamContext()` method.
 
-## The Proxy adapter
+## The Proxy Adapter
 
 `Laminas\Http\Client\Adapter\Proxy` is similar to the default `Socket` adapter; the
 primary difference is that the connection is made through an HTTP proxy server
@@ -200,7 +193,7 @@ authentication.  Possible values are similar to the ones accepted by the
 `Laminas\Http\Client::setAuth()` method. Currently, only basic authentication
 (`Laminas\Http\Client::AUTH_BASIC`) is supported.
 
-### Using Laminas\\Http\\Client behind a proxy server
+### Using Laminas\\Http\\Client Behind a Proxy Server
 
 ```php
 use Laminas\Http\Client;
@@ -225,12 +218,8 @@ connection will fall back to a regular direct connection. This allows you to
 write your application in a way that allows a proxy to be used optionally,
 according to a configuration parameter.
 
-> ### Access to stream context
->
-> Since the proxy adapter inherits from `Laminas\Http\Client\Adapter\Socket`, you
-> can use the stream context access method (see
-> [above](#setting-stream-context-options-for-the-socket-adapter)) to set stream
-> context options on `Proxy` connections.
+INFO: **Access to Stream Context**
+Since the proxy adapter inherits from `Laminas\Http\Client\Adapter\Socket`, you can use the stream context access method (see> [above](#setting-stream-context-options-for-the-socket-adapter)) to set stream context options on `Proxy` connections.
 
 ## The cURL Adapter
 
@@ -241,13 +230,11 @@ choice for a HTTP adapter. It supports secure connections, proxies, and multiple
 authentication mechanisms. In particular, it is very performant with regards to
 transfering large files.
 
-> ### Known issue with libcurl prior to 7.30.0
->
-> There is an issue with [incorrect headers length detection in libcurl](https://github.com/bagder/curl/pull/60)
-> prior to 7.30.0. It leads to problems with removing the Transfer-Encoding
-> header from the response. We encourage to update libcurl.
+WARNING: **Known Issue with libcurl Prior to 7.30.0**
+There is an issue with [incorrect headers length detection in libcurl](https://github.com/bagder/curl/pull/60) prior to 7.30.0.
+It leads to problems with removing the Transfer-Encoding header from the response. We encourage to update libcurl.
 
-### Setting cURL options
+### Setting cURL Options
 
 ```php
 use Laminas\Http\Client;
@@ -278,7 +265,7 @@ Parameter            | Description                                              
 `proxyport`          | Passphrase for the SSL certificate file                                              | string        | `NULL`
 `sslverifypeer`      | Whether to verify the SSL peer                                                       | string        | `TRUE`
 
-### Transfering files by handle
+### Transfering Files by Handle
 
 You can use cURL to transfer very large files over HTTP by filehandle.
 
@@ -301,7 +288,7 @@ $adapter->setOptions([
 $client->send();
 ```
 
-## The Test adapter
+## The Test Adapter
 
 Testing code that relies on HTTP connections poses difficulties.  For example,
 testing an application that pulls an RSS feed from a remote server will require
@@ -320,7 +307,7 @@ an individual response to always return from any request; `addResponse()` allows
 aggregating a sequence of responses. In both cases, responses are returned
 without performing actual HTTP requests.
 
-### Testing against a single HTTP response stub
+### Testing Against a Single HTTP Response Stub
 
 ```php
 use Laminas\Http\Client;
@@ -419,7 +406,7 @@ this. The initial 302 response is set up with the `setResponse()` method and the
 configuring the test adapter, inject the HTTP client containing the adapter into
 your object under test and test its behavior.
 
-### Forcing the adapter to fail
+### Forcing the Adapter to Fail
 
 If you need the adapter to fail on demand you can use
 `setNextRequestWillFail($flag)`. The method will cause the next call to
@@ -451,7 +438,7 @@ try {
 // you call setNextRequestWillFail(true) again
 ```
 
-## Creating your own connection adapters
+## Creating Your Own Connection Adapters
 
 `Laminas\Http\Client` has been designed so that you can create and use your own
 connection adapters. You could, for example, create a connection adapter that

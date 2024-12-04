@@ -504,7 +504,7 @@ string when multiple values are present.
 
 ## Examples
 
-### Retrieving headers from a Headers object
+### Retrieving Headers from a Headers Object
 
 ```php
 // $client is an instance of Laminas\Http\Client
@@ -530,7 +530,7 @@ There are three possibilities for the return value of the above call to the `get
   return an `ArrayIterator` containing one `Laminas\Http\Header\ContentType`
   instance per header.
 
-### Adding headers to a Headers object
+### Adding Headers to a Headers Object
 
 ```php
 use Laminas\Http\Header;
@@ -565,7 +565,7 @@ $headers->addHeaders([
 ]);
 ```
 
-### Removing headers from a Headers object
+### Removing Headers from a Headers Object
 
 We can remove all headers of a specific type using the `removeHeader` method,
 which accepts a single object implementing `Laminas\Http\Header\HeaderInterface`

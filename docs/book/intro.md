@@ -14,13 +14,11 @@ abstractions:
 - A client implementation with various adapters that allow for sending requests
   and introspecting responses.
 
-> ## Not PSR-7
->
-> This library **does not** support [PSR-7](http://www.php-fig.org/psr/psr-7), as
-> it predates that specification. For PSR-7 support, please see our
-> [Diactoros component](https://docs.laminas.dev/laminas-diactoros/).
+WARNING: **Not PSR-7**
+This library **does not** support [PSR-7](http://www.php-fig.org/psr/psr-7), as it predates that specification.
+For PSR-7 support, please see our [Diactoros component](https://docs.laminas.dev/laminas-diactoros/).
 
-## Laminas\Http Request, Response and Headers
+## Request, Response and Headers
 
 The request, response and headers implementations of the laminas-http component
 provides a fluent, object-oriented interface for introspecting information from
