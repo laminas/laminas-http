@@ -15,6 +15,7 @@ use Laminas\Http\Header\GenericMultiHeader;
 use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\HeaderLoader;
 use Laminas\Http\Headers;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 use function implode;
@@ -22,20 +23,20 @@ use function sprintf;
 
 class HeadersTest extends TestCase
 {
-    public function testHeadersImplementsProperClasses()
+    public function testHeadersImplementsProperClasses(): void
     {
         $headers = new Headers();
         $this->assertInstanceOf(Iterator::class, $headers);
         $this->assertInstanceOf(Countable::class, $headers);
     }
 
-    public function testHeadersCanGetPluginClassLoader()
+    public function testHeadersCanGetPluginClassLoader(): void
     {
         $headers = new Headers();
         $this->assertInstanceOf(HeaderLoader::class, $headers->getPluginClassLoader());
     }
 
-    public function testHeadersFromStringFactoryCreatesSingleObject()
+    public function testHeadersFromStringFactoryCreatesSingleObject(): void
     {
         $headers = Headers::fromString('Fake: foo-bar');
         $this->assertEquals(1, $headers->count());
@@ -46,7 +47,7 @@ class HeadersTest extends TestCase
         $this->assertEquals('foo-bar', $header->getFieldValue());
     }
 
-    public function testHeadersFromStringFactoryCreatesSingleObjectWithHeaderBreakLine()
+    public function testHeadersFromStringFactoryCreatesSingleObjectWithHeaderBreakLine(): void
     {
         $headers = Headers::fromString("Fake: foo-bar\r\n\r\n");
         $this->assertEquals(1, $headers->count());
@@ -57,7 +58,7 @@ class HeadersTest extends TestCase
         $this->assertEquals('foo-bar', $header->getFieldValue());
     }
 
-    public function testHeadersFromStringFactoryCreatesSingleObjectWithHeaderFolding()
+    public function testHeadersFromStringFactoryCreatesSingleObjectWithHeaderFolding(): void
     {
         $headers = Headers::fromString("Fake: foo\r\n -bar");
         $this->assertEquals(1, $headers->count());
@@ -68,14 +69,14 @@ class HeadersTest extends TestCase
         $this->assertEquals('foo-bar', $header->getFieldValue());
     }
 
-    public function testHeadersFromStringFactoryThrowsExceptionOnMalformedHeaderLine()
+    public function testHeadersFromStringFactoryThrowsExceptionOnMalformedHeaderLine(): void
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('does not match');
         Headers::fromString("Fake = foo-bar\r\n\r\n");
     }
 
-    public function testHeadersFromStringFactoryCreatesMultipleObjects()
+    public function testHeadersFromStringFactoryCreatesMultipleObjects(): void
     {
         $headers = Headers::fromString("Fake: foo-bar\r\nAnother-Fake: boo-baz");
         $this->assertEquals(2, $headers->count());
@@ -97,7 +98,7 @@ class HeadersTest extends TestCase
         $this->assertSame($header, $headers->get('another.fake'));
     }
 
-    public function testHeadersFromStringMultiHeaderWillAggregateLazyLoadedHeaders()
+    public function testHeadersFromStringMultiHeaderWillAggregateLazyLoadedHeaders(): void
     {
         $headers = new Headers();
         $pcl     = $headers->getPluginClassLoader();
@@ -107,7 +108,7 @@ class HeadersTest extends TestCase
         $this->assertEquals(3, $headers->count());
     }
 
-    public function testHeadersHasAndGetWorkProperly()
+    public function testHeadersHasAndGetWorkProperly(): void
     {
         $headers = new Headers();
         $headers->addHeaders([
@@ -120,7 +121,7 @@ class HeadersTest extends TestCase
         $this->assertSame($f, $headers->get('foo'));
     }
 
-    public function testHeadersGetReturnsLastAddedHeaderValue()
+    public function testHeadersGetReturnsLastAddedHeaderValue(): void
     {
         $headers = new Headers();
         $headers->addHeaders([
@@ -131,7 +132,7 @@ class HeadersTest extends TestCase
         $this->assertEquals($value, $headers->get('foo')->getFieldValue());
     }
 
-    public function testHeadersAggregatesHeaderObjects()
+    public function testHeadersAggregatesHeaderObjects(): void
     {
         $fakeHeader = new Header\GenericHeader('Fake', 'bar');
         $headers    = new Headers();
@@ -140,7 +141,7 @@ class HeadersTest extends TestCase
         $this->assertSame($fakeHeader, $headers->get('Fake'));
     }
 
-    public function testHeadersAggregatesHeaderThroughAddHeader()
+    public function testHeadersAggregatesHeaderThroughAddHeader(): void
     {
         $headers = new Headers();
         $headers->addHeader(new Header\GenericHeader('Fake', 'bar'));
@@ -148,7 +149,7 @@ class HeadersTest extends TestCase
         $this->assertInstanceOf(GenericHeader::class, $headers->get('Fake'));
     }
 
-    public function testHeadersAggregatesHeaderThroughAddHeaderLine()
+    public function testHeadersAggregatesHeaderThroughAddHeaderLine(): void
     {
         $headers = new Headers();
         $headers->addHeaderLine('Fake', 'bar');
@@ -156,7 +157,7 @@ class HeadersTest extends TestCase
         $this->assertInstanceOf(GenericHeader::class, $headers->get('Fake'));
     }
 
-    public function testHeadersAddHeaderLineThrowsExceptionOnMissingFieldValue()
+    public function testHeadersAddHeaderLineThrowsExceptionOnMissingFieldValue(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('without a field');
@@ -164,7 +165,7 @@ class HeadersTest extends TestCase
         $headers->addHeaderLine('Foo');
     }
 
-    public function testHeadersAggregatesHeadersThroughAddHeaders()
+    public function testHeadersAggregatesHeadersThroughAddHeaders(): void
     {
         $headers = new Headers();
         $headers->addHeaders([new Header\GenericHeader('Foo', 'bar'), new Header\GenericHeader('Baz', 'baz')]);
@@ -202,7 +203,7 @@ class HeadersTest extends TestCase
         $this->assertEquals('baz', $headers->get('baz')->getFieldValue());
     }
 
-    public function testHeadersAddHeadersThrowsExceptionOnInvalidArguments()
+    public function testHeadersAddHeadersThrowsExceptionOnInvalidArguments(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Expected array or Trav');
@@ -210,7 +211,7 @@ class HeadersTest extends TestCase
         $headers->addHeaders('foo');
     }
 
-    public function testHeadersCanRemoveHeader()
+    public function testHeadersCanRemoveHeader(): void
     {
         $headers = new Headers();
         $headers->addHeaders(['Foo' => 'bar', 'Baz' => 'baz']);
@@ -221,7 +222,7 @@ class HeadersTest extends TestCase
         $this->assertFalse($headers->get('foo'));
     }
 
-    public function testHeadersCanClearAllHeaders()
+    public function testHeadersCanClearAllHeaders(): void
     {
         $headers = new Headers();
         $headers->addHeaders(['Foo' => 'bar', 'Baz' => 'baz']);
@@ -230,7 +231,7 @@ class HeadersTest extends TestCase
         $this->assertEquals(0, $headers->count());
     }
 
-    public function testHeadersCanBeIterated()
+    public function testHeadersCanBeIterated(): void
     {
         $headers = new Headers();
         $headers->addHeaders(['Foo' => 'bar', 'Baz' => 'baz']);
@@ -254,21 +255,21 @@ class HeadersTest extends TestCase
         $this->assertEquals(2, $iterations);
     }
 
-    public function testHeadersCanBeCastToString()
+    public function testHeadersCanBeCastToString(): void
     {
         $headers = new Headers();
         $headers->addHeaders(['Foo' => 'bar', 'Baz' => 'baz']);
         $this->assertEquals('Foo: bar' . "\r\n" . 'Baz: baz' . "\r\n", $headers->toString());
     }
 
-    public function testHeadersCanBeCastToArray()
+    public function testHeadersCanBeCastToArray(): void
     {
         $headers = new Headers();
         $headers->addHeaders(['Foo' => 'bar', 'Baz' => 'baz']);
         $this->assertEquals(['Foo' => 'bar', 'Baz' => 'baz'], $headers->toArray());
     }
 
-    public function testCastingToArrayReturnsMultiHeadersAsArrays()
+    public function testCastingToArrayReturnsMultiHeadersAsArrays(): void
     {
         $headers = new Headers();
         $cookie1 = new Header\SetCookie('foo', 'bar');
@@ -285,7 +286,7 @@ class HeadersTest extends TestCase
         $this->assertEquals($expected, $array);
     }
 
-    public function testCastingToStringReturnsAllMultiHeaderValues()
+    public function testCastingToStringReturnsAllMultiHeaderValues(): void
     {
         $headers = new Headers();
         $cookie1 = new Header\SetCookie('foo', 'bar');
@@ -301,7 +302,7 @@ class HeadersTest extends TestCase
         $this->assertEquals($expected, $string);
     }
 
-    public function testZeroIsAValidHeaderValue()
+    public function testZeroIsAValidHeaderValue(): void
     {
         $headers = Headers::fromString('Fake: 0');
         $this->assertSame('0', $headers->get('Fake')->getFieldValue());
@@ -309,16 +310,15 @@ class HeadersTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testCRLFAttack()
+    #[Group('ZF2015-04')]
+    public function testCRLFAttack(): void
     {
         $this->expectException(RuntimeException::class);
         Headers::fromString("Fake: foo-bar\r\n\r\nevilContent");
     }
 
-    public function testAddHeaderLineMultipleHeadersGet()
+    public function testAddHeaderLineMultipleHeadersGet(): void
     {
         $headers = new Headers();
         $headers->addHeaderLine('Set-Cookie: cookie1=value1');
@@ -330,7 +330,7 @@ class HeadersTest extends TestCase
         self::assertContainsOnlyInstancesOf(Header\SetCookie::class, $result);
     }
 
-    public function testAddHeaderLineMultipleHeadersToString()
+    public function testAddHeaderLineMultipleHeadersToString(): void
     {
         $headers = new Headers();
         $headers->addHeaderLine('Set-Cookie: cookie1=value1');
@@ -343,7 +343,7 @@ class HeadersTest extends TestCase
         );
     }
 
-    public function testAddHeaderMultipleHeadersGet()
+    public function testAddHeaderMultipleHeadersGet(): void
     {
         $headers = new Headers();
         $headers->addHeader(new Header\SetCookie('cookie1', 'value1'));
@@ -355,7 +355,7 @@ class HeadersTest extends TestCase
         self::assertContainsOnlyInstancesOf(Header\SetCookie::class, $result);
     }
 
-    public function testAddHeaderMultipleHeadersToString()
+    public function testAddHeaderMultipleHeadersToString(): void
     {
         $headers = new Headers();
         $headers->addHeader(new Header\SetCookie('cookie1', 'value1'));
@@ -368,7 +368,7 @@ class HeadersTest extends TestCase
         );
     }
 
-    public function testAddHeadersMultipleHeadersGet()
+    public function testAddHeadersMultipleHeadersGet(): void
     {
         $headers = new Headers();
         $headers->addHeaders([
@@ -385,7 +385,7 @@ class HeadersTest extends TestCase
         self::assertContainsOnlyInstancesOf(Header\SetCookie::class, $result);
     }
 
-    public function testAddHeadersMultipleHeadersToString()
+    public function testAddHeadersMultipleHeadersToString(): void
     {
         $headers = new Headers();
         $headers->addHeaders([
@@ -406,7 +406,7 @@ class HeadersTest extends TestCase
         );
     }
 
-    public function testFromStringMultipleHeadersGet()
+    public function testFromStringMultipleHeadersGet(): void
     {
         $headers = Headers::fromString(
             'Set-Cookie: cookie1=value1' . "\r\n"
@@ -419,7 +419,7 @@ class HeadersTest extends TestCase
         self::assertContainsOnlyInstancesOf(Header\SetCookie::class, $result);
     }
 
-    public function testFromStringHeadersToString()
+    public function testFromStringHeadersToString(): void
     {
         $headers = Headers::fromString(
             'Set-Cookie: cookie1=value1' . "\r\n"
@@ -433,7 +433,7 @@ class HeadersTest extends TestCase
         );
     }
 
-    public function testThrowExceptionOnInvalidHeader()
+    public function testThrowExceptionOnInvalidHeader(): void
     {
         $headers = new Headers();
         $headers->addHeaderLine('Location', "/mail\r\ntest");
@@ -443,7 +443,7 @@ class HeadersTest extends TestCase
         $headers->get('Location');
     }
 
-    public function testToArrayCanHandleIteratorExtensionForMultipleHeaderValue()
+    public function testToArrayCanHandleIteratorExtensionForMultipleHeaderValue(): void
     {
         $headerValue = 'cookie1=value1; Expires=Sun, 02-Jan-2022 08:54:16 GMT; Domain=.example.org; Path=/;'
         . ' Secure; SameSite=Lax, cookie2=value2; Expires=Sun, 02-Jan-2022 08:54:16 GMT; Domain=.example.org; Path=/;'

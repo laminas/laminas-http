@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class ContentSecurityPolicyReportOnlyTest extends TestCase
 {
-    public function testContentSecurityPolicyReportOnlyToString()
+    public function testContentSecurityPolicyReportOnlyToString(): void
     {
         $csp = ContentSecurityPolicyReportOnly::fromString(
             "Content-Security-Policy-Report-Only: default-src 'none'; img-src 'self' https://*.gravatar.com;"

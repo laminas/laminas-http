@@ -7,31 +7,32 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\AcceptRanges;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class AcceptRangesTest extends TestCase
 {
-    public function testAcceptRangesFromStringCreatesValidAcceptRangesHeader()
+    public function testAcceptRangesFromStringCreatesValidAcceptRangesHeader(): void
     {
         $acceptRangesHeader = AcceptRanges::fromString('Accept-Ranges: bytes');
         $this->assertInstanceOf(HeaderInterface::class, $acceptRangesHeader);
         $this->assertInstanceOf(AcceptRanges::class, $acceptRangesHeader);
     }
 
-    public function testAcceptRangesGetFieldNameReturnsHeaderName()
+    public function testAcceptRangesGetFieldNameReturnsHeaderName(): void
     {
         $acceptRangesHeader = new AcceptRanges();
         $this->assertEquals('Accept-Ranges', $acceptRangesHeader->getFieldName());
     }
 
-    public function testAcceptRangesGetFieldValueReturnsProperValue()
+    public function testAcceptRangesGetFieldValueReturnsProperValue(): void
     {
         $acceptRangesHeader = AcceptRanges::fromString('Accept-Ranges: bytes');
         $this->assertEquals('bytes', $acceptRangesHeader->getFieldValue());
         $this->assertEquals('bytes', $acceptRangesHeader->getRangeUnit());
     }
 
-    public function testAcceptRangesToStringReturnsHeaderFormattedString()
+    public function testAcceptRangesToStringReturnsHeaderFormattedString(): void
     {
         $acceptRangesHeader = new AcceptRanges();
         $acceptRangesHeader->setRangeUnit('bytes');
@@ -41,13 +42,11 @@ class AcceptRangesTest extends TestCase
     }
 
     /** Implementation specific tests here */
-
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $header = AcceptRanges::fromString("Accept-Ranges: bytes;\r\n\r\nevilContent");
@@ -55,10 +54,9 @@ class AcceptRangesTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaConstructor()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $header = new AcceptRanges("bytes;\r\n\r\nevilContent");

@@ -6,6 +6,8 @@ namespace LaminasTest\Http\Header;
 
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderValue;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class HeaderValueTest extends TestCase
@@ -15,7 +17,7 @@ class HeaderValueTest extends TestCase
      *
      * @psalm-return array<array-key, array{0: string, 1: string}>
      */
-    public function getFilterValues(): array
+    public static function getFilterValues(): array
     {
         return [
             ["This is a\n test", 'This is a test'],
@@ -32,19 +34,15 @@ class HeaderValueTest extends TestCase
         ];
     }
 
-    /**
-     * @group ZF2015-04
-     * @dataProvider getFilterValues
-     * @param string $value
-     * @param string $expected
-     */
-    public function testFiltersValuesPerRfc7230($value, $expected)
+    #[DataProvider('getFilterValues')]
+    #[Group('ZF2015-04')]
+    public function testFiltersValuesPerRfc7230(string $value, string $expected): void
     {
         $this->assertEquals($expected, HeaderValue::filter($value));
     }
 
     /** @psalm-return array<array-key, array{0: string, 1: string}> */
-    public function validateValues(): array
+    public static function validateValues(): array
     {
         return [
             ["This is a\n test", 'assertFalse'],
@@ -61,19 +59,15 @@ class HeaderValueTest extends TestCase
         ];
     }
 
-    /**
-     * @group ZF2015-04
-     * @dataProvider validateValues
-     * @param string $value
-     * @param string $assertion
-     */
-    public function testValidatesValuesPerRfc7230($value, $assertion)
+    #[DataProvider('validateValues')]
+    #[Group('ZF2015-04')]
+    public function testValidatesValuesPerRfc7230(string $value, string $assertion): void
     {
         $this->{$assertion}(HeaderValue::isValid($value));
     }
 
     /** @psalm-return array<array-key, array{0: string}> */
-    public function assertValues(): array
+    public static function assertValues(): array
     {
         return [
             ["This is a\n test"],
@@ -89,12 +83,9 @@ class HeaderValueTest extends TestCase
         ];
     }
 
-    /**
-     * @group ZF2015-04
-     * @dataProvider assertValues
-     * @param string $value
-     */
-    public function testAssertValidRaisesExceptionForInvalidValue($value)
+    #[DataProvider('assertValues')]
+    #[Group('ZF2015-04')]
+    public function testAssertValidRaisesExceptionForInvalidValue(string $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         HeaderValue::assertValid($value);

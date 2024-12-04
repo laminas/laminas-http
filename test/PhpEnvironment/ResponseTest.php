@@ -7,6 +7,7 @@ namespace LaminasTest\Http\PhpEnvironment;
 use Laminas\Http\Exception\InvalidArgumentException;
 use Laminas\Http\Exception\RuntimeException;
 use Laminas\Http\PhpEnvironment\Response;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 
 class ResponseTest extends TestCase
@@ -53,7 +54,7 @@ class ResponseTest extends TestCase
         $_FILES  = $this->originalEnvironment['files'];
     }
 
-    public function testReturnsOneOhVersionWhenDetectedInServerSuperglobal()
+    public function testReturnsOneOhVersionWhenDetectedInServerSuperglobal(): void
     {
         // HTTP/1.0
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.0';
@@ -61,7 +62,7 @@ class ResponseTest extends TestCase
         $this->assertSame(Response::VERSION_10, $response->getVersion());
     }
 
-    public function testReturnsOneOneVersionWhenDetectedInServerSuperglobal()
+    public function testReturnsOneOneVersionWhenDetectedInServerSuperglobal(): void
     {
         // HTTP/1.1
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
@@ -69,7 +70,7 @@ class ResponseTest extends TestCase
         $this->assertSame(Response::VERSION_11, $response->getVersion());
     }
 
-    public function testFallsBackToVersionOneOhWhenServerSuperglobalVersionIsNotRecognized()
+    public function testFallsBackToVersionOneOhWhenServerSuperglobalVersionIsNotRecognized(): void
     {
         // unknown protocol or version -> fallback to HTTP/1.0
         $_SERVER['SERVER_PROTOCOL'] = 'laminas/2.0';
@@ -77,7 +78,7 @@ class ResponseTest extends TestCase
         $this->assertSame(Response::VERSION_10, $response->getVersion());
     }
 
-    public function testFallsBackToVersionOneOhWhenNoVersionDetectedInServerSuperglobal()
+    public function testFallsBackToVersionOneOhWhenNoVersionDetectedInServerSuperglobal(): void
     {
         // undefined -> fallback to HTTP/1.0
         unset($_SERVER['SERVER_PROTOCOL']);
@@ -85,7 +86,7 @@ class ResponseTest extends TestCase
         $this->assertSame(Response::VERSION_10, $response->getVersion());
     }
 
-    public function testCanExplicitlySetVersion()
+    public function testCanExplicitlySetVersion(): void
     {
         $response = new Response();
         $response->setVersion(Response::VERSION_11);
@@ -98,19 +99,20 @@ class ResponseTest extends TestCase
         $response->setVersion('laminas/2.0');
     }
 
-    /**
-     * @runInSeparateProcess
-     */
-    public function testSendHeadersReturnsInstanceIfHeadersNotAlreadySent()
+    #[RunInSeparateProcess]
+    public function testSendHeadersReturnsInstanceIfHeadersNotAlreadySent(): void
     {
         $response = new Response();
         $this->assertInstanceOf(Response::class, $response->sendHeaders());
     }
 
-    public function testSendHeadersInvokesHeadersSentHandlerIfHeadersAreAlreadySent()
+    #[RunInSeparateProcess]
+    public function testSendHeadersInvokesHeadersSentHandlerIfHeadersAreAlreadySent(): void
     {
+        include __DIR__ . '/Assets/MockHeadersSent.php';
+
         $response = new Response();
-        $response->setHeadersSentHandler(function ($response) {
+        $response->setHeadersSentHandler(function ($response): void {
             throw new RuntimeException('Cannot send headers, headers already sent');
         });
 

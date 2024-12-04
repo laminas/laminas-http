@@ -7,24 +7,25 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\Header\TransferEncoding;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class TransferEncodingTest extends TestCase
 {
-    public function testTransferEncodingFromStringCreatesValidTransferEncodingHeader()
+    public function testTransferEncodingFromStringCreatesValidTransferEncodingHeader(): void
     {
         $transferEncodingHeader = TransferEncoding::fromString('Transfer-Encoding: xxx');
         $this->assertInstanceOf(HeaderInterface::class, $transferEncodingHeader);
         $this->assertInstanceOf(TransferEncoding::class, $transferEncodingHeader);
     }
 
-    public function testTransferEncodingGetFieldNameReturnsHeaderName()
+    public function testTransferEncodingGetFieldNameReturnsHeaderName(): void
     {
         $transferEncodingHeader = new TransferEncoding();
         $this->assertEquals('Transfer-Encoding', $transferEncodingHeader->getFieldName());
     }
 
-    public function testTransferEncodingGetFieldValueReturnsProperValue()
+    public function testTransferEncodingGetFieldValueReturnsProperValue(): void
     {
         $this->markTestIncomplete('TransferEncoding needs to be completed');
 
@@ -32,7 +33,7 @@ class TransferEncodingTest extends TestCase
         $this->assertEquals('xxx', $transferEncodingHeader->getFieldValue());
     }
 
-    public function testTransferEncodingToStringReturnsHeaderFormattedString()
+    public function testTransferEncodingToStringReturnsHeaderFormattedString(): void
     {
         $this->markTestIncomplete('TransferEncoding needs to be completed');
 
@@ -43,13 +44,11 @@ class TransferEncodingTest extends TestCase
     }
 
     /** Implementation specific tests here */
-
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         TransferEncoding::fromString("Transfer-Encoding: xxx\r\n\r\nevilContent");
@@ -57,10 +56,9 @@ class TransferEncodingTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaConstructor()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new TransferEncoding("xxx\r\n\r\nevilContent");

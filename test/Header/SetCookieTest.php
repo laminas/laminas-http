@@ -9,6 +9,8 @@ use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\Header\MultipleHeaderInterface;
 use Laminas\Http\Header\SetCookie;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 use function gmdate;
@@ -24,10 +26,8 @@ use const PHP_INT_SIZE;
 
 class SetCookieTest extends TestCase
 {
-    /**
-     * @group Laminas-254
-     */
-    public function testSetCookieConstructor()
+    #[Group('Laminas-254')]
+    public function testSetCookieConstructor(): void
     {
         $setCookieHeader = new SetCookie(
             'myname',
@@ -51,7 +51,7 @@ class SetCookieTest extends TestCase
         $this->assertEquals(9, $setCookieHeader->getVersion());
     }
 
-    public function testSetCookieConstructorWithSameSite()
+    public function testSetCookieConstructorWithSameSite(): void
     {
         $setCookieHeader = new SetCookie(
             'myname',
@@ -77,7 +77,7 @@ class SetCookieTest extends TestCase
         $this->assertEquals('Strict', $setCookieHeader->getSameSite());
     }
 
-    public function testSetCookieConstructorWithSameSiteCaseInsensitive()
+    public function testSetCookieConstructorWithSameSiteCaseInsensitive(): void
     {
         $setCookieHeader = new SetCookie(
             'myname',
@@ -103,7 +103,7 @@ class SetCookieTest extends TestCase
         $this->assertEquals(SetCookie::SAME_SITE_STRICT, $setCookieHeader->getSameSite());
     }
 
-    public function testSetCookieWithInvalidSameSiteValueThrowException()
+    public function testSetCookieWithInvalidSameSiteValueThrowException(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -121,7 +121,7 @@ class SetCookieTest extends TestCase
         );
     }
 
-    public function testSetInvalidSameSiteDirectiveValueViaSetter()
+    public function testSetInvalidSameSiteDirectiveValueViaSetter(): void
     {
         $setCookieHeader = new SetCookie(
             'myname',
@@ -139,7 +139,7 @@ class SetCookieTest extends TestCase
         $setCookieHeader->setSameSite('InvalidValue');
     }
 
-    public function testSameSiteGetterReturnsCanonicalValue()
+    public function testSameSiteGetterReturnsCanonicalValue(): void
     {
         $setCookieHeader = new SetCookie(
             'myname',
@@ -162,14 +162,14 @@ class SetCookieTest extends TestCase
         $this->assertEquals(SetCookie::SAME_SITE_NONE, $setCookieHeader->getSameSite());
     }
 
-    public function testSetCookieFromStringWithQuotedValue()
+    public function testSetCookieFromStringWithQuotedValue(): void
     {
         $setCookieHeader = SetCookie::fromString('Set-Cookie: myname="quotedValue"');
         $this->assertEquals('quotedValue', $setCookieHeader->getValue());
         $this->assertEquals('myname=quotedValue', $setCookieHeader->getFieldValue());
     }
 
-    public function testSetCookieFromStringWithNotEncodedValue()
+    public function testSetCookieFromStringWithNotEncodedValue(): void
     {
         $setCookieHeader = SetCookie::fromString('Set-Cookie: foo=a:b; Path=/');
         $this->assertFalse($setCookieHeader->getEncodeValue());
@@ -177,7 +177,7 @@ class SetCookieTest extends TestCase
         $this->assertEquals('foo=a:b; Path=/', $setCookieHeader->getFieldValue());
     }
 
-    public function testSetCookieFromStringCreatesValidSetCookieHeader()
+    public function testSetCookieFromStringCreatesValidSetCookieHeader(): void
     {
         $setCookieHeader = SetCookie::fromString('Set-Cookie: xxx');
         $this->assertInstanceOf(MultipleHeaderInterface::class, $setCookieHeader);
@@ -185,7 +185,7 @@ class SetCookieTest extends TestCase
         $this->assertInstanceOf(SetCookie::class, $setCookieHeader);
     }
 
-    public function testSetCookieFromStringCanCreateSingleHeader()
+    public function testSetCookieFromStringCanCreateSingleHeader(): void
     {
         $setCookieHeader = SetCookie::fromString('Set-Cookie: myname=myvalue');
         $this->assertInstanceOf(HeaderInterface::class, $setCookieHeader);
@@ -234,7 +234,7 @@ class SetCookieTest extends TestCase
         $this->assertEquals(SetCookie::SAME_SITE_STRICT, $setCookieHeader->getSameSite());
     }
 
-    public function testFieldValueWithSameSiteCaseInsensitive()
+    public function testFieldValueWithSameSiteCaseInsensitive(): void
     {
         $setCookieHeader = SetCookie::fromString(
             'set-cookie: myname=myvalue; SameSite=Strict'
@@ -253,7 +253,7 @@ class SetCookieTest extends TestCase
         );
     }
 
-    public function testSetCookieFromStringCanCreateMultipleHeaders()
+    public function testSetCookieFromStringCanCreateMultipleHeaders(): void
     {
         $setCookieHeaders = SetCookie::fromString(
             'Set-Cookie: myname=myvalue, '
@@ -279,13 +279,13 @@ class SetCookieTest extends TestCase
         $this->assertTrue($setCookieHeader->isHttponly());
     }
 
-    public function testSetCookieGetFieldNameReturnsHeaderName()
+    public function testSetCookieGetFieldNameReturnsHeaderName(): void
     {
         $setCookieHeader = new SetCookie();
         $this->assertEquals('Set-Cookie', $setCookieHeader->getFieldName());
     }
 
-    public function testSetCookieGetFieldValueReturnsProperValue()
+    public function testSetCookieGetFieldValueReturnsProperValue(): void
     {
         $setCookieHeader = new SetCookie();
         $setCookieHeader->setName('myname');
@@ -303,11 +303,9 @@ class SetCookieTest extends TestCase
         $this->assertEquals($target, $setCookieHeader->getFieldValue());
     }
 
-    /**
-     * @group 6673
-     * @group 6923
-     */
-    public function testSetCookieWithDateTimeFieldValueReturnsProperValue()
+    #[Group('6673')]
+    #[Group('6923')]
+    public function testSetCookieWithDateTimeFieldValueReturnsProperValue(): void
     {
         $setCookieHeader = new SetCookie();
         $setCookieHeader->setName('myname');
@@ -325,7 +323,7 @@ class SetCookieTest extends TestCase
         $this->assertEquals($target, $setCookieHeader->getFieldValue());
     }
 
-    public function testSetCookieToStringReturnsHeaderFormattedString()
+    public function testSetCookieToStringReturnsHeaderFormattedString(): void
     {
         $setCookieHeader = new SetCookie();
         $setCookieHeader->setName('myname');
@@ -343,7 +341,7 @@ class SetCookieTest extends TestCase
         $this->assertEquals($target, $setCookieHeader->toString());
     }
 
-    public function testSetCookieCanAppendOtherHeadersInWhenCreatingString()
+    public function testSetCookieCanAppendOtherHeadersInWhenCreatingString(): void
     {
         $setCookieHeader = new SetCookie();
         $setCookieHeader->setName('myname');
@@ -370,7 +368,7 @@ class SetCookieTest extends TestCase
         $this->assertEquals($target, $headerLine);
     }
 
-    public function testSetCookieAttributesAreUnsettable()
+    public function testSetCookieAttributesAreUnsettable(): void
     {
         $setCookieHeader = new SetCookie();
         $setCookieHeader->setName('myname');
@@ -403,7 +401,7 @@ class SetCookieTest extends TestCase
         $this->assertNull($setCookieHeader->isHttponly());
     }
 
-    public function testSetCookieFieldValueIsEmptyStringWhenNameIsUnset()
+    public function testSetCookieFieldValueIsEmptyStringWhenNameIsUnset(): void
     {
         $setCookieHeader = new SetCookie();
         $this->assertSame('', $setCookieHeader->getFieldValue()); // empty
@@ -426,7 +424,7 @@ class SetCookieTest extends TestCase
         $this->assertNull($setCookieHeader->getName());
     }
 
-    public function testSetCookieSetExpiresWithZeroTimeStamp()
+    public function testSetCookieSetExpiresWithZeroTimeStamp(): void
     {
         $setCookieHeader = new SetCookie('myname', 'myvalue', 0);
         $this->assertSame('Thu, 01-Jan-1970 00:00:00 GMT', $setCookieHeader->getExpires());
@@ -441,7 +439,7 @@ class SetCookieTest extends TestCase
         $this->assertSame($target, $setCookieHeader->getFieldValue());
     }
 
-    public function testSetCookieSetExpiresWithUnixEpochString()
+    public function testSetCookieSetExpiresWithUnixEpochString(): void
     {
         $setCookieHeader = new SetCookie('myname', 'myvalue', 'Thu, 01-Jan-1970 00:00:00 GMT');
         $this->assertSame('Thu, 01-Jan-1970 00:00:00 GMT', $setCookieHeader->getExpires());
@@ -462,7 +460,7 @@ class SetCookieTest extends TestCase
      * Check that setCookie does not fail when an expiry date which is bigger
      * then 2038 is supplied (effect only 32bit systems)
      */
-    public function testSetCookieSetExpiresWithStringDateBiggerThen2038()
+    public function testSetCookieSetExpiresWithStringDateBiggerThen2038(): void
     {
         if (PHP_INT_SIZE !== 4) {
             $this->markTestSkipped('Testing set cookie expiry which is over 2038 is only relevant on 32bit systems');
@@ -472,7 +470,7 @@ class SetCookieTest extends TestCase
         $this->assertSame(2147483647, $setCookieHeader->getExpires(true));
     }
 
-    public function testIsValidForRequestSubdomainMatch()
+    public function testIsValidForRequestSubdomainMatch(): void
     {
         $setCookieHeader = new SetCookie(
             'myname',
@@ -498,12 +496,8 @@ class SetCookieTest extends TestCase
         ); // false because of path
     }
 
-    /** Implementation specific tests here */
-
-    /**
-     * @group Laminas-169
-     */
-    public function test169()
+    #[Group('Laminas-169')]
+    public function test169(): void
     {
         // @codingStandardsIgnoreStart
         $cookie = 'Set-Cookie: leo_auth_token=example; Version=1; Max-Age=1799; Expires=Mon, 20-Feb-2012 02:49:57 GMT; Path=/';
@@ -512,10 +506,8 @@ class SetCookieTest extends TestCase
         $this->assertEquals($cookie, $setCookieHeader->toString());
     }
 
-    /**
-     * @group Laminas-169
-     */
-    public function testDoesNotAcceptCookieNameFromArbitraryLocationInHeaderValue()
+    #[Group('Laminas-169')]
+    public function testDoesNotAcceptCookieNameFromArbitraryLocationInHeaderValue(): void
     {
         // @codingStandardsIgnoreStart
         $cookie = 'Set-Cookie: Version=1; Max-Age=1799; Expires=Mon, 20-Feb-2012 02:49:57 GMT; Path=/; leo_auth_token=example';
@@ -524,19 +516,14 @@ class SetCookieTest extends TestCase
         $this->assertNotEquals('leo_auth_token', $setCookieHeader->getName());
     }
 
-    public function testGetFieldName()
+    public function testGetFieldName(): void
     {
         $c = new SetCookie();
         $this->assertEquals('Set-Cookie', $c->getFieldName());
     }
 
-    /**
-     * @dataProvider validCookieWithInfoProvider
-     * @param string $cStr
-     * @param array $info
-     * @param string $expected
-     */
-    public function testGetFieldValue($cStr, array $info, $expected)
+    #[DataProvider('validCookieWithInfoProvider')]
+    public function testGetFieldValue(string $cStr, array $info, string $expected): void
     {
         $cookie = SetCookie::fromString($cStr);
         if (! $cookie instanceof SetCookie) {
@@ -546,13 +533,8 @@ class SetCookieTest extends TestCase
         $this->assertEquals($cookie->getFieldName() . ': ' . $expected, $cookie->toString());
     }
 
-    /**
-     * @dataProvider validCookieWithInfoProvider
-     * @param string $cStr
-     * @param array $info
-     * @param string $expected
-     */
-    public function testToString($cStr, array $info, $expected)
+    #[DataProvider('validCookieWithInfoProvider')]
+    public function testToString(string $cStr, array $info, string $expected): void
     {
         $cookie = SetCookie::fromString($cStr);
         if (! $cookie instanceof SetCookie) {
@@ -561,7 +543,7 @@ class SetCookieTest extends TestCase
         $this->assertEquals($cookie->getFieldName() . ': ' . $expected, $cookie->toString());
     }
 
-    public function testRfcCompatibility()
+    public function testRfcCompatibility(): void
     {
         $name           = 'myname';
         $value          = 'myvalue';
@@ -582,7 +564,7 @@ class SetCookieTest extends TestCase
         $this->assertEquals($cookie->toString(), sprintf($formatUnquoted, $cookie->getFieldName(), $name, $value));
     }
 
-    public function testSetJsonValue()
+    public function testSetJsonValue(): void
     {
         $cookieName = 'fooCookie';
         $jsonData   = json_encode(['foo' => 'bar']);
@@ -604,10 +586,9 @@ class SetCookieTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         SetCookie::fromString("Set-Cookie: leo_auth_token=example;\r\n\r\nevilContent");
@@ -615,23 +596,22 @@ class SetCookieTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaConstructor()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaConstructor(): void
     {
         $header = new SetCookie('leo_auth_token', "example\r\n\r\nevilContent");
         $this->assertEquals('Set-Cookie: leo_auth_token=example%0D%0A%0D%0AevilContent', $header->toString());
     }
 
-    public function testPreventsCRLFAttackViaSetValue()
+    public function testPreventsCRLFAttackViaSetValue(): void
     {
         $header = new SetCookie('leo_auth_token');
         $header->setValue("example\r\n\r\nevilContent");
         $this->assertEquals('Set-Cookie: leo_auth_token=example%0D%0A%0D%0AevilContent', $header->toString());
     }
 
-    public function testSetCookieWithEncodeValue()
+    public function testSetCookieWithEncodeValue(): void
     {
         $header = new SetCookie('test');
         $header->setValue('a:b');
@@ -640,7 +620,7 @@ class SetCookieTest extends TestCase
         $this->assertSame('test=a%3Ab', $header->getFieldValue());
     }
 
-    public function testSetCookieWithNoEncodeValue()
+    public function testSetCookieWithNoEncodeValue(): void
     {
         $header = new SetCookie('test');
         $header->setValue('a:b');
@@ -651,7 +631,7 @@ class SetCookieTest extends TestCase
     }
 
     /** @psalm-return array<string, array{0: string, 1: string}> */
-    public function setterInjections(): array
+    public static function setterInjections(): array
     {
         return [
             'name'   => ['setName', "\r\nThis\rIs\nThe\r\nName"],
@@ -662,13 +642,10 @@ class SetCookieTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
-     * @dataProvider setterInjections
-     * @param string $method
-     * @param string $value
      */
-    public function testPreventsCRLFAttackViaSetters($method, $value)
+    #[DataProvider('setterInjections')]
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaSetters(string $method, string $value): void
     {
         $header = new SetCookie();
         $this->expectException(InvalidArgumentException::class);
@@ -677,10 +654,8 @@ class SetCookieTest extends TestCase
 
     /**
      * Provide valid cookie strings with information about them
-     *
-     * @return array
      */
-    public static function validCookieWithInfoProvider()
+    public static function validCookieWithInfoProvider(): array
     {
         $now       = time();
         $yesterday = $now - (3600 * 24);

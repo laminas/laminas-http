@@ -9,6 +9,8 @@ use Laminas\Http\Header\Accept\FieldValuePart\AbstractFieldValuePart;
 use Laminas\Http\Header\Accept\FieldValuePart\AcceptFieldValuePart;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 use function addslashes;
@@ -16,38 +18,38 @@ use function array_shift;
 
 class AcceptTest extends TestCase
 {
-    public function testInvalidHeaderLine()
+    public function testInvalidHeaderLine(): void
     {
         $this->expectException(InvalidArgumentException::class);
         Accept::fromString('');
     }
 
-    public function testAcceptFromStringCreatesValidAcceptHeader()
+    public function testAcceptFromStringCreatesValidAcceptHeader(): void
     {
         $acceptHeader = Accept::fromString('Accept: xxx');
         $this->assertInstanceOf(HeaderInterface::class, $acceptHeader);
         $this->assertInstanceOf(Accept::class, $acceptHeader);
     }
 
-    public function testAcceptGetFieldNameReturnsHeaderName()
+    public function testAcceptGetFieldNameReturnsHeaderName(): void
     {
         $acceptHeader = new Accept();
         $this->assertEquals('Accept', $acceptHeader->getFieldName());
     }
 
-    public function testAcceptGetFieldValueReturnsProperValue()
+    public function testAcceptGetFieldValueReturnsProperValue(): void
     {
         $acceptHeader = Accept::fromString('Accept: xxx');
         $this->assertEquals('xxx', $acceptHeader->getFieldValue());
     }
 
-    public function testAcceptGetFieldValueReturnsProperValueWithAHeaderWithoutSpaces()
+    public function testAcceptGetFieldValueReturnsProperValueWithAHeaderWithoutSpaces(): void
     {
         $acceptHeader = Accept::fromString('Accept:xxx');
         $this->assertEquals('xxx', $acceptHeader->getFieldValue());
     }
 
-    public function testAcceptToStringReturnsHeaderFormattedString()
+    public function testAcceptToStringReturnsHeaderFormattedString(): void
     {
         $acceptHeader = new Accept();
         $acceptHeader->addMediaType('text/html', 0.8)
@@ -67,7 +69,7 @@ class AcceptTest extends TestCase
     // Implementation specific tests here
 
     // phpcs:ignore Squiz.Commenting.FunctionComment.WrongStyle
-    public function testCanParseCommaSeparatedValues()
+    public function testCanParseCommaSeparatedValues(): void
     {
         $header = Accept::fromString('Accept: text/plain; q=0.5, text/html, text/x-dvi; q=0.8, text/x-c');
         $this->assertTrue($header->hasMediaType('text/plain'));
@@ -76,7 +78,7 @@ class AcceptTest extends TestCase
         $this->assertTrue($header->hasMediaType('text/x-c'));
     }
 
-    public function testPrioritizesValuesBasedOnQParameter()
+    public function testPrioritizesValuesBasedOnQParameter(): void
     {
         $header   = Accept::fromString(
             'Accept: text/plain; q=0.5, text/html, text/xml; q=0, text/x-dvi; q=0.8, text/x-c'
@@ -94,7 +96,7 @@ class AcceptTest extends TestCase
         }
     }
 
-    public function testLevel()
+    public function testLevel(): void
     {
         $acceptHeader = new Accept();
         $acceptHeader->addMediaType('text/html', 0.8, ['level' => 1])
@@ -108,7 +110,7 @@ class AcceptTest extends TestCase
         );
     }
 
-    public function testPrioritizedLevel()
+    public function testPrioritizedLevel(): void
     {
         $header = Accept::fromString(
             'Accept: text/*;q=0.3, text/html;q=0.7, text/html;level=1,'
@@ -128,7 +130,7 @@ class AcceptTest extends TestCase
         }
     }
 
-    public function testPrios()
+    public function testPrios(): void
     {
         $values = [
             'invalidPrio' => false,
@@ -157,7 +159,7 @@ class AcceptTest extends TestCase
         }
     }
 
-    public function testWildcharMediaType()
+    public function testWildcharMediaType(): void
     {
         $acceptHeader = new Accept();
         $acceptHeader->addMediaType('text/*', 0.8)
@@ -170,7 +172,7 @@ class AcceptTest extends TestCase
         $this->assertEquals('Accept: application/*, text/*;q=0.8, */*;q=0.4', $acceptHeader->toString());
     }
 
-    public function testMatchWildCard()
+    public function testMatchWildCard(): void
     {
         $acceptHeader = Accept::fromString('Accept: */*');
         $this->assertTrue($acceptHeader->hasMediaType('application/vnd.foobar+json'));
@@ -190,7 +192,7 @@ class AcceptTest extends TestCase
         $this->assertTrue($acceptHeader->hasMediaType('text/*'));
     }
 
-    public function testParsingAndAssemblingQuotedStrings()
+    public function testParsingAndAssemblingQuotedStrings(): void
     {
         $acceptStr    = 'Accept: application/vnd.foobar+html;q=1;version="2'
                    . '\"";level="foo;, bar", text/json;level=1, text/xml;level=2;q=0.4';
@@ -199,7 +201,7 @@ class AcceptTest extends TestCase
         $this->assertEquals($acceptStr, $acceptHeader->getFieldName() . ': ' . $acceptHeader->getFieldValue());
     }
 
-    public function testMatchReturnsMatchedAgainstObject()
+    public function testMatchReturnsMatchedAgainstObject(): void
     {
         $acceptStr    = 'Accept: text/html;q=1; version=23; level=5, text/json;level=1,text/xml;level=2;q=0.4';
         $acceptHeader = Accept::fromString($acceptStr);
@@ -223,7 +225,7 @@ class AcceptTest extends TestCase
         );
     }
 
-    public function testVersioning()
+    public function testVersioning(): void
     {
         $acceptStr    = 'Accept: text/html;q=1; version=23; level=5, text/json;level=1,text/xml;level=2;q=0.4';
         $acceptHeader = Accept::fromString($acceptStr);
@@ -261,7 +263,7 @@ class AcceptTest extends TestCase
         }
     }
 
-    public function testWildcardWithDifferentParamsAndRanges()
+    public function testWildcardWithDifferentParamsAndRanges(): void
     {
         $acceptHeader = Accept::fromString('Accept: */*; version=21');
         $this->assertFalse($acceptHeader->match('*/*; version=20|22'));
@@ -278,26 +280,16 @@ class AcceptTest extends TestCase
         $this->assertEquals('21', $res->getParams()->version);
     }
 
-    /**
-     * @group 3739
-     * @covers Laminas\Http\Header\AbstractAccept::matchAcceptParams()
-     */
-    public function testParamRangesWithDecimals()
+    #[Group('3739')]
+    public function testParamRangesWithDecimals(): void
     {
         $acceptHeader = Accept::fromString('Accept: application/vnd.com.example+xml; version=10');
         $this->assertFalse($acceptHeader->match('application/vnd.com.example+xml; version="\"3.1\"-\"3.1.1-DEV\""'));
     }
 
-    /**
-     * @group 3740
-     * @covers Laminas\Http\Header\AbstractAccept::matchAcceptParams()
-     * @covers Laminas\Http\Header\AbstractAccept::getParametersFromFieldValuePart()
-     * @dataProvider provideParamRanges
-     * @param string $range
-     * @param string $input
-     * @param bool $success
-     */
-    public function testParamRangesSupportDevStage($range, $input, $success)
+    #[DataProvider('provideParamRanges')]
+    #[Group('3740')]
+    public function testParamRangesSupportDevStage(string $range, string $input, bool $success): void
     {
         $acceptHeader = Accept::fromString(
             'Accept: application/vnd.com.example+xml; version="' . addslashes($input) . '"'
@@ -314,11 +306,8 @@ class AcceptTest extends TestCase
         }
     }
 
-    /**
-     * @group 3740
-     * @return array
-     */
-    public function provideParamRanges()
+    #[Group('3740')]
+    public static function provideParamRanges(): array
     {
         return [
             ['"3.1.1-DEV"-3.1.1', '3.1.1', true],
@@ -334,7 +323,7 @@ class AcceptTest extends TestCase
         ];
     }
 
-    public function testVersioningAndPriorization()
+    public function testVersioningAndPriorization(): void
     {
         $acceptStr    = 'Accept: text/html; version=23, text/json; version=15.3; q=0.9,text/html;level=2;q=0.4';
         $acceptHeader = Accept::fromString($acceptStr);
@@ -374,7 +363,7 @@ class AcceptTest extends TestCase
         }
     }
 
-    public function testPrioritizing()
+    public function testPrioritizing(): void
     {
         // Example is copy/paste from rfc2616
         $acceptStr = 'Accept: text/*;q=0.3, */*,text/html;q=1, text/html;level=1,text/html;level=2;q=0.4, */*;q=0.5';
@@ -402,7 +391,7 @@ class AcceptTest extends TestCase
         }
     }
 
-    public function testPrioritizing2()
+    public function testPrioritizing2(): void
     {
         $accept = Accept::fromString("Accept: application/text, \tapplication/*");
         $res    = $accept->getPrioritized();
@@ -438,7 +427,7 @@ class AcceptTest extends TestCase
         $this->assertEquals('application/vnd.foobar+xml; version="\'Ѿ"', $res[0]->getRaw());
     }
 
-    public function testWildcardDefaults()
+    public function testWildcardDefaults(): void
     {
         $this->markTestIncomplete('No wildcard defaults implemented yet');
 
@@ -459,16 +448,15 @@ class AcceptTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         Accept::fromString("Accept: application/text\r\n\r\nevilContent");
     }
 
-    public function testGetEmptyFieldValue()
+    public function testGetEmptyFieldValue(): void
     {
         $accept = new Accept();
         $accept->getFieldValue();

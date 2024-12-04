@@ -7,24 +7,25 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\Expect;
 use Laminas\Http\Header\HeaderInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class ExpectTest extends TestCase
 {
-    public function testExpectFromStringCreatesValidExpectHeader()
+    public function testExpectFromStringCreatesValidExpectHeader(): void
     {
         $expectHeader = Expect::fromString('Expect: xxx');
         $this->assertInstanceOf(HeaderInterface::class, $expectHeader);
         $this->assertInstanceOf(Expect::class, $expectHeader);
     }
 
-    public function testExpectGetFieldNameReturnsHeaderName()
+    public function testExpectGetFieldNameReturnsHeaderName(): void
     {
         $expectHeader = new Expect();
         $this->assertEquals('Expect', $expectHeader->getFieldName());
     }
 
-    public function testExpectGetFieldValueReturnsProperValue()
+    public function testExpectGetFieldValueReturnsProperValue(): void
     {
         $this->markTestIncomplete('Expect needs to be completed');
 
@@ -32,7 +33,7 @@ class ExpectTest extends TestCase
         $this->assertEquals('xxx', $expectHeader->getFieldValue());
     }
 
-    public function testExpectToStringReturnsHeaderFormattedString()
+    public function testExpectToStringReturnsHeaderFormattedString(): void
     {
         $this->markTestIncomplete('Expect needs to be completed');
 
@@ -43,13 +44,11 @@ class ExpectTest extends TestCase
     }
 
     /** Implementation specific tests here */
-
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         Expect::fromString("Expect: xxx\r\n\r\nevilContent");
@@ -57,10 +56,9 @@ class ExpectTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaConstructor()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new Expect("xxx\r\n\r\nevilContent");

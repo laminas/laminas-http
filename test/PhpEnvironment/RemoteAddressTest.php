@@ -56,19 +56,19 @@ class RemoteAddressTest extends TestCase
         $_FILES  = $this->originalEnvironment['files'];
     }
 
-    public function testSetGetUseProxy()
+    public function testSetGetUseProxy(): void
     {
         $this->remoteAddress->setUseProxy(false);
         $this->assertFalse($this->remoteAddress->getUseProxy());
     }
 
-    public function testSetGetDefaultUseProxy()
+    public function testSetGetDefaultUseProxy(): void
     {
         $this->remoteAddress->setUseProxy();
         $this->assertTrue($this->remoteAddress->getUseProxy());
     }
 
-    public function testSetTrustedProxies()
+    public function testSetTrustedProxies(): void
     {
         $result = $this->remoteAddress->setTrustedProxies([
             '192.168.0.10',
@@ -77,13 +77,13 @@ class RemoteAddressTest extends TestCase
         $this->assertInstanceOf(RemoteAddr::class, $result);
     }
 
-    public function testGetIpAddress()
+    public function testGetIpAddress(): void
     {
         $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
         $this->assertEquals('127.0.0.1', $this->remoteAddress->getIpAddress());
     }
 
-    public function testGetIpAddressFromProxy()
+    public function testGetIpAddressFromProxy(): void
     {
         $this->remoteAddress->setUseProxy(true);
         $this->remoteAddress->setTrustedProxies([
@@ -95,7 +95,7 @@ class RemoteAddressTest extends TestCase
         $this->assertEquals('8.8.8.8', $this->remoteAddress->getIpAddress());
     }
 
-    public function testGetIpAddressFromProxyRemoteAddressNotTrusted()
+    public function testGetIpAddressFromProxyRemoteAddressNotTrusted(): void
     {
         $this->remoteAddress->setUseProxy(true);
         $this->remoteAddress->setTrustedProxies([
@@ -113,7 +113,7 @@ class RemoteAddressTest extends TestCase
      *
      * @see http://tools.ietf.org/html/draft-ietf-appsawg-http-forwarded-10#section-5.2
      */
-    public function testGetIpAddressFromProxyFakeData()
+    public function testGetIpAddressFromProxyFakeData(): void
     {
         $this->remoteAddress->setUseProxy(true);
         $this->remoteAddress->setTrustedProxies([
@@ -135,7 +135,7 @@ class RemoteAddressTest extends TestCase
      * This happens when you run a local unit test, or a PHP script with
      * PHP from the command line.
      */
-    public function testGetIpAddressReturnsEmptyStringOnNoRemoteAddr()
+    public function testGetIpAddressReturnsEmptyStringOnNoRemoteAddr(): void
     {
         // Store the set IP address for later use
         if (isset($_SERVER['REMOTE_ADDR'])) {

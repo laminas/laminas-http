@@ -11,19 +11,21 @@ use Laminas\Http\Header\GenericHeader;
 use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\Header\MultipleHeaderInterface;
 use Laminas\Http\Headers;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 use function implode;
 
 class ContentSecurityPolicyTest extends TestCase
 {
-    public function testContentSecurityPolicyFromStringThrowsExceptionIfImproperHeaderNameUsed()
+    public function testContentSecurityPolicyFromStringThrowsExceptionIfImproperHeaderNameUsed(): void
     {
         $this->expectException(InvalidArgumentException::class);
         ContentSecurityPolicy::fromString('X-Content-Security-Policy: default-src *;');
     }
 
-    public function testContentSecurityPolicyFromStringParsesDirectivesCorrectly()
+    public function testContentSecurityPolicyFromStringParsesDirectivesCorrectly(): void
     {
         $csp = ContentSecurityPolicy::fromString(
             "Content-Security-Policy: default-src 'none'; script-src 'self'; img-src 'self'; style-src 'self';"
@@ -40,13 +42,13 @@ class ContentSecurityPolicyTest extends TestCase
         $this->assertEquals($directives, $csp->getDirectives());
     }
 
-    public function testContentSecurityPolicyGetFieldNameReturnsHeaderName()
+    public function testContentSecurityPolicyGetFieldNameReturnsHeaderName(): void
     {
         $csp = new ContentSecurityPolicy();
         $this->assertEquals('Content-Security-Policy', $csp->getFieldName());
     }
 
-    public function testContentSecurityPolicyToStringReturnsHeaderFormattedString()
+    public function testContentSecurityPolicyToStringReturnsHeaderFormattedString(): void
     {
         $csp = ContentSecurityPolicy::fromString(
             "Content-Security-Policy: default-src 'none'; img-src 'self' https://*.gravatar.com;"
@@ -59,7 +61,7 @@ class ContentSecurityPolicyTest extends TestCase
         );
     }
 
-    public function testContentSecurityPolicySetDirective()
+    public function testContentSecurityPolicySetDirective(): void
     {
         $csp = new ContentSecurityPolicy();
         $csp->setDirective('default-src', ['https://*.google.com', 'http://foo.com'])
@@ -70,7 +72,7 @@ class ContentSecurityPolicyTest extends TestCase
         $this->assertEquals($header, $csp->toString());
     }
 
-    public function testContentSecurityPolicySetDirectiveWithEmptySourcesDefaultsToNone()
+    public function testContentSecurityPolicySetDirectiveWithEmptySourcesDefaultsToNone(): void
     {
         $csp = new ContentSecurityPolicy();
         $csp->setDirective('default-src', ["'self'"])
@@ -82,14 +84,14 @@ class ContentSecurityPolicyTest extends TestCase
         );
     }
 
-    public function testContentSecurityPolicySetDirectiveThrowsExceptionIfInvalidDirectiveNameGiven()
+    public function testContentSecurityPolicySetDirectiveThrowsExceptionIfInvalidDirectiveNameGiven(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $csp = new ContentSecurityPolicy();
         $csp->setDirective('foo', []);
     }
 
-    public function testContentSecurityPolicyGetFieldValueReturnsProperValue()
+    public function testContentSecurityPolicyGetFieldValueReturnsProperValue(): void
     {
         $csp = new ContentSecurityPolicy();
         $csp->setDirective('default-src', ["'self'"])
@@ -99,10 +101,9 @@ class ContentSecurityPolicyTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         ContentSecurityPolicy::fromString("Content-Security-Policy: default-src 'none'\r\n\r\nevilContent");
@@ -110,17 +111,16 @@ class ContentSecurityPolicyTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaDirective()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaDirective(): void
     {
         $header = new ContentSecurityPolicy();
         $this->expectException(InvalidArgumentException::class);
         $header->setDirective('default-src', ["\rsome\r\nCRLF\ninjection"]);
     }
 
-    public function testContentSecurityPolicySetDirectiveWithEmptyReportUriDefaultsToUnset()
+    public function testContentSecurityPolicySetDirectiveWithEmptyReportUriDefaultsToUnset(): void
     {
         $csp = new ContentSecurityPolicy();
         $csp->setDirective('report-uri', []);
@@ -130,7 +130,7 @@ class ContentSecurityPolicyTest extends TestCase
         );
     }
 
-    public function testContentSecurityPolicySetDirectiveWithEmptyReportUriRemovesExistingValue()
+    public function testContentSecurityPolicySetDirectiveWithEmptyReportUriRemovesExistingValue(): void
     {
         $csp = new ContentSecurityPolicy();
         $csp->setDirective('report-uri', ['csp-error']);
@@ -146,7 +146,7 @@ class ContentSecurityPolicyTest extends TestCase
         );
     }
 
-    public function testToStringMultipleHeaders()
+    public function testToStringMultipleHeaders(): void
     {
         $csp = new ContentSecurityPolicy();
         $csp->setDirective('default-src', ["'self'"]);
@@ -161,7 +161,7 @@ class ContentSecurityPolicyTest extends TestCase
         );
     }
 
-    public function testToStringMultipleHeadersExceptionIfDifferent()
+    public function testToStringMultipleHeadersExceptionIfDifferent(): void
     {
         $csp = new ContentSecurityPolicy();
         $csp->setDirective('default-src', ["'self'"]);
@@ -176,7 +176,7 @@ class ContentSecurityPolicyTest extends TestCase
         $csp->toStringMultipleHeaders([$additional]);
     }
 
-    public function testMultiple()
+    public function testMultiple(): void
     {
         $headers = new Headers();
         $headers->addHeader((new ContentSecurityPolicy())->setDirective('default-src', ["'self'"]));
@@ -226,16 +226,14 @@ class ContentSecurityPolicyTest extends TestCase
     }
 
     /**
-     * @dataProvider validDirectives
-     * @param string $directive
      * @param string[] $values
-     * @param string $expected
      */
+    #[DataProvider('validDirectives')]
     public function testContentSecurityPolicySetDirectiveThrowsExceptionIfMissingDirectiveNameGiven(
-        $directive,
+        string $directive,
         array $values,
-        $expected
-    ) {
+        string $expected
+    ): void {
         $csp = new ContentSecurityPolicy();
         $csp->setDirective($directive, $values);
 
@@ -243,12 +241,10 @@ class ContentSecurityPolicyTest extends TestCase
     }
 
     /**
-     * @dataProvider validDirectives
-     * @param string $directive
      * @param string[] $values
-     * @param string $header
      */
-    public function testFromString($directive, array $values, $header)
+    #[DataProvider('validDirectives')]
+    public function testFromString(string $directive, array $values, string $header): void
     {
         $contentSecurityPolicy = ContentSecurityPolicy::fromString($header);
 
@@ -256,20 +252,14 @@ class ContentSecurityPolicyTest extends TestCase
         self::assertSame(implode(' ', $values), $contentSecurityPolicy->getDirectives()[$directive]);
     }
 
-    /**
-     * @return string
-     */
-    public function directivesWithoutValue()
+    public static function directivesWithoutValue(): iterable
     {
         yield ['block-all-mixed-content'];
         yield ['upgrade-insecure-requests'];
     }
 
-    /**
-     * @dataProvider directivesWithoutValue
-     * @param string $directive
-     */
-    public function testExceptionWhenProvideValueWithDirectiveWithoutValue($directive)
+    #[DataProvider('directivesWithoutValue')]
+    public function testExceptionWhenProvideValueWithDirectiveWithoutValue(string $directive): void
     {
         $csp = new ContentSecurityPolicy();
 

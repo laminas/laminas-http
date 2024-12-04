@@ -234,7 +234,6 @@ class Proxy extends Socket
      * @param string  $host
      * @param int $port
      * @param string  $httpVer
-     * @param array   $headers
      * @throws AdapterException\RuntimeException
      */
     protected function connectHandshake($host, $port = 443, $httpVer = '1.1', array &$headers = [])

@@ -6,6 +6,7 @@ namespace LaminasTest\Http\Client;
 
 use Laminas\Http\Client;
 use Laminas\Http\ClientStatic as HTTPClient;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -18,18 +19,15 @@ use const FILTER_VALIDATE_BOOLEAN;
 
 /**
  * This are the test for the prototype of Laminas\Http\Client
- *
- * @group      Laminas\Http
- * @group      Laminas\Http\Client
  */
+#[Group('Laminas\Http')]
+#[Group(Client::class)]
 class StaticClientTest extends TestCase
 {
     /**
      * Uri for test
-     *
-     * @var string
      */
-    protected $baseuri;
+    protected string $baseuri;
 
     /**
      * Set up the test case
@@ -56,7 +54,7 @@ class StaticClientTest extends TestCase
     /**
      * Test simple GET
      */
-    public function testHttpSimpleGet()
+    public function testHttpSimpleGet(): void
     {
         $response = HTTPClient::get($this->baseuri . 'testSimpleRequests.php');
         $this->assertTrue($response->isSuccess());
@@ -65,7 +63,7 @@ class StaticClientTest extends TestCase
     /**
      * Test GET with query string in URI
      */
-    public function testHttpGetWithParamsInUri()
+    public function testHttpGetWithParamsInUri(): void
     {
         $response = HTTPClient::get($this->baseuri . 'testGetData.php?foo');
         $this->assertTrue($response->isSuccess());
@@ -75,7 +73,7 @@ class StaticClientTest extends TestCase
     /**
      * Test GET with query as params
      */
-    public function testHttpMultiGetWithParam()
+    public function testHttpMultiGetWithParam(): void
     {
         $response = HTTPClient::get($this->baseuri . 'testGetData.php', ['foo' => 'bar']);
         $this->assertTrue($response->isSuccess());
@@ -86,7 +84,7 @@ class StaticClientTest extends TestCase
     /**
      * Test GET with body
      */
-    public function testHttpGetWithBody()
+    public function testHttpGetWithBody(): void
     {
         $getBody = 'baz';
 
@@ -106,7 +104,7 @@ class StaticClientTest extends TestCase
     /**
      * Test simple POST
      */
-    public function testHttpSimplePost()
+    public function testHttpSimplePost(): void
     {
         $response = HTTPClient::post($this->baseuri . 'testPostData.php', ['foo' => 'bar']);
         $this->assertTrue($response->isSuccess());
@@ -117,7 +115,7 @@ class StaticClientTest extends TestCase
     /**
      * Test POST with header Content-Type
      */
-    public function testHttpPostContentType()
+    public function testHttpPostContentType(): void
     {
         $response = HTTPClient::post(
             $this->baseuri . 'testPostData.php',
@@ -132,7 +130,7 @@ class StaticClientTest extends TestCase
     /**
      * Test POST with body
      */
-    public function testHttpPostWithBody()
+    public function testHttpPostWithBody(): void
     {
         $postBody = 'foo';
 
@@ -152,7 +150,7 @@ class StaticClientTest extends TestCase
      *
      * @link https://github.com/zendframework/zf2/issues/6482
      */
-    public function testHttpGetUsesAdapterConfig()
+    public function testHttpGetUsesAdapterConfig(): void
     {
         $testUri = $this->baseuri . 'testSimpleRequests.php';
 
@@ -177,7 +175,7 @@ class StaticClientTest extends TestCase
      *
      * @link https://github.com/zendframework/zf2/issues/6482
      */
-    public function testHttpPostUsesAdapterConfig()
+    public function testHttpPostUsesAdapterConfig(): void
     {
         $testUri = $this->baseuri . 'testPostData.php';
 

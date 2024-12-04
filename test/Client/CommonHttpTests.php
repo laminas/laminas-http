@@ -11,6 +11,8 @@ use Laminas\Http\Client\Adapter\Socket;
 use Laminas\Http\Request;
 use Laminas\Http\Response\Stream;
 use Laminas\Stdlib\Parameters;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -58,10 +60,9 @@ use const FILTER_VALIDATE_URL;
  *
  * You can also set the proper constant in your test configuration file to
  * point to the right place.
- *
- * @group      Laminas_Http
- * @group      Laminas_Http_Client
  */
+#[Group('Laminas_Http')]
+#[Group('Laminas_Http_Client')]
 abstract class CommonHttpTests extends TestCase
 {
     /**
@@ -108,7 +109,7 @@ abstract class CommonHttpTests extends TestCase
                 $this->baseuri .= '/';
             }
 
-            $name = $this->getName();
+            $name = $this->nameWithDataSet();
             if (($pos = strpos($name, ' ')) !== false) {
                 $name = substr($name, 0, $pos);
             }
@@ -139,7 +140,7 @@ abstract class CommonHttpTests extends TestCase
     // Simple request tests
 
     /** @psalm-return array<array-key, array{0: Request::METHOD_*}> */
-    public function methodProvider(): array
+    public static function methodProvider(): array
     {
         return [
             [Request::METHOD_GET],
@@ -153,11 +154,9 @@ abstract class CommonHttpTests extends TestCase
 
     /**
      * Test simple requests
-     *
-     * @dataProvider methodProvider
-     * @param string $method
      */
-    public function testSimpleRequests($method)
+    #[DataProvider('methodProvider')]
+    public function testSimpleRequests(string $method): void
     {
         $this->client->setMethod($method);
         $res = $this->client->send();
@@ -167,7 +166,7 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Test we can get the last request as string
      */
-    public function testGetLastRawRequest()
+    public function testGetLastRawRequest(): void
     {
         $this->client->setUri($this->baseuri . 'testHeaders.php');
         $this->client->setParameterGet(['someinput' => 'somevalue']);
@@ -191,14 +190,11 @@ abstract class CommonHttpTests extends TestCase
     /**
      * GET and POST parameters tests
      */
-
     /**
      * Test we can properly send GET parameters
-     *
-     * @dataProvider parameterArrayProvider
-     * @param array $params
      */
-    public function testGetData(array $params)
+    #[DataProvider('parameterArrayProvider')]
+    public function testGetData(array $params): void
     {
         $this->client->setUri($this->client->getUri() . '?name=Arthur');
         $this->client->setParameterGet($params);
@@ -209,11 +205,9 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Test we can properly send POST parameters with
      * application/x-www-form-urlencoded content type
-     *
-     * @dataProvider parameterArrayProvider
-     * @param array $params
      */
-    public function testPostDataUrlEncoded(array $params)
+    #[DataProvider('parameterArrayProvider')]
+    public function testPostDataUrlEncoded(array $params): void
     {
         $this->client->setUri($this->baseuri . 'testPostData.php');
         $this->client->setEncType(HTTPClient::ENC_URLENCODED);
@@ -229,11 +223,9 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Test we can properly send PATCH parameters with
      * application/x-www-form-urlencoded content type
-     *
-     * @dataProvider parameterArrayProvider
-     * @param array $params
      */
-    public function testPatchData(array $params)
+    #[DataProvider('parameterArrayProvider')]
+    public function testPatchData(array $params): void
     {
         $client = $this->client;
         $client->setUri($this->baseuri . 'testPatchData.php');
@@ -250,11 +242,9 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Test we can properly send DELETE parameters with
      * application/x-www-form-urlencoded content type
-     *
-     * @dataProvider parameterArrayProvider
-     * @param array $params
      */
-    public function testDeleteData(array $params)
+    #[DataProvider('parameterArrayProvider')]
+    public function testDeleteData(array $params): void
     {
         $client = $this->client;
         $client->setUri($this->baseuri . 'testDeleteData.php');
@@ -271,11 +261,9 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Test we can properly send OPTIONS parameters with
      * application/x-www-form-urlencoded content type
-     *
-     * @dataProvider parameterArrayProvider
-     * @param array $params
      */
-    public function testOptionsData(array $params)
+    #[DataProvider('parameterArrayProvider')]
+    public function testOptionsData(array $params): void
     {
         $client = $this->client;
         $client->setUri($this->baseuri . 'testOptionsData.php');
@@ -292,11 +280,9 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Test we can properly send POST parameters with
      * multipart/form-data content type
-     *
-     * @dataProvider parameterArrayProvider
-     * @param array $params
      */
-    public function testPostDataMultipart(array $params)
+    #[DataProvider('parameterArrayProvider')]
+    public function testPostDataMultipart(array $params): void
     {
         $this->client->setUri($this->baseuri . 'testPostData.php');
         $this->client->setEncType(HTTPClient::ENC_FORMDATA);
@@ -309,7 +295,7 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Test using raw HTTP POST data
      */
-    public function testRawPostData()
+    public function testRawPostData(): void
     {
         $data = 'Chuck Norris never wet his bed as a child. The bed wet itself out of fear.';
 
@@ -323,7 +309,7 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Make sure we can reset the parameters between consecutive requests
      */
-    public function testResetParameters()
+    public function testResetParameters(): void
     {
         $params = [
             'quest'        => 'To seek the holy grail',
@@ -365,7 +351,7 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Test parameters get reset when we unset them
      */
-    public function testParameterUnset()
+    public function testParameterUnset(): void
     {
         $this->client->setUri($this->baseuri . 'testResetParameters.php');
 
@@ -406,7 +392,7 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Make sure we can set a single header
      */
-    public function testHeadersSingle()
+    public function testHeadersSingle(): void
     {
         $this->client->setUri($this->baseuri . 'testHeaders.php');
 
@@ -435,7 +421,7 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Test we can set an array of headers
      */
-    public function testHeadersArray()
+    public function testHeadersArray(): void
     {
         $this->client->setUri($this->baseuri . 'testHeaders.php');
 
@@ -468,7 +454,7 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Test we can set a set of values for one header
      */
-    public function testMultipleHeader()
+    public function testMultipleHeader(): void
     {
         $this->client->setUri($this->baseuri . 'testHeaders.php');
         $headers = [
@@ -510,7 +496,7 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Test the client properly redirects in default mode
      */
-    public function testRedirectDefault()
+    public function testRedirectDefault(): void
     {
         $this->client->setUri($this->baseuri . 'testRedirections.php');
 
@@ -531,10 +517,9 @@ abstract class CommonHttpTests extends TestCase
 
     /**
      * @link  https://getlaminas.org/issues/browse/Laminas-122
-     *
-     * @group Laminas-4136
      */
-    public function testRedirectPersistsCookies()
+    #[Group('Laminas-4136')]
+    public function testRedirectPersistsCookies(): void
     {
         $this->client->setUri($this->baseuri . 'testRedirections.php');
 
@@ -567,7 +552,7 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Make sure the client properly redirects in strict mode
      */
-    public function testRedirectStrict()
+    public function testRedirectStrict(): void
     {
         $this->client->setUri($this->baseuri . 'testRedirections.php');
 
@@ -592,7 +577,7 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Make sure redirections stop when limit is exceeded
      */
-    public function testMaxRedirectsExceeded()
+    public function testMaxRedirectsExceeded(): void
     {
         $this->client->setUri($this->baseuri . 'testRedirections.php');
 
@@ -635,7 +620,7 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Test we can properly redirect to an absolute path (not full URI)
      */
-    public function testAbsolutePathRedirect()
+    public function testAbsolutePathRedirect(): void
     {
         $this->client->setUri($this->baseuri . 'testRelativeRedirections.php');
         $this->client->setParameterGet(['redirect' => 'abpath']);
@@ -657,7 +642,7 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Test we can properly redirect to a relative path
      */
-    public function testRelativePathRedirect()
+    public function testRelativePathRedirect(): void
     {
         $this->client->setUri($this->baseuri . 'testRelativeRedirections.php');
         $this->client->setParameterGet(['redirect' => 'relpath']);
@@ -684,7 +669,7 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Test we can properly use Basic HTTP authentication
      */
-    public function testHttpAuthBasic()
+    public function testHttpAuthBasic(): void
     {
         $this->client->setUri($this->baseuri . 'testHttpAuth.php');
         $this->client->setParameterGet([
@@ -708,7 +693,7 @@ abstract class CommonHttpTests extends TestCase
      * Test that we can properly use Basic HTTP authentication by specifying username and password
      * in the URI
      */
-    public function testHttpAuthBasicWithCredentialsInUri()
+    public function testHttpAuthBasicWithCredentialsInUri(): void
     {
         $uri = str_replace('http://', 'http://%s:%s@', $this->baseuri) . 'testHttpAuth.php';
 
@@ -738,7 +723,7 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Test we can set string cookies with no jar
      */
-    public function testCookiesStringNoJar()
+    public function testCookiesStringNoJar(): void
     {
         $this->client->setUri($this->baseuri . 'testCookies.php');
 
@@ -761,7 +746,7 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Make sure we can set an array of object cookies
      */
-    public function testSetCookieObjectArray()
+    public function testSetCookieObjectArray(): void
     {
         $this->client->setUri($this->baseuri . 'testCookies.php');
         $refuri = $this->client->getUri();
@@ -785,7 +770,7 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Make sure we can set an array of string cookies
      */
-    public function testSetCookieStringArray()
+    public function testSetCookieStringArray(): void
     {
         $this->client->setUri($this->baseuri . 'testCookies.php');
 
@@ -812,7 +797,7 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Test we can upload raw data as a file
      */
-    public function testUploadRawData()
+    public function testUploadRawData(): void
     {
         if (! ini_get('file_uploads')) {
             $this->markTestSkipped('File uploads disabled.');
@@ -832,7 +817,7 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Test we can upload an existing file
      */
-    public function testUploadLocalFile()
+    public function testUploadLocalFile(): void
     {
         if (! ini_get('file_uploads')) {
             $this->markTestSkipped('File uploads disabled.');
@@ -849,7 +834,7 @@ abstract class CommonHttpTests extends TestCase
         $this->assertEquals($body, $res->getBody(), 'Response body does not include expected upload parameters');
     }
 
-    public function testUploadLocalDetectMime()
+    public function testUploadLocalDetectMime(): void
     {
         if (! ini_get('file_uploads')) {
             $this->markTestSkipped('File uploads disabled.');
@@ -889,7 +874,7 @@ abstract class CommonHttpTests extends TestCase
         );
     }
 
-    public function testUploadNameWithSpecialChars()
+    public function testUploadNameWithSpecialChars(): void
     {
         if (! ini_get('file_uploads')) {
             $this->markTestSkipped('File uploads disabled.');
@@ -906,7 +891,7 @@ abstract class CommonHttpTests extends TestCase
         $this->assertEquals($body, $res->getBody(), 'Response body does not include expected upload parameters');
     }
 
-    public function testStaticLargeFileDownload()
+    public function testStaticLargeFileDownload(): void
     {
         $this->client->setUri($this->baseuri . 'staticFile.jpg');
 
@@ -922,7 +907,7 @@ abstract class CommonHttpTests extends TestCase
      *
      * @link https://getlaminas.org/issues/browse/Laminas-5744
      */
-    public function testMultipleFilesWithSameFormNameLaminas5744()
+    public function testMultipleFilesWithSameFormNameLaminas5744(): void
     {
         if (! ini_get('file_uploads')) {
             $this->markTestSkipped('File uploads disabled.');
@@ -953,10 +938,9 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Test that lines that might be evaluated as boolean false do not break
      * the reading prematurely.
-     *
-     * @group Laminas-4238
      */
-    public function testLaminas4238FalseLinesInResponse()
+    #[Group('Laminas-4238')]
+    public function testLaminas4238FalseLinesInResponse(): void
     {
         $this->client->setUri($this->baseuri . 'Laminas4238-zerolineresponse.txt');
 
@@ -965,7 +949,7 @@ abstract class CommonHttpTests extends TestCase
         $this->assertEquals($expected, $got);
     }
 
-    public function testStreamResponse()
+    public function testStreamResponse(): void
     {
         if (! $this->client->getAdapter() instanceof Adapter\StreamInterface) {
             $this->markTestSkipped('Current adapter does not support streaming');
@@ -990,7 +974,7 @@ abstract class CommonHttpTests extends TestCase
         $this->assertEquals($expected, $fileRead, 'Downloaded file does not seem to match!');
     }
 
-    public function testStreamResponseBody()
+    public function testStreamResponseBody(): void
     {
         $this->markTestSkipped('To check with the new Laminas implementation');
 
@@ -1012,7 +996,7 @@ abstract class CommonHttpTests extends TestCase
         $this->assertEquals($expected, $body, 'Downloaded stream does not seem to match!');
     }
 
-    public function testStreamResponseNamed()
+    public function testStreamResponseNamed(): void
     {
         if (! $this->client->getAdapter() instanceof Adapter\StreamInterface) {
             $this->markTestSkipped('Current adapter does not support streaming');
@@ -1038,7 +1022,7 @@ abstract class CommonHttpTests extends TestCase
         $this->assertEquals($expected, $fileRead, 'Downloaded file does not seem to match!');
     }
 
-    public function testStreamRequest()
+    public function testStreamRequest(): void
     {
         if (! $this->client->getAdapter() instanceof Adapter\StreamInterface) {
             $this->markTestSkipped('Current adapter does not support streaming');
@@ -1058,7 +1042,7 @@ abstract class CommonHttpTests extends TestCase
      *
      * @link https://getlaminas.org/issues/browse/Laminas-9404
      */
-    public function testLaminas9404DoubleContentLengthHeader()
+    public function testLaminas9404DoubleContentLengthHeader(): void
     {
         $this->client->setUri($this->baseuri . 'Laminas9404-doubleContentLength.php');
         $expect = filesize(__DIR__ . '/_files/Laminas9404-doubleContentLength.php');
@@ -1077,12 +1061,9 @@ abstract class CommonHttpTests extends TestCase
         $this->assertEquals($expect, strlen($response->getBody()));
     }
 
-    /**
-     * @group Laminas-78
-     * @dataProvider parameterArrayProvider
-     * @param array $params
-     */
-    public function testContentTypeAdditionlInfo(array $params)
+    #[DataProvider('parameterArrayProvider')]
+    #[Group('Laminas-78')]
+    public function testContentTypeAdditionlInfo(array $params): void
     {
         $contentType = 'application/x-www-form-urlencoded; charset=UTF-8';
 
@@ -1102,11 +1083,9 @@ abstract class CommonHttpTests extends TestCase
         );
     }
 
-    /**
-     * @group 2774
-     * @group 2745
-     */
-    public function testUsesProvidedArgSeparator()
+    #[Group('2774')]
+    #[Group('2745')]
+    public function testUsesProvidedArgSeparator(): void
     {
         $this->client->setArgSeparator(';');
         $request = new Request();
@@ -1119,21 +1098,16 @@ abstract class CommonHttpTests extends TestCase
 
     /**
      * Internal helper function to get the contents of test files
-     *
-     * @param  string $file
-     * @return string
      */
-    private function getTestFileContents($file)
+    private function getTestFileContents(string $file): string
     {
         return file_get_contents(__DIR__ . '/_files/' . $file);
     }
 
     /**
      * Data provider for complex, nesting parameter arrays
-     *
-     * @return array
      */
-    public static function parameterArrayProvider()
+    public static function parameterArrayProvider(): array
     {
         return [
             [
@@ -1169,15 +1143,12 @@ abstract class CommonHttpTests extends TestCase
 
     /**
      * Data provider for invalid configuration containers
-     *
-     * @return array
      */
-    public static function invalidConfigProvider()
+    public static function invalidConfigProvider(): array
     {
         return [
             [false],
             ['foobar'],
-            ['foo' => 'bar'],
             [null],
             [new stdClass()],
             [55],
@@ -1186,10 +1157,8 @@ abstract class CommonHttpTests extends TestCase
 
     /**
      * Get an URI that does not accept HTTP connections.
-     *
-     * @return string
      */
-    protected function getNotRespondingUri()
+    protected function getNotRespondingUri(): string
     {
         $notRespondingUri = getenv('TESTS_LAMINAS_HTTP_CLIENT_NOTRESPONDINGURI');
         if (! $notRespondingUri) {
@@ -1202,7 +1171,7 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Check connecttimeout/timeout: invalid URIs should timeout after 'connecttimeout' seconds.
      */
-    public function testConnectTimeout1()
+    public function testConnectTimeout1(): void
     {
         $connectTimeout = 1;
         $executeTimeout = 5;
@@ -1235,7 +1204,7 @@ abstract class CommonHttpTests extends TestCase
     /**
      * Check connecttimeout/timeout: valid but slow URIs should timeout after 'timeout' seconds.
      */
-    public function testConnectTimeout2()
+    public function testConnectTimeout2(): void
     {
         $connectTimeout = 1;
         $executeTimeout = 2;

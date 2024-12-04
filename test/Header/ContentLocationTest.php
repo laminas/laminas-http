@@ -8,18 +8,19 @@ use Laminas\Http\Header\ContentLocation;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
 use Laminas\Uri\UriInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class ContentLocationTest extends TestCase
 {
-    public function testContentLocationFromStringCreatesValidLocationHeader()
+    public function testContentLocationFromStringCreatesValidLocationHeader(): void
     {
         $contentLocationHeader = ContentLocation::fromString('Content-Location: http://www.example.com/');
         $this->assertInstanceOf(HeaderInterface::class, $contentLocationHeader);
         $this->assertInstanceOf(ContentLocation::class, $contentLocationHeader);
     }
 
-    public function testContentLocationGetFieldValueReturnsProperValue()
+    public function testContentLocationGetFieldValueReturnsProperValue(): void
     {
         $contentLocationHeader = new ContentLocation();
         $contentLocationHeader->setUri('http://www.example.com/');
@@ -29,7 +30,7 @@ class ContentLocationTest extends TestCase
         $this->assertEquals('/path', $contentLocationHeader->getFieldValue());
     }
 
-    public function testContentLocationToStringReturnsHeaderFormattedString()
+    public function testContentLocationToStringReturnsHeaderFormattedString(): void
     {
         $contentLocationHeader = new ContentLocation();
         $contentLocationHeader->setUri('http://www.example.com/path?query');
@@ -40,7 +41,7 @@ class ContentLocationTest extends TestCase
     // Implementation specific tests here
 
     // phpcs:ignore Squiz.Commenting.FunctionComment.WrongStyle
-    public function testContentLocationCanSetAndAccessAbsoluteUri()
+    public function testContentLocationCanSetAndAccessAbsoluteUri(): void
     {
         $contentLocationHeader = ContentLocation::fromString('Content-Location: http://www.example.com/path');
         $uri                   = $contentLocationHeader->uri();
@@ -49,7 +50,7 @@ class ContentLocationTest extends TestCase
         $this->assertEquals('http://www.example.com/path', $contentLocationHeader->getUri());
     }
 
-    public function testContentLocationCanSetAndAccessRelativeUri()
+    public function testContentLocationCanSetAndAccessRelativeUri(): void
     {
         $contentLocationHeader = ContentLocation::fromString('Content-Location: /path/to');
         $uri                   = $contentLocationHeader->uri();
@@ -60,10 +61,9 @@ class ContentLocationTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         ContentLocation::fromString("Content-Location: /path/to\r\n\r\nevilContent");

@@ -9,17 +9,18 @@ use Laminas\Http\Header\Cookie;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\Header\SetCookie;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Laminas_Http_Cookie unit tests
- *
- * @group      Laminas_Http
- * @group      Laminas_Http_Cookie
  */
+#[Group('Laminas_Http')]
+#[Group('Laminas_Http_Cookie')]
 class CookieTest extends TestCase
 {
-    public function testCookieFromStringCreatesValidCookieHeader()
+    public function testCookieFromStringCreatesValidCookieHeader(): void
     {
         $cookieHeader = Cookie::fromString('Cookie: name=value');
         $this->assertInstanceOf(HeaderInterface::class, $cookieHeader);
@@ -27,14 +28,14 @@ class CookieTest extends TestCase
         $this->assertInstanceOf(Cookie::class, $cookieHeader);
     }
 
-    public function testCookieFromStringCreatesValidCookieHeadersWithMultipleValues()
+    public function testCookieFromStringCreatesValidCookieHeadersWithMultipleValues(): void
     {
         $cookieHeader = Cookie::fromString('Cookie: name=value; foo=bar');
         $this->assertEquals('value', $cookieHeader->name);
         $this->assertEquals('bar', $cookieHeader['foo']);
     }
 
-    public function testCookieFromSetCookieArrayProducesASingleCookie()
+    public function testCookieFromSetCookieArrayProducesASingleCookie(): void
     {
         $setCookies = [
             new SetCookie('foo', 'bar'),
@@ -45,20 +46,20 @@ class CookieTest extends TestCase
         $this->assertEquals('Cookie: foo=bar; name=value', $cookie->toString());
     }
 
-    public function testCookieGetFieldNameReturnsHeaderName()
+    public function testCookieGetFieldNameReturnsHeaderName(): void
     {
         $cookieHeader = new Cookie();
         $this->assertEquals('Cookie', $cookieHeader->getFieldName());
     }
 
-    public function testCookieGetFieldValueReturnsProperValue()
+    public function testCookieGetFieldValueReturnsProperValue(): void
     {
         $cookieHeader      = new Cookie();
         $cookieHeader->foo = 'bar';
         $this->assertEquals('foo=bar', $cookieHeader->getFieldValue());
     }
 
-    public function testCookieToStringReturnsHeaderFormattedString()
+    public function testCookieToStringReturnsHeaderFormattedString(): void
     {
         $cookieHeader = new Cookie();
 
@@ -68,10 +69,9 @@ class CookieTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         Cookie::fromString("Cookie: foo=bar\r\n\r\nevilContent");
@@ -79,20 +79,17 @@ class CookieTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
-     * @dataProvider valuesProvider
-     * @param mixed $value
-     * @param string $serialized
      */
-    public function testSerialization($value, $serialized)
+    #[DataProvider('valuesProvider')]
+    #[Group('ZF2015-04')]
+    public function testSerialization(mixed $value, string $serialized): void
     {
         $header = new Cookie([$value]);
         $this->assertEquals('Cookie: ' . $serialized, $header->toString());
     }
 
     /** @psalm-return array<string, array{0:string, 1: string}> */
-    public function valuesProvider(): array
+    public static function valuesProvider(): array
     {
         return [
             // Description => [raw value, serialized]

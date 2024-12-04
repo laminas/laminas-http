@@ -6,6 +6,7 @@ namespace LaminasTest\Http;
 
 use Laminas\Http\Exception\InvalidArgumentException;
 use Laminas\Http\Header;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function strtolower;
@@ -14,7 +15,7 @@ use function strtoupper;
 class HeaderTest extends TestCase
 {
     /** @psalm-return iterable<string, array{0: class-string, 1: string}> */
-    public function header(): iterable
+    public static function header(): iterable
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
         yield Header\AcceptRanges::class            => [Header\AcceptRanges::class, 'Accept-Ranges'];
@@ -58,11 +59,10 @@ class HeaderTest extends TestCase
 
     /**
      * phpcs:ignore SlevomatCodingStandard.Namespaces.UnusedUses.MismatchingCaseSensitivity
-     * @dataProvider header
-     * @param string $class
-     * @param string $name
+     *
      */
-    public function testThrowsExceptionIfInvalidHeaderLine($class, $name)
+    #[DataProvider('header')]
+    public function testThrowsExceptionIfInvalidHeaderLine(string $class, string $name): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid header line for ' . $name . ' string');
@@ -71,11 +71,10 @@ class HeaderTest extends TestCase
 
     /**
      * phpcs:ignore SlevomatCodingStandard.Namespaces.UnusedUses.MismatchingCaseSensitivity
-     * @dataProvider header
-     * @param string $class
-     * @param string $name
+     *
      */
-    public function testCaseInsensitiveHeaderName($class, $name)
+    #[DataProvider('header')]
+    public function testCaseInsensitiveHeaderName(string $class, string $name): void
     {
         $header1 = $class::fromString(strtoupper($name) . ': foo');
         self::assertSame('foo', $header1->getFieldValue());
@@ -86,11 +85,10 @@ class HeaderTest extends TestCase
 
     /**
      * phpcs:ignore SlevomatCodingStandard.Namespaces.UnusedUses.MismatchingCaseSensitivity
-     * @dataProvider header
-     * @param string $class
-     * @param string $name
+     *
      */
-    public function testDefaultValues($class, $name)
+    #[DataProvider('header')]
+    public function testDefaultValues(string $class, string $name): void
     {
         $header = new $class();
 
@@ -101,11 +99,10 @@ class HeaderTest extends TestCase
 
     /**
      * phpcs:ignore SlevomatCodingStandard.Namespaces.UnusedUses.MismatchingCaseSensitivity
-     * @dataProvider header
-     * @param string $class
-     * @param string $name
+     *
      */
-    public function testSetValueViaConstructor($class, $name)
+    #[DataProvider('header')]
+    public function testSetValueViaConstructor(string $class, string $name): void
     {
         $header = new $class('foo-bar');
 
@@ -115,14 +112,14 @@ class HeaderTest extends TestCase
 
     /**
      * phpcs:ignore SlevomatCodingStandard.Namespaces.UnusedUses.MismatchingCaseSensitivity
-     * @dataProvider header
-     * @param string $class
+     *
      * @param string $name
      *
      * Note: in theory this is invalid, as we would expect value to be string|null.
      * Null is default value but it is converted to string.
      */
-    public function testSetIntValueViaConstructor($class, $name)
+    #[DataProvider('header')]
+    public function testSetIntValueViaConstructor(string $class, string $name): void
     {
         $header = new $class(100);
 
@@ -132,11 +129,10 @@ class HeaderTest extends TestCase
 
     /**
      * phpcs:ignore SlevomatCodingStandard.Namespaces.UnusedUses.MismatchingCaseSensitivity
-     * @dataProvider header
-     * @param string $class
-     * @param string $name
+     *
      */
-    public function testSetZeroStringValueViaConstructor($class, $name)
+    #[DataProvider('header')]
+    public function testSetZeroStringValueViaConstructor(string $class, string $name): void
     {
         $header = new $class('0');
 
@@ -146,11 +142,10 @@ class HeaderTest extends TestCase
 
     /**
      * phpcs:ignore SlevomatCodingStandard.Namespaces.UnusedUses.MismatchingCaseSensitivity
-     * @dataProvider header
-     * @param string $class
-     * @param string $name
+     *
      */
-    public function testFromStringWithNumber($class, $name)
+    #[DataProvider('header')]
+    public function testFromStringWithNumber(string $class, string $name): void
     {
         $header = $class::fromString($name . ': 100');
 

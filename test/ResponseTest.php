@@ -9,6 +9,8 @@ use Laminas\Http\Exception\RuntimeException;
 use Laminas\Http\Header\GenericHeader;
 use Laminas\Http\Headers;
 use Laminas\Http\Response;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 use function array_shift;
@@ -29,7 +31,7 @@ use const DIRECTORY_SEPARATOR;
 class ResponseTest extends TestCase
 {
     /** @psalm-return iterable<string, array{0: string}> */
-    public function validHttpVersions(): iterable
+    public static function validHttpVersions(): iterable
     {
         yield 'http/1.0' => ['1.0'];
         yield 'http/1.1' => ['1.1'];
@@ -44,13 +46,13 @@ class ResponseTest extends TestCase
      *     expectedContent: string
      * }>
      */
-    public function validResponseHttpVersionProvider(): iterable
+    public static function validResponseHttpVersionProvider(): iterable
     {
         $responseTemplate = "HTTP/%s 200 OK\r\n\r\nFoo Bar";
-        foreach ($this->validHttpVersions() as $testCase => $data) {
+        foreach (self::validHttpVersions() as $testCase => $data) {
             $version = array_shift($data);
             yield $testCase => [
-                'response'        => sprintf($responseTemplate, $version),
+                'string'          => sprintf($responseTemplate, $version),
                 'expectedVersion' => $version,
                 'expectedStatus'  => '200',
                 'expectedContent' => 'Foo Bar',
@@ -59,29 +61,23 @@ class ResponseTest extends TestCase
     }
 
     /**
-     * @dataProvider validResponseHttpVersionProvider
      * @param string $string Response string
-     * @param string $expectedVersion
-     * @param string $expectedStatus
-     * @param string $expectedContent
      */
+    #[DataProvider('validResponseHttpVersionProvider')]
     public function testResponseFactoryFromStringCreatesValidResponse(
-        $string,
-        $expectedVersion,
-        $expectedStatus,
-        $expectedContent
-    ) {
+        string $string,
+        string $expectedVersion,
+        string $expectedStatus,
+        string $expectedContent
+    ): void {
         $response = Response::fromString($string);
         $this->assertEquals($expectedVersion, $response->getVersion());
         $this->assertEquals($expectedStatus, $response->getStatusCode());
         $this->assertEquals($expectedContent, $response->getContent());
     }
 
-    /**
-     * @dataProvider validHttpVersions
-     * @param string $version
-     */
-    public function testResponseCanRenderStatusLineUsingDefaultReasonPhrase($version)
+    #[DataProvider('validHttpVersions')]
+    public function testResponseCanRenderStatusLineUsingDefaultReasonPhrase(string $version): void
     {
         $expected = sprintf('HTTP/%s 404 Not Found', $version);
         $response = new Response();
@@ -90,11 +86,8 @@ class ResponseTest extends TestCase
         $this->assertEquals($expected, $response->renderStatusLine());
     }
 
-    /**
-     * @dataProvider validHttpVersions
-     * @param string $version
-     */
-    public function testResponseCanRenderStatusLineUsingCustomReasonPhrase($version)
+    #[DataProvider('validHttpVersions')]
+    public function testResponseCanRenderStatusLineUsingCustomReasonPhrase(string $version): void
     {
         $expected = sprintf('HTTP/%s 404 Foo Bar', $version);
         $response = new Response();
@@ -104,7 +97,7 @@ class ResponseTest extends TestCase
         $this->assertEquals($expected, $response->renderStatusLine());
     }
 
-    public function testInvalidHTTP2VersionString()
+    public function testInvalidHTTP2VersionString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('A valid response status line was not found in the provided string');
@@ -112,13 +105,13 @@ class ResponseTest extends TestCase
         $response = Response::fromString($string);
     }
 
-    public function testResponseUsesHeadersContainerByDefault()
+    public function testResponseUsesHeadersContainerByDefault(): void
     {
         $response = new Response();
         $this->assertInstanceOf(Headers::class, $response->getHeaders());
     }
 
-    public function testRequestCanSetHeaders()
+    public function testRequestCanSetHeaders(): void
     {
         $response = new Response();
         $headers  = new Headers();
@@ -129,18 +122,15 @@ class ResponseTest extends TestCase
     }
 
     /** @psalm-return iterable<int, array{0: int}> */
-    public function validStatusCode(): iterable
+    public static function validStatusCode(): iterable
     {
         for ($i = 100; $i <= 599; ++$i) {
             yield $i => [$i];
         }
     }
 
-    /**
-     * @dataProvider validStatusCode
-     * @param int $statusCode
-     */
-    public function testResponseCanSetStatusCode($statusCode)
+    #[DataProvider('validStatusCode')]
+    public function testResponseCanSetStatusCode(int $statusCode): void
     {
         $response = new Response();
         $this->assertSame(200, $response->getStatusCode());
@@ -148,7 +138,7 @@ class ResponseTest extends TestCase
         $this->assertSame($statusCode, $response->getStatusCode());
     }
 
-    public function testResponseSetStatusCodeThrowsExceptionOnInvalidCode()
+    public function testResponseSetStatusCodeThrowsExceptionOnInvalidCode(): void
     {
         $response = new Response();
         $this->expectException(InvalidArgumentException::class);
@@ -156,14 +146,14 @@ class ResponseTest extends TestCase
         $response->setStatusCode(606);
     }
 
-    public function testResponseGetReasonPhraseWillReturnEmptyPhraseAsDefault()
+    public function testResponseGetReasonPhraseWillReturnEmptyPhraseAsDefault(): void
     {
         $response = new Response();
         $response->setCustomStatusCode(998);
         $this->assertSame('HTTP/1.1 998' . "\r\n\r\n", (string) $response);
     }
 
-    public function testResponseCanSetCustomStatusCode()
+    public function testResponseCanSetCustomStatusCode(): void
     {
         $response = new Response();
         $this->assertEquals(200, $response->getStatusCode());
@@ -171,7 +161,7 @@ class ResponseTest extends TestCase
         $this->assertEquals(999, $response->getStatusCode());
     }
 
-    public function testResponseSetCustomStatusCodeThrowsExceptionOnInvalidCode()
+    public function testResponseSetCustomStatusCodeThrowsExceptionOnInvalidCode(): void
     {
         $response = new Response();
         $this->expectException(InvalidArgumentException::class);
@@ -180,7 +170,7 @@ class ResponseTest extends TestCase
         $response->setStatusCode('foo');
     }
 
-    public function testResponseEndsAtStatusCode()
+    public function testResponseEndsAtStatusCode(): void
     {
         $string   = 'HTTP/1.0 200' . "\r\n\r\n" . 'Foo Bar';
         $response = Response::fromString($string);
@@ -188,7 +178,7 @@ class ResponseTest extends TestCase
         $this->assertEquals('Foo Bar', $response->getContent());
     }
 
-    public function testResponseHasZeroLengthReasonPhrase()
+    public function testResponseHasZeroLengthReasonPhrase(): void
     {
         // Space after status code is mandatory,
         // though, reason phrase can be empty.
@@ -203,7 +193,7 @@ class ResponseTest extends TestCase
         $this->assertEquals('OK', $response->getReasonPhrase());
     }
 
-    public function testGzipResponse()
+    public function testGzipResponse(): void
     {
         $responseTest = file_get_contents(__DIR__ . '/_files/response_gzip');
 
@@ -214,7 +204,7 @@ class ResponseTest extends TestCase
         $this->assertEquals('f24dd075ba2ebfb3bf21270e3fdc5303', md5($res->getContent()));
     }
 
-    public function testGzipResponseWithEmptyBody()
+    public function testGzipResponseWithEmptyBody(): void
     {
         $responseTest = <<<'REQ'
 HTTP/1.1 200 OK
@@ -236,7 +226,7 @@ REQ;
         $this->assertSame('', $res->getContent());
     }
 
-    public function testDeflateResponse()
+    public function testDeflateResponse(): void
     {
         $responseTest = file_get_contents(__DIR__ . '/_files/response_deflate');
 
@@ -247,7 +237,7 @@ REQ;
         $this->assertEquals('ad62c21c3aa77b6a6f39600f6dd553b8', md5($res->getContent()));
     }
 
-    public function testDeflateResponseWithEmptyBody()
+    public function testDeflateResponseWithEmptyBody(): void
     {
         $responseTest = <<<'REQ'
 HTTP/1.1 200 OK
@@ -278,7 +268,7 @@ REQ;
      *
      * @link https://getlaminas.org/issues/browse/Laminas-6040
      */
-    public function testNonStandardDeflateResponseLaminas6040()
+    public function testNonStandardDeflateResponseLaminas6040(): void
     {
         $this->markTestSkipped('Not correctly handling non-RFC complient "deflate" responses');
         $responseTest = file_get_contents(__DIR__ . '/_files/response_deflate_iis');
@@ -295,7 +285,7 @@ REQ;
      *
      * @link https://framework.zend.com/issues/browse/ZF-12457.html
      */
-    public function testStandardDeflateResponseLaminas12457()
+    public function testStandardDeflateResponseLaminas12457(): void
     {
         $responseTest = file_get_contents(__DIR__ . '/_files/response_deflate_iis_valid');
 
@@ -306,7 +296,7 @@ REQ;
         $this->assertEquals('992ec500e8332df89bbd9b8e998ec8c9', md5($res->getContent()));
     }
 
-    public function testChunkedResponse()
+    public function testChunkedResponse(): void
     {
         $responseTest = file_get_contents(__DIR__ . '/_files/response_chunked');
 
@@ -317,7 +307,7 @@ REQ;
         $this->assertEquals('c0cc9d44790fa2a58078059bab1902a9', md5($res->getContent()));
     }
 
-    public function testChunkedResponseCaseInsensitiveLaminas5438()
+    public function testChunkedResponseCaseInsensitiveLaminas5438(): void
     {
         $responseTest = file_get_contents(__DIR__ . '/_files/response_chunked_case');
 
@@ -332,7 +322,7 @@ REQ;
      * @param int $chunksize the data size of the chunk to create
      * @return string a chunk of data for embedding inside a chunked response
      */
-    private function makeChunk($chunksize)
+    private function makeChunk(int $chunksize): string
     {
         return sprintf("%d\r\n%s\r\n", $chunksize, str_repeat('W', $chunksize));
     }
@@ -340,17 +330,14 @@ REQ;
     /**
      * @return float the time that calling the getBody function took on the response
      */
-    private function getTimeForGetBody(Response $response)
+    private function getTimeForGetBody(Response $response): float
     {
         $timeStart = microtime(true);
         $response->getBody();
         return microtime(true) - $timeStart;
     }
 
-    /**
-     * @small
-     */
-    public function testChunkedResponsePerformance()
+    public function testChunkedResponsePerformance(): void
     {
         $headers = new Headers();
         $headers->addHeaders([
@@ -388,7 +375,7 @@ REQ;
         $this->assertLessThan(25, min($timings), $errMsg . print_r($timings, true));
     }
 
-    public function testLineBreaksCompatibility()
+    public function testLineBreaksCompatibility(): void
     {
         $responseTestLf = $this->readResponse('response_lfonly');
         $resLf          = Response::fromString($responseTestLf);
@@ -406,7 +393,7 @@ REQ;
         $this->assertEquals($resLf->getBody(), $resCrlf->getBody(), 'Response bodies do not match');
     }
 
-    public function test404IsClientErrorAndNotFound()
+    public function test404IsClientErrorAndNotFound(): void
     {
         $responseTest = $this->readResponse('response_404');
         $response     = Response::fromString($responseTest);
@@ -423,7 +410,7 @@ REQ;
         $this->assertFalse($response->isSuccess(), 'Response is an error, but isSuccess() returned true');
     }
 
-    public function test410IsGone()
+    public function test410IsGone(): void
     {
         $responseTest = $this->readResponse('response_410');
         $response     = Response::fromString($responseTest);
@@ -440,7 +427,7 @@ REQ;
         $this->assertFalse($response->isSuccess(), 'Response is an error, but isSuccess() returned true');
     }
 
-    public function test500isError()
+    public function test500isError(): void
     {
         $responseTest = $this->readResponse('response_500');
         $response     = Response::fromString($responseTest);
@@ -457,10 +444,8 @@ REQ;
         $this->assertFalse($response->isSuccess(), 'Response is an error, but isSuccess() returned true');
     }
 
-    /**
-     * @group Laminas-5520
-     */
-    public function test302LocationHeaderMatches()
+    #[Group('Laminas-5520')]
+    public function test302LocationHeaderMatches(): void
     {
         $headerName  = 'Location';
         $headerValue = 'http://www.google.com/ig?hl=en';
@@ -471,7 +456,7 @@ REQ;
         $this->assertEquals($headerValue, $responseIis->getHeaders()->get($headerName)->getFieldValue());
     }
 
-    public function test300isRedirect()
+    public function test300isRedirect(): void
     {
         $response = Response::fromString($this->readResponse('response_302'));
 
@@ -487,7 +472,7 @@ REQ;
         $this->assertFalse($response->isSuccess(), 'Response is an error, but isSuccess() returned true');
     }
 
-    public function test200Ok()
+    public function test200Ok(): void
     {
         $response = Response::fromString($this->readResponse('response_deflate'));
 
@@ -503,12 +488,12 @@ REQ;
         $this->assertTrue($response->isSuccess(), 'Response is an error, but isSuccess() returned false');
     }
 
-    public function test100Continue()
+    public function test100Continue(): void
     {
         $this->markTestIncomplete();
     }
 
-    public function testAutoMessageSet()
+    public function testAutoMessageSet(): void
     {
         $response = Response::fromString($this->readResponse('response_403_nomessage'));
 
@@ -531,7 +516,7 @@ REQ;
         $this->assertFalse($response->isSuccess(), 'Response is an error, but isSuccess() returned true');
     }
 
-    public function testToString()
+    public function testToString(): void
     {
         $responseStr = $this->readResponse('response_404');
         $response    = Response::fromString($responseStr);
@@ -548,7 +533,7 @@ REQ;
         );
     }
 
-    public function testToStringGzip()
+    public function testToStringGzip(): void
     {
         $responseStr = $this->readResponse('response_gzip');
         $response    = Response::fromString($responseStr);
@@ -565,7 +550,7 @@ REQ;
         );
     }
 
-    public function testGetHeaders()
+    public function testGetHeaders(): void
     {
         $response = Response::fromString($this->readResponse('response_deflate'));
         $headers  = $response->getHeaders();
@@ -579,13 +564,13 @@ REQ;
         );
     }
 
-    public function testGetVersion()
+    public function testGetVersion(): void
     {
         $response = Response::fromString($this->readResponse('response_chunked'));
         $this->assertEquals(1.1, $response->getVersion(), 'Version is expected to be 1.1');
     }
 
-    public function testUnknownCode()
+    public function testUnknownCode(): void
     {
         $responseStr = $this->readResponse('response_unknown');
         $response    = Response::fromString($responseStr);
@@ -596,7 +581,7 @@ REQ;
      * Make sure a response with some leading whitespace in the response body
      * does not get modified (see Laminas-1924)
      */
-    public function testLeadingWhitespaceBody()
+    public function testLeadingWhitespaceBody(): void
     {
         $response = Response::fromString($this->readResponse('response_leadingws'));
         $this->assertEquals(
@@ -612,7 +597,7 @@ REQ;
      * This can potentially fail on different PHP environments - for example
      * when mbstring.func_overload is set to overload strlen().
      */
-    public function testMultibyteChunkedResponse()
+    public function testMultibyteChunkedResponse(): void
     {
         $this->markTestSkipped('Looks like the headers are split with \n and the body with \r\n');
         $md5 = 'ab952f1617d0e28724932401f2d3c6ae';
@@ -624,7 +609,7 @@ REQ;
     /**
      * Test automatic clean reason phrase
      */
-    public function testOverrideReasonPraseByStatusCode()
+    public function testOverrideReasonPraseByStatusCode(): void
     {
         $response = new Response();
         $response->setStatusCode(200);
@@ -634,7 +619,7 @@ REQ;
         $this->assertEquals('Bad Request', $response->getReasonPhrase());
     }
 
-    public function testromStringFactoryCreatesSingleObjectWithHeaderFolding()
+    public function testromStringFactoryCreatesSingleObjectWithHeaderFolding(): void
     {
         $request = Response::fromString("HTTP/1.1 200 OK\r\nFake: foo\r\n -bar");
         $headers = $request->getHeaders();
@@ -648,10 +633,9 @@ REQ;
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackWhenDeserializing()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackWhenDeserializing(): void
     {
         $this->expectException(RuntimeException::class);
         Response::fromString(
@@ -659,7 +643,7 @@ REQ;
         );
     }
 
-    public function test100ContinueFromString()
+    public function test100ContinueFromString(): void
     {
         $fixture = 'TOKEN=EC%XXXXXXXXXXXXX&TIMESTAMP=2017%2d10%2d10T09%3a02%3a55Z'
             . "&CORRELATIONID=XXXXXXXXXX&ACK=Success&VERSION=65%2e1&BUILD=XXXXXXXXXX\r\n";
@@ -671,11 +655,8 @@ REQ;
 
     /**
      * Helper function: read test response from file
-     *
-     * @param string $response
-     * @return string
      */
-    protected function readResponse($response)
+    protected function readResponse(string $response): string
     {
         return file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . '_files' . DIRECTORY_SEPARATOR . $response);
     }

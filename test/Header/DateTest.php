@@ -9,6 +9,7 @@ use DateTimeZone;
 use Laminas\Http\Header\Date;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 use function time;
@@ -23,14 +24,14 @@ class DateTest extends TestCase
         Date::setDateFormat(Date::DATE_RFC1123);
     }
 
-    public function testDateFromStringCreatesValidDateHeader()
+    public function testDateFromStringCreatesValidDateHeader(): void
     {
         $dateHeader = Date::fromString('Date: Sun, 06 Nov 1994 08:49:37 GMT');
         $this->assertInstanceOf(HeaderInterface::class, $dateHeader);
         $this->assertInstanceOf(Date::class, $dateHeader);
     }
 
-    public function testDateFromTimeStringCreatesValidDateHeader()
+    public function testDateFromTimeStringCreatesValidDateHeader(): void
     {
         $dateHeader = Date::fromTimeString('+12 hours');
 
@@ -49,7 +50,7 @@ class DateTest extends TestCase
         }
     }
 
-    public function testDateFromTimestampCreatesValidDateHeader()
+    public function testDateFromTimestampCreatesValidDateHeader(): void
     {
         $dateHeader = Date::fromTimestamp(time() + 12 * 60 * 60);
 
@@ -68,32 +69,32 @@ class DateTest extends TestCase
         }
     }
 
-    public function testDateFromTimeStringDetectsBadInput()
+    public function testDateFromTimeStringDetectsBadInput(): void
     {
         $this->expectException(InvalidArgumentException::class);
         Date::fromTimeString('3 Days of the Condor');
     }
 
-    public function testDateFromTimestampDetectsBadInput()
+    public function testDateFromTimestampDetectsBadInput(): void
     {
         $this->expectException(InvalidArgumentException::class);
         Date::fromTimestamp('The Day of the Jackal');
     }
 
-    public function testDateGetFieldNameReturnsHeaderName()
+    public function testDateGetFieldNameReturnsHeaderName(): void
     {
         $dateHeader = new Date();
         $this->assertEquals('Date', $dateHeader->getFieldName());
     }
 
-    public function testDateGetFieldValueReturnsProperValue()
+    public function testDateGetFieldValueReturnsProperValue(): void
     {
         $dateHeader = new Date();
         $dateHeader->setDate('Sun, 06 Nov 1994 08:49:37 GMT');
         $this->assertEquals('Sun, 06 Nov 1994 08:49:37 GMT', $dateHeader->getFieldValue());
     }
 
-    public function testDateToStringReturnsHeaderFormattedString()
+    public function testDateToStringReturnsHeaderFormattedString(): void
     {
         $dateHeader = new Date();
         $dateHeader->setDate('Sun, 06 Nov 1994 08:49:37 GMT');
@@ -103,20 +104,20 @@ class DateTest extends TestCase
     // Implementation specific tests here
 
     // phpcs:ignore Squiz.Commenting.FunctionComment.WrongStyle
-    public function testDateReturnsDateTimeObject()
+    public function testDateReturnsDateTimeObject(): void
     {
         $dateHeader = new Date();
         $this->assertInstanceOf(DateTime::class, $dateHeader->date());
     }
 
-    public function testDateFromStringCreatesValidDateTime()
+    public function testDateFromStringCreatesValidDateTime(): void
     {
         $dateHeader = Date::fromString('Date: Sun, 06 Nov 1994 08:49:37 GMT');
         $this->assertInstanceOf(DateTime::class, $dateHeader->date());
         $this->assertEquals('Sun, 06 Nov 1994 08:49:37 GMT', $dateHeader->date()->format('D, d M Y H:i:s \G\M\T'));
     }
 
-    public function testDateReturnsProperlyFormattedDate()
+    public function testDateReturnsProperlyFormattedDate(): void
     {
         $date = new DateTime('now', new DateTimeZone('GMT'));
 
@@ -125,7 +126,7 @@ class DateTest extends TestCase
         $this->assertEquals($date->format('D, d M Y H:i:s \G\M\T'), $dateHeader->getDate());
     }
 
-    public function testDateThrowsExceptionForInvalidDate()
+    public function testDateThrowsExceptionForInvalidDate(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid date');
@@ -133,14 +134,14 @@ class DateTest extends TestCase
         $dateHeader->setDate('~~~~');
     }
 
-    public function testDateCanCompareDates()
+    public function testDateCanCompareDates(): void
     {
         $dateHeader = new Date();
         $dateHeader->setDate('1 day ago');
         $this->assertEquals(-1, $dateHeader->compareTo(new DateTime('now')));
     }
 
-    public function testDateCanOutputDatesInOldFormats()
+    public function testDateCanOutputDatesInOldFormats(): void
     {
         Date::setDateFormat(Date::DATE_ANSIC);
 
@@ -152,10 +153,9 @@ class DateTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         Date::fromString("Date: Sun, 06 Nov 1994 08:49:37 GMT\r\n\r\nevilContent");

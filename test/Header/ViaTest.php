@@ -7,24 +7,25 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\Header\Via;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class ViaTest extends TestCase
 {
-    public function testViaFromStringCreatesValidViaHeader()
+    public function testViaFromStringCreatesValidViaHeader(): void
     {
         $viaHeader = Via::fromString('Via: xxx');
         $this->assertInstanceOf(HeaderInterface::class, $viaHeader);
         $this->assertInstanceOf(Via::class, $viaHeader);
     }
 
-    public function testViaGetFieldNameReturnsHeaderName()
+    public function testViaGetFieldNameReturnsHeaderName(): void
     {
         $viaHeader = new Via();
         $this->assertEquals('Via', $viaHeader->getFieldName());
     }
 
-    public function testViaGetFieldValueReturnsProperValue()
+    public function testViaGetFieldValueReturnsProperValue(): void
     {
         $this->markTestIncomplete('Via needs to be completed');
 
@@ -32,7 +33,7 @@ class ViaTest extends TestCase
         $this->assertEquals('xxx', $viaHeader->getFieldValue());
     }
 
-    public function testViaToStringReturnsHeaderFormattedString()
+    public function testViaToStringReturnsHeaderFormattedString(): void
     {
         $this->markTestIncomplete('Via needs to be completed');
 
@@ -43,13 +44,11 @@ class ViaTest extends TestCase
     }
 
     /** Implementation specific tests here */
-
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         Via::fromString("Via: xxx\r\n\r\nevilContent");
@@ -57,10 +56,9 @@ class ViaTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaConstructor()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new Via("xxx\r\n\r\nevilContent");

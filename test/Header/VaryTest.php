@@ -7,24 +7,25 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\Header\Vary;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class VaryTest extends TestCase
 {
-    public function testVaryFromStringCreatesValidVaryHeader()
+    public function testVaryFromStringCreatesValidVaryHeader(): void
     {
         $varyHeader = Vary::fromString('Vary: xxx');
         $this->assertInstanceOf(HeaderInterface::class, $varyHeader);
         $this->assertInstanceOf(Vary::class, $varyHeader);
     }
 
-    public function testVaryGetFieldNameReturnsHeaderName()
+    public function testVaryGetFieldNameReturnsHeaderName(): void
     {
         $varyHeader = new Vary();
         $this->assertEquals('Vary', $varyHeader->getFieldName());
     }
 
-    public function testVaryGetFieldValueReturnsProperValue()
+    public function testVaryGetFieldValueReturnsProperValue(): void
     {
         $this->markTestIncomplete('Vary needs to be completed');
 
@@ -32,7 +33,7 @@ class VaryTest extends TestCase
         $this->assertEquals('xxx', $varyHeader->getFieldValue());
     }
 
-    public function testVaryToStringReturnsHeaderFormattedString()
+    public function testVaryToStringReturnsHeaderFormattedString(): void
     {
         $this->markTestIncomplete('Vary needs to be completed');
 
@@ -43,13 +44,11 @@ class VaryTest extends TestCase
     }
 
     /** Implementation specific tests here */
-
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         Vary::fromString("Vary: xxx\r\n\r\nevilContent");
@@ -57,10 +56,9 @@ class VaryTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaConstructor()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new Vary("xxx\r\n\r\nevilContent");

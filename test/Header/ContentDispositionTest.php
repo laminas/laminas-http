@@ -7,24 +7,25 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\ContentDisposition;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class ContentDispositionTest extends TestCase
 {
-    public function testContentDispositionFromStringCreatesValidContentDispositionHeader()
+    public function testContentDispositionFromStringCreatesValidContentDispositionHeader(): void
     {
         $contentDispositionHeader = ContentDisposition::fromString('Content-Disposition: xxx');
         $this->assertInstanceOf(HeaderInterface::class, $contentDispositionHeader);
         $this->assertInstanceOf(ContentDisposition::class, $contentDispositionHeader);
     }
 
-    public function testContentDispositionGetFieldNameReturnsHeaderName()
+    public function testContentDispositionGetFieldNameReturnsHeaderName(): void
     {
         $contentDispositionHeader = new ContentDisposition();
         $this->assertEquals('Content-Disposition', $contentDispositionHeader->getFieldName());
     }
 
-    public function testContentDispositionGetFieldValueReturnsProperValue()
+    public function testContentDispositionGetFieldValueReturnsProperValue(): void
     {
         $this->markTestIncomplete('ContentDisposition needs to be completed');
 
@@ -32,7 +33,7 @@ class ContentDispositionTest extends TestCase
         $this->assertEquals('xxx', $contentDispositionHeader->getFieldValue());
     }
 
-    public function testContentDispositionToStringReturnsHeaderFormattedString()
+    public function testContentDispositionToStringReturnsHeaderFormattedString(): void
     {
         $this->markTestIncomplete('ContentDisposition needs to be completed');
 
@@ -43,13 +44,11 @@ class ContentDispositionTest extends TestCase
     }
 
     /** Implementation specific tests here */
-
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         ContentDisposition::fromString("Content-Disposition: xxx\r\n\r\nevilContent");
@@ -57,10 +56,9 @@ class ContentDispositionTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaConstructor()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new ContentDisposition("xxx\r\n\r\nevilContent");

@@ -7,24 +7,25 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\ContentLanguage;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class ContentLanguageTest extends TestCase
 {
-    public function testContentLanguageFromStringCreatesValidContentLanguageHeader()
+    public function testContentLanguageFromStringCreatesValidContentLanguageHeader(): void
     {
         $contentLanguageHeader = ContentLanguage::fromString('Content-Language: xxx');
         $this->assertInstanceOf(HeaderInterface::class, $contentLanguageHeader);
         $this->assertInstanceOf(ContentLanguage::class, $contentLanguageHeader);
     }
 
-    public function testContentLanguageGetFieldNameReturnsHeaderName()
+    public function testContentLanguageGetFieldNameReturnsHeaderName(): void
     {
         $contentLanguageHeader = new ContentLanguage();
         $this->assertEquals('Content-Language', $contentLanguageHeader->getFieldName());
     }
 
-    public function testContentLanguageGetFieldValueReturnsProperValue()
+    public function testContentLanguageGetFieldValueReturnsProperValue(): void
     {
         $this->markTestIncomplete('ContentLanguage needs to be completed');
 
@@ -32,7 +33,7 @@ class ContentLanguageTest extends TestCase
         $this->assertEquals('xxx', $contentLanguageHeader->getFieldValue());
     }
 
-    public function testContentLanguageToStringReturnsHeaderFormattedString()
+    public function testContentLanguageToStringReturnsHeaderFormattedString(): void
     {
         $this->markTestIncomplete('ContentLanguage needs to be completed');
 
@@ -43,13 +44,11 @@ class ContentLanguageTest extends TestCase
     }
 
     /** Implementation specific tests here */
-
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         ContentLanguage::fromString("Content-Language: xxx\r\n\r\nevilContent");
@@ -57,10 +56,9 @@ class ContentLanguageTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaConstructor()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new ContentLanguage("xxx\r\n\r\nevilContent");

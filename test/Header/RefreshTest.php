@@ -7,24 +7,25 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\Header\Refresh;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class RefreshTest extends TestCase
 {
-    public function testRefreshFromStringCreatesValidRefreshHeader()
+    public function testRefreshFromStringCreatesValidRefreshHeader(): void
     {
         $refreshHeader = Refresh::fromString('Refresh: xxx');
         $this->assertInstanceOf(HeaderInterface::class, $refreshHeader);
         $this->assertInstanceOf(Refresh::class, $refreshHeader);
     }
 
-    public function testRefreshGetFieldNameReturnsHeaderName()
+    public function testRefreshGetFieldNameReturnsHeaderName(): void
     {
         $refreshHeader = new Refresh();
         $this->assertEquals('Refresh', $refreshHeader->getFieldName());
     }
 
-    public function testRefreshGetFieldValueReturnsProperValue()
+    public function testRefreshGetFieldValueReturnsProperValue(): void
     {
         $this->markTestIncomplete('Refresh needs to be completed');
 
@@ -32,7 +33,7 @@ class RefreshTest extends TestCase
         $this->assertEquals('xxx', $refreshHeader->getFieldValue());
     }
 
-    public function testRefreshToStringReturnsHeaderFormattedString()
+    public function testRefreshToStringReturnsHeaderFormattedString(): void
     {
         $this->markTestIncomplete('Refresh needs to be completed');
 
@@ -43,13 +44,11 @@ class RefreshTest extends TestCase
     }
 
     /** Implementation specific tests here */
-
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         Refresh::fromString("Refresh: xxx\r\n\r\nevilContent");
@@ -57,10 +56,9 @@ class RefreshTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaConstructorValue()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaConstructorValue(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new Refresh("xxx\r\n\r\nevilContent");

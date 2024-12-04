@@ -5,24 +5,25 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\Header\TE;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class TETest extends TestCase
 {
-    public function testTEFromStringCreatesValidTEHeader()
+    public function testTEFromStringCreatesValidTEHeader(): void
     {
         $tEHeader = TE::fromString('TE: xxx');
         $this->assertInstanceOf(HeaderInterface::class, $tEHeader);
         $this->assertInstanceOf(TE::class, $tEHeader);
     }
 
-    public function testTEGetFieldNameReturnsHeaderName()
+    public function testTEGetFieldNameReturnsHeaderName(): void
     {
         $tEHeader = new TE();
         $this->assertEquals('TE', $tEHeader->getFieldName());
     }
 
-    public function testTEGetFieldValueReturnsProperValue()
+    public function testTEGetFieldValueReturnsProperValue(): void
     {
         $this->markTestIncomplete('TE needs to be completed');
 
@@ -30,7 +31,7 @@ class TETest extends TestCase
         $this->assertEquals('xxx', $tEHeader->getFieldValue());
     }
 
-    public function testTEToStringReturnsHeaderFormattedString()
+    public function testTEToStringReturnsHeaderFormattedString(): void
     {
         $this->markTestIncomplete('TE needs to be completed');
 
@@ -41,13 +42,11 @@ class TETest extends TestCase
     }
 
     /** Implementation specific tests here */
-
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         TE::fromString("TE: xxx\r\n\r\nevilContent");
@@ -55,10 +54,9 @@ class TETest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaConstructor()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new TE("xxx\r\n\r\nevilContent");

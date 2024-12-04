@@ -7,24 +7,25 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\Header\KeepAlive;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class KeepAliveTest extends TestCase
 {
-    public function testKeepAliveFromStringCreatesValidKeepAliveHeader()
+    public function testKeepAliveFromStringCreatesValidKeepAliveHeader(): void
     {
         $keepAliveHeader = KeepAlive::fromString('Keep-Alive: xxx');
         $this->assertInstanceOf(HeaderInterface::class, $keepAliveHeader);
         $this->assertInstanceOf(KeepAlive::class, $keepAliveHeader);
     }
 
-    public function testKeepAliveGetFieldNameReturnsHeaderName()
+    public function testKeepAliveGetFieldNameReturnsHeaderName(): void
     {
         $keepAliveHeader = new KeepAlive();
         $this->assertEquals('Keep-Alive', $keepAliveHeader->getFieldName());
     }
 
-    public function testKeepAliveGetFieldValueReturnsProperValue()
+    public function testKeepAliveGetFieldValueReturnsProperValue(): void
     {
         $this->markTestIncomplete('KeepAlive needs to be completed');
 
@@ -32,7 +33,7 @@ class KeepAliveTest extends TestCase
         $this->assertEquals('xxx', $keepAliveHeader->getFieldValue());
     }
 
-    public function testKeepAliveToStringReturnsHeaderFormattedString()
+    public function testKeepAliveToStringReturnsHeaderFormattedString(): void
     {
         $this->markTestIncomplete('KeepAlive needs to be completed');
 
@@ -43,13 +44,11 @@ class KeepAliveTest extends TestCase
     }
 
     /** Implementation specific tests here */
-
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         KeepAlive::fromString("Keep-Alive: xxx\r\n\r\nevilContent");
@@ -57,10 +56,9 @@ class KeepAliveTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaConstructor()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new KeepAlive("xxx\r\n\r\nevilContent");

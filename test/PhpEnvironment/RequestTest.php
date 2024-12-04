@@ -9,6 +9,8 @@ use Laminas\Http\Header\GenericHeader;
 use Laminas\Http\Headers;
 use Laminas\Http\PhpEnvironment\Request;
 use Laminas\Stdlib\Parameters;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 use function md5;
@@ -213,13 +215,8 @@ class RequestTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider baseUrlAndPathProvider
-     * @param array  $server
-     * @param string $baseUrl
-     * @param string $basePath
-     */
-    public function testBasePathDetection(array $server, $baseUrl, $basePath)
+    #[DataProvider('baseUrlAndPathProvider')]
+    public function testBasePathDetection(array $server, string $baseUrl, string $basePath): void
     {
         $_SERVER = $server;
         $request = new Request();
@@ -292,13 +289,8 @@ class RequestTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider serverHeaderProvider
-     * @param array  $server
-     * @param string $name
-     * @param string $value
-     */
-    public function testHeadersWithMinus(array $server, $name, $value)
+    #[DataProvider('serverHeaderProvider')]
+    public function testHeadersWithMinus(array $server, string $name, string|int $value): void
     {
         $_SERVER = $server;
         $request = new Request();
@@ -309,12 +301,8 @@ class RequestTest extends TestCase
         $this->assertEquals($value, $header->getFieldValue($value));
     }
 
-    /**
-     * @dataProvider serverHeaderProvider
-     * @param array  $server
-     * @param string $name
-     */
-    public function testRequestStringHasCorrectHeaderName(array $server, $name)
+    #[DataProvider('serverHeaderProvider')]
+    public function testRequestStringHasCorrectHeaderName(array $server, string $name): void
     {
         $_SERVER = $server;
         $request = new Request();
@@ -442,15 +430,13 @@ class RequestTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider serverHostnameProvider
-     * @param array $server
-     * @param string $expectedHost
-     * @param string $expectedPort
-     * @param string $expectedRequestUri
-     */
-    public function testServerHostnameProvider(array $server, $expectedHost, $expectedPort, $expectedRequestUri)
-    {
+    #[DataProvider('serverHostnameProvider')]
+    public function testServerHostnameProvider(
+        array $server,
+        string $expectedHost,
+        string $expectedPort,
+        string $expectedRequestUri
+    ): void {
         $_SERVER = $server;
         $request = new Request();
 
@@ -472,10 +458,8 @@ class RequestTest extends TestCase
 
     /**
      * Data provider for testing mapping $_FILES
-     *
-     * @return array
      */
-    public static function filesProvider()
+    public static function filesProvider(): array
     {
         return [
             // single file
@@ -688,19 +672,15 @@ class RequestTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider filesProvider
-     * @param array $files
-     * @param array $expectedFiles
-     */
-    public function testRequestMapsPhpFies(array $files, array $expectedFiles)
+    #[DataProvider('filesProvider')]
+    public function testRequestMapsPhpFies(array $files, array $expectedFiles): void
     {
         $_FILES  = $files;
         $request = new Request();
         $this->assertEquals($expectedFiles, $request->getFiles()->toArray());
     }
 
-    public function testParameterRetrievalDefaultValue()
+    public function testParameterRetrievalDefaultValue(): void
     {
         $request = new Request();
         $p       = new Parameters([
@@ -722,7 +702,7 @@ class RequestTest extends TestCase
         $this->assertSame($default, $request->getHeader('baz', $default));
     }
 
-    public function testRetrievingASingleValueForParameters()
+    public function testRetrievingASingleValueForParameters(): void
     {
         $request = new Request();
         $p       = new Parameters([
@@ -750,10 +730,8 @@ class RequestTest extends TestCase
         $this->assertSame($h, $request->getHeader('foo'));
     }
 
-    /**
-     * @group Laminas-480
-     */
-    public function testBaseurlFallsBackToRootPathIfScriptFilenameIsNotSet()
+    #[Group('Laminas-480')]
+    public function testBaseurlFallsBackToRootPathIfScriptFilenameIsNotSet(): void
     {
         $request = new Request();
         $server  = $request->getServer();
@@ -766,7 +744,7 @@ class RequestTest extends TestCase
         $this->assertEquals('', $request->getBaseUrl());
     }
 
-    public function testAllowCustomMethodsFlagCanBeSetWithConstructor()
+    public function testAllowCustomMethodsFlagCanBeSetWithConstructor(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'xcustomx';
 
@@ -776,10 +754,8 @@ class RequestTest extends TestCase
         new Request(false);
     }
 
-    /**
-     * @group 6896
-     */
-    public function testHandlesUppercaseHttpsFlags()
+    #[Group('6896')]
+    public function testHandlesUppercaseHttpsFlags(): void
     {
         $_SERVER['HTTPS'] = 'OFF';
 
@@ -788,10 +764,8 @@ class RequestTest extends TestCase
         $this->assertSame('http', $request->getUri()->getScheme());
     }
 
-    /**
-     * @group 14
-     */
-    public function testDetectBaseUrlDoesNotRaiseErrorOnEmptyBaseUrl()
+    #[Group('14')]
+    public function testDetectBaseUrlDoesNotRaiseErrorOnEmptyBaseUrl(): void
     {
         // This is testing that a PHP error is not raised. It would normally be
         // raised when we call `getBaseUrl()`; the assertion is essentially
@@ -806,7 +780,7 @@ class RequestTest extends TestCase
         $this->assertEquals('', $url);
     }
 
-    public function testDetectCorrectBaseUrlForConsoleRequests()
+    public function testDetectCorrectBaseUrlForConsoleRequests(): void
     {
         $_SERVER['argv']            = ['/home/user/package/vendor/bin/phpunit'];
         $_SERVER['argc']            = 1;

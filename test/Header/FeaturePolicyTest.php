@@ -7,17 +7,18 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\FeaturePolicy;
 use Laminas\Http\Header\HeaderInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class FeaturePolicyTest extends TestCase
 {
-    public function testFeaturePolicyFromStringThrowsExceptionIfImproperHeaderNameUsed()
+    public function testFeaturePolicyFromStringThrowsExceptionIfImproperHeaderNameUsed(): void
     {
         $this->expectException(InvalidArgumentException::class);
         FeaturePolicy::fromString('X-Feature-Policy: geolocation \'none\';');
     }
 
-    public function testFeaturePolicyFromStringParsesDirectivesCorrectly()
+    public function testFeaturePolicyFromStringParsesDirectivesCorrectly(): void
     {
         $header = FeaturePolicy::fromString(
             "Feature-Policy: geolocation 'none'; autoplay 'self'; microphone 'self';"
@@ -32,13 +33,13 @@ class FeaturePolicyTest extends TestCase
         $this->assertEquals($directives, $header->getDirectives());
     }
 
-    public function testFeaturePolicyGetFieldNameReturnsHeaderName()
+    public function testFeaturePolicyGetFieldNameReturnsHeaderName(): void
     {
         $header = new FeaturePolicy();
         $this->assertEquals('Feature-Policy', $header->getFieldName());
     }
 
-    public function testFeaturePolicyToStringReturnsHeaderFormattedString()
+    public function testFeaturePolicyToStringReturnsHeaderFormattedString(): void
     {
         $header = FeaturePolicy::fromString(
             "Feature-Policy: geolocation 'none'; autoplay 'self'; microphone 'self';"
@@ -51,7 +52,7 @@ class FeaturePolicyTest extends TestCase
         );
     }
 
-    public function testFeaturePolicySetDirective()
+    public function testFeaturePolicySetDirective(): void
     {
         $fp = new FeaturePolicy();
         $fp->setDirective('geolocation', ['https://*.google.com', 'http://foo.com'])
@@ -62,7 +63,7 @@ class FeaturePolicyTest extends TestCase
         $this->assertEquals($header, $fp->toString());
     }
 
-    public function testFeaturePolicySetDirectiveWithEmptySourcesDefaultsToNone()
+    public function testFeaturePolicySetDirectiveWithEmptySourcesDefaultsToNone(): void
     {
         $header = new FeaturePolicy();
         $header->setDirective('geolocation', ["'self'"])
@@ -74,14 +75,14 @@ class FeaturePolicyTest extends TestCase
         );
     }
 
-    public function testFeaturePolicySetDirectiveThrowsExceptionIfInvalidDirectiveNameGiven()
+    public function testFeaturePolicySetDirectiveThrowsExceptionIfInvalidDirectiveNameGiven(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $header = new FeaturePolicy();
         $header->setDirective('foo', []);
     }
 
-    public function testFeaturePolicyGetFieldValueReturnsProperValue()
+    public function testFeaturePolicyGetFieldValueReturnsProperValue(): void
     {
         $header = new FeaturePolicy();
         $header->setDirective('geolocation', ["'self'"])
@@ -91,10 +92,9 @@ class FeaturePolicyTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         FeaturePolicy::fromString("Feature-Policy: default-src 'none'\r\n\r\nevilContent");
@@ -102,10 +102,9 @@ class FeaturePolicyTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaDirective()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaDirective(): void
     {
         $header = new FeaturePolicy();
         $this->expectException(InvalidArgumentException::class);

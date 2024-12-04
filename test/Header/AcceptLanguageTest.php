@@ -7,44 +7,45 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\AcceptLanguage;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 use function array_shift;
 
 class AcceptLanguageTest extends TestCase
 {
-    public function testAcceptLanguageFromStringCreatesValidAcceptLanguageHeader()
+    public function testAcceptLanguageFromStringCreatesValidAcceptLanguageHeader(): void
     {
         $acceptLanguageHeader = AcceptLanguage::fromString('Accept-Language: xxx');
         $this->assertInstanceOf(HeaderInterface::class, $acceptLanguageHeader);
         $this->assertInstanceOf(AcceptLanguage::class, $acceptLanguageHeader);
     }
 
-    public function testAcceptLanguageGetFieldNameReturnsHeaderName()
+    public function testAcceptLanguageGetFieldNameReturnsHeaderName(): void
     {
         $acceptLanguageHeader = new AcceptLanguage();
         $this->assertEquals('Accept-Language', $acceptLanguageHeader->getFieldName());
     }
 
-    public function testAcceptLanguageGetFieldValueReturnsProperValue()
+    public function testAcceptLanguageGetFieldValueReturnsProperValue(): void
     {
         $acceptLanguageHeader = AcceptLanguage::fromString('Accept-Language: xxx');
         $this->assertEquals('xxx', $acceptLanguageHeader->getFieldValue());
     }
 
-    public function testAcceptLanguageGetFieldValueReturnsProperValueWithTrailingSemicolon()
+    public function testAcceptLanguageGetFieldValueReturnsProperValueWithTrailingSemicolon(): void
     {
         $acceptLanguageHeader = AcceptLanguage::fromString('Accept-Language: xxx;');
         $this->assertEquals('xxx', $acceptLanguageHeader->getFieldValue());
     }
 
-    public function testAcceptLanguageGetFieldValueReturnsProperValueWithSemicolonWithoutEqualSign()
+    public function testAcceptLanguageGetFieldValueReturnsProperValueWithSemicolonWithoutEqualSign(): void
     {
         $acceptLanguageHeader = AcceptLanguage::fromString('Accept-Language: xxx;yyy');
         $this->assertEquals('xxx;yyy', $acceptLanguageHeader->getFieldValue());
     }
 
-    public function testAcceptLanguageToStringReturnsHeaderFormattedString()
+    public function testAcceptLanguageToStringReturnsHeaderFormattedString(): void
     {
         $acceptLanguageHeader = new AcceptLanguage();
         $acceptLanguageHeader->addLanguage('da', 0.8)
@@ -56,14 +57,14 @@ class AcceptLanguageTest extends TestCase
     // Implementation specific tests here
 
     // phpcs:ignore Squiz.Commenting.FunctionComment.WrongStyle
-    public function testCanParseCommaSeparatedValues()
+    public function testCanParseCommaSeparatedValues(): void
     {
         $header = AcceptLanguage::fromString('Accept-Language: da;q=0.8, en-gb');
         $this->assertTrue($header->hasLanguage('da'));
         $this->assertTrue($header->hasLanguage('en-gb'));
     }
 
-    public function testPrioritizesValuesBasedOnQParameter()
+    public function testPrioritizesValuesBasedOnQParameter(): void
     {
         $header   = AcceptLanguage::fromString('Accept-Language: da;q=0.8, en-gb, *;q=0.4');
         $expected = [
@@ -79,7 +80,7 @@ class AcceptLanguageTest extends TestCase
         $this->assertEquals($expected, $test);
     }
 
-    public function testWildcharLanguage()
+    public function testWildcharLanguage(): void
     {
         $acceptHeader = new AcceptLanguage();
         $acceptHeader->addLanguage('da', 0.8)
@@ -90,7 +91,7 @@ class AcceptLanguageTest extends TestCase
         $this->assertEquals('Accept-Language: da;q=0.8, *;q=0.4', $acceptHeader->toString());
     }
 
-    public function testWildcards()
+    public function testWildcards(): void
     {
         $accept = AcceptLanguage::fromString('*, en-*, en-us');
         $res    = $accept->getPrioritized();
@@ -107,10 +108,9 @@ class AcceptLanguageTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $header = AcceptLanguage::fromString("Accept-Language: da\r\n\r\nevilContent");
@@ -118,10 +118,9 @@ class AcceptLanguageTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaSetters()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaSetters(): void
     {
         $header = new AcceptLanguage();
         $this->expectException(InvalidArgumentException::class);

@@ -8,7 +8,6 @@ use Laminas\Http\Response as HttpResponse;
 
 use function call_user_func;
 use function header;
-use function headers_sent;
 
 /**
  * HTTP Response for current PHP environment

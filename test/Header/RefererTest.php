@@ -11,18 +11,19 @@ use Laminas\Http\Header\Referer;
 use Laminas\Http\Headers;
 use Laminas\Uri\Http;
 use Laminas\Uri\Uri;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class RefererTest extends TestCase
 {
-    public function testRefererFromStringCreatesValidLocationHeader()
+    public function testRefererFromStringCreatesValidLocationHeader(): void
     {
         $refererHeader = Referer::fromString('Referer: http://www.example.com/');
         $this->assertInstanceOf(HeaderInterface::class, $refererHeader);
         $this->assertInstanceOf(Referer::class, $refererHeader);
     }
 
-    public function testRefererGetFieldValueReturnsProperValue()
+    public function testRefererGetFieldValueReturnsProperValue(): void
     {
         $refererHeader = new Referer();
         $refererHeader->setUri('http://www.example.com/');
@@ -32,7 +33,7 @@ class RefererTest extends TestCase
         $this->assertEquals('/path', $refererHeader->getFieldValue());
     }
 
-    public function testRefererToStringReturnsHeaderFormattedString()
+    public function testRefererToStringReturnsHeaderFormattedString(): void
     {
         $refererHeader = new Referer();
         $refererHeader->setUri('http://www.example.com/path?query');
@@ -43,7 +44,7 @@ class RefererTest extends TestCase
     // Implementation specific tests here
 
     // phpcs:ignore Squiz.Commenting.FunctionComment.WrongStyle
-    public function testRefererCanSetAndAccessAbsoluteUri()
+    public function testRefererCanSetAndAccessAbsoluteUri(): void
     {
         $refererHeader = Referer::fromString('Referer: http://www.example.com/path');
         $uri           = $refererHeader->uri();
@@ -52,7 +53,7 @@ class RefererTest extends TestCase
         $this->assertEquals('http://www.example.com/path', $refererHeader->getUri());
     }
 
-    public function testRefererCanSetAndAccessRelativeUri()
+    public function testRefererCanSetAndAccessRelativeUri(): void
     {
         $refererHeader = Referer::fromString('Referer: /path/to');
         $uri           = $refererHeader->uri();
@@ -61,7 +62,7 @@ class RefererTest extends TestCase
         $this->assertEquals('/path/to', $refererHeader->getUri());
     }
 
-    public function testRefererDoesNotHaveUriFragment()
+    public function testRefererDoesNotHaveUriFragment(): void
     {
         $refererHeader = new Referer();
         $refererHeader->setUri('http://www.example.com/path?query#fragment');
@@ -70,16 +71,15 @@ class RefererTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testCRLFAttack()
+    #[Group('ZF2015-04')]
+    public function testCRLFAttack(): void
     {
         $this->expectException(InvalidArgumentException::class);
         Referer::fromString("Referer: http://www.example.com/\r\n\r\nevilContent");
     }
 
-    public function testInvalidUriShouldWrapException()
+    public function testInvalidUriShouldWrapException(): void
     {
         $headerString = "Referer: unknown-scheme://test";
 

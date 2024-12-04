@@ -7,24 +7,25 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\Etag;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class EtagTest extends TestCase
 {
-    public function testEtagFromStringCreatesValidEtagHeader()
+    public function testEtagFromStringCreatesValidEtagHeader(): void
     {
         $etagHeader = Etag::fromString('Etag: xxx');
         $this->assertInstanceOf(HeaderInterface::class, $etagHeader);
         $this->assertInstanceOf(Etag::class, $etagHeader);
     }
 
-    public function testEtagGetFieldNameReturnsHeaderName()
+    public function testEtagGetFieldNameReturnsHeaderName(): void
     {
         $etagHeader = new Etag();
         $this->assertEquals('Etag', $etagHeader->getFieldName());
     }
 
-    public function testEtagGetFieldValueReturnsProperValue()
+    public function testEtagGetFieldValueReturnsProperValue(): void
     {
         $this->markTestIncomplete('Etag needs to be completed');
 
@@ -32,7 +33,7 @@ class EtagTest extends TestCase
         $this->assertEquals('xxx', $etagHeader->getFieldValue());
     }
 
-    public function testEtagToStringReturnsHeaderFormattedString()
+    public function testEtagToStringReturnsHeaderFormattedString(): void
     {
         $this->markTestIncomplete('Etag needs to be completed');
 
@@ -43,13 +44,11 @@ class EtagTest extends TestCase
     }
 
     /** Implementation specific tests here */
-
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         Etag::fromString("Etag: xxx\r\n\r\nevilContent");
@@ -57,10 +56,9 @@ class EtagTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaConstructor()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new Etag("xxx\r\n\r\nevilContent");

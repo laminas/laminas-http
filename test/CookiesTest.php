@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 class CookiesTest extends TestCase
 {
-    public function testFromResponseInSetCookie()
+    public function testFromResponseInSetCookie(): void
     {
         $response = new Response();
         $headers  = new Headers();
@@ -27,7 +27,7 @@ class CookiesTest extends TestCase
         $this->assertSame($header, $response->getCookie('https://www.zend.com', 'foo'));
     }
 
-    public function testFromResponseInCookie()
+    public function testFromResponseInCookie(): void
     {
         $response = new Response();
         $headers  = new Headers();
@@ -41,7 +41,7 @@ class CookiesTest extends TestCase
         $this->assertSame($header, $response->getCookie('https://www.zend.com', 'foo'));
     }
 
-    public function testRequestCanHaveArrayCookies()
+    public function testRequestCanHaveArrayCookies(): void
     {
         $_COOKIE    = [
             'test' => [

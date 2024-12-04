@@ -7,24 +7,25 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\Header\ProxyAuthenticate;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class ProxyAuthenticateTest extends TestCase
 {
-    public function testProxyAuthenticateFromStringCreatesValidProxyAuthenticateHeader()
+    public function testProxyAuthenticateFromStringCreatesValidProxyAuthenticateHeader(): void
     {
         $proxyAuthenticateHeader = ProxyAuthenticate::fromString('Proxy-Authenticate: xxx');
         $this->assertInstanceOf(HeaderInterface::class, $proxyAuthenticateHeader);
         $this->assertInstanceOf(ProxyAuthenticate::class, $proxyAuthenticateHeader);
     }
 
-    public function testProxyAuthenticateGetFieldNameReturnsHeaderName()
+    public function testProxyAuthenticateGetFieldNameReturnsHeaderName(): void
     {
         $proxyAuthenticateHeader = new ProxyAuthenticate();
         $this->assertEquals('Proxy-Authenticate', $proxyAuthenticateHeader->getFieldName());
     }
 
-    public function testProxyAuthenticateGetFieldValueReturnsProperValue()
+    public function testProxyAuthenticateGetFieldValueReturnsProperValue(): void
     {
         $this->markTestIncomplete('ProxyAuthenticate needs to be completed');
 
@@ -32,7 +33,7 @@ class ProxyAuthenticateTest extends TestCase
         $this->assertEquals('xxx', $proxyAuthenticateHeader->getFieldValue());
     }
 
-    public function testProxyAuthenticateToStringReturnsHeaderFormattedString()
+    public function testProxyAuthenticateToStringReturnsHeaderFormattedString(): void
     {
         $this->markTestIncomplete('ProxyAuthenticate needs to be completed');
 
@@ -43,13 +44,11 @@ class ProxyAuthenticateTest extends TestCase
     }
 
     /** Implementation specific tests here */
-
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         ProxyAuthenticate::fromString("Proxy-Authenticate: xxx\r\n\r\nevilContent");
@@ -57,10 +56,9 @@ class ProxyAuthenticateTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaConstructor()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new ProxyAuthenticate("xxx\r\n\r\nevilContent");

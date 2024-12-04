@@ -12,15 +12,17 @@ use Laminas\Uri\Http;
 use Laminas\Uri\Mailto;
 use Laminas\Uri\Uri;
 use Laminas\Uri\UriFactory;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class LocationTest extends TestCase
 {
     /**
-     * @dataProvider locationFromStringCreatesValidLocationHeaderProvider
      * @param string $uri The URL to redirect to
      */
-    public function testLocationFromStringCreatesValidLocationHeader($uri)
+    #[DataProvider('locationFromStringCreatesValidLocationHeaderProvider')]
+    public function testLocationFromStringCreatesValidLocationHeader(string $uri): void
     {
         $locationHeader = Location::fromString('Location: ' . $uri);
         $this->assertInstanceOf(HeaderInterface::class, $locationHeader);
@@ -28,7 +30,7 @@ class LocationTest extends TestCase
     }
 
     /** @psalm-return array<array-key, array{0: string}> */
-    public function locationFromStringCreatesValidLocationHeaderProvider(): array
+    public static function locationFromStringCreatesValidLocationHeaderProvider(): array
     {
         return [
             ['http://www.example.com'],
@@ -40,12 +42,9 @@ class LocationTest extends TestCase
 
     /**
      * Test that we can set a redirect to different URI-Schemes
-     *
-     * @dataProvider locationCanSetDifferentSchemeUrisProvider
-     * @param string $uri
-     * @param string $expectedClass
      */
-    public function testLocationCanSetDifferentSchemeUris($uri, $expectedClass)
+    #[DataProvider('locationCanSetDifferentSchemeUrisProvider')]
+    public function testLocationCanSetDifferentSchemeUris(string $uri, string $expectedClass): void
     {
         $locationHeader = new Location();
         $locationHeader->setUri($uri);
@@ -54,12 +53,9 @@ class LocationTest extends TestCase
 
     /**
      * Test that we can set a redirect to different URI-schemes via a class
-     *
-     * @dataProvider locationCanSetDifferentSchemeUrisProvider
-     * @param string $uri
-     * @param string $expectedClass
      */
-    public function testLocationCanSetDifferentSchemeUriObjects($uri, $expectedClass)
+    #[DataProvider('locationCanSetDifferentSchemeUrisProvider')]
+    public function testLocationCanSetDifferentSchemeUriObjects(string $uri, string $expectedClass): void
     {
         $uri            = UriFactory::factory($uri);
         $locationHeader = new Location();
@@ -69,10 +65,8 @@ class LocationTest extends TestCase
 
     /**
      * Provide data to the locationCanSetDifferentSchemeUris-test
-     *
-     * @return array
      */
-    public function locationCanSetDifferentSchemeUrisProvider()
+    public static function locationCanSetDifferentSchemeUrisProvider(): array
     {
         return [
             ['http://www.example.com', Http::class],
@@ -82,7 +76,7 @@ class LocationTest extends TestCase
         ];
     }
 
-    public function testLocationGetFieldValueReturnsProperValue()
+    public function testLocationGetFieldValueReturnsProperValue(): void
     {
         $locationHeader = new Location();
         $locationHeader->setUri('http://www.example.com/');
@@ -92,7 +86,7 @@ class LocationTest extends TestCase
         $this->assertEquals('/path', $locationHeader->getFieldValue());
     }
 
-    public function testLocationToStringReturnsHeaderFormattedString()
+    public function testLocationToStringReturnsHeaderFormattedString(): void
     {
         $locationHeader = new Location();
         $locationHeader->setUri('http://www.example.com/path?query');
@@ -103,7 +97,7 @@ class LocationTest extends TestCase
     // Implementation specific tests here
 
     // phpcs:ignore Squiz.Commenting.FunctionComment.WrongStyle
-    public function testLocationCanSetAndAccessAbsoluteUri()
+    public function testLocationCanSetAndAccessAbsoluteUri(): void
     {
         $locationHeader = Location::fromString('Location: http://www.example.com/path');
         $uri            = $locationHeader->uri();
@@ -112,7 +106,7 @@ class LocationTest extends TestCase
         $this->assertEquals('http://www.example.com/path', $locationHeader->getUri());
     }
 
-    public function testLocationCanSetAndAccessRelativeUri()
+    public function testLocationCanSetAndAccessRelativeUri(): void
     {
         $locationHeader = Location::fromString('Location: /path/to');
         $uri            = $locationHeader->uri();
@@ -123,10 +117,9 @@ class LocationTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testCRLFAttack()
+    #[Group('ZF2015-04')]
+    public function testCRLFAttack(): void
     {
         $this->expectException(InvalidArgumentException::class);
         Location::fromString("Location: http://www.example.com/path\r\n\r\nevilContent");

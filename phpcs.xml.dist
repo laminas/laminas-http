@@ -16,11 +16,15 @@
     <file>src</file>
     <file>test</file>
     <exclude-pattern>*/_files/*</exclude-pattern>
+    <exclude-pattern>test/PhpEnvironment/Assets/*</exclude-pattern>
 
     <!-- Include all rules from Laminas Coding Standard -->
     <rule ref="LaminasCodingStandard"/>
 
     <rule ref="SlevomatCodingStandard.TypeHints.DeclareStrictTypes.DeclareStrictTypesMissing">
         <exclude-pattern>src/</exclude-pattern>
+    </rule>
+    <rule ref="SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly.ReferenceViaFallbackGlobalName">
+        <exclude-pattern>src/PhpEnvironment/Response.php</exclude-pattern>
     </rule>
 </ruleset>

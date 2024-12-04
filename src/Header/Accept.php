@@ -43,7 +43,6 @@ class Accept extends AbstractAccept
      *
      * @param  string $type
      * @param  int|float $priority
-     * @param  array $params
      * @return $this
      */
     public function addMediaType($type, $priority = 1, array $params = [])

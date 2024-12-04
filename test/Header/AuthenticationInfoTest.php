@@ -7,24 +7,25 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\AuthenticationInfo;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class AuthenticationInfoTest extends TestCase
 {
-    public function testAuthenticationInfoFromStringCreatesValidAuthenticationInfoHeader()
+    public function testAuthenticationInfoFromStringCreatesValidAuthenticationInfoHeader(): void
     {
         $authenticationInfoHeader = AuthenticationInfo::fromString('Authentication-Info: xxx');
         $this->assertInstanceOf(HeaderInterface::class, $authenticationInfoHeader);
         $this->assertInstanceOf(AuthenticationInfo::class, $authenticationInfoHeader);
     }
 
-    public function testAuthenticationInfoGetFieldNameReturnsHeaderName()
+    public function testAuthenticationInfoGetFieldNameReturnsHeaderName(): void
     {
         $authenticationInfoHeader = new AuthenticationInfo();
         $this->assertEquals('Authentication-Info', $authenticationInfoHeader->getFieldName());
     }
 
-    public function testAuthenticationInfoGetFieldValueReturnsProperValue()
+    public function testAuthenticationInfoGetFieldValueReturnsProperValue(): void
     {
         $this->markTestIncomplete('AuthenticationInfo needs to be completed');
 
@@ -32,7 +33,7 @@ class AuthenticationInfoTest extends TestCase
         $this->assertEquals('xxx', $authenticationInfoHeader->getFieldValue());
     }
 
-    public function testAuthenticationInfoToStringReturnsHeaderFormattedString()
+    public function testAuthenticationInfoToStringReturnsHeaderFormattedString(): void
     {
         $this->markTestIncomplete('AuthenticationInfo needs to be completed');
 
@@ -43,13 +44,11 @@ class AuthenticationInfoTest extends TestCase
     }
 
     /** Implementation specific tests here */
-
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $header = AuthenticationInfo::fromString("Authentication-Info: xxx\r\n\r\nevilContent");
@@ -57,10 +56,9 @@ class AuthenticationInfoTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaConstructor()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new AuthenticationInfo("xxx\r\n\r\nevilContent");

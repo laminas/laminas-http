@@ -8,6 +8,7 @@ use Laminas\Http\Client as HTTPClient;
 use Laminas\Http\Client\Adapter\AdapterInterface;
 use Laminas\Http\Client\Adapter\Socket;
 use Laminas\Http\Request;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 use function filter_var;
@@ -18,40 +19,31 @@ use const FILTER_VALIDATE_BOOLEAN;
 
 /**
  * This are the test for the prototype of Laminas\Http\Client
- *
- * @group      Laminas_Http
- * @group      Laminas_Http_Client
  */
+#[Group('Laminas_Http')]
+#[Group('Laminas_Http_Client')]
 class UseCaseTest extends TestCase
 {
     /**
      * The bast URI for this test, containing all files in the files directory
      * Should be set in phpunit.xml or phpunit.xml.dist
-     *
-     * @var string
      */
-    protected $baseuri;
+    private string $baseuri;
 
     /**
      * Common HTTP client
-     *
-     * @var HTTPClient
      */
-    protected $client;
+    private HTTPClient $client;
 
     /**
      * Common HTTP client adapter
-     *
-     * @var AdapterInterface
      */
-    protected $adapter;
+    protected AdapterInterface $adapter;
 
     /**
      * Configuration array
-     *
-     * @var array
      */
-    protected $config = [
+    protected array $config = [
         'adapter' => Socket::class,
     ];
 
@@ -75,28 +67,20 @@ class UseCaseTest extends TestCase
         }
     }
 
-    /**
-     * Clean up the test environment
-     */
-    protected function tearDown(): void
-    {
-        $this->client = null;
-    }
-
-    public function testHttpGet()
+    public function testHttpGet(): void
     {
         $this->client->setMethod(Request::METHOD_GET);
         $response = $this->client->send();
         $this->assertTrue($response->isSuccess());
     }
 
-    public function testStaticHttpGet()
+    public function testStaticHttpGet(): void
     {
         //        $response= HTTPClient::get($this->baseuri);
 //        $this->assertTrue($response->isSuccess());
     }
 
-    public function testRequestHttpGet()
+    public function testRequestHttpGet(): void
     {
         $client  = new HTTPClient();
         $request = new Request();

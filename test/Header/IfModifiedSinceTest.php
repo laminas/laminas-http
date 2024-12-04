@@ -7,31 +7,32 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\Header\IfModifiedSince;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class IfModifiedSinceTest extends TestCase
 {
-    public function testIfModifiedSinceFromStringCreatesValidIfModifiedSinceHeader()
+    public function testIfModifiedSinceFromStringCreatesValidIfModifiedSinceHeader(): void
     {
         $ifModifiedSinceHeader = IfModifiedSince::fromString('If-Modified-Since: Sun, 06 Nov 1994 08:49:37 GMT');
         $this->assertInstanceOf(HeaderInterface::class, $ifModifiedSinceHeader);
         $this->assertInstanceOf(IfModifiedSince::class, $ifModifiedSinceHeader);
     }
 
-    public function testIfModifiedSinceGetFieldNameReturnsHeaderName()
+    public function testIfModifiedSinceGetFieldNameReturnsHeaderName(): void
     {
         $ifModifiedSinceHeader = new IfModifiedSince();
         $this->assertEquals('If-Modified-Since', $ifModifiedSinceHeader->getFieldName());
     }
 
-    public function testIfModifiedSinceGetFieldValueReturnsProperValue()
+    public function testIfModifiedSinceGetFieldValueReturnsProperValue(): void
     {
         $ifModifiedSinceHeader = new IfModifiedSince();
         $ifModifiedSinceHeader->setDate('Sun, 06 Nov 1994 08:49:37 GMT');
         $this->assertEquals('Sun, 06 Nov 1994 08:49:37 GMT', $ifModifiedSinceHeader->getFieldValue());
     }
 
-    public function testIfModifiedSinceToStringReturnsHeaderFormattedString()
+    public function testIfModifiedSinceToStringReturnsHeaderFormattedString(): void
     {
         $ifModifiedSinceHeader = new IfModifiedSince();
         $ifModifiedSinceHeader->setDate('Sun, 06 Nov 1994 08:49:37 GMT');
@@ -43,13 +44,11 @@ class IfModifiedSinceTest extends TestCase
      *
      * @see LaminasTest\Http\Header\DateTest
      */
-
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         IfModifiedSince::fromString(

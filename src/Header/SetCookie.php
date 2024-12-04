@@ -775,7 +775,6 @@ class SetCookie implements MultipleHeaderInterface
     }
 
     /**
-     * @param  array $headers
      * @return string
      * @throws Exception\RuntimeException
      */

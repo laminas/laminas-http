@@ -18,6 +18,8 @@ use Laminas\Http\Request;
 use Laminas\Http\Response;
 use Laminas\Uri\Http;
 use LaminasTest\Http\TestAsset\ExtendedClient;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -34,7 +36,7 @@ use function tempnam;
 
 class ClientTest extends TestCase
 {
-    public function testIfCookiesAreSticky()
+    public function testIfCookiesAreSticky(): void
     {
         $initialCookies = [
             new SetCookie('foo', 'far', null, '/', 'www.domain.com'),
@@ -76,14 +78,14 @@ class ClientTest extends TestCase
         $this->assertEquals(4, count($client->getCookies()));
     }
 
-    public function testClientRetrievesUppercaseHttpMethodFromRequestObject()
+    public function testClientRetrievesUppercaseHttpMethodFromRequestObject(): void
     {
         $client = new Client();
         $client->setMethod('post');
         $this->assertEquals(Client::ENC_URLENCODED, $client->getEncType());
     }
 
-    public function testAcceptEncodingHeaderWorksProperly()
+    public function testAcceptEncodingHeaderWorksProperly(): void
     {
         $method = new ReflectionMethod(Client::class, 'prepareHeaders');
         $method->setAccessible(true);
@@ -119,7 +121,7 @@ class ClientTest extends TestCase
         $this->assertEquals('gzip, deflate', $headers['Accept-Encoding']);
     }
 
-    public function testIfZeroValueCookiesCanBeSet()
+    public function testIfZeroValueCookiesCanBeSet(): void
     {
         $client = new Client();
         $client->addCookie('test', 0);
@@ -127,7 +129,7 @@ class ClientTest extends TestCase
         $client->addCookie('test3', false);
     }
 
-    public function testIfNullValueCookiesThrowsException()
+    public function testIfNullValueCookiesThrowsException(): void
     {
         $client = new Client();
 
@@ -135,7 +137,7 @@ class ClientTest extends TestCase
         $client->addCookie('test', null);
     }
 
-    public function testIfCookieHeaderCanBeSet()
+    public function testIfCookieHeaderCanBeSet(): void
     {
         $header = [new SetCookie('foo', 'bar')];
         $client = new Client();
@@ -146,7 +148,7 @@ class ClientTest extends TestCase
         $this->assertEquals($header[0], $cookies['foo']);
     }
 
-    public function testIfArrayOfHeadersCanBeSet()
+    public function testIfArrayOfHeadersCanBeSet(): void
     {
         $headers = [
             new SetCookie('foo'),
@@ -160,7 +162,7 @@ class ClientTest extends TestCase
         $this->assertEquals(2, count($cookies));
     }
 
-    public function testIfArrayIteratorOfHeadersCanBeSet()
+    public function testIfArrayIteratorOfHeadersCanBeSet(): void
     {
         $headers = new ArrayIterator([
             new SetCookie('foo'),
@@ -174,29 +176,25 @@ class ClientTest extends TestCase
         $this->assertEquals(2, count($cookies));
     }
 
-    /**
-     * @group 2774
-     * @group 2745
-     */
-    public function testArgSeparatorDefaultsToIniSetting()
+    #[Group('2774')]
+    #[Group('2745')]
+    public function testArgSeparatorDefaultsToIniSetting(): void
     {
         $argSeparator = ini_get('arg_separator.output');
         $client       = new Client();
         $this->assertEquals($argSeparator, $client->getArgSeparator());
     }
 
-    /**
-     * @group 2774
-     * @group 2745
-     */
-    public function testCanOverrideArgSeparator()
+    #[Group('2774')]
+    #[Group('2745')]
+    public function testCanOverrideArgSeparator(): void
     {
         $client = new Client();
         $client->setArgSeparator(';');
         $this->assertEquals(';', $client->getArgSeparator());
     }
 
-    public function testClientUsesAcceptEncodingHeaderFromRequestObject()
+    public function testClientUsesAcceptEncodingHeaderFromRequestObject(): void
     {
         $client = new Client();
 
@@ -218,25 +216,25 @@ class ClientTest extends TestCase
         $this->assertStringContainsString('Accept-Encoding: foo', $rawRequest);
     }
 
-    public function testEncodeAuthHeaderWorksAsExpected()
+    public function testEncodeAuthHeaderWorksAsExpected(): void
     {
         $encoded = Client::encodeAuthHeader('test', 'test');
         $this->assertEquals('Basic ' . base64_encode('test:test'), $encoded);
     }
 
-    public function testEncodeAuthHeaderThrowsExceptionWhenUsernameContainsSemiColon()
+    public function testEncodeAuthHeaderThrowsExceptionWhenUsernameContainsSemiColon(): void
     {
         $this->expectException(ClientException\InvalidArgumentException::class);
         Client::encodeAuthHeader('test:', 'test');
     }
 
-    public function testEncodeAuthHeaderThrowsExceptionWhenInvalidAuthTypeIsUsed()
+    public function testEncodeAuthHeaderThrowsExceptionWhenInvalidAuthTypeIsUsed(): void
     {
         $this->expectException(ClientException\InvalidArgumentException::class);
         Client::encodeAuthHeader('test', 'test', 'test');
     }
 
-    public function testIfMaxredirectWorksCorrectly()
+    public function testIfMaxredirectWorksCorrectly(): void
     {
         $testAdapter = new Test();
         // first response, contains a redirect
@@ -272,7 +270,7 @@ class ClientTest extends TestCase
         $this->assertEquals($response->getContent(), 'Page #2');
     }
 
-    public function testIfClientDoesNotLooseAuthenticationOnRedirect()
+    public function testIfClientDoesNotLooseAuthenticationOnRedirect(): void
     {
         // set up user credentials
         $user     = 'username123';
@@ -305,7 +303,7 @@ class ClientTest extends TestCase
         $this->assertStringContainsString($encoded, $client->getLastRawRequest());
     }
 
-    public function testIfClientDoesNotForwardAuthenticationToForeignHost()
+    public function testIfClientDoesNotForwardAuthenticationToForeignHost(): void
     {
         // set up user credentials
         $user     = 'username123';
@@ -376,7 +374,7 @@ class ClientTest extends TestCase
         $this->assertStringNotContainsString($encoded, $client->getLastRawRequest());
     }
 
-    public function testAdapterAlwaysReachableIfSpecified()
+    public function testAdapterAlwaysReachableIfSpecified(): void
     {
         $testAdapter = new Test();
         $client      = new Client('http://www.example.org/', [
@@ -386,7 +384,7 @@ class ClientTest extends TestCase
         $this->assertSame($testAdapter, $client->getAdapter());
     }
 
-    public function testPrepareHeadersCreateRightHttpField()
+    public function testPrepareHeadersCreateRightHttpField(): void
     {
         $body = json_encode(['foofoo' => 'barbar']);
 
@@ -412,7 +410,7 @@ class ClientTest extends TestCase
         $this->assertArrayHasKey('Content-Length', $headers);
     }
 
-    public function testPrepareHeadersCurlDigestAuthentication()
+    public function testPrepareHeadersCurlDigestAuthentication(): void
     {
         $body = json_encode(['foofoo' => 'barbar']);
 
@@ -435,10 +433,8 @@ class ClientTest extends TestCase
         $this->assertStringContainsString('Digest', $headers['Authorization']);
     }
 
-    /**
-     * @group 6301
-     */
-    public function testCanSpecifyCustomAuthMethodsInExtendingClasses()
+    #[Group('6301')]
+    public function testCanSpecifyCustomAuthMethodsInExtendingClasses(): void
     {
         $client = new ExtendedClient();
 
@@ -458,10 +454,8 @@ class ClientTest extends TestCase
         );
     }
 
-    /**
-     * @group 6231
-     */
-    public function testHttpQueryParametersCastToString()
+    #[Group('6231')]
+    public function testHttpQueryParametersCastToString(): void
     {
         $client = new Client();
 
@@ -489,10 +483,8 @@ class ClientTest extends TestCase
         $client->send($request);
     }
 
-    /**
-     * @group 6959
-     */
-    public function testClientRequestMethod()
+    #[Group('6959')]
+    public function testClientRequestMethod(): void
     {
         $request = new Request();
         $request->setMethod(Request::METHOD_POST);
@@ -505,10 +497,8 @@ class ClientTest extends TestCase
         $this->assertSame(Client::ENC_URLENCODED, $client->getEncType());
     }
 
-    /**
-     * @group 7332
-     */
-    public function testAllowsClearingEncType()
+    #[Group('7332')]
+    public function testAllowsClearingEncType(): void
     {
         $client = new Client();
         $client->setEncType('application/x-www-form-urlencoded');
@@ -522,7 +512,7 @@ class ClientTest extends TestCase
     /**
      * @see https://github.com/zendframework/zend-http/issues/33
      */
-    public function testFormUrlEncodeSeparator()
+    public function testFormUrlEncodeSeparator(): void
     {
         $client = new Client();
         $client->setEncType('application/x-www-form-urlencoded');
@@ -538,7 +528,7 @@ class ClientTest extends TestCase
     }
 
     /** @psalm-return array<string, array{0: string, 1: bool}> */
-    public function uriDataProvider(): array
+    public static function uriDataProvider(): array
     {
         return [
             'valid-relative'   => ['/example', true],
@@ -546,9 +536,7 @@ class ClientTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider uriDataProvider
-     */
+    #[DataProvider('uriDataProvider')]
     public function testUriCorrectlyDeterminesWhetherOrNotItIsAValidRelativeUri(
         string $uri,
         bool $isValidRelativeURI
@@ -562,7 +550,7 @@ class ClientTest extends TestCase
     }
 
     /** @psalm-return array<string, array{0: string, 1: int}> */
-    public function portChangeDataProvider(): array
+    public static function portChangeDataProvider(): array
     {
         return [
             'default-https' => ['https://localhost/example', 443],
@@ -570,9 +558,7 @@ class ClientTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider portChangeDataProvider
-     */
+    #[DataProvider('portChangeDataProvider')]
     public function testUriPortIsSetToAppropriateDefaultValueWhenAnUriOmittingThePortIsProvided(
         string $absoluteURI,
         int $port
@@ -588,7 +574,7 @@ class ClientTest extends TestCase
         $this->assertSame($port, $client->getUri()->getPort());
     }
 
-    public function testUriPortIsNotSetWhenUriIsRelative()
+    public function testUriPortIsNotSetWhenUriIsRelative(): void
     {
         $client = new Client('/example');
         $this->assertNull($client->getUri()->getPort());
@@ -599,7 +585,7 @@ class ClientTest extends TestCase
     }
 
     /** @psalm-return iterable<string, array{0: array<string, string>|SetCookie[]}> */
-    public function cookies(): iterable
+    public static function cookies(): iterable
     {
         yield 'name-value' => [['cookie-name' => 'cookie-value']];
         yield 'SetCookie' => [[new SetCookie('cookie-name', 'cookie-value')]];
@@ -607,9 +593,9 @@ class ClientTest extends TestCase
 
     /**
      * phpcs:ignore SlevomatCodingStandard.Namespaces.UnusedUses.MismatchingCaseSensitivity
-     * @dataProvider cookies
      */
-    public function testSetCookies(array $cookies)
+    #[DataProvider('cookies')]
+    public function testSetCookies(array $cookies): void
     {
         $client = new Client();
 
@@ -619,7 +605,7 @@ class ClientTest extends TestCase
         self::assertContainsOnlyInstancesOf(SetCookie::class, $client->getCookies());
     }
 
-    public function testSetCookieAcceptOnlyArray()
+    public function testSetCookieAcceptOnlyArray(): void
     {
         $client = new Client();
 
@@ -631,17 +617,15 @@ class ClientTest extends TestCase
     /**
      * @return AdapterInterface[]
      */
-    public function adapterWithStreamSupport()
+    public static function adapterWithStreamSupport(): iterable
     {
         yield 'curl' => [new Curl()];
         yield 'proxy' => [new Proxy()];
         yield 'socket' => [new Socket()];
     }
 
-    /**
-     * @dataProvider adapterWithStreamSupport
-     */
-    public function testStreamCompression(AdapterInterface $adapter)
+    #[DataProvider('adapterWithStreamSupport')]
+    public function testStreamCompression(AdapterInterface $adapter): void
     {
         $tmpFile = tempnam(sys_get_temp_dir(), 'stream');
 
@@ -655,7 +639,7 @@ class ClientTest extends TestCase
         self::assertSame($response->getBody(), file_get_contents($tmpFile));
     }
 
-    public function testDefaultUserAgentDoesNotUseEscapeCharacter()
+    public function testDefaultUserAgentDoesNotUseEscapeCharacter(): void
     {
         $client = new Client();
         $r      = new ReflectionProperty($client, 'config');

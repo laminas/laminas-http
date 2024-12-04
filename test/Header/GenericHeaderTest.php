@@ -6,17 +6,16 @@ namespace LaminasTest\Http\Header;
 
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\GenericHeader;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 use function ord;
 
 class GenericHeaderTest extends TestCase
 {
-    /**
-     * @dataProvider validFieldNameChars
-     * @param string $name
-     */
-    public function testValidFieldName($name)
+    #[DataProvider('validFieldNameChars')]
+    public function testValidFieldName(string $name): void
     {
         try {
             new GenericHeader($name);
@@ -29,11 +28,8 @@ class GenericHeaderTest extends TestCase
         }
     }
 
-    /**
-     * @dataProvider invalidFieldNameChars
-     * @param string $name
-     */
-    public function testInvalidFieldName($name)
+    #[DataProvider('invalidFieldNameChars')]
+    public function testInvalidFieldName(string $name): void
     {
         try {
             new GenericHeader($name);
@@ -46,10 +42,8 @@ class GenericHeaderTest extends TestCase
         }
     }
 
-    /**
-     * @group ZF#7295
-     */
-    public function testDoesNotReplaceUnderscoresWithDashes()
+    #[Group('ZF#7295')]
+    public function testDoesNotReplaceUnderscoresWithDashes(): void
     {
         $header = new GenericHeader('X_Foo_Bar');
         $this->assertEquals('X_Foo_Bar', $header->getFieldName());
@@ -57,10 +51,9 @@ class GenericHeaderTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         GenericHeader::fromString("X_Foo_Bar: Bar\r\n\r\nevilContent");
@@ -68,10 +61,9 @@ class GenericHeaderTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaConstructor()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new GenericHeader('X_Foo_Bar', "Bar\r\n\r\nevilContent");
@@ -79,10 +71,9 @@ class GenericHeaderTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testProtectsFromCRLFAttackViaSetFieldName()
+    #[Group('ZF2015-04')]
+    public function testProtectsFromCRLFAttackViaSetFieldName(): void
     {
         $header = new GenericHeader();
         $this->expectException(InvalidArgumentException::class);
@@ -92,10 +83,9 @@ class GenericHeaderTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testProtectsFromCRLFAttackViaSetFieldValue()
+    #[Group('ZF2015-04')]
+    public function testProtectsFromCRLFAttackViaSetFieldValue(): void
     {
         $header = new GenericHeader();
         $this->expectException(InvalidArgumentException::class);
@@ -107,7 +97,7 @@ class GenericHeaderTest extends TestCase
      *
      * @return string[]
      */
-    public function validFieldNameChars()
+    public static function validFieldNameChars(): array
     {
         return [
             ['!'],
@@ -139,7 +129,7 @@ class GenericHeaderTest extends TestCase
      *
      * @return string[]
      */
-    public function invalidFieldNameChars()
+    public static function invalidFieldNameChars(): array
     {
         return [
             ["\x00"], // Min CTL invalid character range.

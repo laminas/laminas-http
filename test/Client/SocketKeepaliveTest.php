@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LaminasTest\Http\Client;
 
 use Laminas\Http\Client\Adapter\Socket;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * This Testsuite includes all Laminas_Http_Client that require a working web
@@ -18,10 +19,9 @@ use Laminas\Http\Client\Adapter\Socket;
  *
  * You can also set the proper constand in your test configuration file to
  * point to the right place.
- *
- * @group      Laminas_Http
- * @group      Laminas_Http_Client
  */
+#[Group('Laminas_Http')]
+#[Group('Laminas_Http_Client')]
 class SocketKeepaliveTest extends SocketTest
 {
     /**

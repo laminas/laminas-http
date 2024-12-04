@@ -10,14 +10,15 @@ use Laminas\Http\Client\Adapter\Exception\OutOfRangeException;
 use Laminas\Http\Client\Adapter\Exception\RuntimeException;
 use Laminas\Http\Client\Adapter\Test;
 use Laminas\Http\Response;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Exercises Laminas_Http_Client_Adapter_Test
- *
- * @group      Laminas_Http
- * @group      Laminas_Http_Client
  */
+#[Group('Laminas_Http')]
+#[Group('Laminas_Http_Client')]
 class TestAdapterTest extends TestCase
 {
     /**
@@ -25,7 +26,7 @@ class TestAdapterTest extends TestCase
      *
      * @var Test
      */
-    protected $adapter;
+    protected Test|null $adapter;
 
     /**
      * Set up the test adapter before running the test
@@ -46,7 +47,7 @@ class TestAdapterTest extends TestCase
     /**
      * Make sure an exception is thrown on invalid configuration
      */
-    public function testSetConfigThrowsOnInvalidConfig()
+    public function testSetConfigThrowsOnInvalidConfig(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Array or Traversable object expected');
@@ -54,22 +55,22 @@ class TestAdapterTest extends TestCase
         $this->adapter->setOptions('foo');
     }
 
-    public function testSetConfigReturnsQuietly()
+    public function testSetConfigReturnsQuietly(): void
     {
         $this->adapter->setOptions(['foo' => 'bar']);
     }
 
-    public function testConnectReturnsQuietly()
+    public function testConnectReturnsQuietly(): void
     {
         $this->adapter->connect('http://foo');
     }
 
-    public function testCloseReturnsQuietly()
+    public function testCloseReturnsQuietly(): void
     {
         $this->adapter->close();
     }
 
-    public function testFailRequestOnDemand()
+    public function testFailRequestOnDemand(): void
     {
         $this->adapter->setNextRequestWillFail(true);
 
@@ -83,13 +84,13 @@ class TestAdapterTest extends TestCase
         }
     }
 
-    public function testReadDefaultResponse()
+    public function testReadDefaultResponse(): void
     {
         $expected = "HTTP/1.1 400 Bad Request\r\n\r\n";
         $this->assertEquals($expected, $this->adapter->read());
     }
 
-    public function testReadingSingleResponse()
+    public function testReadingSingleResponse(): void
     {
         $expected = "HTTP/1.1 200 OK\r\n\r\n";
         $this->adapter->setResponse($expected);
@@ -97,7 +98,7 @@ class TestAdapterTest extends TestCase
         $this->assertEquals($expected, $this->adapter->read());
     }
 
-    public function testReadingResponseCycles()
+    public function testReadingResponseCycles(): void
     {
         $expected = [
             "HTTP/1.1 200 OK\r\n\r\n",
@@ -114,11 +115,9 @@ class TestAdapterTest extends TestCase
 
     /**
      * Test that responses could be added as strings
-     *
-     * @dataProvider validHttpResponseProvider
-     * @param string $testResponse
      */
-    public function testAddResponseAsString($testResponse)
+    #[DataProvider('validHttpResponseProvider')]
+    public function testAddResponseAsString(string $testResponse): void
     {
         $this->adapter->read(); // pop out first response
 
@@ -130,12 +129,9 @@ class TestAdapterTest extends TestCase
      * Test that responses could be added as objects (Laminas-7009)
      *
      * @link https://getlaminas.org/issues/browse/Laminas-7009
-     *
-     * @dataProvider validHttpResponseProvider
-     *
-     * @param string $testResponse
      */
-    public function testAddResponseAsObject($testResponse)
+    #[DataProvider('validHttpResponseProvider')]
+    public function testAddResponseAsObject(string $testResponse): void
     {
         $this->adapter->read(); // pop out first response
 
@@ -145,7 +141,7 @@ class TestAdapterTest extends TestCase
         $this->assertEquals($testResponse, $this->adapter->read());
     }
 
-    public function testReadingResponseCyclesWhenSetByArray()
+    public function testReadingResponseCyclesWhenSetByArray(): void
     {
         $expected = [
             "HTTP/1.1 200 OK\r\n\r\n",
@@ -159,7 +155,7 @@ class TestAdapterTest extends TestCase
         $this->assertEquals($expected[0], $this->adapter->read());
     }
 
-    public function testSettingNextResponseByIndex()
+    public function testSettingNextResponseByIndex(): void
     {
         $expected = [
             "HTTP/1.1 200 OK\r\n\r\n",
@@ -176,7 +172,7 @@ class TestAdapterTest extends TestCase
         }
     }
 
-    public function testSettingNextResponseToAnInvalidIndex()
+    public function testSettingNextResponseToAnInvalidIndex(): void
     {
         $indexes = [-1, 1];
         foreach ($indexes as $i) {
@@ -196,10 +192,8 @@ class TestAdapterTest extends TestCase
 
     /**
      * Provide valid HTTP responses as string
-     *
-     * @return array
      */
-    public static function validHttpResponseProvider()
+    public static function validHttpResponseProvider(): array
     {
         return [
             ['HTTP/1.1 200 OK' . "\r\n\r\n"],

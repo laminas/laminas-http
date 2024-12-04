@@ -7,24 +7,25 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\Header\IfNoneMatch;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class IfNoneMatchTest extends TestCase
 {
-    public function testIfNoneMatchFromStringCreatesValidIfNoneMatchHeader()
+    public function testIfNoneMatchFromStringCreatesValidIfNoneMatchHeader(): void
     {
         $ifNoneMatchHeader = IfNoneMatch::fromString('If-None-Match: xxx');
         $this->assertInstanceOf(HeaderInterface::class, $ifNoneMatchHeader);
         $this->assertInstanceOf(IfNoneMatch::class, $ifNoneMatchHeader);
     }
 
-    public function testIfNoneMatchGetFieldNameReturnsHeaderName()
+    public function testIfNoneMatchGetFieldNameReturnsHeaderName(): void
     {
         $ifNoneMatchHeader = new IfNoneMatch();
         $this->assertEquals('If-None-Match', $ifNoneMatchHeader->getFieldName());
     }
 
-    public function testIfNoneMatchGetFieldValueReturnsProperValue()
+    public function testIfNoneMatchGetFieldValueReturnsProperValue(): void
     {
         $this->markTestIncomplete('IfNoneMatch needs to be completed');
 
@@ -32,7 +33,7 @@ class IfNoneMatchTest extends TestCase
         $this->assertEquals('xxx', $ifNoneMatchHeader->getFieldValue());
     }
 
-    public function testIfNoneMatchToStringReturnsHeaderFormattedString()
+    public function testIfNoneMatchToStringReturnsHeaderFormattedString(): void
     {
         $this->markTestIncomplete('IfNoneMatch needs to be completed');
 
@@ -43,13 +44,11 @@ class IfNoneMatchTest extends TestCase
     }
 
     /** Implementation specific tests here */
-
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         IfNoneMatch::fromString("If-None-Match: xxx\r\n\r\nevilContent");
@@ -57,10 +56,9 @@ class IfNoneMatchTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaConstructor()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new IfNoneMatch("xxx\r\n\r\nevilContent");

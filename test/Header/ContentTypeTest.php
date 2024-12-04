@@ -7,6 +7,8 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\ContentType;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 use function implode;
@@ -14,26 +16,26 @@ use function strtolower;
 
 class ContentTypeTest extends TestCase
 {
-    public function testContentTypeFromStringCreatesValidContentTypeHeader()
+    public function testContentTypeFromStringCreatesValidContentTypeHeader(): void
     {
         $contentTypeHeader = ContentType::fromString('Content-Type: xxx');
         $this->assertInstanceOf(HeaderInterface::class, $contentTypeHeader);
         $this->assertInstanceOf(ContentType::class, $contentTypeHeader);
     }
 
-    public function testContentTypeGetFieldNameReturnsHeaderName()
+    public function testContentTypeGetFieldNameReturnsHeaderName(): void
     {
         $contentTypeHeader = new ContentType();
         $this->assertEquals('Content-Type', $contentTypeHeader->getFieldName());
     }
 
-    public function testContentTypeGetFieldValueReturnsProperValue()
+    public function testContentTypeGetFieldValueReturnsProperValue(): void
     {
         $header = ContentType::fromString('Content-Type: application/json');
         $this->assertEquals('application/json', $header->getFieldValue());
     }
 
-    public function testContentTypeToStringReturnsHeaderFormattedString()
+    public function testContentTypeToStringReturnsHeaderFormattedString(): void
     {
         $header = new ContentType();
         $header->setMediaType('application/atom+xml')
@@ -45,7 +47,7 @@ class ContentTypeTest extends TestCase
     // Implementation specific tests here
 
     /** @psalm-return array<string, array{0: string}> */
-    public function wildcardMatches(): array
+    public static function wildcardMatches(): array
     {
         return [
             'wildcard'                                            => ['*/*'],
@@ -63,11 +65,8 @@ class ContentTypeTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider wildcardMatches
-     * @param string $matchAgainst
-     */
-    public function testMatchWildCard($matchAgainst)
+    #[DataProvider('wildcardMatches')]
+    public function testMatchWildCard(string $matchAgainst): void
     {
         $header = ContentType::fromString('Content-Type: application/vnd.foobar+json');
         $result = $header->match($matchAgainst);
@@ -75,7 +74,7 @@ class ContentTypeTest extends TestCase
     }
 
     /** @psalm-return array<string, array{0: string}> */
-    public function invalidMatches(): array
+    public static function invalidMatches(): array
     {
         return [
             'format'                         => ['application/vnd.foobar+xml'],
@@ -88,11 +87,8 @@ class ContentTypeTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider invalidMatches
-     * @param string $matchAgainst
-     */
-    public function testFailedMatches($matchAgainst)
+    #[DataProvider('invalidMatches')]
+    public function testFailedMatches(string $matchAgainst): void
     {
         $header = ContentType::fromString('Content-Type: application/vnd.foobar+json');
         $result = $header->match($matchAgainst);
@@ -100,7 +96,7 @@ class ContentTypeTest extends TestCase
     }
 
     /** @psalm-return array<string, array{0: string|string[]}> */
-    public function multipleCriteria(): array
+    public static function multipleCriteria(): array
     {
         $criteria = [
             'application/vnd.foobar+xml',
@@ -114,11 +110,8 @@ class ContentTypeTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider multipleCriteria
-     * @param array|string $criteria
-     */
-    public function testReturnsMatchingMediaTypeOfFirstCriteriaToValidate($criteria)
+    #[DataProvider('multipleCriteria')]
+    public function testReturnsMatchingMediaTypeOfFirstCriteriaToValidate(array|string $criteria): void
     {
         $header = ContentType::fromString('Content-Type: application/vnd.foobar+json');
         $result = $header->match($criteria);
@@ -126,7 +119,7 @@ class ContentTypeTest extends TestCase
     }
 
     /** @psalm-return array<string, array{0: string, 1: string}> */
-    public function contentTypeParameterExamples(): array
+    public static function contentTypeParameterExamples(): array
     {
         return [
             'no-quotes'              => ['Content-Type: foo/bar; param=baz', 'baz'],
@@ -136,12 +129,8 @@ class ContentTypeTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider contentTypeParameterExamples
-     * @param string $headerString
-     * @param string $expectedParameterValue
-     */
-    public function testContentTypeParsesParametersCorrectly($headerString, $expectedParameterValue)
+    #[DataProvider('contentTypeParameterExamples')]
+    public function testContentTypeParsesParametersCorrectly(string $headerString, string $expectedParameterValue): void
     {
         $contentTypeHeader = ContentType::fromString($headerString);
 
@@ -153,10 +142,9 @@ class ContentTypeTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         ContentType::fromString("Content-Type: foo/bar;\r\n\r\nevilContent");
@@ -164,10 +152,9 @@ class ContentTypeTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaConstructor()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new ContentType("foo/bar\r\n\r\nevilContent");

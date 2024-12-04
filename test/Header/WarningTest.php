@@ -7,24 +7,25 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\Header\Warning;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class WarningTest extends TestCase
 {
-    public function testWarningFromStringCreatesValidWarningHeader()
+    public function testWarningFromStringCreatesValidWarningHeader(): void
     {
         $warningHeader = Warning::fromString('Warning: xxx');
         $this->assertInstanceOf(HeaderInterface::class, $warningHeader);
         $this->assertInstanceOf(Warning::class, $warningHeader);
     }
 
-    public function testWarningGetFieldNameReturnsHeaderName()
+    public function testWarningGetFieldNameReturnsHeaderName(): void
     {
         $warningHeader = new Warning();
         $this->assertEquals('Warning', $warningHeader->getFieldName());
     }
 
-    public function testWarningGetFieldValueReturnsProperValue()
+    public function testWarningGetFieldValueReturnsProperValue(): void
     {
         $this->markTestIncomplete('Warning needs to be completed');
 
@@ -32,7 +33,7 @@ class WarningTest extends TestCase
         $this->assertEquals('xxx', $warningHeader->getFieldValue());
     }
 
-    public function testWarningToStringReturnsHeaderFormattedString()
+    public function testWarningToStringReturnsHeaderFormattedString(): void
     {
         $this->markTestIncomplete('Warning needs to be completed');
 
@@ -43,13 +44,11 @@ class WarningTest extends TestCase
     }
 
     /** Implementation specific tests here */
-
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         Warning::fromString("Warning: xxx\r\n\r\nevilContent");
@@ -57,10 +56,9 @@ class WarningTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaConstructor()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new Warning("xxx\r\n\r\nevilContent");

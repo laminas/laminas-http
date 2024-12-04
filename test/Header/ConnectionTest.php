@@ -7,11 +7,12 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\Connection;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class ConnectionTest extends TestCase
 {
-    public function testConnectionFromStringCreatesValidConnectionHeader()
+    public function testConnectionFromStringCreatesValidConnectionHeader(): void
     {
         $connectionHeader = Connection::fromString('Connection: close');
         $this->assertInstanceOf(HeaderInterface::class, $connectionHeader);
@@ -20,20 +21,20 @@ class ConnectionTest extends TestCase
         $this->assertFalse($connectionHeader->isPersistent());
     }
 
-    public function testConnectionGetFieldNameReturnsHeaderName()
+    public function testConnectionGetFieldNameReturnsHeaderName(): void
     {
         $connectionHeader = new Connection();
         $this->assertEquals('Connection', $connectionHeader->getFieldName());
     }
 
-    public function testConnectionGetFieldValueReturnsProperValue()
+    public function testConnectionGetFieldValueReturnsProperValue(): void
     {
         $connectionHeader = new Connection();
         $connectionHeader->setValue('Keep-Alive');
         $this->assertEquals('keep-alive', $connectionHeader->getFieldValue());
     }
 
-    public function testConnectionToStringReturnsHeaderFormattedString()
+    public function testConnectionToStringReturnsHeaderFormattedString(): void
     {
         $this->markTestIncomplete('Connection needs to be completed');
 
@@ -42,7 +43,7 @@ class ConnectionTest extends TestCase
         $this->assertEmpty('Connection: close', $connectionHeader->toString());
     }
 
-    public function testConnectionSetPersistentReturnsProperValue()
+    public function testConnectionSetPersistentReturnsProperValue(): void
     {
         $connectionHeader = new Connection();
         $connectionHeader->setPersistent(true);
@@ -53,10 +54,9 @@ class ConnectionTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         Connection::fromString("Connection: close\r\n\r\nevilContent");
@@ -64,10 +64,9 @@ class ConnectionTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaSetters()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaSetters(): void
     {
         $header = new Connection();
         $this->expectException(InvalidArgumentException::class);

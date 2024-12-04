@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LaminasTest\Http\Response;
 
 use Laminas\Http\Response\Stream;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 use function fgets;
@@ -20,6 +21,7 @@ use function unlink;
 
 use const DIRECTORY_SEPARATOR;
 
+#[CoversClass(Stream::class)]
 class ResponseStreamTest extends TestCase
 {
     /** @var null|string */
@@ -37,7 +39,7 @@ class ResponseStreamTest extends TestCase
         }
     }
 
-    public function testResponseFactoryFromStringCreatesValidResponse()
+    public function testResponseFactoryFromStringCreatesValidResponse(): void
     {
         $string = 'HTTP/1.0 200 OK' . "\r\n\r\n" . 'Foo Bar' . "\r\n";
         $stream = fopen('php://temp', 'rb+');
@@ -49,11 +51,8 @@ class ResponseStreamTest extends TestCase
         $this->assertEquals("Foo Bar\r\nBar Foo", $response->getBody());
     }
 
-    /**
-     * @group 6027
-     * @covers \Laminas\Http\Response\Stream::fromStream
-     */
-    public function testResponseFactoryFromEmptyStringCreatesValidResponse()
+    #[Group('6027')]
+    public function testResponseFactoryFromEmptyStringCreatesValidResponse(): void
     {
         $stream = fopen('php://temp', 'rb+');
         fwrite($stream, 'HTTP/1.0 200 OK' . "\r\n\r\n" . 'Foo Bar' . "\r\n" . 'Bar Foo');
@@ -64,7 +63,7 @@ class ResponseStreamTest extends TestCase
         $this->assertEquals("Foo Bar\r\nBar Foo", $response->getBody());
     }
 
-    public function testGzipResponse()
+    public function testGzipResponse(): void
     {
         $stream = fopen(__DIR__ . '/../_files/response_gzip', 'rb');
 
@@ -85,7 +84,7 @@ class ResponseStreamTest extends TestCase
         $this->assertEquals('f24dd075ba2ebfb3bf21270e3fdc5303', md5($res->getContent()));
     }
 
-    public function test300isRedirect()
+    public function test300isRedirect(): void
     {
         $values   = $this->readResponse('response_302');
         $response = Stream::fromStream($values['data'], $values['stream']);
@@ -133,11 +132,8 @@ class ResponseStreamTest extends TestCase
 
     /**
      * Helper function: read test response from file
-     *
-     * @param string $response
-     * @return string
      */
-    protected function readResponse($response)
+    protected function readResponse(string $response): array
     {
         $stream = fopen(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '_files' . DIRECTORY_SEPARATOR
             . $response, 'rb');

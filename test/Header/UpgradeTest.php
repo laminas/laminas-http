@@ -7,24 +7,25 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\Header\Upgrade;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class UpgradeTest extends TestCase
 {
-    public function testUpgradeFromStringCreatesValidUpgradeHeader()
+    public function testUpgradeFromStringCreatesValidUpgradeHeader(): void
     {
         $upgradeHeader = Upgrade::fromString('Upgrade: xxx');
         $this->assertInstanceOf(HeaderInterface::class, $upgradeHeader);
         $this->assertInstanceOf(Upgrade::class, $upgradeHeader);
     }
 
-    public function testUpgradeGetFieldNameReturnsHeaderName()
+    public function testUpgradeGetFieldNameReturnsHeaderName(): void
     {
         $upgradeHeader = new Upgrade();
         $this->assertEquals('Upgrade', $upgradeHeader->getFieldName());
     }
 
-    public function testUpgradeGetFieldValueReturnsProperValue()
+    public function testUpgradeGetFieldValueReturnsProperValue(): void
     {
         $this->markTestIncomplete('Upgrade needs to be completed');
 
@@ -32,7 +33,7 @@ class UpgradeTest extends TestCase
         $this->assertEquals('xxx', $upgradeHeader->getFieldValue());
     }
 
-    public function testUpgradeToStringReturnsHeaderFormattedString()
+    public function testUpgradeToStringReturnsHeaderFormattedString(): void
     {
         $this->markTestIncomplete('Upgrade needs to be completed');
 
@@ -43,13 +44,11 @@ class UpgradeTest extends TestCase
     }
 
     /** Implementation specific tests here */
-
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         Upgrade::fromString("Upgrade: xxx\r\n\r\nevilContent");
@@ -57,10 +56,9 @@ class UpgradeTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaConstructor()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new Upgrade("xxx\r\n\r\nevilContent");

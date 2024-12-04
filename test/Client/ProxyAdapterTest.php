@@ -8,6 +8,7 @@ use Laminas\Http\Client;
 use Laminas\Http\Client\Adapter\Proxy;
 use Laminas\Http\Client\Adapter\Socket;
 use Laminas\Http\Request;
+use PHPUnit\Framework\Attributes\Group;
 
 use function array_keys;
 use function explode;
@@ -25,17 +26,14 @@ use const FILTER_VALIDATE_BOOLEAN;
  * proxy server, which can access TESTS_LAMINAS_HTTP_CLIENT_BASEURI.
  *
  * See phpunit.xml.dist for more information.
- *
- * @group      Laminas_Http
- * @group      Laminas_Http_Client
  */
+#[Group('Laminas_Http')]
+#[Group('Laminas_Http_Client')]
 class ProxyAdapterTest extends SocketTest
 {
-    /** @var string */
-    protected $host;
+    protected string $host;
 
-    /** @var int */
-    protected $port;
+    protected int $port;
 
     protected function setUp(): void
     {
@@ -86,7 +84,7 @@ class ProxyAdapterTest extends SocketTest
     /**
      * Test that when no proxy is set the adapter falls back to direct connection
      */
-    public function testFallbackToSocket()
+    public function testFallbackToSocket(): void
     {
         $this->adapter->setOptions([
             'proxy_host' => null,
@@ -105,14 +103,14 @@ class ProxyAdapterTest extends SocketTest
         );
     }
 
-    public function testGetLastRequest()
+    public function testGetLastRequest(): void
     {
         // This test will never work for the proxy adapter (and shouldn't!)
         // because the proxy server modifies the request which is sent back in
         // the TRACE response
     }
 
-    public function testDefaultConfig()
+    public function testDefaultConfig(): void
     {
         $config = $this->adapter->getConfig();
         $this->assertEquals(true, $config['sslverifypeer']);
@@ -125,7 +123,7 @@ class ProxyAdapterTest extends SocketTest
      * as issue is not present from command line using curl:
      * curl -IL https://getlaminas.org -x 127.0.0.1:8081
      */
-    public function testUsesProvidedArgSeparator()
+    public function testUsesProvidedArgSeparator(): void
     {
         $this->client->setOptions(['sslverifypeername' => false]);
 
@@ -138,7 +136,7 @@ class ProxyAdapterTest extends SocketTest
      * Response contains path, not the absolute URI,
      * also Connection: close header is in the different place.
      */
-    public function testGetLastRawRequest()
+    public function testGetLastRawRequest(): void
     {
         $this->client->setUri($this->baseuri . 'testHeaders.php');
         $this->client->setParameterGet(['someinput' => 'somevalue']);
@@ -179,7 +177,7 @@ class ProxyAdapterTest extends SocketTest
     /**
      * Test that the proxy keys normalised by the client are correctly converted to what the proxy adapter expects.
      */
-    public function testProxyKeysCorrectlySetInProxyAdapter()
+    public function testProxyKeysCorrectlySetInProxyAdapter(): void
     {
         $adapterConfig = $this->adapter->getConfig();
         $adapterHost   = $adapterConfig['proxy_host'];
@@ -189,7 +187,7 @@ class ProxyAdapterTest extends SocketTest
         $this->assertSame($this->port, $adapterPort);
     }
 
-    public function testProxyHasAllSocketConfigs()
+    public function testProxyHasAllSocketConfigs(): void
     {
         $socket       = new Socket();
         $socketConfig = $socket->getConfig();

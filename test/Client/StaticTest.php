@@ -16,6 +16,8 @@ use Laminas\Http\Response\Stream;
 use Laminas\Uri\Http as UriHttp;
 use LaminasTest\Http\Client\TestAsset\MockAdapter;
 use LaminasTest\Http\Client\TestAsset\MockClient;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -45,10 +47,9 @@ use const DIRECTORY_SEPARATOR;
  * on performing actual requests to an HTTP server. These tests can be
  * executed once, and do not need to be tested with different servers /
  * client setups.
- *
- * @group      Laminas_Http
- * @group      Laminas_Http_Client
  */
+#[Group('Laminas_Http')]
+#[Group('Laminas_Http_Client')]
 class StaticTest extends TestCase
 {
     /**
@@ -56,7 +57,7 @@ class StaticTest extends TestCase
      *
      * @var HTTPClient
      */
-    protected $client;
+    protected HTTPClient|MockClient|null $client;
 
     /**
      * Set up the test suite before each test
@@ -81,7 +82,7 @@ class StaticTest extends TestCase
     /**
      * Test we can SET and GET a URI as string
      */
-    public function testSetGetUriString()
+    public function testSetGetUriString(): void
     {
         $uristr = 'https://www.zend.com:80/';
 
@@ -102,7 +103,7 @@ class StaticTest extends TestCase
     /**
      * Test we can SET and GET a URI as object
      */
-    public function testSetGetUriObject()
+    public function testSetGetUriObject(): void
     {
         $uriobj = new UriHttp('https://www.zend.com:80/');
 
@@ -117,7 +118,7 @@ class StaticTest extends TestCase
      * Test that setting the same parameter twice in the query string does not
      * get reduced to a single value only.
      */
-    public function testDoubleGetParameter()
+    public function testDoubleGetParameter(): void
     {
         $qstr = 'foo=bar&foo=baz';
 
@@ -140,7 +141,7 @@ class StaticTest extends TestCase
     /**
      * Test we can get already set headers
      */
-    public function testGetHeader()
+    public function testGetHeader(): void
     {
         $this->client->setHeaders([
             'Accept-encoding' => 'gzip,deflate',
@@ -167,7 +168,7 @@ class StaticTest extends TestCase
      * Test setAuth (dynamic method) fails when trying to use an unsupported
      * authentication scheme
      */
-    public function testExceptUnsupportedAuthDynamic()
+    public function testExceptUnsupportedAuthDynamic(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid or not supported authentication type: \'SuperStrongAlgo\'');
@@ -182,7 +183,7 @@ class StaticTest extends TestCase
     /**
      * Test we can properly set a new cookies
      */
-    public function testSetNewCookies()
+    public function testSetNewCookies(): void
     {
         $this->client->addCookie('cookie', 'value');
         $this->client->addCookie('chocolate', 'chips');
@@ -197,7 +198,7 @@ class StaticTest extends TestCase
     /**
      * Test we can unset a cookie jar
      */
-    public function testUnsetCookies()
+    public function testUnsetCookies(): void
     {
         // Set the cookie jar just like in testSetNewCookieJar
         $this->client->addCookie('cookie', 'value');
@@ -214,7 +215,7 @@ class StaticTest extends TestCase
     /**
      * Make sure using an invalid cookie jar object throws an exception
      */
-    public function testSetInvalidCookies()
+    public function testSetInvalidCookies(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid parameter type passed as Cookie');
@@ -229,7 +230,7 @@ class StaticTest extends TestCase
     /**
      * Test that we can set a valid configuration array with some options
      */
-    public function testConfigSetAsArray()
+    public function testConfigSetAsArray(): void
     {
         $config = [
             'timeout'    => 500,
@@ -250,7 +251,7 @@ class StaticTest extends TestCase
      *
      * @link https://framework.zend.com/issues/browse/ZEND-5577
      */
-    public function testConfigSetAsTraversable()
+    public function testConfigSetAsTraversable(): void
     {
         $config = new ArrayObject([
             'timeout' => 400,
@@ -268,11 +269,9 @@ class StaticTest extends TestCase
 
     /**
      * Test that passing invalid variables to setConfig() causes an exception
-     *
-     * @dataProvider invalidConfigProvider
-     * @param mixed $config
      */
-    public function testConfigSetInvalid($config)
+    #[DataProvider('invalidConfigProvider')]
+    public function testConfigSetInvalid(mixed $config): void
     {
         $this->expectException(ClientException\InvalidArgumentException::class);
         $this->expectExceptionMessage('Config parameter is not valid');
@@ -283,10 +282,9 @@ class StaticTest extends TestCase
     /**
      * Test that configuration options are passed to the adapter after the
      * adapter is instantiated
-     *
-     * @group Laminas-4557
      */
-    public function testConfigPassToAdapterLaminas4557()
+    #[Group('Laminas-4557')]
+    public function testConfigPassToAdapterLaminas4557(): void
     {
         $adapter = new MockAdapter();
 
@@ -309,7 +307,7 @@ class StaticTest extends TestCase
     /**
      * Test the getLastRawResponse() method actually returns the last response
      */
-    public function testGetLastRawResponse()
+    public function testGetLastRawResponse(): void
     {
         // First, make sure we get null before the request
         $this->assertEquals(
@@ -333,7 +331,7 @@ class StaticTest extends TestCase
     /**
      * Test that getLastRawResponse returns null when not storing
      */
-    public function testGetLastRawResponseWhenNotStoring()
+    public function testGetLastRawResponseWhenNotStoring(): void
     {
         // Now, test we get a proper response after the request
         $this->client->setUri('http://example.com/foo/bar');
@@ -352,7 +350,7 @@ class StaticTest extends TestCase
      * Check we get an exception when trying to send a POST request with an
      * invalid content-type header
      */
-    public function testInvalidPostContentType()
+    public function testInvalidPostContentType(): void
     {
         if (! getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE')) {
             $this->markTestSkipped(sprintf(
@@ -373,7 +371,7 @@ class StaticTest extends TestCase
     /**
      * Check we get an exception if there's an error in the socket
      */
-    public function testSocketErrorException()
+    public function testSocketErrorException(): void
     {
         if (! getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE')) {
             $this->markTestSkipped(sprintf(
@@ -397,11 +395,9 @@ class StaticTest extends TestCase
     /**
      * Check that an exception is thrown if non-word characters are used in
      * the request method.
-     *
-     * @dataProvider invalidMethodProvider
-     * @param string $method
      */
-    public function testSettingInvalidMethodThrowsException($method)
+    #[DataProvider('invalidMethodProvider')]
+    public function testSettingInvalidMethodThrowsException(string $method): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid HTTP method passed');
@@ -413,7 +409,7 @@ class StaticTest extends TestCase
      * Test that POST data with multi-dimensional array is properly encoded as
      * multipart/form-data
      */
-    public function testFormDataEncodingWithMultiArrayLaminas7038()
+    public function testFormDataEncodingWithMultiArrayLaminas7038(): void
     {
         if (! getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE')) {
             $this->markTestSkipped(sprintf(
@@ -465,7 +461,7 @@ class StaticTest extends TestCase
      *
      * @link https://getlaminas.org/issues/browse/Laminas-2098
      */
-    public function testMultibyteRawPostDataLaminas2098()
+    public function testMultibyteRawPostDataLaminas2098(): void
     {
         if (! getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE')) {
             $this->markTestSkipped(sprintf(
@@ -493,10 +489,9 @@ class StaticTest extends TestCase
 
     /**
      * Testing if the connection isn't closed
-     *
-     * @group Laminas-9685
      */
-    public function testOpenTempStreamWithValidFileDoesntThrowsException()
+    #[Group('Laminas-9685')]
+    public function testOpenTempStreamWithValidFileDoesntThrowsException(): void
     {
         if (! getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE')) {
             $this->markTestSkipped(sprintf(
@@ -518,10 +513,9 @@ class StaticTest extends TestCase
 
     /**
      * Test if a downloaded file can be deleted
-     *
-     * @group Laminas-9685
      */
-    public function testDownloadedFileCanBeDeleted()
+    #[Group('Laminas-9685')]
+    public function testDownloadedFileCanBeDeleted(): void
     {
         if (! getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE')) {
             $this->markTestSkipped('Laminas\Http\Client online tests are not enabled');
@@ -548,10 +542,9 @@ class StaticTest extends TestCase
 
     /**
      * Testing if the connection can be closed
-     *
-     * @group Laminas-9685
      */
-    public function testOpenTempStreamWithBogusFileClosesTheConnection()
+    #[Group('Laminas-9685')]
+    public function testOpenTempStreamWithBogusFileClosesTheConnection(): void
     {
         if (! getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE')) {
             $this->markTestSkipped(sprintf(
@@ -574,10 +567,9 @@ class StaticTest extends TestCase
 
     /**
      * Test sending cookie with encoded value
-     *
-     * @group fix-double-encoding-problem-about-cookie-value
      */
-    public function testEncodedCookiesInRequestHeaders()
+    #[Group('fix-double-encoding-problem-about-cookie-value')]
+    public function testEncodedCookiesInRequestHeaders(): void
     {
         if (! getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE')) {
             $this->markTestSkipped(sprintf(
@@ -597,10 +589,9 @@ class StaticTest extends TestCase
 
     /**
      * Test sending cookie header with raw value
-     *
-     * @group fix-double-encoding-problem-about-cookie-value
      */
-    public function testRawCookiesInRequestHeaders()
+    #[Group('fix-double-encoding-problem-about-cookie-value')]
+    public function testRawCookiesInRequestHeaders(): void
     {
         if (! getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE')) {
             $this->markTestSkipped(sprintf(
@@ -625,10 +616,8 @@ class StaticTest extends TestCase
 
     /**
      * Data provider of valid non-standard HTTP methods
-     *
-     * @return array
      */
-    public static function validMethodProvider()
+    public static function validMethodProvider(): array
     {
         return [
             ['OPTIONS'],
@@ -642,10 +631,8 @@ class StaticTest extends TestCase
 
     /**
      * Data provider of invalid HTTP methods
-     *
-     * @return array
      */
-    public static function invalidMethodProvider()
+    public static function invalidMethodProvider(): array
     {
         return [
             ['N@5TYM3T#0D'],
@@ -657,15 +644,13 @@ class StaticTest extends TestCase
 
     /**
      * Data provider for invalid configuration containers
-     *
-     * @return array
      */
-    public static function invalidConfigProvider()
+    public static function invalidConfigProvider(): array
     {
         return [
             [false],
             ['foobar'],
-            ['foo' => 'bar'],
+            ['bar'],
             [null],
             [new stdClass()],
             [55],

@@ -7,24 +7,25 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\CacheControl;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class CacheControlTest extends TestCase
 {
-    public function testCacheControlFromStringCreatesValidCacheControlHeader()
+    public function testCacheControlFromStringCreatesValidCacheControlHeader(): void
     {
         $cacheControlHeader = CacheControl::fromString('Cache-Control: xxx');
         $this->assertInstanceOf(HeaderInterface::class, $cacheControlHeader);
         $this->assertInstanceOf(CacheControl::class, $cacheControlHeader);
     }
 
-    public function testCacheControlGetFieldNameReturnsHeaderName()
+    public function testCacheControlGetFieldNameReturnsHeaderName(): void
     {
         $cacheControlHeader = new CacheControl();
         $this->assertEquals('Cache-Control', $cacheControlHeader->getFieldName());
     }
 
-    public function testCacheControlGetFieldValueReturnsProperValue()
+    public function testCacheControlGetFieldValueReturnsProperValue(): void
     {
         $this->markTestIncomplete('CacheControl needs to be completed');
 
@@ -32,7 +33,7 @@ class CacheControlTest extends TestCase
         $this->assertEquals('xxx', $cacheControlHeader->getFieldValue());
     }
 
-    public function testCacheControlToStringReturnsHeaderFormattedString()
+    public function testCacheControlToStringReturnsHeaderFormattedString(): void
     {
         $this->markTestIncomplete('CacheControl needs to be completed');
 
@@ -45,7 +46,7 @@ class CacheControlTest extends TestCase
     // Implementation specific tests here
 
     // phpcs:ignore Squiz.Commenting.FunctionComment.WrongStyle
-    public function testCacheControlIsEmpty()
+    public function testCacheControlIsEmpty(): void
     {
         $cacheControlHeader = new CacheControl();
         $this->assertTrue($cacheControlHeader->isEmpty());
@@ -55,7 +56,7 @@ class CacheControlTest extends TestCase
         $this->assertTrue($cacheControlHeader->isEmpty());
     }
 
-    public function testCacheControlAddHasGetRemove()
+    public function testCacheControlAddHasGetRemove(): void
     {
         $cacheControlHeader = new CacheControl();
         $cacheControlHeader->addDirective('xxx');
@@ -73,7 +74,7 @@ class CacheControlTest extends TestCase
         $this->assertNull($cacheControlHeader->getDirective('xxx'));
     }
 
-    public function testCacheControlGetFieldValue()
+    public function testCacheControlGetFieldValue(): void
     {
         $cacheControlHeader = new CacheControl();
         $this->assertEmpty($cacheControlHeader->getFieldValue());
@@ -87,7 +88,7 @@ class CacheControlTest extends TestCase
         $this->assertEquals('aaa, xxx, yyy=foo, zzz="bar, baz"', $cacheControlHeader->getFieldValue());
     }
 
-    public function testCacheControlParse()
+    public function testCacheControlParse(): void
     {
         $cacheControlHeader = CacheControl::fromString('Cache-Control: a, b=foo, c="bar, baz"');
         $this->assertTrue($cacheControlHeader->hasDirective('a'));
@@ -100,10 +101,9 @@ class CacheControlTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         CacheControl::fromString("Cache-Control: xxx\r\n\r\n");
@@ -111,10 +111,9 @@ class CacheControlTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testProtectsFromCRLFAttackViaSetters()
+    #[Group('ZF2015-04')]
+    public function testProtectsFromCRLFAttackViaSetters(): void
     {
         $header = new CacheControl();
         $this->expectException(InvalidArgumentException::class);

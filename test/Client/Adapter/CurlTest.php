@@ -6,6 +6,7 @@ namespace LaminasTest\Http\Client\Adapter;
 
 use Laminas\Http\Client\Adapter\Curl;
 use Laminas\Uri\Uri;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function curl_getinfo;
@@ -16,8 +17,7 @@ use const CURLINFO_HTTP_VERSION;
 
 final class CurlTest extends TestCase
 {
-    /** @var Curl */
-    private $adapter;
+    private Curl $adapter;
 
     protected function setUp(): void
     {
@@ -28,7 +28,7 @@ final class CurlTest extends TestCase
     /**
      * @return iterable<non-empty-string,array{0:CURL_HTTP_VERSION_*,1:float}>
      */
-    public function floatHttpVersions(): iterable
+    public static function floatHttpVersions(): iterable
     {
         yield 'HTTP 1.0' => [CURL_HTTP_VERSION_1_0, 1.0];
         yield 'HTTP 1.1' => [CURL_HTTP_VERSION_1_1, 1.1];
@@ -37,7 +37,7 @@ final class CurlTest extends TestCase
     /**
      * @return iterable<non-empty-string,array{0:CURL_HTTP_VERSION_*,1:float}>
      */
-    public function httpVersions(): iterable
+    public static function httpVersions(): iterable
     {
         yield 'HTTP 1.0' => [CURL_HTTP_VERSION_1_0, '1.0'];
         yield 'HTTP 1.1' => [CURL_HTTP_VERSION_1_1, '1.1'];
@@ -46,9 +46,8 @@ final class CurlTest extends TestCase
     /**
      * NOTE: This test is only needed for BC compatibility. The {@see \Laminas\Http\Client\Adapter\AdapterInterface}
      *       has a default for "string" but "float" was used in {@see Curl::write()} due to the lack of strict types.
-     *
-     * @dataProvider floatHttpVersions
      */
+    #[DataProvider('floatHttpVersions')]
     public function testWriteCanHandleFloatHttpVersion(int $expectedCurlOption, float $version): void
     {
         $this->adapter->connect('example.org');
@@ -58,9 +57,7 @@ final class CurlTest extends TestCase
         self::assertEquals($expectedCurlOption, curl_getinfo($handle, CURLINFO_HTTP_VERSION));
     }
 
-    /**
-     * @dataProvider httpVersions
-     */
+    #[DataProvider('httpVersions')]
     public function testWriteCanHandleStringHttpVersion(int $expectedCurlOption, string $version): void
     {
         $this->adapter->connect('example.org');

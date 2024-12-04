@@ -8,34 +8,33 @@ use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\Header\Origin;
 use Laminas\Uri\Exception\InvalidUriPartException;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class OriginTest extends TestCase
 {
-    /**
-     * @group ZF#6484
-     */
-    public function testOriginFieldValueIsAlwaysAString()
+    #[Group('ZF#6484')]
+    public function testOriginFieldValueIsAlwaysAString(): void
     {
         $origin = new Origin();
 
         $this->assertIsString($origin->getFieldValue());
     }
 
-    public function testOriginFromStringCreatesValidOriginHeader()
+    public function testOriginFromStringCreatesValidOriginHeader(): void
     {
         $originHeader = Origin::fromString('Origin: http://laminas.org');
         $this->assertInstanceOf(HeaderInterface::class, $originHeader);
         $this->assertInstanceOf(Origin::class, $originHeader);
     }
 
-    public function testOriginGetFieldNameReturnsHeaderName()
+    public function testOriginGetFieldNameReturnsHeaderName(): void
     {
         $originHeader = new Origin();
         $this->assertEquals('Origin', $originHeader->getFieldName());
     }
 
-    public function testOriginGetFieldValueReturnsProperValue()
+    public function testOriginGetFieldValueReturnsProperValue(): void
     {
         $originHeader = Origin::fromString('Origin: http://laminas.org');
         $this->assertEquals('http://laminas.org', $originHeader->getFieldValue());
@@ -43,19 +42,16 @@ class OriginTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidUriPartException::class);
         Origin::fromString("Origin: http://laminas.org\r\n\r\nevilContent");
     }
 
-    /**
-     * @group ZF2015-04
-     */
-    public function testPreventsCRLFAttackViaConstructor()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new Origin("http://laminas.org\r\n\r\nevilContent");

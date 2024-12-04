@@ -7,24 +7,25 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\Header\IfRange;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class IfRangeTest extends TestCase
 {
-    public function testIfRangeFromStringCreatesValidIfRangeHeader()
+    public function testIfRangeFromStringCreatesValidIfRangeHeader(): void
     {
         $ifRangeHeader = IfRange::fromString('If-Range: xxx');
         $this->assertInstanceOf(HeaderInterface::class, $ifRangeHeader);
         $this->assertInstanceOf(IfRange::class, $ifRangeHeader);
     }
 
-    public function testIfRangeGetFieldNameReturnsHeaderName()
+    public function testIfRangeGetFieldNameReturnsHeaderName(): void
     {
         $ifRangeHeader = new IfRange();
         $this->assertEquals('If-Range', $ifRangeHeader->getFieldName());
     }
 
-    public function testIfRangeGetFieldValueReturnsProperValue()
+    public function testIfRangeGetFieldValueReturnsProperValue(): void
     {
         $this->markTestIncomplete('IfRange needs to be completed');
 
@@ -32,7 +33,7 @@ class IfRangeTest extends TestCase
         $this->assertEquals('xxx', $ifRangeHeader->getFieldValue());
     }
 
-    public function testIfRangeToStringReturnsHeaderFormattedString()
+    public function testIfRangeToStringReturnsHeaderFormattedString(): void
     {
         $this->markTestIncomplete('IfRange needs to be completed');
 
@@ -43,13 +44,11 @@ class IfRangeTest extends TestCase
     }
 
     /** Implementation specific tests here */
-
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         IfRange::fromString("If-Range: xxx\r\n\r\nevilContent");
@@ -57,10 +56,9 @@ class IfRangeTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaConstructor()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new IfRange("xxx\r\n\r\nevilContent");

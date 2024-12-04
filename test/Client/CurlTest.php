@@ -13,6 +13,8 @@ use Laminas\Http\Client\Adapter\Exception\InvalidArgumentException;
 use Laminas\Http\Client\Adapter\Exception\RuntimeException;
 use Laminas\Http\Client\Adapter\Exception\TimeoutException;
 use Laminas\Stdlib\ErrorHandler;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use ValueError;
 
 use function base64_encode;
@@ -52,10 +54,9 @@ use const PHP_VERSION_ID;
  *
  * You can also set the proper constand in your test configuration file to
  * point to the right place.
- *
- * @group      Laminas_Http
- * @group      Laminas_Http_Client
  */
+#[Group('Laminas_Http')]
+#[Group('Laminas_Http_Client')]
 class CurlTest extends CommonHttpTests
 {
     /**
@@ -82,7 +83,7 @@ class CurlTest extends CommonHttpTests
     /**
      * Test that we can set a valid configuration array with some options
      */
-    public function testConfigSetAsArray()
+    public function testConfigSetAsArray(): void
     {
         $config = [
             'timeout'    => 500,
@@ -102,7 +103,7 @@ class CurlTest extends CommonHttpTests
      *
      * @link https://framework.zend.com/issues/browse/ZEND-5577
      */
-    public function testConfigSetAsTraversable()
+    public function testConfigSetAsTraversable(): void
     {
         $config = new ArrayObject([
             'timeout' => 400,
@@ -119,7 +120,7 @@ class CurlTest extends CommonHttpTests
     }
 
     /** @psalm-return array<string, array{0: int|string}> */
-    public function provideValidTimeoutConfig(): array
+    public static function provideValidTimeoutConfig(): array
     {
         return [
             'integer' => [10],
@@ -127,11 +128,8 @@ class CurlTest extends CommonHttpTests
         ];
     }
 
-    /**
-     * @dataProvider provideValidTimeoutConfig
-     * @param int|string $timeout
-     */
-    public function testPassValidTimeout($timeout)
+    #[DataProvider('provideValidTimeoutConfig')]
+    public function testPassValidTimeout(int|string $timeout): void
     {
         $adapter = new Adapter\Curl();
         $adapter->setOptions(['timeout' => $timeout]);
@@ -139,7 +137,7 @@ class CurlTest extends CommonHttpTests
         $adapter->connect('getlaminas.org');
     }
 
-    public function testThrowInvalidArgumentExceptionOnNonIntegerAndNonNumericStringTimeout()
+    public function testThrowInvalidArgumentExceptionOnNonIntegerAndNonNumericStringTimeout(): void
     {
         $adapter = new Adapter\Curl();
         $adapter->setOptions(['timeout' => 'timeout']);
@@ -152,11 +150,9 @@ class CurlTest extends CommonHttpTests
 
     /**
      * Check that an exception is thrown when trying to set invalid config
-     *
-     * @dataProvider invalidConfigProvider
-     * @param mixed $config
      */
-    public function testSetConfigInvalidConfig($config)
+    #[DataProvider('invalidConfigProvider')]
+    public function testSetConfigInvalidConfig(mixed $config): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Array or Traversable object expected');
@@ -164,7 +160,7 @@ class CurlTest extends CommonHttpTests
         $this->adapter->setOptions($config);
     }
 
-    public function testSettingInvalidCurlOption()
+    public function testSettingInvalidCurlOption(): void
     {
         $config       = [
             'adapter'     => Curl::class,
@@ -189,7 +185,7 @@ class CurlTest extends CommonHttpTests
         }
     }
 
-    public function testRedirectWithGetOnly()
+    public function testRedirectWithGetOnly(): void
     {
         $this->client->setUri($this->baseuri . 'testRedirections.php');
 
@@ -214,7 +210,7 @@ class CurlTest extends CommonHttpTests
      * Set CURLOPT_FOLLOWLOCATION = false for this type of request and let the Laminas_Http_Client handle redirects
      * in his own loop.
      */
-    public function testRedirectPostToGetWithCurlFollowLocationOptionLeadsToTimeout()
+    public function testRedirectPostToGetWithCurlFollowLocationOptionLeadsToTimeout(): void
     {
         $adapter = new Adapter\Curl();
         $this->client->setAdapter($adapter);
@@ -238,10 +234,9 @@ class CurlTest extends CommonHttpTests
 
     /**
      * @link https://getlaminas.org/issues/browse/Laminas-3758
-     *
-     * @group Laminas-3758
      */
-    public function testPutFileContentWithHttpClient()
+    #[Group('Laminas-3758')]
+    public function testPutFileContentWithHttpClient(): void
     {
         // Method 1: Using the binary string of a file to PUT
         $this->client->setUri($this->baseuri . 'testRawPostData.php');
@@ -255,10 +250,9 @@ class CurlTest extends CommonHttpTests
 
     /**
      * @link https://getlaminas.org/issues/browse/Laminas-3758
-     *
-     * @group Laminas-3758
      */
-    public function testPutFileHandleWithHttpClient()
+    #[Group('Laminas-3758')]
+    public function testPutFileHandleWithHttpClient(): void
     {
         $this->client->setUri($this->baseuri . 'testRawPostData.php');
         $putFileContents = file_get_contents(__DIR__ . '/_files/staticFile.jpg');
@@ -281,7 +275,7 @@ class CurlTest extends CommonHttpTests
         $this->assertEquals(gzcompress($putFileContents), gzcompress($this->client->getResponse()->getBody()));
     }
 
-    public function testWritingAndNotConnectedWithCurlHandleThrowsException()
+    public function testWritingAndNotConnectedWithCurlHandleThrowsException(): void
     {
         $adapter = new Adapter\Curl();
         $this->expectException(RuntimeException::class);
@@ -289,14 +283,14 @@ class CurlTest extends CommonHttpTests
         $adapter->write('GET', 'someUri');
     }
 
-    public function testSetConfigIsNotArray()
+    public function testSetConfigIsNotArray(): void
     {
         $adapter = new Adapter\Curl();
         $this->expectException(InvalidArgumentException::class);
         $adapter->setOptions('foo');
     }
 
-    public function testSetCurlOptions()
+    public function testSetCurlOptions(): void
     {
         $adapter = new Adapter\Curl();
 
@@ -309,10 +303,8 @@ class CurlTest extends CommonHttpTests
         );
     }
 
-    /**
-     * @group 4213
-     */
-    public function testSetOptionsMergesCurlOptions()
+    #[Group('4213')]
+    public function testSetOptionsMergesCurlOptions(): void
     {
         $adapter = new Adapter\Curl();
 
@@ -333,7 +325,7 @@ class CurlTest extends CommonHttpTests
         );
     }
 
-    public function testWorkWithProxyConfiguration()
+    public function testWorkWithProxyConfiguration(): void
     {
         $adapter = new Adapter\Curl();
         $adapter->setOptions([
@@ -357,7 +349,7 @@ class CurlTest extends CommonHttpTests
         );
     }
 
-    public function testSslVerifyPeerCanSetOverOption()
+    public function testSslVerifyPeerCanSetOverOption(): void
     {
         $adapter = new Adapter\Curl();
         $adapter->setOptions([
@@ -376,10 +368,8 @@ class CurlTest extends CommonHttpTests
         );
     }
 
-    /**
-     * @group Laminas-7040
-     */
-    public function testGetCurlHandle()
+    #[Group('Laminas-7040')]
+    public function testGetCurlHandle(): void
     {
         $adapter = new Adapter\Curl();
         $adapter->setOptions(['timeout' => 2, 'maxredirects' => 1]);
@@ -391,10 +381,8 @@ class CurlTest extends CommonHttpTests
         }
     }
 
-    /**
-     * @group Laminas-9857
-     */
-    public function testHeadRequest()
+    #[Group('Laminas-9857')]
+    public function testHeadRequest(): void
     {
         $this->client->setUri($this->baseuri . 'testRawPostData.php');
         $adapter = new Adapter\Curl();
@@ -404,7 +392,7 @@ class CurlTest extends CommonHttpTests
         $this->assertEquals('', $this->client->getResponse()->getBody());
     }
 
-    public function testHeadRequestWithContentLengthHeader()
+    public function testHeadRequestWithContentLengthHeader(): void
     {
         $this->client->setUri($this->baseuri . 'testHeadMethod.php');
         $adapter = new Adapter\Curl();
@@ -414,7 +402,7 @@ class CurlTest extends CommonHttpTests
         $this->assertEquals('', $this->client->getResponse()->getBody());
     }
 
-    public function testAuthorizeHeader()
+    public function testAuthorizeHeader(): void
     {
         // We just need someone to talk to
         $this->client->setUri($this->baseuri . 'testHttpAuth.php');
@@ -444,10 +432,8 @@ class CurlTest extends CommonHttpTests
         );
     }
 
-    /**
-     * @group 4555
-     */
-    public function testResponseDoesNotDoubleDecodeGzippedBody()
+    #[Group('4555')]
+    public function testResponseDoesNotDoubleDecodeGzippedBody(): void
     {
         $this->client->setUri($this->baseuri . 'testCurlGzipData.php');
         $adapter = new Adapter\Curl();
@@ -462,7 +448,7 @@ class CurlTest extends CommonHttpTests
         $this->assertEquals('Success', $this->client->getResponse()->getBody());
     }
 
-    public function testSetCurlOptPostFields()
+    public function testSetCurlOptPostFields(): void
     {
         $this->client->setUri($this->baseuri . 'testRawPostData.php');
         $adapter = new Adapter\Curl();
@@ -481,10 +467,9 @@ class CurlTest extends CommonHttpTests
      * @see https://github.com/zendframework/zend-http/pull/53
      *
      * Note: The headers stored in Laminas7683-chunked.php are case insensitive
-     *
-     * @group Laminas-7683
      */
-    public function testNoCaseSensitiveHeaderName()
+    #[Group('Laminas-7683')]
+    public function testNoCaseSensitiveHeaderName(): void
     {
         $this->client->setUri($this->baseuri . 'Laminas7683-chunked.php');
 
@@ -504,7 +489,7 @@ class CurlTest extends CommonHttpTests
         $this->assertFalse($headers->has('Content-Encoding'));
     }
 
-    public function testSslCaPathAndFileConfig()
+    public function testSslCaPathAndFileConfig(): void
     {
         $adapter = new Adapter\Curl();
         $options = [
@@ -518,7 +503,7 @@ class CurlTest extends CommonHttpTests
         $this->assertEquals($options['sslcafile'], $config['sslcafile']);
     }
 
-    public function testTimeout()
+    public function testTimeout(): void
     {
         $this->client
             ->setUri($this->baseuri . 'testTimeout.php')
@@ -537,7 +522,7 @@ class CurlTest extends CommonHttpTests
         $this->assertNotNull($timeoutException);
     }
 
-    public function testTimeoutWithStream()
+    public function testTimeoutWithStream(): void
     {
         $this->client
             ->setOptions([
@@ -561,7 +546,7 @@ class CurlTest extends CommonHttpTests
     /**
      * @see https://github.com/zendframework/zend-http/pull/184
      */
-    public function testMustRemoveProxyConnectionEstablishedLine()
+    public function testMustRemoveProxyConnectionEstablishedLine(): void
     {
         $proxy = getenv('TESTS_LAMINAS_HTTP_CLIENT_HTTP_PROXY');
         if (! $proxy) {

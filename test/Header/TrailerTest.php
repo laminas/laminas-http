@@ -7,24 +7,25 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\Header\Trailer;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class TrailerTest extends TestCase
 {
-    public function testTrailerFromStringCreatesValidTrailerHeader()
+    public function testTrailerFromStringCreatesValidTrailerHeader(): void
     {
         $trailerHeader = Trailer::fromString('Trailer: xxx');
         $this->assertInstanceOf(HeaderInterface::class, $trailerHeader);
         $this->assertInstanceOf(Trailer::class, $trailerHeader);
     }
 
-    public function testTrailerGetFieldNameReturnsHeaderName()
+    public function testTrailerGetFieldNameReturnsHeaderName(): void
     {
         $trailerHeader = new Trailer();
         $this->assertEquals('Trailer', $trailerHeader->getFieldName());
     }
 
-    public function testTrailerGetFieldValueReturnsProperValue()
+    public function testTrailerGetFieldValueReturnsProperValue(): void
     {
         $this->markTestIncomplete('Trailer needs to be completed');
 
@@ -32,7 +33,7 @@ class TrailerTest extends TestCase
         $this->assertEquals('xxx', $trailerHeader->getFieldValue());
     }
 
-    public function testTrailerToStringReturnsHeaderFormattedString()
+    public function testTrailerToStringReturnsHeaderFormattedString(): void
     {
         $this->markTestIncomplete('Trailer needs to be completed');
 
@@ -43,13 +44,11 @@ class TrailerTest extends TestCase
     }
 
     /** Implementation specific tests here */
-
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         Trailer::fromString("Trailer: xxx\r\n\r\nevilContent");
@@ -57,10 +56,9 @@ class TrailerTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaConstructor()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new Trailer("xxx\r\n\r\nevilContent");

@@ -7,24 +7,25 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\Header\Pragma;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class PragmaTest extends TestCase
 {
-    public function testPragmaFromStringCreatesValidPragmaHeader()
+    public function testPragmaFromStringCreatesValidPragmaHeader(): void
     {
         $pragmaHeader = Pragma::fromString('Pragma: xxx');
         $this->assertInstanceOf(HeaderInterface::class, $pragmaHeader);
         $this->assertInstanceOf(Pragma::class, $pragmaHeader);
     }
 
-    public function testPragmaGetFieldNameReturnsHeaderName()
+    public function testPragmaGetFieldNameReturnsHeaderName(): void
     {
         $pragmaHeader = new Pragma();
         $this->assertEquals('Pragma', $pragmaHeader->getFieldName());
     }
 
-    public function testPragmaGetFieldValueReturnsProperValue()
+    public function testPragmaGetFieldValueReturnsProperValue(): void
     {
         $this->markTestIncomplete('Pragma needs to be completed');
 
@@ -32,7 +33,7 @@ class PragmaTest extends TestCase
         $this->assertEquals('xxx', $pragmaHeader->getFieldValue());
     }
 
-    public function testPragmaToStringReturnsHeaderFormattedString()
+    public function testPragmaToStringReturnsHeaderFormattedString(): void
     {
         $this->markTestIncomplete('Pragma needs to be completed');
 
@@ -43,13 +44,11 @@ class PragmaTest extends TestCase
     }
 
     /** Implementation specific tests here */
-
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         Pragma::fromString("Pragma: xxx\r\n\r\nevilContent");
@@ -57,10 +56,9 @@ class PragmaTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaConstructor()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new Pragma("xxx\r\n\r\nevilContent");

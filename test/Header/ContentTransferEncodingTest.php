@@ -7,24 +7,25 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\ContentTransferEncoding;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 class ContentTransferEncodingTest extends TestCase
 {
-    public function testContentTransferEncodingFromStringCreatesValidContentTransferEncodingHeader()
+    public function testContentTransferEncodingFromStringCreatesValidContentTransferEncodingHeader(): void
     {
         $contentTransferEncodingHeader = ContentTransferEncoding::fromString('Content-Transfer-Encoding: xxx');
         $this->assertInstanceOf(HeaderInterface::class, $contentTransferEncodingHeader);
         $this->assertInstanceOf(ContentTransferEncoding::class, $contentTransferEncodingHeader);
     }
 
-    public function testContentTransferEncodingGetFieldNameReturnsHeaderName()
+    public function testContentTransferEncodingGetFieldNameReturnsHeaderName(): void
     {
         $contentTransferEncodingHeader = new ContentTransferEncoding();
         $this->assertEquals('Content-Transfer-Encoding', $contentTransferEncodingHeader->getFieldName());
     }
 
-    public function testContentTransferEncodingGetFieldValueReturnsProperValue()
+    public function testContentTransferEncodingGetFieldValueReturnsProperValue(): void
     {
         $this->markTestIncomplete('ContentTransferEncoding needs to be completed');
 
@@ -32,7 +33,7 @@ class ContentTransferEncodingTest extends TestCase
         $this->assertEquals('xxx', $contentTransferEncodingHeader->getFieldValue());
     }
 
-    public function testContentTransferEncodingToStringReturnsHeaderFormattedString()
+    public function testContentTransferEncodingToStringReturnsHeaderFormattedString(): void
     {
         $this->markTestIncomplete('ContentTransferEncoding needs to be completed');
 
@@ -43,13 +44,11 @@ class ContentTransferEncodingTest extends TestCase
     }
 
     /** Implementation specific tests here */
-
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         ContentTransferEncoding::fromString("Content-Transfer-Encoding: xxx\r\n\r\nevilContent");
@@ -57,10 +56,9 @@ class ContentTransferEncodingTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaConstructor()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaConstructor(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new ContentTransferEncoding("xxx\r\n\r\nevilContent");

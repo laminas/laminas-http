@@ -7,44 +7,45 @@ namespace LaminasTest\Http\Header;
 use Laminas\Http\Header\AcceptEncoding;
 use Laminas\Http\Header\Exception\InvalidArgumentException;
 use Laminas\Http\Header\HeaderInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 use function array_shift;
 
 class AcceptEncodingTest extends TestCase
 {
-    public function testAcceptEncodingFromStringCreatesValidAcceptEncodingHeader()
+    public function testAcceptEncodingFromStringCreatesValidAcceptEncodingHeader(): void
     {
         $acceptEncodingHeader = AcceptEncoding::fromString('Accept-Encoding: xxx');
         $this->assertInstanceOf(HeaderInterface::class, $acceptEncodingHeader);
         $this->assertInstanceOf(AcceptEncoding::class, $acceptEncodingHeader);
     }
 
-    public function testAcceptEncodingGetFieldNameReturnsHeaderName()
+    public function testAcceptEncodingGetFieldNameReturnsHeaderName(): void
     {
         $acceptEncodingHeader = new AcceptEncoding();
         $this->assertEquals('Accept-Encoding', $acceptEncodingHeader->getFieldName());
     }
 
-    public function testAcceptEncodingGetFieldValueReturnsProperValue()
+    public function testAcceptEncodingGetFieldValueReturnsProperValue(): void
     {
         $acceptEncodingHeader = AcceptEncoding::fromString('Accept-Encoding: xxx');
         $this->assertEquals('xxx', $acceptEncodingHeader->getFieldValue());
     }
 
-    public function testAcceptEncodingGetFieldValueReturnsProperValueWithTrailingSemicolon()
+    public function testAcceptEncodingGetFieldValueReturnsProperValueWithTrailingSemicolon(): void
     {
         $acceptEncodingHeader = AcceptEncoding::fromString('Accept-Encoding: xxx;');
         $this->assertEquals('xxx', $acceptEncodingHeader->getFieldValue());
     }
 
-    public function testAcceptEncodingGetFieldValueReturnsProperValueWithSemicolonWithoutEqualSign()
+    public function testAcceptEncodingGetFieldValueReturnsProperValueWithSemicolonWithoutEqualSign(): void
     {
         $acceptEncodingHeader = AcceptEncoding::fromString('Accept-Encoding: xxx;yyy');
         $this->assertEquals('xxx;yyy', $acceptEncodingHeader->getFieldValue());
     }
 
-    public function testAcceptEncodingToStringReturnsHeaderFormattedString()
+    public function testAcceptEncodingToStringReturnsHeaderFormattedString(): void
     {
         $acceptEncodingHeader = new AcceptEncoding();
         $acceptEncodingHeader->addEncoding('compress', 0.5)
@@ -56,14 +57,14 @@ class AcceptEncodingTest extends TestCase
     // Implementation specific tests here
 
     // phpcs:ignore Squiz.Commenting.FunctionComment.WrongStyle
-    public function testCanParseCommaSeparatedValues()
+    public function testCanParseCommaSeparatedValues(): void
     {
         $header = AcceptEncoding::fromString('Accept-Encoding: compress;q=0.5,gzip');
         $this->assertTrue($header->hasEncoding('compress'));
         $this->assertTrue($header->hasEncoding('gzip'));
     }
 
-    public function testPrioritizesValuesBasedOnQParameter()
+    public function testPrioritizesValuesBasedOnQParameter(): void
     {
         $header   = AcceptEncoding::fromString('Accept-Encoding: compress;q=0.8,gzip,*;q=0.4');
         $expected = [
@@ -78,7 +79,7 @@ class AcceptEncodingTest extends TestCase
         }
     }
 
-    public function testWildcharEncoder()
+    public function testWildcharEncoder(): void
     {
         $acceptHeader = new AcceptEncoding();
         $acceptHeader->addEncoding('compress', 0.8)
@@ -91,10 +92,9 @@ class AcceptEncodingTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaFromString()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaFromString(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $header = AcceptEncoding::fromString("Accept-Encoding: compress\r\n\r\nevilContent");
@@ -102,10 +102,9 @@ class AcceptEncodingTest extends TestCase
 
     /**
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     *
-     * @group ZF2015-04
      */
-    public function testPreventsCRLFAttackViaSetters()
+    #[Group('ZF2015-04')]
+    public function testPreventsCRLFAttackViaSetters(): void
     {
         $header = new AcceptEncoding();
         $this->expectException(InvalidArgumentException::class);

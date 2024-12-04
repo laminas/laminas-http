@@ -10,6 +10,9 @@ use Laminas\Http\Client\Adapter\Exception\InvalidArgumentException;
 use Laminas\Http\Client\Adapter\Exception\RuntimeException;
 use Laminas\Http\Client\Adapter\Socket;
 use Laminas\Uri\Uri;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use stdClass;
 
 use function fopen;
@@ -31,10 +34,9 @@ use function stream_context_get_options;
  *
  * You can also set the proper constant in your test configuration file to
  * point to the right place.
- *
- * @group      Laminas_Http
- * @group      Laminas_Http_Client
  */
+#[Group('Laminas_Http')]
+#[Group('Laminas_Http_Client')]
 class SocketTest extends CommonHttpTests
 {
     /**
@@ -49,13 +51,11 @@ class SocketTest extends CommonHttpTests
     /**
      * Off-line common adapter tests
      */
-
     /**
      * Test that we can set a valid configuration array with some options
-     *
-     * @group ZHC001
      */
-    public function testConfigSetAsArray()
+    #[Group('ZHC001')]
+    public function testConfigSetAsArray(): void
     {
         $config = [
             'timeout'    => 500,
@@ -70,7 +70,7 @@ class SocketTest extends CommonHttpTests
         }
     }
 
-    public function testDefaultConfig()
+    public function testDefaultConfig(): void
     {
         $config = $this->adapter->getConfig();
         $this->assertEquals(true, $config['sslverifypeer']);
@@ -78,7 +78,7 @@ class SocketTest extends CommonHttpTests
         $this->assertEquals(true, $config['sslverifypeername']);
     }
 
-    public function testConnectingViaSslEnforcesDefaultSslOptionsOnContext()
+    public function testConnectingViaSslEnforcesDefaultSslOptionsOnContext(): void
     {
         $config = ['timeout' => 30];
         $this->adapter->setOptions($config);
@@ -95,7 +95,7 @@ class SocketTest extends CommonHttpTests
         $this->assertTrue($options['ssl']['verify_peer_name']);
     }
 
-    public function testConnectingViaSslWithCustomSslOptionsOnContext()
+    public function testConnectingViaSslWithCustomSslOptionsOnContext(): void
     {
         $config = [
             'timeout'            => 30,
@@ -122,7 +122,7 @@ class SocketTest extends CommonHttpTests
      * The configuration is set to a legitimate certificate bundle file,
      * to exclude errors from being thrown from an invalid cafile context being set.
      */
-    public function testConnectingViaSslUsesCertificateFileContext()
+    public function testConnectingViaSslUsesCertificateFileContext(): void
     {
         $config = [
             'timeout'   => 30,
@@ -145,7 +145,7 @@ class SocketTest extends CommonHttpTests
      *
      * @link https://framework.zend.com/issues/browse/ZEND-5577
      */
-    public function testConfigSetAsTraversable()
+    public function testConfigSetAsTraversable(): void
     {
         $config = new ArrayObject([
             'timeout' => 400,
@@ -163,11 +163,9 @@ class SocketTest extends CommonHttpTests
 
     /**
      * Check that an exception is thrown when trying to set invalid config
-     *
-     * @dataProvider invalidConfigProvider
-     * @param mixed $config
      */
-    public function testSetConfigInvalidConfig($config)
+    #[DataProvider('invalidConfigProvider')]
+    public function testSetConfigInvalidConfig(mixed $config): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Array or Laminas\Config object expected');
@@ -176,7 +174,7 @@ class SocketTest extends CommonHttpTests
     }
 
     /** @psalm-return array<string, array{0: int|string}> */
-    public function provideValidTimeoutConfig(): array
+    public static function provideValidTimeoutConfig(): array
     {
         return [
             'integer' => [10],
@@ -184,11 +182,8 @@ class SocketTest extends CommonHttpTests
         ];
     }
 
-    /**
-     * @dataProvider provideValidTimeoutConfig
-     * @param int|string $timeout
-     */
-    public function testPassValidTimeout($timeout)
+    #[DataProvider('provideValidTimeoutConfig')]
+    public function testPassValidTimeout(int|string $timeout): void
     {
         $adapter = new Adapter\Socket();
         $adapter->setOptions(['timeout' => $timeout]);
@@ -196,7 +191,7 @@ class SocketTest extends CommonHttpTests
         $adapter->connect('getlaminas.org');
     }
 
-    public function testThrowInvalidArgumentExceptionOnNonIntegerAndNonNumericStringTimeout()
+    public function testThrowInvalidArgumentExceptionOnNonIntegerAndNonNumericStringTimeout(): void
     {
         $adapter = new Adapter\Socket();
         $adapter->setOptions(['timeout' => 'timeout']);
@@ -210,7 +205,7 @@ class SocketTest extends CommonHttpTests
     // Stream context related tests
 
     // phpcs:ignore Squiz.Commenting.FunctionComment.WrongStyle
-    public function testGetNewStreamContext()
+    public function testGetNewStreamContext(): void
     {
         $adapterClass = $this->config['adapter'];
         $adapter      = new $adapterClass();
@@ -219,7 +214,7 @@ class SocketTest extends CommonHttpTests
         $this->assertEquals('stream-context', get_resource_type($context));
     }
 
-    public function testSetNewStreamContextResource()
+    public function testSetNewStreamContextResource(): void
     {
         $adapterClass = $this->config['adapter'];
         $adapter      = new $adapterClass();
@@ -230,7 +225,7 @@ class SocketTest extends CommonHttpTests
         $this->assertEquals($context, $adapter->getStreamContext());
     }
 
-    public function testSetNewStreamContextOptions()
+    public function testSetNewStreamContextOptions(): void
     {
         $adapterClass = $this->config['adapter'];
         $adapter      = new $adapterClass();
@@ -253,11 +248,9 @@ class SocketTest extends CommonHttpTests
 
     /**
      * Test that setting invalid options / context causes an exception
-     *
-     * @dataProvider invalidContextProvider
-     * @param mixed $invalid
      */
-    public function testSetInvalidContextOptions($invalid)
+    #[DataProvider('invalidContextProvider')]
+    public function testSetInvalidContextOptions(mixed $invalid): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Expecting either a stream context resource or array');
@@ -267,7 +260,7 @@ class SocketTest extends CommonHttpTests
         $adapter->setStreamContext($invalid);
     }
 
-    public function testSetHttpsStreamContextParam()
+    public function testSetHttpsStreamContextParam(): void
     {
         if ($this->client->getUri()->getScheme() !== 'https') {
             $this->markTestSkipped();
@@ -295,7 +288,7 @@ class SocketTest extends CommonHttpTests
      *
      * @link https://getlaminas.org/issues/browse/Laminas-7309
      */
-    public function testExceptionOnReadTimeout()
+    public function testExceptionOnReadTimeout(): void
     {
         // Set 1 second timeout
         $this->client->setOptions(['timeout' => 1]);
@@ -324,7 +317,7 @@ class SocketTest extends CommonHttpTests
      *
      * @link https://getlaminas.org/issues/browse/Laminas-6218
      */
-    public function testMultibyteChunkedResponseLaminas6218()
+    public function testMultibyteChunkedResponseLaminas6218(): void
     {
         $md5 = '7667818873302f9995be3798d503d8d3';
 
@@ -335,10 +328,9 @@ class SocketTest extends CommonHttpTests
     /**
      * Verifies that writing on a socket is considered valid even if 0 bytes
      * were written.
-     *
-     * @runInSeparateProcess
      */
-    public function testAllowsZeroWrittenBytes()
+    #[RunInSeparateProcess]
+    public function testAllowsZeroWrittenBytes(): void
     {
         $this->adapter->connect('localhost');
         require_once __DIR__ . '/_files/fwrite.php';
@@ -349,7 +341,7 @@ class SocketTest extends CommonHttpTests
      * Verifies that the headers are being set as given without changing any
      * character case.
      */
-    public function testCaseInsensitiveHeaders()
+    public function testCaseInsensitiveHeaders(): void
     {
         $this->adapter->connect('localhost');
         $requestString = $this->adapter->write(
@@ -369,10 +361,8 @@ class SocketTest extends CommonHttpTests
 
     /**
      * Provide invalid context resources / options
-     *
-     * @return array
      */
-    public static function invalidContextProvider()
+    public static function invalidContextProvider(): array
     {
         return [
             [new stdClass()],
