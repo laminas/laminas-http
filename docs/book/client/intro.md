@@ -59,11 +59,9 @@ $client = new Client();
 $response = $client->send($request);
 ```
 
-> ### URL validation
->
-> `Laminas\Http\Client` uses `Laminas\Uri\Http` to validate URLs. See the
-> [laminas-uri](https://docs.laminas.dev/laminas-uri/)
-> documentation for more information.
+INFO: **URL validation**
+`Laminas\Http\Client` uses `Laminas\Uri\Http` to validate URLs.
+See the [laminas-uri](https://docs.laminas.dev/laminas-uri/) documentation for more information.
 
 ## Configuration
 
@@ -94,7 +92,7 @@ options available.
 
 ## Examples
 
-### Performing a GET request
+### Performing a GET Request
 
 GET is the default method used, and requires no special configuration.
 
@@ -105,7 +103,7 @@ $client = new Client('http://example.org');
 $response = $client->send();
 ```
 
-### Using request methods other than GET
+### Using Request Methods Other than GET
 
 The request method can be set using `setMethod()`. If no method is specified,
 the method set by the last `setMethod()` call is used. If `setMethod()` was
@@ -136,7 +134,7 @@ $client->setMethod(Request::METHOD_POST);
 $response = $client->send();
 ```
 
-### Setting query parameters
+### Setting Query Parameters
 
 Adding query parameters to an HTTP request can be done either by specifying them
 as part of the URL, or by using the `setParameterGet()` method. This method
@@ -158,7 +156,7 @@ $client->setParameterGet([
 ]);
 ```
 
-### Setting form-encoded body parameters
+### Setting form-encoded Body Parameters
 
 While query parameters can be sent with every request method, other methods can
 accept parameters via the request body. In many cases, these are

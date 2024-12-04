@@ -1,6 +1,6 @@
 # Advanced Usage
 
-## HTTP redirections
+## HTTP Redirections
 
 `Laminas\Http\Client` automatically handles HTTP redirections, and by default
 will follow up to 5 redirections. This can be changed by setting the
@@ -26,7 +26,7 @@ $client->setOptions(['strictredirects' => false]);
 You can always get the number of redirections done after sending a request
 using the `getRedirectionsCount()` method.
 
-## Adding cookies and using cookie persistence
+## Adding Cookies and Using Cookie Persistence
 
 `Laminas\Http\Client` provides an interface for adding cookies to your request, so
 that no direct header modification is required. Cookies can be added using
@@ -96,7 +96,7 @@ $client->setMethod('GET');
 
 See the chapter on [cookies](cookies.md) for more detail.
 
-## Setting custom request headers
+## Setting Custom Request Headers
 
 Setting custom headers is performed by first fetching the header container from
 the client's `Laminas\Http\Request` instance. This `Headers` container offers a
@@ -150,7 +150,7 @@ $client->setHeaders([
 ]);
 ```
 
-## File uploads
+## File Uploads
 
 You can upload files through HTTP using the `setFileUpload()` method. This
 method takes a file name as the first parameter, a form name as the second
@@ -185,14 +185,11 @@ file `/tmp/Backup.tar.gz` is uploaded to the server and will be available as
 `$_FILES['bufile']`. The content type will be guessed automatically if
 possible, defaulting to `application/octet-stream`.
 
-> ### Uploading files
->
-> When uploading files, the HTTP request `Content-Type` is automatically set to
-> `multipart/form-data`.  Keep in mind that you must send a POST or PUT request
-> in order to upload files; most servers will ignore the request body on other
-> request methods.
+INFO: **Uploading files**
+When uploading files, the HTTP request `Content-Type` is automatically set to `multipart/form-data`.
+Keep in mind that you must send a POST or PUT request in order to upload files; most servers will ignore the request body on other request methods.
 
-## Sending raw POST data
+## Sending Raw POST Data
 
 You can send raw POST data via `Laminas\Http\Client` using the `setRawBody()`
 method. This method takes one parameter: the data to send in the request body.
@@ -214,14 +211,11 @@ $client->send();
 The data should be available on the server side through PHP's `php://input`
 stream.
 
-> ### Raw POST data overrides other content
->
-> Setting raw POST data for a request will override any POST parameters or file
-> uploads; you should not try to use both on the same request. Keep in mind
-> that most servers will ignore the request body unless you send a POST
-> request.
+INFO: **Raw Post Data Overrides Other Content**
+Setting raw POST data for a request will override any POST parameters or file uploads; you should not try to use both on the same request.
+Keep in mind that most servers will ignore the request body unless you send a POST request.
 
-## HTTP authentication
+## HTTP Authentication
 
 Currently, `Laminas\Http\Client` only supports basic HTTP authentication. This feature is utilized
 using the `setAuth()` method, or by specifying a username and a password in the URI. The `setAuth()`
@@ -241,7 +235,7 @@ $client->setAuth('shahar', 'myPassword!');
 $client->setUri('http://christer:secret@example.com');
 ```
 
-## Sending multiple requests with the same client
+## Sending Multiple Requests with the Same Client
 
 `Laminas\Http\Client` was also designed specifically to handle several consecutive
 requests with the same object. This is useful in cases where a script requires
@@ -259,11 +253,9 @@ all the request-specific parameters are cleared, you should use the
 `resetParameters()` method. This ensures that GET and POST parameters, request
 body, and request headers are reset and are not reused in the next request.
 
-> ### Resetting parameters
->
-> Note that cookies are not reset by default when the `resetParameters()`
-> method is used. To clean all cookies as well, use `resetParameters(true)`, or
-> call `clearCookies()` after calling `resetParameters()`.
+INFO: **Resetting parameters**
+Note that cookies are not reset by default when the `resetParameters()` method is used.
+To clean all cookies as well, use `resetParameters(true)`, or call `clearCookies()` after calling `resetParameters()`.
 
 Another feature designed specifically for consecutive requests is the
 `Laminas\Http\Cookies` object.  This "Cookie Jar" allow you to save cookies set by
@@ -277,7 +269,7 @@ application, it might be a good idea to store the `Cookies` object in the user's
 session. This way, you will only need to authenticate the user once every
 session.
 
-### Performing consecutive requests with one client
+### Performing Consecutive Requests with One Client
 
 ```php
 use Laminas\Http\Client;
@@ -319,7 +311,7 @@ $response = $client->setMethod('GET')->send();
 $_SESSION['cookiejar'] = $cookieJar;
 ```
 
-## Data streaming
+## Data Streaming
 
 By default, `Laminas\Http\Client` accepts and returns data as PHP strings.
 However, in many cases there are big files to be received, thus keeping them in

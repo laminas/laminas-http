@@ -57,7 +57,7 @@ After the request, don't forget to add any cookies returned!
 Essentially, `Cookies` aggregates all cookies for our client interactions, and
 allows us to send only those relevant to a given request.
 
-## Serializing and caching cookies
+## Serializing and Caching Cookies
 
 To cache cookies &mdash; e.g., to store in `$_SESSION`, or between job
 invocations &mdash; you will need to serialize them. `Laminas\Http\Cookies`
@@ -95,7 +95,7 @@ if (is_array($cachedCookies)) {
 }
 ```
 
-## Public methods
+## Public Methods
 
 Besides the methods demonstrated in the examples, `Laminas\Http\Cookies` defines the following:
 

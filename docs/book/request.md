@@ -107,7 +107,7 @@ Method signature                                                            | De
 
 ## Examples
 
-### Generating a Request object from a string
+### Generating a Request Object from a String
 
 ```php
 use Laminas\Http\Request;
@@ -122,7 +122,7 @@ $request->getVersion();   // returns Request::VERSION_11 or '1.1'
 $request->getContent();   // returns 'Some Content'
 ```
 
-### Retrieving and setting headers
+### Retrieving and Setting Headers
 
 ```php
 use Laminas\Http\Request;
@@ -136,7 +136,7 @@ foreach ($request->getHeaders() as $header) {
 }
 ```
 
-### Retrieving and setting GET and POST values
+### Retrieving and Setting GET and POST Values
 
 ```php
 use Laminas\Http\Request;
@@ -151,7 +151,7 @@ $request->getPost('foo'); // returns 'Foo value'
 $request->getQuery()->offsetGet('bar'); // returns 'Bar value'
 ```
 
-### Generating a formatted HTTP Request from a Request object
+### Generating a Formatted HTTP Request from a Request Object
 
 ```php
 use Laminas\Http\Request;
