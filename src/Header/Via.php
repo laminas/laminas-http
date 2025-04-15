@@ -9,9 +9,9 @@ use function strtolower;
  *
  * @throws Exception\InvalidArgumentException
  */
-class Via implements HeaderInterface
+final class Via implements HeaderInterface
 {
-    /** @var string */
+    /** @var string|null */
     protected $value;
 
     /**

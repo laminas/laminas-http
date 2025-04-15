@@ -1,0 +1,1171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="6.10.0@9c0add4eb88d4b169ac04acb7c679918cbb9c252">
+  <file src="src/Client.php">
+    <ArgumentTypeCoercion>
+      <code><![CDATA[$request]]></code>
+      <code><![CDATA[$setCookies]]></code>
+    </ArgumentTypeCoercion>
+    <ClassMustBeFinal>
+      <code><![CDATA[Client]]></code>
+    </ClassMustBeFinal>
+    <DocblockTypeContradiction>
+      <code><![CDATA[is_array($options)]]></code>
+      <code><![CDATA[is_array($parray)]]></code>
+      <code><![CDATA[is_resource($body)]]></code>
+    </DocblockTypeContradiction>
+    <FalsableReturnStatement>
+      <code><![CDATA[$argSeparator]]></code>
+    </FalsableReturnStatement>
+    <InvalidArgument>
+      <code><![CDATA[$maxAge]]></code>
+      <code><![CDATA[$version]]></code>
+    </InvalidArgument>
+    <InvalidNullableReturnType>
+      <code><![CDATA[Request]]></code>
+      <code><![CDATA[Response]]></code>
+      <code><![CDATA[string]]></code>
+    </InvalidNullableReturnType>
+    <InvalidPropertyAssignmentValue>
+      <code><![CDATA[$response]]></code>
+      <code><![CDATA[$this->adapter->write(
+            $method,
+            $uri,
+            (string) $this->config['httpversion'],
+            $headers,
+            $body
+        )]]></code>
+      <code><![CDATA[finfo_open(FILEINFO_MIME)]]></code>
+    </InvalidPropertyAssignmentValue>
+    <InvalidReturnStatement>
+      <code><![CDATA[$this->getRequest()->getUri()]]></code>
+    </InvalidReturnStatement>
+    <InvalidReturnType>
+      <code><![CDATA[Http]]></code>
+    </InvalidReturnType>
+    <MissingReturnType>
+      <code><![CDATA[clearCookies]]></code>
+    </MissingReturnType>
+    <MixedArgument>
+      <code><![CDATA[$queryArray]]></code>
+      <code><![CDATA[$this->config['streamtmpdir'] ?? sys_get_temp_dir()]]></code>
+      <code><![CDATA[$this->getRequest()->getPost()->toArray()]]></code>
+      <code><![CDATA[$this->getRequest()->getPost()->toArray()]]></code>
+      <code><![CDATA[$value]]></code>
+    </MixedArgument>
+    <MixedArgumentTypeCoercion>
+      <code><![CDATA[$name]]></code>
+    </MixedArgumentTypeCoercion>
+    <MixedAssignment>
+      <code><![CDATA[$argSeparator]]></code>
+      <code><![CDATA[$clearAuth]]></code>
+      <code><![CDATA[$file]]></code>
+      <code><![CDATA[$headers]]></code>
+      <code><![CDATA[$headers]]></code>
+      <code><![CDATA[$query]]></code>
+      <code><![CDATA[$queryArray]]></code>
+      <code><![CDATA[$setCookie]]></code>
+      <code><![CDATA[$this->streamName]]></code>
+      <code><![CDATA[$value]]></code>
+    </MixedAssignment>
+    <MixedMethodCall>
+      <code><![CDATA[fromArray]]></code>
+      <code><![CDATA[fromArray]]></code>
+      <code><![CDATA[new $adapter()]]></code>
+      <code><![CDATA[toArray]]></code>
+      <code><![CDATA[toArray]]></code>
+      <code><![CDATA[toArray]]></code>
+      <code><![CDATA[toArray]]></code>
+      <code><![CDATA[toArray]]></code>
+      <code><![CDATA[toArray]]></code>
+    </MixedMethodCall>
+    <MixedReturnStatement>
+      <code><![CDATA[$argSeparator]]></code>
+      <code><![CDATA[$argSeparator]]></code>
+      <code><![CDATA[$headers->get($name)->getFieldValue()]]></code>
+      <code><![CDATA[$this->config['outputstream']]]></code>
+    </MixedReturnStatement>
+    <NoValue>
+      <code><![CDATA[return $parray;]]></code>
+    </NoValue>
+    <NullArgument>
+      <code><![CDATA[null]]></code>
+    </NullArgument>
+    <NullableReturnStatement>
+      <code><![CDATA[$this->encType]]></code>
+      <code><![CDATA[$this->getRequest()->getUri()]]></code>
+      <code><![CDATA[$this->lastRawRequest]]></code>
+      <code><![CDATA[$this->lastRawResponse]]></code>
+    </NullableReturnStatement>
+    <PossiblyFalseArgument>
+      <code><![CDATA[$argSeparator]]></code>
+      <code><![CDATA[$stream]]></code>
+      <code><![CDATA[$stream]]></code>
+      <code><![CDATA[$stream]]></code>
+      <code><![CDATA[$this->streamName]]></code>
+      <code><![CDATA[$this->streamName]]></code>
+    </PossiblyFalseArgument>
+    <PossiblyFalsePropertyAssignmentValue>
+      <code><![CDATA[tempnam(
+                $this->config['streamtmpdir'] ?? sys_get_temp_dir(),
+                self::class
+            )]]></code>
+    </PossiblyFalsePropertyAssignmentValue>
+    <PossiblyInvalidArrayAccess>
+      <code><![CDATA[$fstat['size']]]></code>
+    </PossiblyInvalidArrayAccess>
+    <PossiblyInvalidMethodCall>
+      <code><![CDATA[getFieldValue]]></code>
+      <code><![CDATA[getFieldValue]]></code>
+      <code><![CDATA[getFieldValue]]></code>
+      <code><![CDATA[getHost]]></code>
+      <code><![CDATA[getHost]]></code>
+    </PossiblyInvalidMethodCall>
+    <PossiblyNullArgument>
+      <code><![CDATA[$this->streamName]]></code>
+      <code><![CDATA[$uri->getHost()]]></code>
+      <code><![CDATA[$uri->getPath()]]></code>
+    </PossiblyNullArgument>
+    <PossiblyNullArrayOffset>
+      <code><![CDATA[$validCookies]]></code>
+    </PossiblyNullArrayOffset>
+    <PossiblyNullOperand>
+      <code><![CDATA[$cookie->getDomain()]]></code>
+      <code><![CDATA[$cookie->getName()]]></code>
+      <code><![CDATA[$cookie->getPath()]]></code>
+    </PossiblyNullOperand>
+    <PossiblyNullReference>
+      <code><![CDATA[connect]]></code>
+      <code><![CDATA[fromString]]></code>
+      <code><![CDATA[getHost]]></code>
+      <code><![CDATA[getHost]]></code>
+    </PossiblyNullReference>
+    <PossiblyUndefinedArrayOffset>
+      <code><![CDATA[$query]]></code>
+    </PossiblyUndefinedArrayOffset>
+    <PossiblyUndefinedMethod>
+      <code><![CDATA[getFieldValue]]></code>
+    </PossiblyUndefinedMethod>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[getCookies]]></code>
+      <code><![CDATA[getLastRawRequest]]></code>
+      <code><![CDATA[getLastRawResponse]]></code>
+      <code><![CDATA[getRedirectionsCount]]></code>
+      <code><![CDATA[hasHeader]]></code>
+      <code><![CDATA[removeFileUpload]]></code>
+      <code><![CDATA[reset]]></code>
+      <code><![CDATA[setCookies]]></code>
+      <code><![CDATA[setFileUpload]]></code>
+      <code><![CDATA[setHeaders]]></code>
+      <code><![CDATA[setParameterGet]]></code>
+      <code><![CDATA[setParameterPost]]></code>
+      <code><![CDATA[setRawBody]]></code>
+      <code><![CDATA[setResponse]]></code>
+      <code><![CDATA[setStream]]></code>
+    </PossiblyUnusedMethod>
+    <PossiblyUnusedParam>
+      <code><![CDATA[$file]]></code>
+    </PossiblyUnusedParam>
+    <RedundantConditionGivenDocblockType>
+      <code><![CDATA[! is_resource($stream)]]></code>
+      <code><![CDATA[$headers instanceof Headers]]></code>
+      <code><![CDATA[is_array($cookies)]]></code>
+    </RedundantConditionGivenDocblockType>
+    <RiskyTruthyFalsyComparison>
+      <code><![CDATA[$clearAuth]]></code>
+      <code><![CDATA[empty($this->encType)]]></code>
+    </RiskyTruthyFalsyComparison>
+    <UnusedForeachValue>
+      <code><![CDATA[$value]]></code>
+    </UnusedForeachValue>
+  </file>
+  <file src="src/Client/Adapter/Curl.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[Curl]]></code>
+    </ClassMustBeFinal>
+    <MixedAssignment>
+      <code><![CDATA[$options[str_replace(['-', '_', ' ', '.'], '', strtolower($k))]]]></code>
+    </MixedAssignment>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[__construct]]></code>
+      <code><![CDATA[getConfig]]></code>
+      <code><![CDATA[getHandle]]></code>
+      <code><![CDATA[readHeader]]></code>
+    </PossiblyUnusedMethod>
+    <PossiblyUnusedParam>
+      <code><![CDATA[$curl]]></code>
+    </PossiblyUnusedParam>
+    <PropertyNotSetInConstructor>
+      <code><![CDATA[$outputStream]]></code>
+      <code><![CDATA[$response]]></code>
+    </PropertyNotSetInConstructor>
+  </file>
+  <file src="src/Client/Adapter/Exception/InitializationException.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[InitializationException]]></code>
+    </ClassMustBeFinal>
+  </file>
+  <file src="src/Client/Adapter/Exception/InvalidArgumentException.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[InvalidArgumentException]]></code>
+    </ClassMustBeFinal>
+  </file>
+  <file src="src/Client/Adapter/Exception/OutOfRangeException.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[OutOfRangeException]]></code>
+    </ClassMustBeFinal>
+  </file>
+  <file src="src/Client/Adapter/Exception/TimeoutException.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[TimeoutException]]></code>
+    </ClassMustBeFinal>
+  </file>
+  <file src="src/Client/Adapter/Proxy.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[Proxy]]></code>
+    </ClassMustBeFinal>
+    <PropertyNotSetInConstructor>
+      <code><![CDATA[Proxy]]></code>
+      <code><![CDATA[Proxy]]></code>
+    </PropertyNotSetInConstructor>
+    <UnusedClass>
+      <code><![CDATA[Proxy]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Client/Adapter/Socket.php">
+    <InvalidPropertyAssignmentValue>
+      <code><![CDATA[$this->socket]]></code>
+    </InvalidPropertyAssignmentValue>
+    <InvalidScalarArgument>
+      <code><![CDATA[$transferEncoding->getFieldValue()]]></code>
+    </InvalidScalarArgument>
+    <MixedAssignment>
+      <code><![CDATA[$connection]]></code>
+      <code><![CDATA[$connection]]></code>
+      <code><![CDATA[$contentLength]]></code>
+      <code><![CDATA[$headers]]></code>
+      <code><![CDATA[$transferEncoding]]></code>
+      <code><![CDATA[$v]]></code>
+    </MixedAssignment>
+    <MixedMethodCall>
+      <code><![CDATA[get]]></code>
+      <code><![CDATA[get]]></code>
+      <code><![CDATA[get]]></code>
+      <code><![CDATA[get]]></code>
+    </MixedMethodCall>
+    <MixedOperand>
+      <code><![CDATA[$v]]></code>
+      <code><![CDATA[$v]]></code>
+    </MixedOperand>
+    <PossiblyFalsePropertyAssignmentValue>
+      <code><![CDATA[stream_socket_client(
+                $host . ':' . $port,
+                $errno,
+                $errstr,
+                (int) $connectTimeout,
+                $flags,
+                $context
+            )]]></code>
+    </PossiblyFalsePropertyAssignmentValue>
+    <PossiblyInvalidMethodCall>
+      <code><![CDATA[get]]></code>
+      <code><![CDATA[get]]></code>
+      <code><![CDATA[get]]></code>
+      <code><![CDATA[get]]></code>
+    </PossiblyInvalidMethodCall>
+    <PossiblyUndefinedMethod>
+      <code><![CDATA[get]]></code>
+      <code><![CDATA[get]]></code>
+      <code><![CDATA[get]]></code>
+      <code><![CDATA[get]]></code>
+    </PossiblyUndefinedMethod>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[getConfig]]></code>
+      <code><![CDATA[setStreamContext]]></code>
+    </PossiblyUnusedMethod>
+    <PropertyNotSetInConstructor>
+      <code><![CDATA[$method]]></code>
+      <code><![CDATA[$outStream]]></code>
+    </PropertyNotSetInConstructor>
+  </file>
+  <file src="src/Client/Adapter/StreamInterface.php">
+    <PossiblyUnusedReturnValue>
+      <code><![CDATA[self]]></code>
+    </PossiblyUnusedReturnValue>
+  </file>
+  <file src="src/Client/Adapter/Test.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[Test]]></code>
+    </ClassMustBeFinal>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[__construct]]></code>
+      <code><![CDATA[addResponse]]></code>
+      <code><![CDATA[setNextRequestWillFail]]></code>
+      <code><![CDATA[setResponse]]></code>
+      <code><![CDATA[setResponseIndex]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/ClientStatic.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[ClientStatic]]></code>
+    </ClassMustBeFinal>
+    <DocblockTypeContradiction>
+      <code><![CDATA[! isset(static::$client)]]></code>
+    </DocblockTypeContradiction>
+    <MixedMethodCall>
+      <code><![CDATA[fromArray]]></code>
+    </MixedMethodCall>
+    <RedundantCondition>
+      <code><![CDATA[! empty($headers) && is_array($headers)]]></code>
+      <code><![CDATA[! empty($params) && is_array($params)]]></code>
+      <code><![CDATA[! empty($query) && is_array($query)]]></code>
+      <code><![CDATA[is_array($headers)]]></code>
+      <code><![CDATA[is_array($params)]]></code>
+      <code><![CDATA[is_array($query)]]></code>
+    </RedundantCondition>
+    <UnusedClass>
+      <code><![CDATA[ClientStatic]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Cookies.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[Cookies]]></code>
+    </ClassMustBeFinal>
+    <FalsableReturnStatement>
+      <code><![CDATA[false]]></code>
+    </FalsableReturnStatement>
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[void]]></code>
+    </ImplementedReturnTypeMismatch>
+    <InvalidArgument>
+      <code><![CDATA[$refUri]]></code>
+    </InvalidArgument>
+    <InvalidArrayOffset>
+      <code><![CDATA[$ret[$dom][$cpath]]]></code>
+    </InvalidArrayOffset>
+    <InvalidCast>
+      <code><![CDATA[$cpath]]></code>
+    </InvalidCast>
+    <MissingConstructor>
+      <code><![CDATA[$headers]]></code>
+      <code><![CDATA[$rawCookies]]></code>
+    </MissingConstructor>
+    <MissingReturnType>
+      <code><![CDATA[addCookie]]></code>
+      <code><![CDATA[addCookiesFromResponse]]></code>
+    </MissingReturnType>
+    <MixedArgument>
+      <code><![CDATA[$cookie]]></code>
+      <code><![CDATA[$item]]></code>
+      <code><![CDATA[$item]]></code>
+      <code><![CDATA[$pathsArray]]></code>
+    </MixedArgument>
+    <MixedArgumentTypeCoercion>
+      <code><![CDATA[$cdom]]></code>
+      <code><![CDATA[$cpath]]></code>
+    </MixedArgumentTypeCoercion>
+    <MixedArrayAccess>
+      <code><![CDATA[$pathsArray[$cpath]]]></code>
+      <code><![CDATA[$this->cookies[$uri->getHost()][$path]]]></code>
+    </MixedArrayAccess>
+    <MixedArrayAssignment>
+      <code><![CDATA[$this->cookies[$domain][$path]]]></code>
+      <code><![CDATA[$this->cookies[$domain][$path]]]></code>
+      <code><![CDATA[$this->cookies[$domain][$path][$cookie->getName()]]]></code>
+    </MixedArrayAssignment>
+    <MixedAssignment>
+      <code><![CDATA[$cookie]]></code>
+      <code><![CDATA[$cookie]]></code>
+      <code><![CDATA[$cookie]]></code>
+      <code><![CDATA[$cookieHdrs]]></code>
+      <code><![CDATA[$item]]></code>
+      <code><![CDATA[$pathsArray]]></code>
+      <code><![CDATA[$ret[$cdom]]]></code>
+      <code><![CDATA[$ret[$dom][$cpath]]]></code>
+      <code><![CDATA[$ret[]]]></code>
+    </MixedAssignment>
+    <MixedMethodCall>
+      <code><![CDATA[__toString]]></code>
+      <code><![CDATA[get]]></code>
+      <code><![CDATA[match]]></code>
+    </MixedMethodCall>
+    <MixedReturnStatement>
+      <code><![CDATA[$cookie]]></code>
+      <code><![CDATA[$cookie->__toString()]]></code>
+      <code><![CDATA[$ptr->__toString()]]></code>
+    </MixedReturnStatement>
+    <NonInvariantDocblockPropertyType>
+      <code><![CDATA[$headers]]></code>
+    </NonInvariantDocblockPropertyType>
+    <PossiblyInvalidArgument>
+      <code><![CDATA[$ret]]></code>
+      <code><![CDATA[$this->_flattenCookiesArray($item, $retAs)]]></code>
+    </PossiblyInvalidArgument>
+    <PossiblyInvalidIterator>
+      <code><![CDATA[$cookies]]></code>
+    </PossiblyInvalidIterator>
+    <PossiblyInvalidMethodCall>
+      <code><![CDATA[get]]></code>
+    </PossiblyInvalidMethodCall>
+    <PossiblyInvalidOperand>
+      <code><![CDATA[$ret]]></code>
+      <code><![CDATA[$this->_flattenCookiesArray($item, $retAs)]]></code>
+    </PossiblyInvalidOperand>
+    <PossiblyNullArgument>
+      <code><![CDATA[$cookie]]></code>
+      <code><![CDATA[$uri->getPath()]]></code>
+    </PossiblyNullArgument>
+    <PossiblyNullArrayOffset>
+      <code><![CDATA[$this->cookies]]></code>
+      <code><![CDATA[$this->cookies]]></code>
+      <code><![CDATA[$this->cookies]]></code>
+      <code><![CDATA[$this->cookies]]></code>
+      <code><![CDATA[$this->cookies[$domain]]]></code>
+      <code><![CDATA[$this->cookies[$domain]]]></code>
+      <code><![CDATA[$this->cookies[$domain][$path]]]></code>
+    </PossiblyNullArrayOffset>
+    <PossiblyUndefinedMethod>
+      <code><![CDATA[get]]></code>
+    </PossiblyUndefinedMethod>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[fromResponse]]></code>
+      <code><![CDATA[getAllCookies]]></code>
+      <code><![CDATA[getCookie]]></code>
+      <code><![CDATA[getMatchingCookies]]></code>
+      <code><![CDATA[isEmpty]]></code>
+      <code><![CDATA[reset]]></code>
+    </PossiblyUnusedMethod>
+    <RedundantConditionGivenDocblockType>
+      <code><![CDATA[$ptr instanceof SetCookie]]></code>
+    </RedundantConditionGivenDocblockType>
+    <RiskyTruthyFalsyComparison>
+      <code><![CDATA[empty($host)]]></code>
+      <code><![CDATA[empty($host)]]></code>
+      <code><![CDATA[strrpos($path, '/')]]></code>
+    </RiskyTruthyFalsyComparison>
+    <UndefinedMethod>
+      <code><![CDATA[__toString]]></code>
+      <code><![CDATA[__toString]]></code>
+    </UndefinedMethod>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static()]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Header/AbstractAccept.php">
+    <ArgumentTypeCoercion>
+      <code><![CDATA[$this->regexAddType]]></code>
+    </ArgumentTypeCoercion>
+    <DocblockTypeContradiction>
+      <code><![CDATA[! is_int($priority) && ! is_float($priority)]]></code>
+    </DocblockTypeContradiction>
+    <LessSpecificReturnStatement>
+      <code><![CDATA[$left]]></code>
+      <code><![CDATA[$left]]></code>
+      <code><![CDATA[(object) [
+            'typeString' => trim($fieldValuePart),
+            'type'       => $type,
+            'subtype'    => $subtype,
+            'subtypeRaw' => $subtypeWhole,
+            'format'     => $format,
+            'priority'   => $params['q'] ?? 1,
+            'params'     => $params,
+            'raw'        => trim($raw),
+        ]]]></code>
+    </LessSpecificReturnStatement>
+    <MixedArgument>
+      <code><![CDATA[$left]]></code>
+      <code><![CDATA[$left]]></code>
+      <code><![CDATA[$params]]></code>
+      <code><![CDATA[$right]]></code>
+      <code><![CDATA[$right]]></code>
+    </MixedArgument>
+    <MixedArgumentTypeCoercion>
+      <code><![CDATA[[$value->typeString] + $params]]></code>
+    </MixedArgumentTypeCoercion>
+    <MixedAssignment>
+      <code><![CDATA[$left]]></code>
+      <code><![CDATA[$params]]></code>
+      <code><![CDATA[$right]]></code>
+      <code><![CDATA[$value]]></code>
+    </MixedAssignment>
+    <MixedMethodCall>
+      <code><![CDATA[setMatchedAgainst]]></code>
+      <code><![CDATA[setMatchedAgainst]]></code>
+    </MixedMethodCall>
+    <MixedPropertyFetch>
+      <code><![CDATA[$left->format]]></code>
+      <code><![CDATA[$left->subtype]]></code>
+      <code><![CDATA[$left->type]]></code>
+      <code><![CDATA[$left->type]]></code>
+      <code><![CDATA[$right->format]]></code>
+      <code><![CDATA[$right->subtype]]></code>
+      <code><![CDATA[$right->type]]></code>
+      <code><![CDATA[$right->type]]></code>
+      <code><![CDATA[$value->params]]></code>
+      <code><![CDATA[$value->typeString]]></code>
+    </MixedPropertyFetch>
+    <MoreSpecificReturnType>
+      <code><![CDATA[Accept\FieldValuePart\AcceptFieldValuePart|bool]]></code>
+      <code><![CDATA[stdClass]]></code>
+    </MoreSpecificReturnType>
+    <PossiblyInvalidArgument>
+      <code><![CDATA[$param]]></code>
+    </PossiblyInvalidArgument>
+    <PossiblyUnusedReturnValue>
+      <code><![CDATA[string]]></code>
+    </PossiblyUnusedReturnValue>
+    <RedundantCastGivenDocblockType>
+      <code><![CDATA[(string) $type]]></code>
+    </RedundantCastGivenDocblockType>
+    <RiskyTruthyFalsyComparison>
+      <code><![CDATA[! preg_match_all('/(?:[^,"]|"(?:[^\\\"]|\\\.)*")+/', $headerLine, $values)]]></code>
+      <code><![CDATA[$pos = strpos($fieldValuePart, ';')]]></code>
+      <code><![CDATA[$pos = strpos($fieldValuePart, ';')]]></code>
+    </RiskyTruthyFalsyComparison>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static()]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Header/AbstractDate.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[compareTo]]></code>
+      <code><![CDATA[fromTimeString]]></code>
+      <code><![CDATA[getDateFormat]]></code>
+      <code><![CDATA[setDateFormat]]></code>
+    </PossiblyUnusedMethod>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static()]]></code>
+      <code><![CDATA[new static()]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Header/AbstractLocation.php">
+    <DocblockTypeContradiction>
+      <code><![CDATA[$this->uri === null]]></code>
+    </DocblockTypeContradiction>
+    <MissingConstructor>
+      <code><![CDATA[$uri]]></code>
+      <code><![CDATA[$uri]]></code>
+      <code><![CDATA[$uri]]></code>
+    </MissingConstructor>
+    <PossiblyNullArgument>
+      <code><![CDATA[$this->uri]]></code>
+    </PossiblyNullArgument>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[uri]]></code>
+    </PossiblyUnusedMethod>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static()]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Header/Accept.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[Accept]]></code>
+    </ClassMustBeFinal>
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[FieldValuePart\AcceptFieldValuePart]]></code>
+    </ImplementedReturnTypeMismatch>
+    <PossiblyFalseOperand>
+      <code><![CDATA[strpos($fieldValuePart, '/')]]></code>
+    </PossiblyFalseOperand>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[addMediaType]]></code>
+      <code><![CDATA[hasMediaType]]></code>
+    </PossiblyUnusedMethod>
+    <RiskyTruthyFalsyComparison>
+      <code><![CDATA[$pos = strpos($fieldValuePart, '/')]]></code>
+      <code><![CDATA[$pos = strpos($fieldValuePart, ';')]]></code>
+      <code><![CDATA[strpos($fieldValuePart, '/')]]></code>
+    </RiskyTruthyFalsyComparison>
+  </file>
+  <file src="src/Header/Accept/FieldValuePart/AbstractFieldValuePart.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[__get]]></code>
+      <code><![CDATA[getMatchedAgainst]]></code>
+      <code><![CDATA[getParams]]></code>
+      <code><![CDATA[getPriority]]></code>
+      <code><![CDATA[getRaw]]></code>
+      <code><![CDATA[getTypeString]]></code>
+      <code><![CDATA[setMatchedAgainst]]></code>
+    </PossiblyUnusedMethod>
+    <PropertyNotSetInConstructor>
+      <code><![CDATA[$matchedAgainst]]></code>
+    </PropertyNotSetInConstructor>
+  </file>
+  <file src="src/Header/Accept/FieldValuePart/AcceptFieldValuePart.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[AcceptFieldValuePart]]></code>
+    </ClassMustBeFinal>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[getFormat]]></code>
+      <code><![CDATA[getSubtype]]></code>
+      <code><![CDATA[getSubtypeRaw]]></code>
+    </PossiblyUnusedMethod>
+    <PropertyNotSetInConstructor>
+      <code><![CDATA[AcceptFieldValuePart]]></code>
+    </PropertyNotSetInConstructor>
+  </file>
+  <file src="src/Header/Accept/FieldValuePart/CharsetFieldValuePart.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[CharsetFieldValuePart]]></code>
+    </ClassMustBeFinal>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[getCharset]]></code>
+    </PossiblyUnusedMethod>
+    <PropertyNotSetInConstructor>
+      <code><![CDATA[CharsetFieldValuePart]]></code>
+    </PropertyNotSetInConstructor>
+  </file>
+  <file src="src/Header/Accept/FieldValuePart/EncodingFieldValuePart.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[EncodingFieldValuePart]]></code>
+    </ClassMustBeFinal>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[getEncoding]]></code>
+    </PossiblyUnusedMethod>
+    <PropertyNotSetInConstructor>
+      <code><![CDATA[EncodingFieldValuePart]]></code>
+    </PropertyNotSetInConstructor>
+  </file>
+  <file src="src/Header/Accept/FieldValuePart/LanguageFieldValuePart.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[LanguageFieldValuePart]]></code>
+    </ClassMustBeFinal>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[getLanguage]]></code>
+      <code><![CDATA[getPrimaryTag]]></code>
+      <code><![CDATA[getSubTag]]></code>
+    </PossiblyUnusedMethod>
+    <PropertyNotSetInConstructor>
+      <code><![CDATA[LanguageFieldValuePart]]></code>
+    </PropertyNotSetInConstructor>
+  </file>
+  <file src="src/Header/AcceptCharset.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[AcceptCharset]]></code>
+    </ClassMustBeFinal>
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[CharsetFieldValuePart]]></code>
+    </ImplementedReturnTypeMismatch>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[addCharset]]></code>
+      <code><![CDATA[hasCharset]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Header/AcceptEncoding.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[AcceptEncoding]]></code>
+    </ClassMustBeFinal>
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[EncodingFieldValuePart]]></code>
+    </ImplementedReturnTypeMismatch>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[addEncoding]]></code>
+      <code><![CDATA[hasEncoding]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Header/AcceptLanguage.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[AcceptLanguage]]></code>
+    </ClassMustBeFinal>
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[LanguageFieldValuePart]]></code>
+    </ImplementedReturnTypeMismatch>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[addLanguage]]></code>
+      <code><![CDATA[hasLanguage]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Header/AcceptRanges.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[AcceptRanges]]></code>
+    </ClassMustBeFinal>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static($value)]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Header/Age.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[Age]]></code>
+    </ClassMustBeFinal>
+    <InvalidArgument>
+      <code><![CDATA[$value]]></code>
+    </InvalidArgument>
+    <PropertyNotSetInConstructor>
+      <code><![CDATA[$deltaSeconds]]></code>
+    </PropertyNotSetInConstructor>
+    <RedundantCastGivenDocblockType>
+      <code><![CDATA[(int) $delta]]></code>
+    </RedundantCastGivenDocblockType>
+    <RedundantConditionGivenDocblockType>
+      <code><![CDATA[! is_int($delta) && ! is_numeric($delta)]]></code>
+    </RedundantConditionGivenDocblockType>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static($value)]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Header/Allow.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[Allow]]></code>
+    </ClassMustBeFinal>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[denyMethods]]></code>
+      <code><![CDATA[getAllowedMethods]]></code>
+      <code><![CDATA[isAllowedMethod]]></code>
+    </PossiblyUnusedMethod>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static()]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Header/AuthenticationInfo.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[AuthenticationInfo]]></code>
+    </ClassMustBeFinal>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static($value)]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Header/Authorization.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[Authorization]]></code>
+    </ClassMustBeFinal>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static($value)]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Header/CacheControl.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[CacheControl]]></code>
+    </ClassMustBeFinal>
+    <MissingConstructor>
+      <code><![CDATA[$value]]></code>
+    </MissingConstructor>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[getDirective]]></code>
+      <code><![CDATA[hasDirective]]></code>
+      <code><![CDATA[isEmpty]]></code>
+      <code><![CDATA[removeDirective]]></code>
+    </PossiblyUnusedMethod>
+    <PossiblyUnusedProperty>
+      <code><![CDATA[$value]]></code>
+    </PossiblyUnusedProperty>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static()]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Header/Connection.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[Connection]]></code>
+    </ClassMustBeFinal>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[isPersistent]]></code>
+      <code><![CDATA[setPersistent]]></code>
+    </PossiblyUnusedMethod>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static()]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Header/ContentDisposition.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[ContentDisposition]]></code>
+    </ClassMustBeFinal>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static($value)]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Header/ContentEncoding.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[ContentEncoding]]></code>
+    </ClassMustBeFinal>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static($value)]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Header/ContentLanguage.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[ContentLanguage]]></code>
+    </ClassMustBeFinal>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static($value)]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Header/ContentLength.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[ContentLength]]></code>
+    </ClassMustBeFinal>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static($value)]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Header/ContentLocation.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[ContentLocation]]></code>
+    </ClassMustBeFinal>
+  </file>
+  <file src="src/Header/ContentMD5.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[ContentMD5]]></code>
+    </ClassMustBeFinal>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static($value)]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Header/ContentRange.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[ContentRange]]></code>
+    </ClassMustBeFinal>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static($value)]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Header/ContentSecurityPolicy.php">
+    <MixedArgumentTypeCoercion>
+      <code><![CDATA[$sources]]></code>
+    </MixedArgumentTypeCoercion>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[getDirectives]]></code>
+    </PossiblyUnusedMethod>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static()]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Header/ContentSecurityPolicyReportOnly.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[ContentSecurityPolicyReportOnly]]></code>
+    </ClassMustBeFinal>
+    <UnusedClass>
+      <code><![CDATA[ContentSecurityPolicyReportOnly]]></code>
+    </UnusedClass>
+  </file>
+  <file src="src/Header/ContentTransferEncoding.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[ContentTransferEncoding]]></code>
+    </ClassMustBeFinal>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static(strtolower($value))]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Header/ContentType.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[ContentType]]></code>
+    </ClassMustBeFinal>
+    <DocblockTypeContradiction>
+      <code><![CDATA[is_string($string)]]></code>
+    </DocblockTypeContradiction>
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[string|null]]></code>
+    </ImplementedReturnTypeMismatch>
+    <InvalidArgument>
+      <code><![CDATA[$left]]></code>
+      <code><![CDATA[$left]]></code>
+      <code><![CDATA[$left]]></code>
+      <code><![CDATA[$right]]></code>
+      <code><![CDATA[$right]]></code>
+      <code><![CDATA[$right]]></code>
+    </InvalidArgument>
+    <InvalidCast>
+      <code><![CDATA[$left]]></code>
+      <code><![CDATA[$left]]></code>
+      <code><![CDATA[$left]]></code>
+      <code><![CDATA[$right]]></code>
+      <code><![CDATA[$right]]></code>
+      <code><![CDATA[$right]]></code>
+    </InvalidCast>
+    <InvalidPropertyFetch>
+      <code><![CDATA[$left->format]]></code>
+      <code><![CDATA[$right->format]]></code>
+    </InvalidPropertyFetch>
+    <LessSpecificReturnStatement>
+      <code><![CDATA[(object) [
+            'type'    => $type,
+            'subtype' => $subtype,
+            'format'  => $format,
+        ]]]></code>
+    </LessSpecificReturnStatement>
+    <MissingClosureParamType>
+      <code><![CDATA[$value]]></code>
+    </MissingClosureParamType>
+    <MixedArgument>
+      <code><![CDATA[$left->subtype]]></code>
+      <code><![CDATA[$right->subtype]]></code>
+      <code><![CDATA[$right->subtype]]></code>
+      <code><![CDATA[$value]]></code>
+      <code><![CDATA[$value]]></code>
+      <code><![CDATA[is_object($string) ? $string::class : gettype($string)]]></code>
+    </MixedArgument>
+    <MixedAssignment>
+      <code><![CDATA[$value]]></code>
+    </MixedAssignment>
+    <MixedReturnStatement>
+      <code><![CDATA[$this->parameters['charset']]]></code>
+    </MixedReturnStatement>
+    <MoreSpecificReturnType>
+      <code><![CDATA[stdClass]]></code>
+    </MoreSpecificReturnType>
+    <PossiblyNullOperand>
+      <code><![CDATA[$this->getFieldValue()]]></code>
+    </PossiblyNullOperand>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[getCharset]]></code>
+      <code><![CDATA[getParameters]]></code>
+      <code><![CDATA[match]]></code>
+      <code><![CDATA[setCharset]]></code>
+      <code><![CDATA[setMediaType]]></code>
+    </PossiblyUnusedMethod>
+    <RedundantCastGivenDocblockType>
+      <code><![CDATA[(string) $this->value]]></code>
+    </RedundantCastGivenDocblockType>
+    <RedundantCondition>
+      <code><![CDATA[gettype($string)]]></code>
+    </RedundantCondition>
+    <TypeDoesNotContainType>
+      <code><![CDATA[is_object($string)]]></code>
+    </TypeDoesNotContainType>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static($value, trim($mediaType))]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Header/Cookie.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[Cookie]]></code>
+    </ClassMustBeFinal>
+    <DocblockTypeContradiction>
+      <code><![CDATA[is_array($value)]]></code>
+    </DocblockTypeContradiction>
+    <MissingTemplateParam>
+      <code><![CDATA[Cookie]]></code>
+    </MissingTemplateParam>
+    <MixedArgumentTypeCoercion>
+      <code><![CDATA[$this]]></code>
+    </MixedArgumentTypeCoercion>
+    <NoValue>
+      <code><![CDATA[$value]]></code>
+    </NoValue>
+    <PossiblyNullArrayOffset>
+      <code><![CDATA[$nvPairs]]></code>
+    </PossiblyNullArrayOffset>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[getEncodeValue]]></code>
+    </PossiblyUnusedMethod>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static($nvPairs)]]></code>
+      <code><![CDATA[new static()]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Header/Exception/DomainException.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[DomainException]]></code>
+    </ClassMustBeFinal>
+  </file>
+  <file src="src/Header/Exception/InvalidArgumentException.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[InvalidArgumentException]]></code>
+    </ClassMustBeFinal>
+  </file>
+  <file src="src/Header/Exception/RuntimeException.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[RuntimeException]]></code>
+    </ClassMustBeFinal>
+  </file>
+  <file src="src/Header/FeaturePolicy.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[FeaturePolicy]]></code>
+    </ClassMustBeFinal>
+    <MixedArgument>
+      <code><![CDATA[$value]]></code>
+    </MixedArgument>
+    <MixedArgumentTypeCoercion>
+      <code><![CDATA[$sources]]></code>
+    </MixedArgumentTypeCoercion>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[getDirectives]]></code>
+    </PossiblyUnusedMethod>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static()]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Header/GenericHeader.php">
+    <PropertyNotSetInConstructor>
+      <code><![CDATA[$fieldName]]></code>
+      <code><![CDATA[$fieldValue]]></code>
+    </PropertyNotSetInConstructor>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static($fieldName, $fieldValue)]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Header/GenericMultiHeader.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[GenericMultiHeader]]></code>
+    </ClassMustBeFinal>
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[static|static[]]]></code>
+      <code><![CDATA[static|static[]]]></code>
+    </ImplementedReturnTypeMismatch>
+    <PropertyNotSetInConstructor>
+      <code><![CDATA[GenericMultiHeader]]></code>
+      <code><![CDATA[GenericMultiHeader]]></code>
+    </PropertyNotSetInConstructor>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static($fieldName, $fieldValue)]]></code>
+      <code><![CDATA[new static($fieldName, $multiValue)]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Header/HeaderValue.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[filter]]></code>
+    </PossiblyUnusedMethod>
+    <UnusedConstructor>
+      <code><![CDATA[__construct]]></code>
+    </UnusedConstructor>
+  </file>
+  <file src="src/Header/MultipleHeaderInterface.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[toStringMultipleHeaders]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Header/RetryAfter.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[getDeltaSeconds]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Header/SetCookie.php">
+    <ImplementedReturnTypeMismatch>
+      <code><![CDATA[array|SetCookie]]></code>
+    </ImplementedReturnTypeMismatch>
+    <PossiblyFalseIterator>
+      <code><![CDATA[$keyValuePairs]]></code>
+    </PossiblyFalseIterator>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[getEncodeValue]]></code>
+      <code><![CDATA[match]]></code>
+      <code><![CDATA[setQuoteFieldValue]]></code>
+    </PossiblyUnusedMethod>
+    <PossiblyUnusedProperty>
+      <code><![CDATA[$type]]></code>
+    </PossiblyUnusedProperty>
+    <PropertyNotSetInConstructor>
+      <code><![CDATA[$type]]></code>
+    </PropertyNotSetInConstructor>
+  </file>
+  <file src="src/Header/WWWAuthenticate.php">
+    <PropertyNotSetInConstructor>
+      <code><![CDATA[$value]]></code>
+    </PropertyNotSetInConstructor>
+  </file>
+  <file src="src/Headers.php">
+    <MissingTemplateParam>
+      <code><![CDATA[Iterator]]></code>
+    </MissingTemplateParam>
+    <MixedAssignment>
+      <code><![CDATA[$headers[]]]></code>
+    </MixedAssignment>
+    <MixedReturnStatement>
+      <code><![CDATA[$this->headers[$index]]]></code>
+      <code><![CDATA[$this->lazyLoadHeader($index)]]></code>
+      <code><![CDATA[$this->lazyLoadHeader($index)]]></code>
+    </MixedReturnStatement>
+    <NullableReturnStatement>
+      <code><![CDATA[$this->lazyLoadHeader($index)]]></code>
+    </NullableReturnStatement>
+    <PossiblyFalseArgument>
+      <code><![CDATA[class_implements($class, true)]]></code>
+    </PossiblyFalseArgument>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[clearHeaders]]></code>
+      <code><![CDATA[count]]></code>
+      <code><![CDATA[removeHeader]]></code>
+      <code><![CDATA[setPluginClassLoader]]></code>
+    </PossiblyUnusedMethod>
+    <PossiblyUnusedReturnValue>
+      <code><![CDATA[bool]]></code>
+    </PossiblyUnusedReturnValue>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static()]]></code>
+    </UnsafeInstantiation>
+    <UnusedForeachValue>
+      <code><![CDATA[$item]]></code>
+    </UnusedForeachValue>
+  </file>
+  <file src="src/PhpEnvironment/RemoteAddress.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[getIpAddress]]></code>
+      <code><![CDATA[getUseProxy]]></code>
+      <code><![CDATA[setProxyHeader]]></code>
+      <code><![CDATA[setTrustedProxies]]></code>
+      <code><![CDATA[setUseProxy]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/PhpEnvironment/Request.php">
+    <InvalidArgument>
+      <code><![CDATA[new Parameters($_COOKIE)]]></code>
+    </InvalidArgument>
+    <MixedArgumentTypeCoercion>
+      <code><![CDATA[$this->serverParams['QUERY_STRING']]]></code>
+    </MixedArgumentTypeCoercion>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[__construct]]></code>
+      <code><![CDATA[getBasePath]]></code>
+      <code><![CDATA[getEnv]]></code>
+      <code><![CDATA[setRequestUri]]></code>
+    </PossiblyUnusedMethod>
+    <RiskyTruthyFalsyComparison>
+      <code><![CDATA[$value]]></code>
+    </RiskyTruthyFalsyComparison>
+  </file>
+  <file src="src/PhpEnvironment/Response.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[send]]></code>
+      <code><![CDATA[setHeadersSentHandler]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+  <file src="src/Request.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[fromString]]></code>
+      <code><![CDATA[getCookie]]></code>
+      <code><![CDATA[getHeader]]></code>
+      <code><![CDATA[getUriString]]></code>
+      <code><![CDATA[isConnect]]></code>
+      <code><![CDATA[isDelete]]></code>
+      <code><![CDATA[isFlashRequest]]></code>
+      <code><![CDATA[isGet]]></code>
+      <code><![CDATA[isHead]]></code>
+      <code><![CDATA[isOptions]]></code>
+      <code><![CDATA[isPatch]]></code>
+      <code><![CDATA[isPost]]></code>
+      <code><![CDATA[isPropFind]]></code>
+      <code><![CDATA[isPut]]></code>
+      <code><![CDATA[isXmlHttpRequest]]></code>
+    </PossiblyUnusedMethod>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static()]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Response.php">
+    <PossiblyUnusedMethod>
+      <code><![CDATA[isClientError]]></code>
+      <code><![CDATA[isForbidden]]></code>
+      <code><![CDATA[isGone]]></code>
+      <code><![CDATA[isInformational]]></code>
+      <code><![CDATA[isNotFound]]></code>
+      <code><![CDATA[isOk]]></code>
+      <code><![CDATA[isServerError]]></code>
+      <code><![CDATA[isSuccess]]></code>
+      <code><![CDATA[setCustomStatusCode]]></code>
+    </PossiblyUnusedMethod>
+    <PossiblyUnusedReturnValue>
+      <code><![CDATA[$this]]></code>
+    </PossiblyUnusedReturnValue>
+    <UnsafeInstantiation>
+      <code><![CDATA[new static()]]></code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/Response/Stream.php">
+    <MissingConstructor>
+      <code><![CDATA[$cleanup]]></code>
+    </MissingConstructor>
+    <PossiblyUnusedMethod>
+      <code><![CDATA[getCleanup]]></code>
+      <code><![CDATA[getRawBody]]></code>
+      <code><![CDATA[getStream]]></code>
+      <code><![CDATA[getStreamName]]></code>
+    </PossiblyUnusedMethod>
+  </file>
+</files>

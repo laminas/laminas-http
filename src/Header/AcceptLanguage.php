@@ -73,7 +73,9 @@ class AcceptLanguage extends AbstractAccept
     protected function parseFieldValuePart($fieldValuePart)
     {
         $raw = $fieldValuePart;
-        if ($pos = strpos($fieldValuePart, '-')) {
+
+        $pos = strpos($fieldValuePart, '-');
+        if ($pos !== false) {
             $type = trim(substr($fieldValuePart, 0, $pos));
         } else {
             $type = trim(substr($fieldValuePart, 0));
@@ -81,12 +83,13 @@ class AcceptLanguage extends AbstractAccept
 
         $params = $this->getParametersFromFieldValuePart($fieldValuePart);
 
-        if ($pos = strpos($fieldValuePart, ';')) {
+        $pos = strpos($fieldValuePart, ';');
+        if ($pos !== false) {
             $fieldValuePart = $type = trim(substr($fieldValuePart, 0, $pos));
         }
 
-        if (strpos($fieldValuePart, '-')) {
-            $subtypeWhole = $format = $subtype = trim(substr($fieldValuePart, strpos($fieldValuePart, '-') + 1));
+        if (strpos($fieldValuePart, '-') !== false) {
+            $subtypeWhole = $format = $subtype = trim(substr($fieldValuePart, (int) strpos($fieldValuePart, '-') + 1));
         } else {
             $subtypeWhole = '';
             $format       = '*';

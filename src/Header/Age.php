@@ -72,7 +72,7 @@ class Age implements HeaderInterface
     /**
      * Set number of seconds
      *
-     * @param int $delta
+     * @param int|null $delta
      * @return $this
      */
     public function setDeltaSeconds($delta)

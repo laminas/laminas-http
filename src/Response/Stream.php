@@ -2,8 +2,11 @@
 
 namespace Laminas\Http\Response;
 
+use ArrayIterator;
 use Laminas\Http\Exception;
 use Laminas\Http\Header\ContentLength;
+use Laminas\Http\Header\HeaderInterface;
+use Laminas\Http\Headers;
 use Laminas\Http\Response;
 use Laminas\Stdlib\ErrorHandler;
 
@@ -26,12 +29,12 @@ use const E_WARNING;
 /**
  * Represents an HTTP response message as PHP stream resource
  */
-class Stream extends Response
+final class Stream extends Response
 {
     /**
      * The Content-Length value, if set
      *
-     * @var int
+     * @var int|null
      */
     protected $contentLength;
 
@@ -45,7 +48,7 @@ class Stream extends Response
     /**
      * Response as stream
      *
-     * @var resource
+     * @var resource|null
      */
     protected $stream;
 
@@ -54,7 +57,7 @@ class Stream extends Response
      *
      * Will be empty if stream is not file-based.
      *
-     * @var string
+     * @var string|null
      */
     protected $streamName;
 
@@ -70,7 +73,7 @@ class Stream extends Response
      *
      * @param int $contentLength
      */
-    public function setContentLength($contentLength = null)
+    public function setContentLength($contentLength = null): void
     {
         $this->contentLength = $contentLength;
     }
@@ -88,7 +91,7 @@ class Stream extends Response
     /**
      * Get the response as stream
      *
-     * @return resource
+     * @return resource|null
      */
     public function getStream()
     {
@@ -98,7 +101,7 @@ class Stream extends Response
     /**
      * Set the response stream
      *
-     * @param resource $stream
+     * @param resource|null $stream
      * @return $this
      */
     public function setStream($stream)
@@ -122,7 +125,7 @@ class Stream extends Response
      *
      * @param bool $cleanup
      */
-    public function setCleanup($cleanup = true)
+    public function setCleanup($cleanup = true): void
     {
         $this->cleanup = $cleanup;
     }
@@ -130,7 +133,7 @@ class Stream extends Response
     /**
      * Get file name associated with the stream
      *
-     * @return string
+     * @return string|null
      */
     public function getStreamName()
     {
@@ -160,7 +163,7 @@ class Stream extends Response
      */
     public static function fromStream($responseString, $stream)
     {
-        if (! is_resource($stream) || get_resource_type($stream) !== 'stream') {
+        if (get_resource_type($stream) !== 'stream') {
             throw new Exception\InvalidArgumentException('A valid stream is required');
         }
 
@@ -196,27 +199,31 @@ class Stream extends Response
             throw new Exception\OutOfRangeException('End of header not found');
         }
 
-        /** @var Stream $response */
         $response = static::fromString($headersString);
-
-        if (is_resource($stream)) {
-            $response->setStream($stream);
-        }
+        $response->setStream($stream);
 
         if (! empty($responseArray)) {
             $response->content = implode("\n", $responseArray);
         }
 
         $headers = $response->getHeaders();
+
+        if (! $headers instanceof Headers && ! $headers instanceof ArrayIterator) {
+            throw new Exception\RuntimeException(
+                'Invalid headers format: expected Headers or ArrayIterator'
+            );
+        }
+
+        /** @var HeaderInterface $header */
         foreach ($headers as $header) {
             if ($header instanceof ContentLength) {
                 $response->setContentLength((int) $header->getFieldValue());
                 $contentLength = $response->getContentLength();
-                if (strlen($response->content) > $contentLength) {
+                if (strlen((string) $response->content) > $contentLength) {
                     throw new Exception\OutOfRangeException(sprintf(
                         'Too much content was extracted from the stream (%d instead of %d bytes)',
-                        strlen($response->content),
-                        $contentLength
+                        strlen((string) $response->content),
+                        (int) $contentLength
                     ));
                 }
                 break;
@@ -236,7 +243,7 @@ class Stream extends Response
      * If you want to get the raw body (as transferred on wire) use
      * $this->getRawBody() instead.
      *
-     * @return string
+     * @return string|bool
      */
     public function getBody()
     {
@@ -259,7 +266,7 @@ class Stream extends Response
         if ($this->stream) {
             $this->readStream();
         }
-        return $this->content;
+        return (string) $this->content;
     }
 
     /**
@@ -267,7 +274,7 @@ class Stream extends Response
      *
      * Function reads the remainder of the body from the stream and closes the stream.
      *
-     * @return string
+     * @return void
      */
     protected function readStream()
     {
@@ -278,15 +285,13 @@ class Stream extends Response
             $bytes = -1; // Read the whole buffer
         }
 
-        if (! is_resource($this->stream) || $bytes === 0) {
-            return '';
-        }
+        if (null !== $this->stream) {
+            $this->content          = (string) $this->content . (string) stream_get_contents($this->stream, $bytes);
+            $this->contentStreamed += strlen($this->content);
 
-        $this->content         .= stream_get_contents($this->stream, $bytes);
-        $this->contentStreamed += strlen($this->content);
-
-        if ($this->getContentLength() === $this->contentStreamed) {
-            $this->stream = null;
+            if ($this->getContentLength() === $this->contentStreamed) {
+                $this->stream = null;
+            }
         }
     }
 

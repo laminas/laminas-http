@@ -26,7 +26,6 @@ class Cookie extends ArrayObject implements HeaderInterface
     protected $encodeValue = true;
 
     /**
-     * @param SetCookie[] $setCookieClass
      * @return static
      */
     public static function fromSetCookieArray(array $setCookies)
@@ -41,7 +40,7 @@ class Cookie extends ArrayObject implements HeaderInterface
                 ));
             }
 
-            if (array_key_exists($setCookie->getName(), $nvPairs)) {
+            if (array_key_exists($setCookie->getName() ?? '', $nvPairs)) {
                 throw new Exception\InvalidArgumentException(sprintf(
                     'Two cookies with the same name were provided to %s',
                     __METHOD__
@@ -72,13 +71,16 @@ class Cookie extends ArrayObject implements HeaderInterface
         $nvPairs = preg_split('#;\s*#', $value);
 
         $arrayInfo = [];
-        foreach ($nvPairs as $nvPair) {
-            $parts = explode('=', $nvPair, 2);
-            if (count($parts) !== 2) {
-                throw new Exception\RuntimeException('Malformed Cookie header found');
+
+        if ($nvPairs !== false) {
+            foreach ($nvPairs as $nvPair) {
+                $parts = explode('=', $nvPair, 2);
+                if (count($parts) !== 2) {
+                    throw new Exception\RuntimeException('Malformed Cookie header found');
+                }
+                [$name, $value]   = $parts;
+                $arrayInfo[$name] = urldecode($value);
             }
-            [$name, $value]   = $parts;
-            $arrayInfo[$name] = urldecode($value);
         }
 
         $header->exchangeArray($arrayInfo);
@@ -97,7 +99,7 @@ class Cookie extends ArrayObject implements HeaderInterface
      */
     public function setEncodeValue($encodeValue)
     {
-        $this->encodeValue = (bool) $encodeValue;
+        $this->encodeValue = $encodeValue;
         return $this;
     }
 
@@ -136,7 +138,7 @@ class Cookie extends ArrayObject implements HeaderInterface
     {
         $result = [];
         foreach ($data as $key => $value) {
-            $key = $prefix ? $prefix . '[' . $key . ']' : $key;
+            $key = null !== $prefix ? $prefix . '[' . $key . ']' : $key;
             if (is_array($value)) {
                 $result = array_merge($result, $this->flattenCookies($value, $key));
             } else {

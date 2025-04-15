@@ -71,7 +71,7 @@ abstract class AbstractAccept implements HeaderInterface
      *
      * @param string $headerLine
      */
-    public function parseHeaderLine($headerLine)
+    public function parseHeaderLine($headerLine): void
     {
         if (strpos($headerLine, ':') !== false) {
             [$name, $value] = GenericHeader::splitHeaderLine($headerLine);
@@ -84,8 +84,8 @@ abstract class AbstractAccept implements HeaderInterface
 
         HeaderValue::assertValid($value);
 
-        foreach ($this->getFieldValuePartsFromHeaderLine($value) as $value) {
-            $this->addFieldValuePartToQueue($value);
+        foreach ($this->getFieldValuePartsFromHeaderLine($value) as $part) {
+            $this->addFieldValuePartToQueue($part);
         }
     }
 
@@ -107,14 +107,14 @@ abstract class AbstractAccept implements HeaderInterface
      *
      * @param string  $headerLine
      * @throws Exception\InvalidArgumentException If header is invalid.
-     * @return array
+     * @return array<stdClass>
      */
     public function getFieldValuePartsFromHeaderLine($headerLine)
     {
         // process multiple accept values, they may be between quotes
         if (
             ! preg_match_all('/(?:[^,"]|"(?:[^\\\"]|\\\.)*")+/', $headerLine, $values)
-                || ! isset($values[0])
+            || ! isset($values[0])
         ) {
             throw new Exception\InvalidArgumentException(
                 'Invalid header line for ' . $this->getFieldName() . ' header string'
@@ -246,7 +246,7 @@ abstract class AbstractAccept implements HeaderInterface
         if ($escaped === $value && ! array_intersect(str_split($value), $separators)) {
             $value = $key . ($value ? '=' . $value : '');
         } else {
-            $value = $key . ($value ? '="' . $escaped . '"' : '');
+            $value = $key . ($value ? '="' . (string) $escaped . '"' : '');
         }
 
         return $value;
@@ -349,15 +349,16 @@ abstract class AbstractAccept implements HeaderInterface
     /**
      * Return a match where all parameters in argument #1 match those in argument #2
      *
-     * @param array $match1
-     * @param array $match2
-     * @return bool|array
+     * @param object{params: array<string, string>} $match1
+     * @param object{params: array<string, string>} $match2
+     * @return false|object{params: array<string, string>}
      */
-    protected function matchAcceptParams($match1, $match2)
+    protected function matchAcceptParams(object $match1, object $match2)
     {
         foreach ($match2->params as $key => $value) {
             if (isset($match1->params[$key])) {
-                if (strpos($value, '-')) {
+                if (strpos($value, '-') !== false) {
+                    $pieces = [];
                     preg_match(
                         '/^(?|([^"-]*)|"([^"]*)")-(?|([^"-]*)|"([^"]*)")\z/',
                         $value,
@@ -365,13 +366,13 @@ abstract class AbstractAccept implements HeaderInterface
                     );
 
                     if (
-                        count($pieces) === 3
-                        && (version_compare($pieces[1], $match1->params[$key], '<=')
-                            xor version_compare($pieces[2], $match1->params[$key], '>='))
+                        count($pieces) === 3 &&
+                        (version_compare($pieces[1], $match1->params[$key], '<=') xor
+                            version_compare($pieces[2], $match1->params[$key], '>='))
                     ) {
                         return false;
                     }
-                } elseif (strpos($value, '|')) {
+                } elseif (strpos($value, '|') !== false) {
                     $options = explode('|', $value);
                     $good    = false;
                     foreach ($options as $option) {
@@ -453,10 +454,10 @@ abstract class AbstractAccept implements HeaderInterface
             // @todo count number of dots in case of type==application in subtype
 
             // So far they're still the same. Longest string length may be more specific
-            if (strlen($a->raw) === strlen($b->raw)) {
+            if (strlen((string) $a->raw) === strlen((string) $b->raw)) {
                 return 0;
             }
-            return strlen($a->raw) > strlen($b->raw) ? -1 : 1;
+            return strlen((string) $a->raw) > strlen((string) $b->raw) ? -1 : 1;
         };
 
         usort($this->fieldValueParts, $sort);

@@ -2,6 +2,9 @@
 
 namespace Laminas\Http;
 
+use ArrayIterator;
+use Laminas\Http\Exception\RuntimeException;
+use Laminas\Http\Header\HeaderInterface;
 use Laminas\Stdlib\ErrorHandler;
 use Laminas\Stdlib\ResponseInterface;
 
@@ -9,16 +12,13 @@ use function array_shift;
 use function count;
 use function explode;
 use function function_exists;
-use function gettype;
 use function gzinflate;
 use function gzuncompress;
 use function hexdec;
 use function implode;
 use function in_array;
-use function is_array;
 use function is_float;
 use function is_numeric;
-use function is_scalar;
 use function ord;
 use function preg_match;
 use function sprintf;
@@ -116,7 +116,7 @@ class Response extends AbstractMessage implements ResponseInterface
      */
     public const MAX_STATUS_CODE_VALUE = 599;
 
-    /** @var array Recommended Reason Phrases */
+    /** @var array<int, string> Recommended Reason Phrases */
     protected $recommendedReasonPhrases = [
         // INFORMATIONAL CODES
         100 => 'Continue',
@@ -205,7 +205,7 @@ class Response extends AbstractMessage implements ResponseInterface
     public static function fromString($string)
     {
         $lines = explode("\r\n", $string);
-        if (! is_array($lines) || count($lines) === 1) {
+        if (count($lines) === 1) {
             $lines = explode("\n", $string);
         }
 
@@ -219,8 +219,10 @@ class Response extends AbstractMessage implements ResponseInterface
          */
         if ($response->statusCode === static::STATUS_CODE_100) {
             $next = array_shift($lines); // take next line
-            $next = empty($next) ? array_shift($lines) : $next; // take next or skip if empty
-            $response->parseStatusLine($next);
+            $next = $next === '' ? array_shift($lines) : $next; // take next or skip if empty
+            if (null !== $next) {
+                $response->parseStatusLine($next);
+            }
         }
 
         if (count($lines) === 0) {
@@ -238,7 +240,7 @@ class Response extends AbstractMessage implements ResponseInterface
 
             if ($isHeader) {
                 if (preg_match("/[\r\n]/", $line)) {
-                    throw new Exception\RuntimeException('CRLF injection detected');
+                    throw new RuntimeException('CRLF injection detected');
                 }
                 $headers[] = $line;
                 continue;
@@ -248,7 +250,7 @@ class Response extends AbstractMessage implements ResponseInterface
                 empty($content)
                 && preg_match('/^[a-z0-9!#$%&\'*+.^_`|~-]+:$/i', $line)
             ) {
-                throw new Exception\RuntimeException('CRLF injection detected');
+                throw new RuntimeException('CRLF injection detected');
             }
 
             $content[] = $line;
@@ -270,7 +272,7 @@ class Response extends AbstractMessage implements ResponseInterface
      * @throws Exception\InvalidArgumentException
      * @throws RuntimeException
      */
-    protected function parseStatusLine($line)
+    protected function parseStatusLine($line): void
     {
         $regex   = '/^HTTP\/(?P<version>1\.[01]|2) (?P<status>\d{3})(?:[ ]+(?P<reason>.*))?$/';
         $matches = [];
@@ -286,17 +288,20 @@ class Response extends AbstractMessage implements ResponseInterface
     }
 
     /**
-     * @return Header\SetCookie[]
+     * @return ArrayIterator|bool|HeaderInterface|HeaderInterface[]
      */
     public function getCookie()
     {
-        return $this->getHeaders()->get('Set-Cookie');
+        /** @var Headers $headers */
+        $headers = $this->getHeaders();
+
+        return $headers->get('Set-Cookie');
     }
 
     /**
      * Set HTTP status code and (optionally) message
      *
-     * @param  int $code
+     * @param  int|string|float $code
      * @throws Exception\InvalidArgumentException
      * @return $this
      */
@@ -310,9 +315,9 @@ class Response extends AbstractMessage implements ResponseInterface
         ) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'Invalid status code "%s"; must be an integer between %d and %d, inclusive',
-                is_scalar($code) ? $code : gettype($code),
-                static::MIN_STATUS_CODE_VALUE,
-                static::MAX_STATUS_CODE_VALUE
+                $code,
+                (int) static::MIN_STATUS_CODE_VALUE,
+                (int) static::MAX_STATUS_CODE_VALUE
             ));
         }
 
@@ -332,14 +337,13 @@ class Response extends AbstractMessage implements ResponseInterface
     /**
      * Set custom HTTP status code
      *
-     * @param  int $code
+     * @param  int|string $code
      * @throws Exception\InvalidArgumentException
      * @return $this
      */
     public function setCustomStatusCode($code)
     {
         if (! is_numeric($code)) {
-            $code = is_scalar($code) ? $code : gettype($code);
             throw new Exception\InvalidArgumentException(sprintf(
                 'Invalid status code provided: "%s"',
                 $code
@@ -352,7 +356,7 @@ class Response extends AbstractMessage implements ResponseInterface
     /**
      * Assign status code
      *
-     * @param int $code
+     * @param int|string $code
      * @return $this
      */
     protected function saveStatusCode($code)
@@ -375,36 +379,42 @@ class Response extends AbstractMessage implements ResponseInterface
     /**
      * Get HTTP status message
      *
-     * @return string
+     * @return string|null
      */
     public function getReasonPhrase()
     {
-        if (empty($this->reasonPhrase) && isset($this->recommendedReasonPhrases[$this->statusCode])) {
+        if (
+            ($this->reasonPhrase === '' || $this->reasonPhrase === null)
+            && isset($this->recommendedReasonPhrases[$this->statusCode])
+        ) {
             $this->reasonPhrase = $this->recommendedReasonPhrases[$this->statusCode];
         }
+
         return $this->reasonPhrase;
     }
 
     /**
      * Get the body of the response
      *
-     * @return string
+     * @return string|bool
      */
     public function getBody()
     {
         $body = (string) $this->getContent();
 
-        $transferEncoding = $this->getHeaders()->get('Transfer-Encoding');
+        /** @var Headers $headers */
+        $headers          = $this->getHeaders();
+        $transferEncoding = $headers->get('Transfer-Encoding');
 
-        if (! empty($transferEncoding)) {
-            if (strtolower($transferEncoding->getFieldValue()) === 'chunked') {
+        if (! empty($transferEncoding) && $transferEncoding instanceof HeaderInterface) {
+            if (strtolower((string) $transferEncoding->getFieldValue()) === 'chunked') {
                 $body = $this->decodeChunkedBody($body);
             }
         }
 
-        $contentEncoding = $this->getHeaders()->get('Content-Encoding');
+        $contentEncoding = $headers->get('Content-Encoding');
 
-        if (! empty($contentEncoding)) {
+        if (! empty($contentEncoding) && $contentEncoding instanceof HeaderInterface) {
             $contentEncoding = $contentEncoding->getFieldValue();
             if ($contentEncoding === 'gzip') {
                 $body = $this->decodeGzip($body);
@@ -520,9 +530,9 @@ class Response extends AbstractMessage implements ResponseInterface
     {
         $status = sprintf(
             'HTTP/%s %d %s',
-            $this->getVersion(),
+            $this->getVersion() ?? '',
             $this->getStatusCode(),
-            $this->getReasonPhrase()
+            $this->getReasonPhrase() ?? ''
         );
         return trim($status);
     }
@@ -534,10 +544,14 @@ class Response extends AbstractMessage implements ResponseInterface
      */
     public function toString()
     {
-        $str  = $this->renderStatusLine() . "\r\n";
-        $str .= $this->getHeaders()->toString();
+        $str = $this->renderStatusLine() . "\r\n";
+
+        /** @var HeaderInterface $headers */
+        $headers = $this->getHeaders();
+
+        $str .= $headers->toString();
         $str .= "\r\n";
-        $str .= $this->getContent();
+        $str .= (string) $this->getContent();
         return $str;
     }
 
@@ -558,7 +572,7 @@ class Response extends AbstractMessage implements ResponseInterface
             if (! preg_match("/^([\da-fA-F]+)[^\r\n]*\r\n/sm", $body, $m, 0, $offset)) {
                 if (trim(substr($body, $offset))) {
                     // Message was not consumed completely!
-                    throw new Exception\RuntimeException(
+                    throw new RuntimeException(
                         'Error parsing body - doesn\'t seem to be a chunked message'
                     );
                 }
@@ -581,21 +595,26 @@ class Response extends AbstractMessage implements ResponseInterface
      * Currently requires PHP with zlib support
      *
      * @param  string $body
-     * @return string
+     * @return string|false
      * @throws RuntimeException
      */
     protected function decodeGzip($body)
     {
         if (! function_exists('gzinflate')) {
-            throw new Exception\RuntimeException(
+            throw new RuntimeException(
                 'zlib extension is required in order to decode "gzip" encoding'
             );
         }
 
+        /** @var Headers $headers */
+        $headers = $this->getHeaders();
+        /** @var HeaderInterface $headersLength */
+        $headersLength = $headers->get('content-length');
+
         if (
             $body === ''
-            || ($this->getHeaders()->has('content-length')
-                && (int) $this->getHeaders()->get('content-length')->getFieldValue() === 0)
+            || ($headers->has('content-length')
+                && (int) $headersLength->getFieldValue() === 0)
         ) {
             return '';
         }
@@ -604,7 +623,7 @@ class Response extends AbstractMessage implements ResponseInterface
         $return = gzinflate(substr($body, 10));
         $test   = ErrorHandler::stop();
         if ($test) {
-            throw new Exception\RuntimeException(
+            throw new RuntimeException(
                 'Error occurred during gzip inflation',
                 0,
                 $test
@@ -619,20 +638,25 @@ class Response extends AbstractMessage implements ResponseInterface
      * Currently requires PHP with zlib support
      *
      * @param  string $body
-     * @return string
+     * @return string|bool
      * @throws RuntimeException
      */
     protected function decodeDeflate($body)
     {
         if (! function_exists('gzuncompress')) {
-            throw new Exception\RuntimeException(
+            throw new RuntimeException(
                 'zlib extension is required in order to decode "deflate" encoding'
             );
         }
 
+        /** @var Headers $headers */
+        $headers       = $this->getHeaders();
+        $headersLength = $headers->get('content-length');
+
         if (
-            $this->getHeaders()->has('content-length')
-            && 0 === (int) $this->getHeaders()->get('content-length')->getFieldValue()
+            $headersLength instanceof HeaderInterface
+            && $headers->has('content-length')
+            && 0 === (int) $headersLength->getFieldValue()
         ) {
             return '';
         }
@@ -650,7 +674,12 @@ class Response extends AbstractMessage implements ResponseInterface
          */
         $zlibHeader = unpack('n', substr($body, 0, 2));
 
-        if ($zlibHeader[1] % 31 === 0 && ord($body[0]) === 0x78 && in_array(ord($body[1]), [0x01, 0x5e, 0x9c, 0xda])) {
+        if (
+            $zlibHeader !== false
+            && (int) $zlibHeader[1] % 31 === 0
+            && ord($body[0]) === 0x78
+            && in_array(ord($body[1]), [0x01, 0x5e, 0x9c, 0xda])
+        ) {
             return gzuncompress($body);
         }
         return gzinflate($body);

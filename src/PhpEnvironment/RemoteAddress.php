@@ -6,7 +6,9 @@ use function array_diff;
 use function array_map;
 use function array_pop;
 use function explode;
+use function implode;
 use function in_array;
+use function is_array;
 use function str_replace;
 use function strpos;
 use function strtoupper;
@@ -14,7 +16,7 @@ use function strtoupper;
 /**
  * Functionality for determining client IP address.
  */
-class RemoteAddress
+final class RemoteAddress
 {
     /**
      * Whether to use proxy addresses or not.
@@ -98,7 +100,7 @@ class RemoteAddress
     public function getIpAddress()
     {
         $ip = $this->getIpAddressFromProxy();
-        if ($ip) {
+        if ($ip !== false) {
             return $ip;
         }
 
@@ -127,12 +129,13 @@ class RemoteAddress
         }
 
         $header = $this->proxyHeader;
-        if (! isset($_SERVER[$header]) || empty($_SERVER[$header])) {
+        if (! isset($_SERVER[$header]) || $_SERVER[$header] === '') {
             return false;
         }
 
         // Extract IPs
-        $ips = explode(',', $_SERVER[$header]);
+        $headerValue = is_array($_SERVER[$header]) ? implode(',', $_SERVER[$header]) : (string) $_SERVER[$header];
+        $ips         = explode(',', $headerValue);
         // trim, so we can compare against trusted proxies properly
         $ips = array_map('trim', $ips);
         // remove trusted proxy IPs

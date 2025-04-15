@@ -2,6 +2,7 @@
 
 namespace Laminas\Http\Client\Adapter;
 
+use CurlHandle;
 use Laminas\Http\Client\Adapter\AdapterInterface as HttpAdapter;
 use Laminas\Http\Client\Adapter\Exception as AdapterException;
 use Laminas\Stdlib\ArrayUtils;
@@ -26,6 +27,7 @@ use function is_array;
 use function is_float;
 use function is_numeric;
 use function is_resource;
+use function is_string;
 use function number_format;
 use function preg_match;
 use function preg_replace;
@@ -105,7 +107,7 @@ class Curl implements HttpAdapter, StreamInterface
     /**
      * The curl session handle
      *
-     * @var resource|null
+     * @var CurlHandle|null
      */
     protected $curl;
 
@@ -126,7 +128,7 @@ class Curl implements HttpAdapter, StreamInterface
     /**
      * Stream for storing output
      *
-     * @var resource
+     * @var resource|mixed
      */
     protected $outputStream;
 
@@ -163,15 +165,15 @@ class Curl implements HttpAdapter, StreamInterface
     /**
      * Set the configuration array for the adapter
      *
-     * @param  array|Traversable $options
-     * @return $this
+     * @param array|Traversable<string, mixed>|resource $options
      * @throws AdapterException\InvalidArgumentException
      */
-    public function setOptions($options = [])
+    public function setOptions($options = []): void
     {
         if ($options instanceof Traversable) {
-            $options = ArrayUtils::iteratorToArray($options);
+            $options = ArrayUtils::iteratorToArray((array) $options);
         }
+
         if (! is_array($options)) {
             throw new AdapterException\InvalidArgumentException(sprintf(
                 'Array or Traversable object expected, got %s',
@@ -180,13 +182,19 @@ class Curl implements HttpAdapter, StreamInterface
         }
 
         /** Config Key Normalization */
+        /**
+         * @var string $k
+         * @var mixed $v
+         */
         foreach ($options as $k => $v) {
             unset($options[$k]); // unset original value
             $options[str_replace(['-', '_', ' ', '.'], '', strtolower($k))] = $v; // replace w/ normalized
         }
 
         if (isset($options['proxyuser']) && isset($options['proxypass'])) {
-            $this->setCurlOption(CURLOPT_PROXYUSERPWD, $options['proxyuser'] . ':' . $options['proxypass']);
+            if (is_string($options['proxyuser']) && is_string($options['proxypass'])) {
+                $this->setCurlOption(CURLOPT_PROXYUSERPWD, $options['proxyuser'] . ':' . $options['proxypass']);
+            }
             unset($options['proxyuser'], $options['proxypass']);
         }
 
@@ -195,6 +203,10 @@ class Curl implements HttpAdapter, StreamInterface
             unset($options['sslverifypeer']);
         }
 
+        /**
+         * @var string $k
+         * @var mixed $v
+         */
         foreach ($options as $k => $v) {
             $option = strtolower($k);
             switch ($option) {
@@ -212,8 +224,6 @@ class Curl implements HttpAdapter, StreamInterface
                     break;
             }
         }
-
-        return $this;
     }
 
     /**
@@ -235,10 +245,12 @@ class Curl implements HttpAdapter, StreamInterface
      */
     public function setCurlOption($option, $value)
     {
-        if (! isset($this->config['curloptions'])) {
+        if (! isset($this->config['curloptions']) || ! is_array($this->config['curloptions'])) {
             $this->config['curloptions'] = [];
         }
+
         $this->config['curloptions'][$option] = $value;
+
         return $this;
     }
 
@@ -248,10 +260,9 @@ class Curl implements HttpAdapter, StreamInterface
      * @param  string  $host
      * @param  int     $port
      * @param  bool $secure
-     * @return void
      * @throws AdapterException\RuntimeException If unable to connect.
      */
-    public function connect($host, $port = 80, $secure = false)
+    public function connect($host, $port = 80, $secure = false): void
     {
         // If we're already connected, disconnect first
         if ($this->curl) {
@@ -259,7 +270,16 @@ class Curl implements HttpAdapter, StreamInterface
         }
 
         // Do the actual connection
-        $this->curl = curl_init();
+        $curl = curl_init();
+
+        if (! $curl) {
+            $this->close();
+
+            throw new AdapterException\RuntimeException('Unable to Connect to ' . $host . ':' . $port);
+        }
+
+        $this->curl = $curl;
+
         if ($port !== 80) {
             curl_setopt($this->curl, CURLOPT_PORT, intval($port));
         }
@@ -267,6 +287,7 @@ class Curl implements HttpAdapter, StreamInterface
         if (isset($this->config['connecttimeout'])) {
             $connectTimeout = $this->config['connecttimeout'];
         } elseif (isset($this->config['timeout'])) {
+            /** @var int $connectTimeout */
             $connectTimeout = $this->config['timeout'];
         } else {
             $connectTimeout = null;
@@ -293,7 +314,7 @@ class Curl implements HttpAdapter, StreamInterface
 
         if (isset($this->config['timeout'])) {
             if (defined('CURLOPT_TIMEOUT_MS')) {
-                curl_setopt($this->curl, CURLOPT_TIMEOUT_MS, $this->config['timeout'] * 1000);
+                curl_setopt($this->curl, CURLOPT_TIMEOUT_MS, (int) $this->config['timeout'] * 1000);
             } else {
                 curl_setopt($this->curl, CURLOPT_TIMEOUT, $this->config['timeout']);
             }
@@ -309,12 +330,6 @@ class Curl implements HttpAdapter, StreamInterface
         if (isset($this->config['maxredirects'])) {
             // Set Max redirects
             curl_setopt($this->curl, CURLOPT_MAXREDIRS, $this->config['maxredirects']);
-        }
-
-        if (! $this->curl) {
-            $this->close();
-
-            throw new AdapterException\RuntimeException('Unable to Connect to ' . $host . ':' . $port);
         }
 
         if ($secure !== false) {
@@ -338,7 +353,7 @@ class Curl implements HttpAdapter, StreamInterface
      * @param Uri $uri
      * @param  float|string  $httpVersion
      * @param  array         $headers
-     * @param  string        $body
+     * @param  string|resource $body
      * @return string        $request
      * @throws AdapterException\RuntimeException If connection fails, connected
      *     to wrong host, no PUT file defined, unsupported method, or unsupported
@@ -379,6 +394,10 @@ class Curl implements HttpAdapter, StreamInterface
                 // There are two different types of PUT request, either a Raw Data string has been set
                 // or CURLOPT_INFILE and CURLOPT_INFILESIZE are used.
                 if (is_resource($body)) {
+                    if (! isset($this->config['curloptions']) || ! is_array($this->config['curloptions'])) {
+                        $this->config['curloptions'] = [];
+                    }
+
                     $this->config['curloptions'][CURLOPT_INFILE] = $body;
                 }
                 if (isset($this->config['curloptions'][CURLOPT_INFILE])) {
@@ -395,6 +414,10 @@ class Curl implements HttpAdapter, StreamInterface
                     }
 
                     if (isset($headers['Content-Length'])) {
+                        if (! isset($this->config['curloptions']) || ! is_array($this->config['curloptions'])) {
+                            $this->config['curloptions'] = [];
+                        }
+
                         $this->config['curloptions'][CURLOPT_INFILESIZE] = (int) $headers['Content-Length'];
                         unset($headers['Content-Length']);
                     }
@@ -460,7 +483,7 @@ class Curl implements HttpAdapter, StreamInterface
         // Set the CURLINFO_HEADER_OUT flag so that we can retrieve the full request string later
         curl_setopt($this->curl, CURLINFO_HEADER_OUT, true);
 
-        if ($this->outputStream) {
+        if (is_resource($this->outputStream)) {
             // headers will be read into the response
             curl_setopt($this->curl, CURLOPT_HEADER, false);
             curl_setopt($this->curl, CURLOPT_HEADERFUNCTION, [$this, 'readHeader']);
@@ -475,9 +498,12 @@ class Curl implements HttpAdapter, StreamInterface
         }
 
         // Treating basic auth headers in a special way
-        if (array_key_exists('Authorization', $headers) && 'Basic' === substr($headers['Authorization'], 0, 5)) {
+        if (
+            array_key_exists('Authorization', $headers)
+            && 'Basic' === substr((string) $headers['Authorization'], 0, 5)
+        ) {
             curl_setopt($this->curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-            curl_setopt($this->curl, CURLOPT_USERPWD, base64_decode(substr($headers['Authorization'], 6)));
+            curl_setopt($this->curl, CURLOPT_USERPWD, base64_decode(substr((string) $headers['Authorization'], 6)));
             unset($headers['Authorization']);
         }
 
@@ -486,6 +512,7 @@ class Curl implements HttpAdapter, StreamInterface
             $headers['Accept'] = '';
         }
         $curlHeaders = [];
+        /** @var string $value */
         foreach ($headers as $key => $value) {
             $curlHeaders[] = $key . ': ' . $value;
         }
@@ -498,22 +525,34 @@ class Curl implements HttpAdapter, StreamInterface
          * @link http://de2.php.net/manual/en/function.curl-setopt.php#81161
          */
         if ($curlMethod === CURLOPT_UPLOAD) {
-            // this covers a PUT by file-handle:
-            // Make the setting of this options explicit (rather than setting it through the loop following a bit lower)
-            // to group common functionality together.
-            curl_setopt($this->curl, CURLOPT_INFILE, $this->config['curloptions'][CURLOPT_INFILE]);
-            curl_setopt($this->curl, CURLOPT_INFILESIZE, $this->config['curloptions'][CURLOPT_INFILESIZE]);
-            unset($this->config['curloptions'][CURLOPT_INFILE]);
-            unset($this->config['curloptions'][CURLOPT_INFILESIZE]);
+            // Extract curloptions safely and ensure it's an array
+            /** @var array<int, mixed> $curlOptions */
+            $curlOptions = isset($this->config['curloptions']) && is_array($this->config['curloptions'])
+                ? $this->config['curloptions']
+                : [];
+
+            // Check if required options are set before accessing
+            if (
+                array_key_exists(CURLOPT_INFILE, $curlOptions) &&
+                array_key_exists(CURLOPT_INFILESIZE, $curlOptions)
+            ) {
+                curl_setopt($this->curl, CURLOPT_INFILE, $curlOptions[CURLOPT_INFILE]);
+                curl_setopt($this->curl, CURLOPT_INFILESIZE, $curlOptions[CURLOPT_INFILESIZE]);
+
+                // Remove them safely and reassign cleaned array
+                unset($curlOptions[CURLOPT_INFILE], $curlOptions[CURLOPT_INFILESIZE]);
+                $this->config['curloptions'] = $curlOptions;
+            }
         } elseif (in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], true)) {
             curl_setopt($this->curl, CURLOPT_POSTFIELDS, $body);
         }
 
         // set additional curl options
         if (isset($this->config['curloptions'])) {
+            /** @var string $v */
             foreach ((array) $this->config['curloptions'] as $k => $v) {
                 if (! in_array($k, $this->invalidOverwritableCurlOptions)) {
-                    if (curl_setopt($this->curl, $k, $v) === false) {
+                    if (curl_setopt($this->curl, (int) $k, $v) === false) {
                         throw new AdapterException\RuntimeException(sprintf(
                             'Unknown or erroreous cURL option "%s" set',
                             $k
@@ -529,14 +568,17 @@ class Curl implements HttpAdapter, StreamInterface
 
         $response = curl_exec($this->curl);
         // if we used streaming, headers are already there
-        if (! is_resource($this->outputStream)) {
+        if (! is_resource($this->outputStream) && is_string($response)) {
             $this->response = $response;
         }
 
-        $request  = curl_getinfo($this->curl, CURLINFO_HEADER_OUT);
-        $request .= $body;
+        $request = (string) curl_getinfo($this->curl, CURLINFO_HEADER_OUT);
 
-        if ($response === false || empty($this->response)) {
+        if (is_string($body)) {
+            $request .= $body;
+        }
+
+        if ($response === false || $this->response === '') {
             if (curl_errno($this->curl) === static::ERROR_OPERATION_TIMEDOUT) {
                 throw new AdapterException\TimeoutException(
                     'Read timed out',
@@ -550,6 +592,7 @@ class Curl implements HttpAdapter, StreamInterface
         }
 
         // separating header from body because it is dangerous to accidentially replace strings in the body
+        /** @var int $responseHeaderSize */
         $responseHeaderSize = curl_getinfo($this->curl, CURLINFO_HEADER_SIZE);
         $responseHeaders    = substr($this->response, 0, $responseHeaderSize);
 
@@ -559,7 +602,8 @@ class Curl implements HttpAdapter, StreamInterface
 
         // cURL can automatically handle content encoding; prevent double-decoding from occurring
         if (
-            isset($this->config['curloptions'][CURLOPT_ENCODING])
+            null !== $responseHeaders
+            && isset($this->config['curloptions'][CURLOPT_ENCODING])
             && '' === $this->config['curloptions'][CURLOPT_ENCODING]
         ) {
             $responseHeaders = preg_replace("/Content-Encoding:\s*gzip\\r\\n/i", '', $responseHeaders);
@@ -569,11 +613,13 @@ class Curl implements HttpAdapter, StreamInterface
         $responseHeaders = preg_replace(
             "/HTTP\/1.[01]\s*200\s*Connection\s*established\\r\\n\\r\\n/",
             '',
-            $responseHeaders
+            $responseHeaders ?? ''
         );
 
         // replace old header with new, cleaned up, header
-        $this->response = substr_replace($this->response, $responseHeaders, 0, $responseHeaderSize);
+        if (null !== $responseHeaders) {
+            $this->response = substr_replace($this->response, $responseHeaders, 0, $responseHeaderSize);
+        }
 
         // Eliminate multiple HTTP responses.
         do {
@@ -602,9 +648,9 @@ class Curl implements HttpAdapter, StreamInterface
     /**
      * Close the connection to the server
      */
-    public function close()
+    public function close(): void
     {
-        if (is_resource($this->curl)) {
+        if ($this->curl instanceof CurlHandle) {
             curl_close($this->curl);
         }
         $this->curl        = null;
@@ -614,7 +660,7 @@ class Curl implements HttpAdapter, StreamInterface
     /**
      * Get cUrl Handle
      *
-     * @return resource
+     * @return CurlHandle|null
      */
     public function getHandle()
     {
@@ -627,7 +673,7 @@ class Curl implements HttpAdapter, StreamInterface
      * @param resource $stream
      * @return $this
      */
-    public function setOutputStream($stream)
+    public function setOutputStream($stream): StreamInterface
     {
         $this->outputStream = $stream;
         return $this;

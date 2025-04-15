@@ -11,9 +11,9 @@ use function strtolower;
  *
  * @throws Exception\InvalidArgumentException
  */
-class ProxyAuthenticate implements MultipleHeaderInterface
+final class ProxyAuthenticate implements MultipleHeaderInterface
 {
-    /** @var string */
+    /** @var string|null */
     protected $value;
 
     /**
@@ -63,8 +63,7 @@ class ProxyAuthenticate implements MultipleHeaderInterface
         return 'Proxy-Authenticate: ' . $this->getFieldValue();
     }
 
-    /** @return string */
-    public function toStringMultipleHeaders(array $headers)
+    public function toStringMultipleHeaders(array $headers): string
     {
         $strings = [$this->toString()];
         foreach ($headers as $header) {

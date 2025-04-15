@@ -67,7 +67,7 @@ class Test implements AdapterInterface
      */
     public function setNextRequestWillFail($flag)
     {
-        $this->nextRequestWillFail = (bool) $flag;
+        $this->nextRequestWillFail = $flag;
 
         return $this;
     }
@@ -75,10 +75,10 @@ class Test implements AdapterInterface
     /**
      * Set the configuration array for the adapter
      *
-     * @param  array|Traversable $options
+     * @param  array|Traversable<string, mixed>|resource $options
      * @throws Exception\InvalidArgumentException
      */
-    public function setOptions($options = [])
+    public function setOptions($options = []): void
     {
         if ($options instanceof Traversable) {
             $options = ArrayUtils::iteratorToArray($options);
@@ -90,8 +90,13 @@ class Test implements AdapterInterface
             );
         }
 
+        /**
+         * @var mixed $v
+         */
         foreach ($options as $k => $v) {
-            $this->config[strtolower($k)] = $v;
+            if (is_string($k)) {
+                $this->config[strtolower($k)] = $v;
+            }
         }
     }
 
@@ -103,7 +108,7 @@ class Test implements AdapterInterface
      * @param  bool   $secure
      * @throws Exception\RuntimeException
      */
-    public function connect($host, $port = 80, $secure = false)
+    public function connect($host, $port = 80, $secure = false): void
     {
         if ($this->nextRequestWillFail) {
             $this->nextRequestWillFail = false;
@@ -116,26 +121,27 @@ class Test implements AdapterInterface
      *
      * @param string        $method
      * @param Uri $uri
-     * @param string        $httpVer
+     * @param string        $httpVersion
      * @param array         $headers
      * @param string        $body
      * @return string Request as string
      */
-    public function write($method, $uri, $httpVer = '1.1', $headers = [], $body = '')
+    public function write($method, $uri, $httpVersion = '1.1', $headers = [], $body = '')
     {
         // Build request headers
         $path = $uri->getPath();
-        if (empty($path)) {
+        if ($path === '' || $path === null) {
             $path = '/';
         }
         $query   = $uri->getQuery();
-        $path   .= $query ? '?' . $query : '';
-        $request = $method . ' ' . $path . ' HTTP/' . $httpVer . "\r\n";
+        $path   .= is_string($query) ? '?' . $query : '';
+        $request = $method . ' ' . $path . ' HTTP/' . $httpVersion . "\r\n";
+        /** @var mixed $v */
         foreach ($headers as $k => $v) {
             if (is_string($k)) {
-                $v = $k . ': ' . $v;
+                $v = $k . ': ' . (string) $v;
             }
-            $request .= $v . "\r\n";
+            $request .= (string) $v . "\r\n";
         }
 
         // Add the request body
@@ -148,21 +154,26 @@ class Test implements AdapterInterface
 
     /**
      * Return the response set in $this->setResponse()
-     *
-     * @return string
      */
-    public function read()
+    public function read(): string
     {
         if ($this->responseIndex >= count($this->responses)) {
             $this->responseIndex = 0;
         }
-        return $this->responses[$this->responseIndex++];
+
+        $response = $this->responses[$this->responseIndex++];
+
+        if (! is_string($response)) {
+            throw new Exception\InvalidArgumentException('Expected a string response, got ' . gettype($response));
+        }
+
+        return $response;
     }
 
     /**
      * Close the connection (dummy)
      */
-    public function close()
+    public function close(): void
     {
     }
 
@@ -171,7 +182,7 @@ class Test implements AdapterInterface
      *
      * @param Response|array|string $response
      */
-    public function setResponse($response)
+    public function setResponse($response): void
     {
         if ($response instanceof Response) {
             $response = $response->toString();
@@ -186,7 +197,7 @@ class Test implements AdapterInterface
      *
      * @param string|Response $response
      */
-    public function addResponse($response)
+    public function addResponse($response): void
     {
         if ($response instanceof Response) {
             $response = $response->toString();
@@ -199,10 +210,9 @@ class Test implements AdapterInterface
      * Sets the position of the response buffer.  Selects which
      * response will be returned on the next call to read().
      *
-     * @param int $index
      * @throws Exception\OutOfRangeException
      */
-    public function setResponseIndex($index)
+    public function setResponseIndex(int $index): void
     {
         if ($index < 0 || $index >= count($this->responses)) {
             throw new Exception\OutOfRangeException(

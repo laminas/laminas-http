@@ -28,13 +28,13 @@ use function trim;
  */
 class ContentType implements HeaderInterface
 {
-    /** @var string */
+    /** @var string|null */
     protected $mediaType;
 
     /** @var array */
     protected $parameters = [];
 
-    /** @var string */
+    /** @var string|null */
     protected $value;
 
     /**
@@ -102,6 +102,7 @@ class ContentType implements HeaderInterface
         $mediaType = $this->getMediaType();
         $left      = $this->getMediaTypeObjectFromString($mediaType);
 
+        /** @var string $matchType */
         foreach ($matchAgainst as $matchType) {
             $matchType = strtolower($matchType);
 
@@ -152,7 +153,7 @@ class ContentType implements HeaderInterface
     /**
      * Get the field value
      *
-     * @return string
+     * @return string|null
      */
     public function getFieldValue()
     {
@@ -193,6 +194,10 @@ class ContentType implements HeaderInterface
      */
     public function setParameters(array $parameters)
     {
+        /**
+         * @var string $key
+         * @var string $value
+         */
         foreach ($parameters as $key => $value) {
             HeaderValue::assertValid($key);
             HeaderValue::assertValid($value);
@@ -308,7 +313,7 @@ class ContentType implements HeaderInterface
         $type    = array_shift($parts);
         $subtype = array_shift($parts);
         $format  = $subtype;
-        if (false !== strpos($subtype, '+')) {
+        if (null !== $subtype && false !== strpos($subtype, '+')) {
             $parts   = explode('+', $subtype, 2);
             $subtype = array_shift($parts);
             $format  = array_shift($parts);

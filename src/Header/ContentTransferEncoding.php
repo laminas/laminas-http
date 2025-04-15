@@ -12,7 +12,7 @@ use function strtolower;
  */
 class ContentTransferEncoding implements HeaderInterface
 {
-    /** @var string */
+    /** @var string|null */
     protected $value;
 
     /**

@@ -10,7 +10,7 @@ use function strtolower;
  *
  * @link       http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.37
  */
-class RetryAfter extends AbstractDate
+final class RetryAfter extends AbstractDate
 {
     /**
      * Value of header in delta-seconds
@@ -41,7 +41,7 @@ class RetryAfter extends AbstractDate
         }
 
         if (is_numeric($date)) {
-            $dateHeader->setDeltaSeconds($date);
+            $dateHeader->setDeltaSeconds((int) $date);
         } else {
             $dateHeader->setDate($date);
         }
@@ -57,7 +57,7 @@ class RetryAfter extends AbstractDate
      */
     public function setDeltaSeconds($delta)
     {
-        $this->deltaSeconds = (int) $delta;
+        $this->deltaSeconds = $delta;
         return $this;
     }
 

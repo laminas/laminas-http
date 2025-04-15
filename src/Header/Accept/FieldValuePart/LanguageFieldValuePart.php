@@ -9,21 +9,18 @@ namespace Laminas\Http\Header\Accept\FieldValuePart;
  */
 class LanguageFieldValuePart extends AbstractFieldValuePart
 {
-    /** @return string */
-    public function getLanguage()
+    public function getLanguage(): string
     {
-        return $this->getInternalValues()->typeString;
+        return (string) $this->getInternalValues()->typeString;
     }
 
-    /** @return string */
-    public function getPrimaryTag()
+    public function getPrimaryTag(): string
     {
-        return $this->getInternalValues()->type;
+        return (string) $this->getInternalValues()->type;
     }
 
-    /** @return string */
-    public function getSubTag()
+    public function getSubTag(): string
     {
-        return $this->getInternalValues()->subtype;
+        return (string) $this->getInternalValues()->subtype;
     }
 }

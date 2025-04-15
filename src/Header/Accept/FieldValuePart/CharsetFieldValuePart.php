@@ -9,11 +9,8 @@ namespace Laminas\Http\Header\Accept\FieldValuePart;
  */
 class CharsetFieldValuePart extends AbstractFieldValuePart
 {
-    /**
-     * @return string
-     */
-    public function getCharset()
+    public function getCharset(): string
     {
-        return $this->getInternalValues()->type;
+        return (string) $this->getInternalValues()->type;
     }
 }

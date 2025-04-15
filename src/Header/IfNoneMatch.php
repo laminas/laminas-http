@@ -10,9 +10,9 @@ use function strtolower;
  *
  * @throws Exception\InvalidArgumentException
  */
-class IfNoneMatch implements HeaderInterface
+final class IfNoneMatch implements HeaderInterface
 {
-    /** @var string */
+    /** @var string|null */
     protected $value;
 
     /**

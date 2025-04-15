@@ -10,9 +10,9 @@ use function strtolower;
  *
  * @throws Exception\InvalidArgumentException
  */
-class ProxyAuthorization implements HeaderInterface
+final class ProxyAuthorization implements HeaderInterface
 {
-    /** @var string */
+    /** @var string|null */
     protected $value;
 
     /**

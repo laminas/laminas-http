@@ -13,15 +13,11 @@ use Traversable;
 use function base64_encode;
 use function fgets;
 use function fwrite;
-use function gettype;
-use function is_array;
-use function is_resource;
 use function is_string;
 use function preg_match;
 use function rtrim;
 use function sprintf;
 use function stream_context_set_option;
-use function stream_copy_to_stream;
 use function strlen;
 use function strpos;
 use function strtolower;
@@ -71,22 +67,18 @@ class Proxy extends Socket
     /**
      * Set the configuration array for the adapter
      *
-     * @param array $options
+     * @param array|Traversable<string, mixed> $options
      */
-    public function setOptions($options = [])
+    public function setOptions($options = []): void
     {
         if ($options instanceof Traversable) {
             $options = ArrayUtils::iteratorToArray($options);
         }
-        if (! is_array($options)) {
-            throw new AdapterException\InvalidArgumentException(
-                'Array or Laminas\Config object expected, got ' . gettype($options)
-            );
-        }
 
         //enforcing that the proxy keys are set in the form proxy_*
+        /** @var string $v */
         foreach ($options as $k => $v) {
-            if (preg_match('/^proxy[a-z]+/', $k)) {
+            if (is_string($k) && preg_match('/^proxy[a-z]+/', $k)) {
                 $options['proxy_' . substr($k, 5, strlen($k))] = $v;
                 unset($options[$k]);
             }
@@ -106,7 +98,7 @@ class Proxy extends Socket
      * @param  bool $secure
      * @throws AdapterException\RuntimeException
      */
-    public function connect($host, $port = 80, $secure = false)
+    public function connect($host, $port = 80, $secure = false): void
     {
         // If no proxy is set, fall back to Socket adapter
         if (! $this->config['proxy_host']) {
@@ -122,8 +114,8 @@ class Proxy extends Socket
 
         // Connect (a non-secure connection) to the proxy server
         parent::connect(
-            $this->config['proxy_host'],
-            $this->config['proxy_port'],
+            (string) $this->config['proxy_host'],
+            (int) $this->config['proxy_port'],
             false
         );
     }
@@ -133,17 +125,17 @@ class Proxy extends Socket
      *
      * @param string        $method
      * @param Uri $uri
-     * @param string        $httpVer
+     * @param string        $httpVersion
      * @param array         $headers
      * @param string        $body
      * @throws AdapterException\RuntimeException
      * @return string Request as string
      */
-    public function write($method, $uri, $httpVer = '1.1', $headers = [], $body = '')
+    public function write($method, $uri, $httpVersion = '1.1', $headers = [], $body = '')
     {
         // If no proxy is set, fall back to default Socket adapter
         if (! $this->config['proxy_host']) {
-            return parent::write($method, $uri, $httpVer, $headers, $body);
+            return parent::write($method, $uri, $httpVersion, $headers, $body);
         }
 
         // Make sure we're properly connected
@@ -151,11 +143,11 @@ class Proxy extends Socket
             throw new AdapterException\RuntimeException('Trying to write but we are not connected');
         }
 
-        $host = $this->config['proxy_host'];
-        $port = $this->config['proxy_port'];
+        $host = (string) $this->config['proxy_host'];
+        $port = (string) $this->config['proxy_port'];
 
-        $isSecure      = strtolower($uri->getScheme()) === 'https';
-        $connectedHost = ($isSecure ? $this->config['ssltransport'] : 'tcp') . '://' . $host;
+        $isSecure      = strtolower((string) $uri->getScheme()) === 'https';
+        $connectedHost = ($isSecure ? (string) $this->config['ssltransport'] : 'tcp') . '://' . $host;
 
         if ($this->connectedTo[1] !== $port || $this->connectedTo[0] !== $connectedHost) {
             throw new AdapterException\RuntimeException(
@@ -166,50 +158,45 @@ class Proxy extends Socket
         // Add Proxy-Authorization header
         if ($this->config['proxy_user'] && ! isset($headers['proxy-authorization'])) {
             $headers['proxy-authorization'] = Client::encodeAuthHeader(
-                $this->config['proxy_user'],
-                $this->config['proxy_pass'],
-                $this->config['proxy_auth']
+                (string) $this->config['proxy_user'],
+                (string) $this->config['proxy_pass'],
+                (string) $this->config['proxy_auth']
             );
         }
 
         // if we are proxying HTTPS, preform CONNECT handshake with the proxy
         if ($isSecure && ! $this->negotiated) {
-            $this->connectHandshake($uri->getHost(), $uri->getPort(), $httpVer, $headers);
+            $this->connectHandshake((string) $uri->getHost(), (int) $uri->getPort(), $httpVersion, $headers);
             $this->negotiated = true;
         }
 
         // Save request method for later
         $this->method = $method;
 
-        if ($uri->getUserInfo()) {
-            $headers['Authorization'] = 'Basic ' . base64_encode($uri->getUserInfo());
+        if (null !== $uri->getUserInfo()) {
+            $headers['Authorization'] = 'Basic ' . base64_encode((string) $uri->getUserInfo());
         }
 
-        $path  = $uri->getPath();
+        $path  = $uri->getPath() ?? '';
         $query = $uri->getQuery();
-        $path .= $query ? '?' . $query : '';
+        $path .= null !== $query ? '?' . $query : '';
 
         if (! $this->negotiated) {
-            $path = $uri->getScheme() . '://' . $uri->getHost() . $path;
+            $path = (string) $uri->getScheme() . '://' . (string) $uri->getHost() . $path;
         }
 
         // Build request headers
-        $request = sprintf('%s %s HTTP/%s%s', $method, $path, $httpVer, "\r\n");
+        $request = sprintf('%s %s HTTP/%s%s', $method, $path, $httpVersion, "\r\n");
 
         // Add all headers to the request string
+        /** @var mixed $v */
         foreach ($headers as $k => $v) {
-            if (is_string($k)) {
-                $v = $k . ': ' . $v;
+            if (is_string($k) && is_string($v)) {
+                $request .= sprintf("%s: %s\r\n", $k, $v);
             }
-            $request .= $v . "\r\n";
         }
 
-        if (is_resource($body)) {
-            $request .= "\r\n";
-        } else {
-            // Add the request body
-            $request .= "\r\n" . $body;
-        }
+        $request .= "\r\n" . $body;
 
         // Send the request
         ErrorHandler::start();
@@ -217,12 +204,6 @@ class Proxy extends Socket
         $error = ErrorHandler::stop();
         if ($test === false) {
             throw new AdapterException\RuntimeException('Error writing request to proxy server', 0, $error);
-        }
-
-        if (is_resource($body)) {
-            if (stream_copy_to_stream($body, $this->socket) === 0) {
-                throw new AdapterException\RuntimeException('Error writing request to server');
-            }
         }
 
         return $request;
@@ -236,21 +217,24 @@ class Proxy extends Socket
      * @param string  $httpVer
      * @throws AdapterException\RuntimeException
      */
-    protected function connectHandshake($host, $port = 443, $httpVer = '1.1', array &$headers = [])
+    protected function connectHandshake($host, $port = 443, $httpVer = '1.1', array &$headers = []): void
     {
+        if (! $this->socket) {
+            throw new AdapterException\RuntimeException('Trying to write but we are not connected');
+        }
+
         $request = 'CONNECT ' . $host . ':' . $port . ' HTTP/' . $httpVer . "\r\n"
             . 'Host: ' . $host . "\r\n";
 
         // Add the user-agent header
-        if (isset($this->config['useragent'])) {
+        if (isset($this->config['useragent']) && is_string($this->config['useragent'])) {
             $request .= 'User-agent: ' . $this->config['useragent'] . "\r\n";
         }
-
         // If the proxy-authorization header is set, send it to proxy but remove
         // it from headers sent to target host
-        if (isset($headers['proxy-authorization'])) {
+        if (isset($headers['proxy-authorization']) && is_string($headers['proxy-authorization'])) {
             $request .= 'Proxy-authorization: ' . $headers['proxy-authorization'] . "\r\n";
-            unset($headers['proxy-authorization']);
+            unset($headers['proxy-authorization']); // Remove from headers sent to target host
         }
 
         $request .= "\r\n";
@@ -259,7 +243,7 @@ class Proxy extends Socket
         ErrorHandler::start();
         $test  = fwrite($this->socket, $request);
         $error = ErrorHandler::stop();
-        if (! $test) {
+        if ($test === false) {
             throw new AdapterException\RuntimeException('Error writing request to proxy server', 0, $error);
         }
 
@@ -291,7 +275,7 @@ class Proxy extends Socket
         stream_context_set_option($context, 'ssl', 'peer_name', $host);
 
         try {
-            $this->enableCryptoTransport($this->config['ssltransport'], $this->socket, $host);
+            $this->enableCryptoTransport((string) $this->config['ssltransport'], $this->socket, $host);
         } catch (AdapterException\RuntimeException $e) {
             throw new AdapterException\RuntimeException(
                 'Unable to connect to HTTPS server through proxy: could not negotiate secure connection.',
@@ -304,7 +288,7 @@ class Proxy extends Socket
     /**
      * Close the connection to the server
      */
-    public function close()
+    public function close(): void
     {
         parent::close();
         $this->negotiated = false;
