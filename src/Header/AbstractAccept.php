@@ -71,7 +71,7 @@ abstract class AbstractAccept implements HeaderInterface
      *
      * @param string $headerLine
      */
-    public function parseHeaderLine($headerLine): void
+    public function parseHeaderLine($headerLine)
     {
         if (strpos($headerLine, ':') !== false) {
             [$name, $value] = GenericHeader::splitHeaderLine($headerLine);
@@ -353,7 +353,7 @@ abstract class AbstractAccept implements HeaderInterface
      * @param object{params: array<string, string>} $match2
      * @return false|object{params: array<string, string>}
      */
-    protected function matchAcceptParams(object $match1, object $match2)
+    protected function matchAcceptParams($match1, $match2)
     {
         foreach ($match2->params as $key => $value) {
             if (isset($match1->params[$key])) {

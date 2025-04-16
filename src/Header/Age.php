@@ -20,7 +20,7 @@ class Age implements HeaderInterface
      *
      * @var int
      */
-    protected $deltaSeconds;
+    protected $deltaSeconds = null;
 
     /**
      * Create Age header from string

@@ -78,7 +78,7 @@ class Test implements AdapterInterface
      * @param  array|Traversable<string, mixed>|resource $options
      * @throws Exception\InvalidArgumentException
      */
-    public function setOptions($options = []): void
+    public function setOptions($options = [])
     {
         if ($options instanceof Traversable) {
             $options = ArrayUtils::iteratorToArray($options);
@@ -108,7 +108,7 @@ class Test implements AdapterInterface
      * @param  bool   $secure
      * @throws Exception\RuntimeException
      */
-    public function connect($host, $port = 80, $secure = false): void
+    public function connect($host, $port = 80, $secure = false)
     {
         if ($this->nextRequestWillFail) {
             $this->nextRequestWillFail = false;
@@ -121,12 +121,12 @@ class Test implements AdapterInterface
      *
      * @param string        $method
      * @param Uri $uri
-     * @param string        $httpVersion
+     * @param string        $httpVer
      * @param array         $headers
      * @param string        $body
      * @return string Request as string
      */
-    public function write($method, $uri, $httpVersion = '1.1', $headers = [], $body = '')
+    public function write($method, $uri, $httpVer = '1.1', $headers = [], $body = '')
     {
         // Build request headers
         $path = $uri->getPath();
@@ -135,7 +135,7 @@ class Test implements AdapterInterface
         }
         $query   = $uri->getQuery();
         $path   .= is_string($query) ? '?' . $query : '';
-        $request = $method . ' ' . $path . ' HTTP/' . $httpVersion . "\r\n";
+        $request = $method . ' ' . $path . ' HTTP/' . $httpVer . "\r\n";
         /** @var mixed $v */
         foreach ($headers as $k => $v) {
             if (is_string($k)) {
@@ -155,7 +155,7 @@ class Test implements AdapterInterface
     /**
      * Return the response set in $this->setResponse()
      */
-    public function read(): string
+    public function read()
     {
         if ($this->responseIndex >= count($this->responses)) {
             $this->responseIndex = 0;
@@ -173,7 +173,7 @@ class Test implements AdapterInterface
     /**
      * Close the connection (dummy)
      */
-    public function close(): void
+    public function close()
     {
     }
 
@@ -182,7 +182,7 @@ class Test implements AdapterInterface
      *
      * @param Response|array|string $response
      */
-    public function setResponse($response): void
+    public function setResponse($response)
     {
         if ($response instanceof Response) {
             $response = $response->toString();
@@ -197,7 +197,7 @@ class Test implements AdapterInterface
      *
      * @param string|Response $response
      */
-    public function addResponse($response): void
+    public function addResponse($response)
     {
         if ($response instanceof Response) {
             $response = $response->toString();
@@ -212,7 +212,7 @@ class Test implements AdapterInterface
      *
      * @throws Exception\OutOfRangeException
      */
-    public function setResponseIndex(int $index): void
+    public function setResponseIndex($index)
     {
         if ($index < 0 || $index >= count($this->responses)) {
             throw new Exception\OutOfRangeException(

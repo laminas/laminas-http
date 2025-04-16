@@ -37,7 +37,7 @@ use const PHP_SAPI;
 /**
  * HTTP Request for current PHP environment
  */
-final class Request extends HttpRequest
+class Request extends HttpRequest
 {
     /**
      * Base URL of the application.
@@ -455,7 +455,7 @@ final class Request extends HttpRequest
      * @param int|string   $index
      * @param string|array $value
      */
-    protected function mapPhpFileParam(&$array, $paramName, $index, $value): void
+    protected function mapPhpFileParam(&$array, $paramName, $index, $value)
     {
         if (! is_array($value)) {
             if (! isset($array[$index]) || ! is_array($array[$index])) {

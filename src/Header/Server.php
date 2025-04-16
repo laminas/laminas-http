@@ -9,7 +9,7 @@ use function strtolower;
  *
  * @throws Exception\InvalidArgumentException
  */
-final class Server implements HeaderInterface
+class Server implements HeaderInterface
 {
     /** @var string|null */
     protected $value;

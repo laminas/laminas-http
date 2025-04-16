@@ -99,7 +99,7 @@ class Socket implements HttpAdapter, StreamInterface
      *
      * @var resource
      */
-    protected $outStream;
+    protected $outStream = null;
 
     /**
      * Parameters array
@@ -124,7 +124,7 @@ class Socket implements HttpAdapter, StreamInterface
      *
      * @var string
      */
-    protected $method;
+    protected $method = null;
 
     /**
      * Stream context
@@ -149,7 +149,7 @@ class Socket implements HttpAdapter, StreamInterface
      * @param  array|Traversable<string, mixed> $options
      * @throws AdapterException\InvalidArgumentException
      */
-    public function setOptions($options = []): void
+    public function setOptions($options = [])
     {
         if ($options instanceof Traversable) {
             $options = ArrayUtils::iteratorToArray($options);
@@ -225,7 +225,7 @@ class Socket implements HttpAdapter, StreamInterface
      * @param  bool $secure
      * @throws AdapterException\RuntimeException
      */
-    public function connect($host, $port = 80, $secure = false): void
+    public function connect($host, $port = 80, $secure = false)
     {
         // If we are connected to the wrong host, disconnect first
         $connectedTo   = null !== $this->connectedTo[0] ? (string) $this->connectedTo[0] : '';
@@ -378,7 +378,7 @@ class Socket implements HttpAdapter, StreamInterface
      * @param resource $socket
      * @param string $host Host name used only for useful exception message
      */
-    protected function enableCryptoTransport($sslTransport, $socket, $host): void
+    protected function enableCryptoTransport($sslTransport, $socket, $host)
     {
         $sslCryptoMethod = STREAM_CRYPTO_METHOD_TLS_CLIENT;
         if (isset(static::$sslCryptoTypes[$sslTransport])) {
@@ -445,13 +445,13 @@ class Socket implements HttpAdapter, StreamInterface
      *
      * @param string        $method
      * @param Uri $uri
-     * @param string        $httpVersion
+     * @param string        $httpVer
      * @param array         $headers
      * @param string        $body
      * @throws AdapterException\RuntimeException
      * @return string Request as string
      */
-    public function write($method, $uri, $httpVersion = '1.1', $headers = [], $body = '')
+    public function write($method, $uri, $httpVer  = '1.1', $headers = [], $body = '')
     {
         // Make sure we're properly connected
         if (! $this->socket) {
@@ -472,7 +472,7 @@ class Socket implements HttpAdapter, StreamInterface
         $path    = $uri->getPath() ?? '';
         $query   = $uri->getQuery();
         $path   .= null !== $query ? '?' . $query : '';
-        $request = $method . ' ' . $path . ' HTTP/' . $httpVersion . "\r\n";
+        $request = $method . ' ' . $path . ' HTTP/' . $httpVer . "\r\n";
 
         foreach ($headers as $k => $v) {
             if (is_string($k)) {
@@ -653,7 +653,7 @@ class Socket implements HttpAdapter, StreamInterface
     /**
      * Close the connection to the server
      */
-    public function close(): void
+    public function close()
     {
         if (null !== $this->socket) {
             ErrorHandler::start();
@@ -672,7 +672,7 @@ class Socket implements HttpAdapter, StreamInterface
      * @throws AdapterException\TimeoutException with READ_TIMEOUT code
      */
     // @codingStandardsIgnoreStart
-    protected function _checkSocketReadTimeout(): void
+    protected function _checkSocketReadTimeout()
     {
         // @codingStandardsIgnoreEnd
         if ($this->socket) {
@@ -693,7 +693,7 @@ class Socket implements HttpAdapter, StreamInterface
      *
      * @param resource $stream
      */
-    public function setOutputStream($stream): Socket
+    public function setOutputStream($stream)
     {
         $this->outStream = $stream;
         return $this;

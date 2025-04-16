@@ -11,10 +11,10 @@ use function strtolower;
  *
  * @throws Exception\InvalidArgumentException
  */
-final class WWWAuthenticate implements MultipleHeaderInterface
+class WWWAuthenticate implements MultipleHeaderInterface
 {
-    /** @var string|int */
-    protected $value;
+    /** @var string|int|null */
+    protected $value = null;
 
     /**
      * @param string $headerLine
@@ -63,7 +63,7 @@ final class WWWAuthenticate implements MultipleHeaderInterface
         return 'WWW-Authenticate: ' . $this->getFieldValue();
     }
 
-    public function toStringMultipleHeaders(array $headers): string
+    public function toStringMultipleHeaders(array $headers)
     {
         $strings = [$this->toString()];
         foreach ($headers as $header) {

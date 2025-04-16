@@ -13,10 +13,10 @@ use function strtolower;
  *
  * @throws Exception\InvalidArgumentException
  */
-final class Origin implements HeaderInterface
+class Origin implements HeaderInterface
 {
     /** @var string|null */
-    protected $value;
+    protected $value = '';
 
     /**
      * @param string $headerLine

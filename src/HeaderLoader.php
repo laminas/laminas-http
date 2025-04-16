@@ -7,7 +7,7 @@ use Laminas\Loader\PluginClassLoader;
 /**
  * Plugin Class Loader implementation for HTTP headers
  */
-final class HeaderLoader extends PluginClassLoader
+class HeaderLoader extends PluginClassLoader
 {
     /** @var array Pre-aliased Header plugins */
     protected $plugins = [

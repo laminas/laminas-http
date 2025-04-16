@@ -69,7 +69,7 @@ class Proxy extends Socket
      *
      * @param array|Traversable<string, mixed> $options
      */
-    public function setOptions($options = []): void
+    public function setOptions($options = [])
     {
         if ($options instanceof Traversable) {
             $options = ArrayUtils::iteratorToArray($options);
@@ -98,7 +98,7 @@ class Proxy extends Socket
      * @param  bool $secure
      * @throws AdapterException\RuntimeException
      */
-    public function connect($host, $port = 80, $secure = false): void
+    public function connect($host, $port = 80, $secure = false)
     {
         // If no proxy is set, fall back to Socket adapter
         if (! $this->config['proxy_host']) {
@@ -125,17 +125,17 @@ class Proxy extends Socket
      *
      * @param string        $method
      * @param Uri $uri
-     * @param string        $httpVersion
+     * @param string        $httpVer
      * @param array         $headers
      * @param string        $body
      * @throws AdapterException\RuntimeException
      * @return string Request as string
      */
-    public function write($method, $uri, $httpVersion = '1.1', $headers = [], $body = '')
+    public function write($method, $uri, $httpVer = '1.1', $headers = [], $body = '')
     {
         // If no proxy is set, fall back to default Socket adapter
         if (! $this->config['proxy_host']) {
-            return parent::write($method, $uri, $httpVersion, $headers, $body);
+            return parent::write($method, $uri, $httpVer, $headers, $body);
         }
 
         // Make sure we're properly connected
@@ -166,7 +166,7 @@ class Proxy extends Socket
 
         // if we are proxying HTTPS, preform CONNECT handshake with the proxy
         if ($isSecure && ! $this->negotiated) {
-            $this->connectHandshake((string) $uri->getHost(), (int) $uri->getPort(), $httpVersion, $headers);
+            $this->connectHandshake((string) $uri->getHost(), (int) $uri->getPort(), $httpVer, $headers);
             $this->negotiated = true;
         }
 
@@ -186,7 +186,7 @@ class Proxy extends Socket
         }
 
         // Build request headers
-        $request = sprintf('%s %s HTTP/%s%s', $method, $path, $httpVersion, "\r\n");
+        $request = sprintf('%s %s HTTP/%s%s', $method, $path, $httpVer, "\r\n");
 
         // Add all headers to the request string
         /** @var mixed $v */
@@ -217,7 +217,7 @@ class Proxy extends Socket
      * @param string  $httpVer
      * @throws AdapterException\RuntimeException
      */
-    protected function connectHandshake($host, $port = 443, $httpVer = '1.1', array &$headers = []): void
+    protected function connectHandshake($host, $port = 443, $httpVer = '1.1', array &$headers = [])
     {
         if (! $this->socket) {
             throw new AdapterException\RuntimeException('Trying to write but we are not connected');
@@ -288,7 +288,7 @@ class Proxy extends Socket
     /**
      * Close the connection to the server
      */
-    public function close(): void
+    public function close()
     {
         parent::close();
         $this->negotiated = false;

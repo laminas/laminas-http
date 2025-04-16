@@ -10,7 +10,7 @@ use function strtolower;
  *
  * @throws Exception\InvalidArgumentException
  */
-final class MaxForwards implements HeaderInterface
+class MaxForwards implements HeaderInterface
 {
     /** @var string|null */
     protected $value;

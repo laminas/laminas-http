@@ -14,10 +14,10 @@ use function preg_match;
 class GenericHeader implements HeaderInterface
 {
     /** @var string */
-    protected $fieldName;
+    protected $fieldName = null;
 
     /** @var string */
-    protected $fieldValue;
+    protected $fieldValue = null;
 
     /**
      * Factory to generate a header object from a string

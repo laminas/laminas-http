@@ -578,7 +578,7 @@ class Request extends AbstractMessage implements RequestInterface
     /**
      * @param bool|null $strictMethods
      */
-    public function setAllowCustomMethods($strictMethods): void
+    public function setAllowCustomMethods($strictMethods)
     {
         $this->allowCustomMethods = (bool) $strictMethods;
     }

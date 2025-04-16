@@ -9,7 +9,7 @@ use function strtolower;
  *
  * @throws Exception\InvalidArgumentException
  */
-final class Expect implements HeaderInterface
+class Expect implements HeaderInterface
 {
     /** @var string|null */
     protected $value;

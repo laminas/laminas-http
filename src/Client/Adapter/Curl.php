@@ -123,14 +123,14 @@ class Curl implements HttpAdapter, StreamInterface
      *
      * @var string
      */
-    protected $response;
+    protected $response = null;
 
     /**
      * Stream for storing output
      *
      * @var resource|mixed
      */
-    protected $outputStream;
+    protected $outputStream = null;
 
     /**
      * Adapter constructor
@@ -168,7 +168,7 @@ class Curl implements HttpAdapter, StreamInterface
      * @param array|Traversable<string, mixed>|resource $options
      * @throws AdapterException\InvalidArgumentException
      */
-    public function setOptions($options = []): void
+    public function setOptions($options = [])
     {
         if ($options instanceof Traversable) {
             $options = ArrayUtils::iteratorToArray((array) $options);
@@ -262,7 +262,7 @@ class Curl implements HttpAdapter, StreamInterface
      * @param  bool $secure
      * @throws AdapterException\RuntimeException If unable to connect.
      */
-    public function connect($host, $port = 80, $secure = false): void
+    public function connect($host, $port = 80, $secure = false)
     {
         // If we're already connected, disconnect first
         if ($this->curl) {
@@ -648,7 +648,7 @@ class Curl implements HttpAdapter, StreamInterface
     /**
      * Close the connection to the server
      */
-    public function close(): void
+    public function close()
     {
         if ($this->curl instanceof CurlHandle) {
             curl_close($this->curl);
@@ -673,7 +673,7 @@ class Curl implements HttpAdapter, StreamInterface
      * @param resource $stream
      * @return $this
      */
-    public function setOutputStream($stream): StreamInterface
+    public function setOutputStream($stream)
     {
         $this->outputStream = $stream;
         return $this;

@@ -29,7 +29,7 @@ use const E_WARNING;
 /**
  * Represents an HTTP response message as PHP stream resource
  */
-final class Stream extends Response
+class Stream extends Response
 {
     /**
      * The Content-Length value, if set
@@ -73,7 +73,7 @@ final class Stream extends Response
      *
      * @param int $contentLength
      */
-    public function setContentLength($contentLength = null): void
+    public function setContentLength($contentLength = null)
     {
         $this->contentLength = $contentLength;
     }
@@ -125,7 +125,7 @@ final class Stream extends Response
      *
      * @param bool $cleanup
      */
-    public function setCleanup($cleanup = true): void
+    public function setCleanup($cleanup = true)
     {
         $this->cleanup = $cleanup;
     }

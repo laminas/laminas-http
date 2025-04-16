@@ -10,7 +10,7 @@ use Laminas\Uri\UriInterface;
  *
  * @link       http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.36
  */
-final class Referer extends AbstractLocation
+class Referer extends AbstractLocation
 {
     /**
      * Set the URI/URL for this header

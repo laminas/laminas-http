@@ -811,7 +811,7 @@ class Client implements DispatchableInterface
     /**
      * Clear http authentication
      */
-    public function clearAuth(): void
+    public function clearAuth()
     {
         $this->auth = [];
     }

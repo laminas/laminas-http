@@ -8,7 +8,7 @@ use function strtolower;
  * @throws Exception\InvalidArgumentException
  * @todo Search for RFC for this header
  */
-final class KeepAlive implements HeaderInterface
+class KeepAlive implements HeaderInterface
 {
     /** @var string|null */
     protected $value;

@@ -8,7 +8,7 @@ use function strtolower;
  * @throws Exception\InvalidArgumentException
  * @todo FIND SPEC FOR THIS
  */
-final class Refresh implements HeaderInterface
+class Refresh implements HeaderInterface
 {
     /** @var string|null */
     protected $value;

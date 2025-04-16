@@ -7,7 +7,7 @@
         xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
         findUnusedBaselineEntry="true"
         findUnusedCode="true"
-    errorBaseline="psalm-baseline.xml"
+        errorBaseline="psalm-baseline.xml"
 >
     <projectFiles>
         <directory name="src" />
@@ -18,7 +18,7 @@
     <issueHandlers>
         <MissingOverrideAttribute>
             <errorLevel type="suppress">
-                <directory name="src" /> <!-- all InvalidReturnType issues in this directory are suppressed -->
+                <directory name="src" />
             </errorLevel>
         </MissingOverrideAttribute>
     </issueHandlers>

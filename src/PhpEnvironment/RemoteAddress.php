@@ -16,7 +16,7 @@ use function strtoupper;
 /**
  * Functionality for determining client IP address.
  */
-final class RemoteAddress
+class RemoteAddress
 {
     /**
      * Whether to use proxy addresses or not.

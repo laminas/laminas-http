@@ -131,7 +131,7 @@ abstract class AbstractDate implements HeaderInterface
      * @param int $format
      * @throws InvalidArgumentException
      */
-    public static function setDateFormat($format): void
+    public static function setDateFormat($format)
     {
         if (! isset(static::$dateFormats[$format])) {
             throw new InvalidArgumentException(sprintf(

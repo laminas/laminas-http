@@ -16,5 +16,5 @@ interface StreamInterface
      *
      * @param resource $stream Stream to write the output to
      */
-    public function setOutputStream($stream): self;
+    public function setOutputStream($stream);
 }

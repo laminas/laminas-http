@@ -37,7 +37,7 @@ use const PHP_INT_SIZE;
  *
  * @throws Exception\InvalidArgumentException
  */
-final class SetCookie implements MultipleHeaderInterface
+class SetCookie implements MultipleHeaderInterface
 {
     /**
      * Cookie will not be sent for any cross-domain requests whatsoever.
@@ -71,7 +71,7 @@ final class SetCookie implements MultipleHeaderInterface
      *
      * @var string
      */
-    public $type;
+    public $type = null;
 
     /**
      * Cookie name
@@ -303,7 +303,7 @@ final class SetCookie implements MultipleHeaderInterface
     /**
      * @param bool|null $encodeValue
      */
-    public function setEncodeValue($encodeValue): void
+    public function setEncodeValue($encodeValue)
     {
         $this->encodeValue = (bool) $encodeValue;
     }
@@ -790,7 +790,7 @@ final class SetCookie implements MultipleHeaderInterface
     /**
      * @throws Exception\RuntimeException
      */
-    public function toStringMultipleHeaders(array $headers): string
+    public function toStringMultipleHeaders(array $headers)
     {
         $headerLine = $this->toString();
         /** @var SetCookie $header */

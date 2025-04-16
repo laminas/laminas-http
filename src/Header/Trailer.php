@@ -9,7 +9,7 @@ use function strtolower;
  *
  * @throws Exception\InvalidArgumentException
  */
-final class Trailer implements HeaderInterface
+class Trailer implements HeaderInterface
 {
     /** @var string|null */
     protected $value;

@@ -13,7 +13,7 @@ use function header;
 /**
  * HTTP Response for current PHP environment
  */
-final class Response extends HttpResponse
+class Response extends HttpResponse
 {
     /**
      * The current used version

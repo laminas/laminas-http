@@ -21,7 +21,7 @@ abstract class AbstractFieldValuePart
      *
      * @var AbstractFieldValuePart
      */
-    protected $matchedAgainst;
+    protected $matchedAgainst = null;
 
     /**
      * @param object $internalValues

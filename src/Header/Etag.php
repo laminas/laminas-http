@@ -9,7 +9,7 @@ use function strtolower;
  *
  * @throws Exception\InvalidArgumentException
  */
-final class Etag implements HeaderInterface
+class Etag implements HeaderInterface
 {
     /** @var string|null */
     protected $value;

@@ -7,7 +7,7 @@ namespace Laminas\Http\Header;
  *
  * @link       http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.29
  */
-final class LastModified extends AbstractDate
+class LastModified extends AbstractDate
 {
     /**
      * Get header name

@@ -17,7 +17,7 @@ interface AdapterInterface
      *
      * @param array $options
      */
-    public function setOptions($options = []): void;
+    public function setOptions($options = []);
 
     /**
      * Connect to the remote server
@@ -26,19 +26,19 @@ interface AdapterInterface
      * @param int     $port
      * @param  bool $secure
      */
-    public function connect($host, $port = 80, $secure = false): void;
+    public function connect($host, $port = 80, $secure = false);
 
     /**
      * Send request to the remote server
      *
      * @param string        $method
-     * @param Uri $uri
-     * @param string        $httpVersion
+     * @param Uri $url
+     * @param string        $httpVer
      * @param array         $headers
      * @param string        $body
      * @return string Request as text
      */
-    public function write($method, $uri, $httpVersion = '1.1', $headers = [], $body = '');
+    public function write($method, $url , $httpVer = '1.1', $headers = [], $body = '');
 
     /**
      * Read response from server
@@ -50,5 +50,5 @@ interface AdapterInterface
     /**
      * Close the connection to the server
      */
-    public function close(): void;
+    public function close();
 }

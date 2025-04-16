@@ -180,7 +180,7 @@ class Allow implements HeaderInterface
     /**
      * Return header as string
      */
-    public function toString(): string
+    public function toString()
     {
         return 'Allow: ' . $this->getFieldValue();
     }

@@ -10,7 +10,7 @@ use function strtolower;
  *
  * @throws Exception\InvalidArgumentException
  */
-final class UserAgent implements HeaderInterface
+class UserAgent implements HeaderInterface
 {
     /** @var string|null */
     protected $value;
