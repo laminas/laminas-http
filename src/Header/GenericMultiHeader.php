@@ -4,7 +4,7 @@ namespace Laminas\Http\Header;
 
 use function explode;
 use function implode;
-use function strpos;
+use function str_contains;
 
 class GenericMultiHeader extends GenericHeader implements MultipleHeaderInterface
 {
@@ -16,7 +16,7 @@ class GenericMultiHeader extends GenericHeader implements MultipleHeaderInterfac
     {
         [$fieldName, $fieldValue] = GenericHeader::splitHeaderLine($headerLine);
 
-        if (strpos($fieldValue, ',')) {
+        if (str_contains($fieldValue, ',')) {
             $headers = [];
             foreach (explode(',', $fieldValue) as $multiValue) {
                 $headers[] = new static($fieldName, $multiValue);
@@ -27,11 +27,14 @@ class GenericMultiHeader extends GenericHeader implements MultipleHeaderInterfac
         }
     }
 
-    /** @return string */
+    /**
+     * @return string
+     */
     public function toStringMultipleHeaders(array $headers)
     {
         $name   = $this->getFieldName();
         $values = [$this->getFieldValue()];
+        /** @var GenericHeader $header */
         foreach ($headers as $header) {
             if (! $header instanceof static) {
                 throw new Exception\InvalidArgumentException(

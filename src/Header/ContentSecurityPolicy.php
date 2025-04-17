@@ -100,7 +100,7 @@ class ContentSecurityPolicy implements MultipleHeaderInterface
             throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects a valid directive name; received "%s"',
                 __METHOD__,
-                (string) $name
+                $name
             ));
         }
 
@@ -163,7 +163,7 @@ class ContentSecurityPolicy implements MultipleHeaderInterface
             $token = trim($token);
             if ($token) {
                 [$directiveName, $directiveValue] = array_pad(explode(' ', $token, 2), 2, null);
-                if (! isset($header->directives[$directiveName])) {
+                if (null !== $directiveName && ! isset($header->directives[$directiveName])) {
                     $header->setDirective(
                         $directiveName,
                         $directiveValue === null ? [] : [$directiveValue]
@@ -192,6 +192,7 @@ class ContentSecurityPolicy implements MultipleHeaderInterface
     public function getFieldValue()
     {
         $directives = [];
+        /** @var string $value */
         foreach ($this->directives as $name => $value) {
             $directives[] = sprintf('%s %s;', $name, $value);
         }
@@ -208,7 +209,9 @@ class ContentSecurityPolicy implements MultipleHeaderInterface
         return sprintf('%s: %s', $this->getFieldName(), $this->getFieldValue());
     }
 
-    /** @return string */
+    /**
+     * @return string
+     */
     public function toStringMultipleHeaders(array $headers)
     {
         $strings = [$this->toString()];

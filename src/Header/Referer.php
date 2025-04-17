@@ -3,6 +3,7 @@
 namespace Laminas\Http\Header;
 
 use Laminas\Uri\Http as HttpUri;
+use Laminas\Uri\UriInterface;
 
 /**
  * Content-Location Header
@@ -21,7 +22,9 @@ class Referer extends AbstractLocation
     public function setUri($uri)
     {
         parent::setUri($uri);
-        $this->uri->setFragment(null);
+        if ($this->uri instanceof UriInterface) {
+            $this->uri->setFragment('');
+        }
 
         return $this;
     }

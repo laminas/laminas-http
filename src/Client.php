@@ -3,13 +3,17 @@
 namespace Laminas\Http;
 
 use ArrayIterator;
+use Laminas\Http\Client\Adapter\AdapterInterface;
 use Laminas\Http\Client\Adapter\Curl;
 use Laminas\Http\Client\Adapter\Socket;
+use Laminas\Http\Client\Adapter\StreamInterface;
 use Laminas\Http\Client\Exception\RuntimeException;
+use Laminas\Http\Header\HeaderInterface;
 use Laminas\Http\Header\SetCookie;
 use Laminas\Stdlib\ArrayUtils;
 use Laminas\Stdlib\DispatchableInterface;
 use Laminas\Stdlib\ErrorHandler;
+use Laminas\Stdlib\ParametersInterface;
 use Laminas\Stdlib\RequestInterface;
 use Laminas\Stdlib\ResponseInterface;
 use Laminas\Uri\Http;
@@ -90,34 +94,34 @@ class Client implements DispatchableInterface
     public const DIGEST_NC     = 'nc';
     public const DIGEST_CNONCE = 'cnonce';
 
-    /** @var Response */
+    /** @var Response|null */
     protected $response;
 
-    /** @var Request */
+    /** @var Request|null */
     protected $request;
 
-    /** @var Client\Adapter\AdapterInterface */
+    /** @var AdapterInterface|null */
     protected $adapter;
 
-    /** @var array */
+    /** @var array<string> */
     protected $auth = [];
 
-    /** @var string */
+    /** @var string|null */
     protected $streamName;
 
     /** @var resource|null */
     protected $streamHandle;
 
-    /** @var array of Header\SetCookie */
+    /** @var array<Headers|SetCookie> of Header\SetCookie */
     protected $cookies = [];
 
-    /** @var string */
+    /** @var string|null */
     protected $encType = '';
 
-    /** @var Request */
+    /** @var Request|null */
     protected $lastRawRequest;
 
-    /** @var Response */
+    /** @var Response|null */
     protected $lastRawResponse;
 
     /** @var int */
@@ -152,7 +156,7 @@ class Client implements DispatchableInterface
      * This variable is populated the first time _detectFileMimeType is called
      * and is then reused on every call to this method
      *
-     * @var resource
+     * @var resource|null
      */
     protected static $fileInfoDb;
 
@@ -189,6 +193,10 @@ class Client implements DispatchableInterface
         }
 
         /** Config Key Normalization */
+        /**
+         * @var string $k
+         * @var mixed $v
+         */
         foreach ($options as $k => $v) {
             $this->config[str_replace(['-', '_', ' ', '.'], '', strtolower($k))] = $v; // replace w/ normalized
         }
@@ -207,7 +215,7 @@ class Client implements DispatchableInterface
      * While this method is not called more than one for a client, it is
      * separated from ->request() to preserve logic and readability
      *
-     * @param  Client\Adapter\AdapterInterface|string $adapter
+     * @param  AdapterInterface|string $adapter
      * @return $this
      * @throws Client\Exception\InvalidArgumentException
      */
@@ -236,12 +244,14 @@ class Client implements DispatchableInterface
     /**
      * Load the connection adapter
      *
-     * @return Client\Adapter\AdapterInterface
+     * @return AdapterInterface|null
      */
     public function getAdapter()
     {
-        if (! $this->adapter) {
-            $this->setAdapter($this->config['adapter']);
+        if (null === $this->adapter) {
+            /** @var AdapterInterface|string $adapter */
+            $adapter = $this->config['adapter'];
+            $this->setAdapter($adapter);
         }
 
         return $this->adapter;
@@ -286,7 +296,7 @@ class Client implements DispatchableInterface
     /**
      * Get Response
      *
-     * @return Response
+     * @return Response|null
      */
     public function getResponse()
     {
@@ -299,7 +309,7 @@ class Client implements DispatchableInterface
     /**
      * Get the last request (as a string)
      *
-     * @return string
+     * @return Request
      */
     public function getLastRawRequest()
     {
@@ -309,7 +319,7 @@ class Client implements DispatchableInterface
     /**
      * Get the last response (as a string)
      *
-     * @return string
+     * @return Response
      */
     public function getLastRawResponse()
     {
@@ -334,7 +344,7 @@ class Client implements DispatchableInterface
      */
     public function setUri($uri)
     {
-        if (! empty($uri)) {
+        if ($uri !== '') {
             // remember host of last request
             $lastHost = $this->getRequest()->getUri()->getHost();
             $this->getRequest()->setUri($uri);
@@ -343,7 +353,7 @@ class Client implements DispatchableInterface
             // reasons, see #4215 for a discussion - currently authentication is also
             // cleared for peer subdomains due to technical limits
             $nextHost = $this->getRequest()->getUri()->getHost();
-            if (! empty($lastHost) && ! preg_match('/' . preg_quote($lastHost, '/') . '$/i', $nextHost)) {
+            if (null !== $lastHost && ! preg_match('/' . preg_quote($lastHost, '/') . '$/i', $nextHost ?? '')) {
                 $this->clearAuth();
             }
 
@@ -352,7 +362,7 @@ class Client implements DispatchableInterface
             $password = $uri->getPassword();
 
             // Set auth if username and password has been specified in the uri
-            if ($user && $password) {
+            if (null !== $user && null !== $password) {
                 $this->setAuth($user, $password);
             }
 
@@ -444,18 +454,18 @@ class Client implements DispatchableInterface
     /**
      * Set the encoding type and the boundary (if any)
      *
-     * @param string $encType
+     * @param string|null $encType
      * @param string $boundary
      * @return $this
      */
     public function setEncType($encType, $boundary = null)
     {
-        if (null === $encType || empty($encType)) {
+        if (null === $encType || '' === $encType) {
             $this->encType = null;
             return $this;
         }
 
-        if (! empty($boundary)) {
+        if ('' !== $boundary && null !== $boundary) {
             $encType .= sprintf('; boundary=%s', $boundary);
         }
 
@@ -560,7 +570,7 @@ class Client implements DispatchableInterface
      */
     protected function getCookieId($cookie)
     {
-        if ($cookie instanceof Header\SetCookie || $cookie instanceof Header\Cookie) {
+        if ($cookie instanceof Header\SetCookie) {
             return $cookie->getName() . $cookie->getDomain() . $cookie->getPath();
         }
         return false;
@@ -814,7 +824,7 @@ class Client implements DispatchableInterface
      * @param string $user
      * @param string $password
      * @param string $type
-     * @param array $digest
+     * @param array<string> $digest
      * @param null|string $entityBody
      * @throws Exception\InvalidArgumentException
      * @return string|bool
@@ -842,6 +852,10 @@ class Client implements DispatchableInterface
                 if (empty($digest)) {
                     throw new Exception\InvalidArgumentException('The digest cannot be empty');
                 }
+
+                /**
+                 * @var string $key
+                 */
                 foreach ($digest as $key => $value) {
                     if (! defined('self::DIGEST_' . strtoupper($key))) {
                         throw new Exception\InvalidArgumentException(sprintf(
@@ -851,16 +865,18 @@ class Client implements DispatchableInterface
                     }
                 }
                 $ha1 = md5($user . ':' . $digest['realm'] . ':' . $password);
-                if (empty($digest['qop']) || strtolower($digest['qop']) === 'auth') {
-                    $ha2 = md5($this->getMethod() . ':' . $this->getUri()->getPath());
+                $ha2 = md5('');
+                if ('' === $digest['qop'] || strtolower($digest['qop']) === 'auth') {
+                    $ha2 = md5($this->getMethod() . ':' . (string) $this->getUri()->getPath());
                 } elseif (strtolower($digest['qop']) === 'auth-int') {
-                    if (empty($entityBody)) {
+                    if ('' !== $entityBody) {
                         throw new Exception\InvalidArgumentException(
                             'I cannot use the auth-int digest authentication without the entity body'
                         );
                     }
-                    $ha2 = md5($this->getMethod() . ':' . $this->getUri()->getPath() . ':' . md5($entityBody));
+                    $ha2 = md5($this->getMethod() . ':' . (string) $this->getUri()->getPath() . ':' . md5($entityBody));
                 }
+
                 if (empty($digest['qop'])) {
                     $response = md5($ha1 . ':' . $digest['nonce'] . ':' . $ha2);
                 } else {
@@ -897,6 +913,7 @@ class Client implements DispatchableInterface
 
         $this->redirectCounter = 0;
 
+        /** @var StreamInterface $adapter */
         $adapter = $this->getAdapter();
 
         // Send the first request. If redirected, continue.
@@ -907,7 +924,7 @@ class Client implements DispatchableInterface
             // query
             $query = $this->getRequest()->getQuery();
 
-            if (! empty($query)) {
+            if ('' !== $query) {
                 $queryArray = $query->toArray();
 
                 if (! empty($queryArray)) {
@@ -1002,15 +1019,19 @@ class Client implements DispatchableInterface
 
             // Get the cookies from response (if any)
             $setCookies = $response->getCookie();
-            if (! empty($setCookies)) {
+            if (false !== $setCookies) {
                 $this->addCookie($setCookies);
             }
 
             // If we got redirected, look for the Location header
-            if ($response->isRedirect() && ($response->getHeaders()->has('Location'))) {
+            /** @var Headers $header */
+            $header = $response->getHeaders();
+            if ($response->isRedirect() && ($header->has('Location'))) {
                 // Avoid problems with buggy servers that add whitespace at the
                 // end of some headers
-                $location = trim($response->getHeaders()->get('Location')->getFieldValue());
+                /** @var HeaderInterface $headerLocation */
+                $headerLocation = $header->get('Location');
+                $location       = trim((string) $headerLocation->getFieldValue());
 
                 // Check whether we send the exact same request again, or drop the parameters
                 // and send a GET request
@@ -1046,8 +1067,10 @@ class Client implements DispatchableInterface
                     } else {
                         // Get the current path directory, removing any trailing slashes
                         $path = $this->getUri()->getPath();
-                        $path = rtrim(substr($path, 0, strrpos($path, '/')), '/');
-                        $this->getUri()->setPath($path . '/' . $location);
+                        if (null !== $path) {
+                            $path = rtrim(substr($path, 0, (int) strrpos($path, '/')), '/');
+                            $this->getUri()->setPath($path . '/' . $location);
+                        }
                     }
                 }
                 ++$this->redirectCounter;
@@ -1107,12 +1130,15 @@ class Client implements DispatchableInterface
                     $filename
                 ), 0, $error);
             }
-            if (! $ctype) {
+            if ($ctype === null) {
                 $ctype = $this->detectFileMimeType($filename);
             }
         }
 
-        $this->getRequest()->getFiles()->set($filename, [
+        /** @var ParametersInterface $fileRequest */
+        $fileRequest = $this->getRequest()->getFiles();
+
+        $fileRequest->set($filename, [
             'formname' => $formname,
             'filename' => basename($filename),
             'ctype'    => $ctype,
@@ -1130,11 +1156,16 @@ class Client implements DispatchableInterface
      */
     public function removeFileUpload($filename)
     {
-        $file = $this->getRequest()->getFiles()->get($filename);
+        /** @var ParametersInterface $fileRequest */
+        $fileRequest = $this->getRequest()->getFiles();
+        $file        = $fileRequest->get($filename);
+
         if (! empty($file)) {
-            $this->getRequest()->getFiles()->set($filename, null);
+            $fileRequest->set($filename, null);
+
             return true;
         }
+
         return false;
     }
 
@@ -1151,6 +1182,9 @@ class Client implements DispatchableInterface
         $validCookies = [];
 
         if (! empty($this->cookies)) {
+            /**
+             * @var SetCookie $cookie
+             */
             foreach ($this->cookies as $id => $cookie) {
                 if ($cookie->isExpired()) {
                     unset($this->cookies[$id]);
@@ -1165,7 +1199,7 @@ class Client implements DispatchableInterface
         }
 
         $cookies = Header\Cookie::fromSetCookieArray($validCookies);
-        $cookies->setEncodeValue($this->config['encodecookies']);
+        $cookies->setEncodeValue((bool) $this->config['encodecookies']);
 
         return $cookies;
     }
@@ -1187,7 +1221,8 @@ class Client implements DispatchableInterface
             $host = $uri->getHost();
             // If the port is not default, add it
             if (
-                ! (($uri->getScheme() === 'http' && $uri->getPort() === 80)
+                null !== $host
+                && ! (($uri->getScheme() === 'http' && $uri->getPort() === 80)
                 || ($uri->getScheme() === 'https' && $uri->getPort() === 443))
             ) {
                 $host .= ':' . $uri->getPort();
@@ -1196,8 +1231,11 @@ class Client implements DispatchableInterface
             $headers['Host'] = $host;
         }
 
+        /** @var Headers $header */
+        $header = $this->getRequest()->getHeaders();
+
         // Set the connection header
-        if (! $this->getRequest()->getHeaders()->has('Connection')) {
+        if (! $header->has('Connection')) {
             if (! $this->config['keepalive']) {
                 $headers['Connection'] = 'close';
             }
@@ -1205,7 +1243,7 @@ class Client implements DispatchableInterface
 
         // Set the Accept-encoding header if not set - depending on whether
         // zlib is available or not.
-        if (! $this->getRequest()->getHeaders()->has('Accept-Encoding')) {
+        if (! $header->has('Accept-Encoding')) {
             if (empty($this->config['outputstream']) && function_exists('gzinflate')) {
                 $headers['Accept-Encoding'] = 'gzip, deflate';
             } else {
@@ -1214,8 +1252,8 @@ class Client implements DispatchableInterface
         }
 
         // Set the user agent header
-        if (! $this->getRequest()->getHeaders()->has('User-Agent') && isset($this->config['useragent'])) {
-            $headers['User-Agent'] = $this->config['useragent'];
+        if (! $header->has('User-Agent') && isset($this->config['useragent'])) {
+            $headers['User-Agent'] = (string) $this->config['useragent'];
         }
 
         // Set HTTP authentication if needed
@@ -1223,7 +1261,7 @@ class Client implements DispatchableInterface
             switch ($this->auth['type']) {
                 case self::AUTH_BASIC:
                     $auth = $this->calcAuthDigest($this->auth['user'], $this->auth['password'], $this->auth['type']);
-                    if ($auth !== false) {
+                    if ($auth !== false && is_string($auth)) {
                         $headers['Authorization'] = 'Basic ' . $auth;
                     }
                     break;
@@ -1246,7 +1284,7 @@ class Client implements DispatchableInterface
             $headers['Content-Type'] = $encType;
         }
 
-        if (! empty($body)) {
+        if ($body !== '') {
             if (is_resource($body)) {
                 $fstat                     = fstat($body);
                 $headers['Content-Length'] = $fstat['size'];
@@ -1257,7 +1295,10 @@ class Client implements DispatchableInterface
 
         // Merge the headers of the request (if any)
         // here we need right 'http field' and not lowercase letters
+
+        /** @var ArrayIterator $requestHeaders */
         $requestHeaders = $this->getRequest()->getHeaders();
+        /** @var HeaderInterface $requestHeaderElement */
         foreach ($requestHeaders as $requestHeaderElement) {
             $headers[$requestHeaderElement->getFieldName()] = $requestHeaderElement->getFieldValue();
         }
@@ -1277,6 +1318,7 @@ class Client implements DispatchableInterface
             return '';
         }
 
+        /** @var string $rawBody */
         $rawBody = $this->getRequest()->getContent();
         if (! empty($rawBody)) {
             return $rawBody;
@@ -1285,14 +1327,17 @@ class Client implements DispatchableInterface
         $body     = '';
         $hasFiles = false;
 
-        if (! $this->getRequest()->getHeaders()->has('Content-Type')) {
+        /** @var Headers $headers */
+        $headers = $this->getRequest()->getHeaders();
+
+        if (! $headers->has('Content-Type')) {
             $hasFiles = ! empty($this->getRequest()->getFiles()->toArray());
             // If we have files to upload, force encType to multipart/form-data
             if ($hasFiles) {
                 $this->setEncType(self::ENC_FORMDATA);
             }
         } else {
-            $this->setEncType($this->getHeader('Content-Type'));
+            $this->setEncType((string) $this->getHeader('Content-Type'));
         }
 
         // If we have POST parameters or files, encode and add them to the body
@@ -1303,18 +1348,20 @@ class Client implements DispatchableInterface
 
                 // Get POST parameters and encode them
                 $params = self::flattenParametersArray($this->getRequest()->getPost()->toArray());
+                /** @var array $pp */
                 foreach ($params as $pp) {
-                    $body .= $this->encodeFormData($boundary, $pp[0], $pp[1]);
+                    $body .= $this->encodeFormData($boundary, (string) $pp[0], $pp[1]);
                 }
 
                 // Encode files
+                /** @var array<string, mixed> $file */
                 foreach ($this->getRequest()->getFiles()->toArray() as $file) {
                     $fhead = ['Content-Type' => $file['ctype']];
                     $body .= $this->encodeFormData(
                         $boundary,
-                        $file['formname'],
+                        (string) $file['formname'],
                         $file['data'],
-                        $file['filename'],
+                        (string) $file['filename'],
                         $fhead
                     );
                 }
@@ -1325,7 +1372,7 @@ class Client implements DispatchableInterface
             } else {
                 throw new RuntimeException(sprintf(
                     'Cannot handle content type \'%s\' automatically',
-                    $this->encType
+                    $this->encType ?? ''
                 ));
             }
         }
@@ -1389,16 +1436,20 @@ class Client implements DispatchableInterface
         $ret = '--' . $boundary . "\r\n"
             . 'Content-Disposition: form-data; name="' . $name . '"';
 
-        if ($filename) {
+        if (null !== $filename) {
             $ret .= '; filename="' . $filename . '"';
         }
         $ret .= "\r\n";
 
+        /**
+         * @var string $hname
+         * @var string $hvalue
+         */
         foreach ($headers as $hname => $hvalue) {
             $ret .= $hname . ': ' . $hvalue . "\r\n";
         }
         $ret .= "\r\n";
-        $ret .= $value . "\r\n";
+        $ret .= (string) $value . "\r\n";
 
         return $ret;
     }
@@ -1424,9 +1475,13 @@ class Client implements DispatchableInterface
 
         $parameters = [];
 
+        /**
+         * @var string|int $name
+         * @var array|mixed $value
+         */
         foreach ($parray as $name => $value) {
             // Calculate array key
-            if ($prefix) {
+            if (null !== $prefix) {
                 if (is_int($name)) {
                     $key = $prefix . '[]';
                 } else {
@@ -1437,7 +1492,7 @@ class Client implements DispatchableInterface
             }
 
             if (is_array($value)) {
-                $parameters = array_merge($parameters, $this->flattenParametersArray($value, $key));
+                $parameters = array_merge($parameters, $this->flattenParametersArray($value, (string) $key));
             } else {
                 $parameters[] = [$key, $value];
             }
@@ -1460,7 +1515,7 @@ class Client implements DispatchableInterface
     protected function doRequest(Http $uri, $method, $secure = false, $headers = [], $body = '')
     {
         // Open the connection, send the request and read the response
-        $this->adapter->connect($uri->getHost(), $uri->getPort(), $secure);
+        $this->adapter->connect($uri->getHost() ?? '', $uri->getPort(), $secure);
 
         if ($this->config['outputstream']) {
             if ($this->adapter instanceof Client\Adapter\StreamInterface) {
@@ -1474,7 +1529,7 @@ class Client implements DispatchableInterface
         $this->lastRawRequest = $this->adapter->write(
             $method,
             $uri,
-            $this->config['httpversion'],
+            (string) $this->config['httpversion'],
             $headers,
             $body
         );

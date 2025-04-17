@@ -12,8 +12,10 @@ use Laminas\Loader\PluginClassLocator;
 // phpcs:ignore SlevomatCodingStandard.Namespaces.UnusedUses.UnusedUse
 use ReturnTypeWillChange;
 use Traversable;
+use UnexpectedValueException;
 
 use function array_keys;
+use function array_map;
 use function array_search;
 use function array_shift;
 use function class_implements;
@@ -44,7 +46,7 @@ use function trim;
  */
 class Headers implements Countable, Iterator
 {
-    /** @var PluginClassLocator */
+    /** @var PluginClassLocator|null */
     protected $pluginClassLoader;
 
     /** @var array key names for $headers array */
@@ -89,11 +91,11 @@ class Headers implements Countable, Iterator
 
             // check if a header name is present
             if (preg_match('/^(?P<name>[^()><@,;:\"\\/\[\]?={} \t]+):.*$/', $line, $matches)) {
-                if ($current) {
-                    // a header name was present, then store the current complete line
+                if (isset($current['name'], $current['line'])) {
                     $headers->headersKeys[] = static::createKey($current['name']);
                     $headers->headers[]     = $current;
                 }
+
                 $current = [
                     'name' => $matches['name'],
                     'line' => trim($line),
@@ -103,6 +105,10 @@ class Headers implements Countable, Iterator
             }
 
             if (preg_match("/^[ \t][^\r\n]*$/", $line, $matches)) {
+                if (! isset($current['line'])) {
+                    $current['line'] = '';
+                }
+
                 // continuation: append to current line
                 $current['line'] .= trim($line);
                 continue;
@@ -114,10 +120,11 @@ class Headers implements Countable, Iterator
                 $line
             ));
         }
-        if ($current) {
+        if (isset($current['name'], $current['line'])) {
             $headers->headersKeys[] = static::createKey($current['name']);
             $headers->headers[]     = $current;
         }
+
         return $headers;
     }
 
@@ -150,7 +157,7 @@ class Headers implements Countable, Iterator
      *
      * Expects an array (or Traversable object) of type/value pairs.
      *
-     * @param  array|Traversable $headers
+     * @param  array|Traversable|resource|object $headers
      * @return $this
      * @throws Exception\InvalidArgumentException
      */
@@ -163,18 +170,22 @@ class Headers implements Countable, Iterator
             ));
         }
 
+        /**
+         * @var array<array-key, scalar>|null|string $value
+         * @var string|int $name
+         */
         foreach ($headers as $name => $value) {
             if (is_int($name)) {
                 if (is_string($value)) {
                     $this->addHeaderLine($value);
                 } elseif (is_array($value) && count($value) === 1) {
-                    $this->addHeaderLine(key($value), current($value));
+                    $this->addHeaderLine((string) key($value), (string) current($value));
                 } elseif (is_array($value) && count($value) === 2) {
-                    $this->addHeaderLine($value[0], $value[1]);
+                    $this->addHeaderLine((string) $value[0], (string) $value[1]);
                 } elseif ($value instanceof Header\HeaderInterface) {
                     $this->addHeader($value);
                 }
-            } elseif (is_string($name)) {
+            } else {
                 $this->addHeaderLine($name, $value);
             }
         }
@@ -190,7 +201,7 @@ class Headers implements Countable, Iterator
      *
      * @throws Exception\InvalidArgumentException
      * @param string $headerFieldNameOrLine
-     * @param string $fieldValue optional
+     * @param string|array<array-key, scalar> $fieldValue optional
      * @return $this
      */
     public function addHeaderLine($headerFieldNameOrLine, $fieldValue = null)
@@ -210,6 +221,7 @@ class Headers implements Countable, Iterator
             $headerName = $headerFieldNameOrLine;
             $headerKey  = static::createKey($headerFieldNameOrLine);
             if (is_array($fieldValue)) {
+                $fieldValue = array_map('strval', $fieldValue);
                 $fieldValue = implode('; ', $fieldValue);
             }
             $line = $headerFieldNameOrLine . ': ' . $fieldValue;
@@ -241,7 +253,9 @@ class Headers implements Countable, Iterator
         // Header exists, and is a multi-value header; append key and header to
         // list (as multi-value headers are aggregated on retrieval)
         $class = $this->getPluginClassLoader()->load(str_replace('-', '', $key)) ?: GenericHeader::class;
-        if (in_array(MultipleHeaderInterface::class, class_implements($class, true))) {
+
+        $classImplements = class_implements($class, true);
+        if (false !== $classImplements && in_array(MultipleHeaderInterface::class, $classImplements)) {
             $this->headersKeys[] = $key;
             $this->headers[]     = $header;
             return $this;
@@ -379,18 +393,37 @@ class Headers implements Countable, Iterator
     }
 
     /**
-     * Return the current value for this iterator, lazy loading it if need be
+     * Return the number of headers in this contain, if all headers have not been parsed, actual count could
+     * increase if MultipleHeader objects exist in the Request/Response.  If you need an exact count, iterate
      *
-     * @return array|Header\HeaderInterface
+     * @return Header\HeaderInterface|array|false|null count of currently known headers
      */
     #[ReturnTypeWillChange]
     public function current()
     {
+        /** @var Header\HeaderInterface|array|false|null $current */
         $current = current($this->headers);
-        if (is_array($current)) {
-            $current = $this->lazyLoadHeader(key($this->headers));
+
+        if ($current === false) {
+            return false;
         }
-        return $current;
+
+        $key = key($this->headers);
+
+        if ($key === null) {
+            return false;
+        }
+
+        if (is_array($current)) {
+            /** @var Header\HeaderInterface|array|null $current */
+            $current = $this->lazyLoadHeader($key);
+        }
+
+        if ($current instanceof Header\HeaderInterface || is_array($current)) {
+            return $current;
+        }
+
+        return false;
     }
 
     /**
@@ -416,9 +449,14 @@ class Headers implements Countable, Iterator
     public function toString()
     {
         $headers = '';
+        /**
+         * @var string $fieldName
+         * @var string|array $fieldValue
+         */
         foreach ($this->toArray() as $fieldName => $fieldValue) {
             if (is_array($fieldValue)) {
                 // Handle multi-value headers
+                /** @var string $value */
                 foreach ($fieldValue as $value) {
                     $headers .= $fieldName . ': ' . $value . "\r\n";
                 }
@@ -451,6 +489,8 @@ class Headers implements Countable, Iterator
                 $name = $header->getFieldName();
                 if (! isset($headers[$name])) {
                     $headers[$name] = [];
+                } elseif (! is_array($headers[$name])) {
+                    $headers[$name] = [$headers[$name]];
                 }
                 $headers[$name][] = $header->getFieldValue();
             } else {
@@ -484,14 +524,19 @@ class Headers implements Countable, Iterator
     {
         $current = $this->headers[$index];
 
-        $key = $this->headersKeys[$index];
-        /** @var Header\HeaderInterface $class */
+        $key = (string) $this->headersKeys[$index];
+        /** @var class-string<Header\HeaderInterface>|false $class */
         $class = $this->getPluginClassLoader()->load(str_replace('-', '', $key));
         if ($isGeneric || ! $class) {
             $class = GenericHeader::class;
         }
 
         try {
+            if (! is_array($current) || ! isset($current['line']) || ! is_string($current['line'])) {
+                throw new UnexpectedValueException('Header line must be a string.');
+            }
+
+            /** @var Header\HeaderInterface|Header\HeaderInterface[] $headers */
             $headers = $class::fromString($current['line']);
         } catch (Exception\InvalidArgumentException $exception) {
             // Generic Header should throw an exception if it fails

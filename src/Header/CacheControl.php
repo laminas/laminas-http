@@ -55,6 +55,10 @@ class CacheControl implements HeaderInterface
 
         // @todo implementation details
         $header = new static();
+        /**
+         * @var string $key
+         * @var bool|string $value
+         */
         foreach ($directives as $key => $value) {
             $header->addDirective($key, $value);
         }
@@ -116,11 +120,11 @@ class CacheControl implements HeaderInterface
      * Fetch the value of a directive from the internal directive array
      *
      * @param string $key
-     * @return string|null
+     * @return bool|null
      */
     public function getDirective($key)
     {
-        return array_key_exists($key, $this->directives) ? $this->directives[$key] : null;
+        return array_key_exists($key, $this->directives) ? (bool) $this->directives[$key] : null;
     }
 
     /**
@@ -144,14 +148,18 @@ class CacheControl implements HeaderInterface
     {
         $parts = [];
         ksort($this->directives);
+        /**
+         * @var string $key
+         * @var string|bool $value
+         */
         foreach ($this->directives as $key => $value) {
             if (true === $value) {
                 $parts[] = $key;
             } else {
-                if (preg_match('#[^a-zA-Z0-9._-]#', $value)) {
-                    $value = '"' . $value . '"';
+                if (preg_match('#[^a-zA-Z0-9._-]#', (string) $value)) {
+                    $value = '"' . (string) $value . '"';
                 }
-                $parts[] = $key . '=' . $value;
+                $parts[] = $key . '=' . (string) $value;
             }
         }
         return implode(', ', $parts);
@@ -186,49 +194,40 @@ class CacheControl implements HeaderInterface
             return $directives;
         }
 
-        $lastMatch = null;
+        $lastMatch = '';
 
         // phpcs:disable Generic.PHP.DiscourageGoto.Found
 
-        state_directive:
-        switch (static::match(['[a-zA-Z][a-zA-Z_-]*'], $value, $lastMatch)) {
-            case 0:
+        while (true) {
+            // Match a directive
+            $matchResult = static::match(['[a-zA-Z][a-zA-Z_-]*'], $value, $lastMatch);
+            if ($matchResult === 0) {
                 $directive = $lastMatch;
-                goto state_value;
-                // intentional fall-through
-
-            default:
+            } else {
                 throw new Exception\InvalidArgumentException('expected DIRECTIVE');
-        }
+            }
 
-        state_value:
-        switch (static::match(['="[^"]*"', '=[^",\s;]*'], $value, $lastMatch)) {
-            case 0:
+            // Handle the directive's value
+            $matchResult = static::match(['="[^"]*"', '=[^",\s;]*'], $value, $lastMatch);
+            if ($matchResult === 0) {
                 $directives[$directive] = substr($lastMatch, 2, -1);
-                goto state_separator;
-                // intentional fall-through
-
-            case 1:
+            } elseif ($matchResult === 1) {
                 $directives[$directive] = rtrim(substr($lastMatch, 1));
-                goto state_separator;
-                // intentional fall-through
-
-            default:
+            } else {
                 $directives[$directive] = true;
-                goto state_separator;
-        }
+            }
 
-        state_separator:
-        switch (static::match(['\s*,\s*', '$'], $value, $lastMatch)) {
-            case 0:
-                goto state_directive;
-                // intentional fall-through
-
-            case 1:
+            // Check for separator or end
+            $matchResult = static::match(['\s*,\s*', '$'], $value, $lastMatch);
+            if ($matchResult === 0) {
+                // More directives to parse
+                continue;
+            } elseif ($matchResult === 1) {
+                // End of parsing
                 return $directives;
-
-            default:
+            } else {
                 throw new Exception\InvalidArgumentException('expected SEPARATOR or END');
+            }
         }
 
         // phpcs:enable
@@ -240,13 +239,16 @@ class CacheControl implements HeaderInterface
      * @param array $tokens
      * @param string $string
      * @param string $lastMatch
-     * @return int
+     * @return array-key
      */
     protected static function match($tokens, &$string, &$lastMatch)
     {
         // Ensure we have a string
-        $value = (string) $string;
+        $value = $string;
 
+        /**
+         * @var string $token
+         */
         foreach ($tokens as $i => $token) {
             if (preg_match('/^' . $token . '/', $value, $matches)) {
                 $lastMatch = $matches[0];

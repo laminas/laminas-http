@@ -32,7 +32,8 @@
     "require-dev": {
         "ext-curl": "*",
         "laminas/laminas-coding-standard": "^3.0.1",
-        "phpunit/phpunit": "^10.5.38"
+        "phpunit/phpunit": "^10.5.38",
+        "vimeo/psalm": "^6.10.0"
     },
     "suggest": {
         "paragonie/certainty": "For automated management of cacert.pem"
@@ -55,7 +56,8 @@
         "cs-check": "phpcs",
         "cs-fix": "phpcbf",
         "test": "phpunit --colors=always",
-        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
+        "static-analysis": "psalm --shepherd --stats"
     },
     "conflict": {
         "zendframework/zend-http": "*"

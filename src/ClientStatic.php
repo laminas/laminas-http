@@ -2,6 +2,9 @@
 
 namespace Laminas\Http;
 
+use Laminas\Stdlib\ParametersInterface;
+use Traversable;
+
 use function is_array;
 
 /**
@@ -51,10 +54,12 @@ class ClientStatic
         }
 
         if (! empty($headers) && is_array($headers)) {
-            $request->getHeaders()->addHeaders($headers);
+            /** @var Headers $header */
+            $header = $request->getHeaders();
+            $header->addHeaders($headers);
         }
 
-        if (! empty($body)) {
+        if ($body !== '') {
             $request->setContent($body);
         }
 
@@ -83,7 +88,9 @@ class ClientStatic
         $request->setMethod(Request::METHOD_POST);
 
         if (! empty($params) && is_array($params)) {
-            $request->getPost()->fromArray($params);
+            /** @var ParametersInterface $postParams */
+            $postParams = $request->getPost();
+            $postParams->fromArray($params);
         } else {
             throw new Exception\InvalidArgumentException('The array of post parameters is empty');
         }
@@ -92,11 +99,11 @@ class ClientStatic
             $headers['Content-Type'] = Client::ENC_URLENCODED;
         }
 
-        if (! empty($headers) && is_array($headers)) {
-            $request->getHeaders()->addHeaders($headers);
-        }
+        /** @var Headers $header */
+        $header = $request->getHeaders();
+        $header->addHeaders($headers);
 
-        if (! empty($body)) {
+        if ($body !== '') {
             $request->setContent($body);
         }
 

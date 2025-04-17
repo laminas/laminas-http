@@ -2,8 +2,9 @@
 
 namespace Laminas\Http\PhpEnvironment;
 
-use Laminas\Http\Header\HeaderInterface;
+use ArrayIterator;
 use Laminas\Http\Header\MultipleHeaderInterface;
+use Laminas\Http\Headers;
 use Laminas\Http\Response as HttpResponse;
 
 use function call_user_func;
@@ -14,13 +15,6 @@ use function header;
  */
 class Response extends HttpResponse
 {
-    /**
-     * @deprecated This property is deprecated, and will be removed
-     *
-     * @var bool
-     */
-    public $headersSent;
-
     /**
      * The current used version
      * (The value will be detected on getVersion)
@@ -44,7 +38,7 @@ class Response extends HttpResponse
      */
     public function getVersion()
     {
-        if (! $this->version) {
+        if ($this->version === null) {
             $this->version = $this->detectVersion();
         }
         return $this->version;
@@ -97,7 +91,7 @@ class Response extends HttpResponse
     public function sendHeaders()
     {
         if ($this->headersSent()) {
-            if ($this->headersSentHandler) {
+            if (null !== $this->headersSentHandler) {
                 call_user_func($this->headersSentHandler, $this);
             }
 
@@ -107,8 +101,11 @@ class Response extends HttpResponse
         $status = $this->renderStatusLine();
         header($status);
 
-        /** @var HeaderInterface $header */
-        foreach ($this->getHeaders() as $header) {
+        /** @var ArrayIterator $headers */
+        $headers = $this->getHeaders();
+
+        /** @var Headers $header */
+        foreach ($headers as $header) {
             if ($header instanceof MultipleHeaderInterface) {
                 header($header->toString(), false);
                 continue;
@@ -116,7 +113,6 @@ class Response extends HttpResponse
             header($header->toString());
         }
 
-        $this->headersSent = true;
         return $this;
     }
 
@@ -131,7 +127,7 @@ class Response extends HttpResponse
             return $this;
         }
 
-        echo $this->getContent();
+        echo (string) $this->getContent();
         $this->contentSent = true;
         return $this;
     }

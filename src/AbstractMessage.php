@@ -2,6 +2,8 @@
 
 namespace Laminas\Http;
 
+use ArrayIterator;
+use Laminas\Http\Header\HeaderInterface;
 use Laminas\Stdlib\Message;
 
 use function in_array;
@@ -23,10 +25,10 @@ abstract class AbstractMessage extends Message
     public const VERSION_2  = '2';
     /**#@-*/
 
-    /** @var string */
+    /** @var null|string */
     protected $version = self::VERSION_11;
 
-    /** @var Headers|null */
+    /** @var Headers|null|string */
     protected $headers;
 
     /**
@@ -51,7 +53,7 @@ abstract class AbstractMessage extends Message
     /**
      * Return the HTTP version for this request
      *
-     * @return string
+     * @return string|null
      */
     public function getVersion()
     {
@@ -75,7 +77,7 @@ abstract class AbstractMessage extends Message
     /**
      * Return the header container responsible for headers
      *
-     * @return Headers
+     * @return Headers|bool|HeaderInterface|ArrayIterator|mixed
      */
     public function getHeaders()
     {

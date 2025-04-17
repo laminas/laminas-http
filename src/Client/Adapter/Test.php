@@ -67,7 +67,7 @@ class Test implements AdapterInterface
      */
     public function setNextRequestWillFail($flag)
     {
-        $this->nextRequestWillFail = (bool) $flag;
+        $this->nextRequestWillFail = $flag;
 
         return $this;
     }
@@ -75,7 +75,7 @@ class Test implements AdapterInterface
     /**
      * Set the configuration array for the adapter
      *
-     * @param  array|Traversable $options
+     * @param  array|Traversable<string, mixed>|resource $options
      * @throws Exception\InvalidArgumentException
      */
     public function setOptions($options = [])
@@ -90,8 +90,13 @@ class Test implements AdapterInterface
             );
         }
 
+        /**
+         * @var mixed $v
+         */
         foreach ($options as $k => $v) {
-            $this->config[strtolower($k)] = $v;
+            if (is_string($k)) {
+                $this->config[strtolower($k)] = $v;
+            }
         }
     }
 
@@ -125,17 +130,18 @@ class Test implements AdapterInterface
     {
         // Build request headers
         $path = $uri->getPath();
-        if (empty($path)) {
+        if ($path === '' || $path === null) {
             $path = '/';
         }
         $query   = $uri->getQuery();
-        $path   .= $query ? '?' . $query : '';
+        $path   .= is_string($query) ? '?' . $query : '';
         $request = $method . ' ' . $path . ' HTTP/' . $httpVer . "\r\n";
+        /** @var mixed $v */
         foreach ($headers as $k => $v) {
             if (is_string($k)) {
-                $v = $k . ': ' . $v;
+                $v = $k . ': ' . (string) $v;
             }
-            $request .= $v . "\r\n";
+            $request .= (string) $v . "\r\n";
         }
 
         // Add the request body
@@ -156,7 +162,14 @@ class Test implements AdapterInterface
         if ($this->responseIndex >= count($this->responses)) {
             $this->responseIndex = 0;
         }
-        return $this->responses[$this->responseIndex++];
+
+        $response = $this->responses[$this->responseIndex++];
+
+        if (! is_string($response)) {
+            throw new Exception\InvalidArgumentException('Expected a string response, got ' . gettype($response));
+        }
+
+        return $response;
     }
 
     /**

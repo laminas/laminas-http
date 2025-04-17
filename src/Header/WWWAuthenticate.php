@@ -13,7 +13,7 @@ use function strtolower;
  */
 class WWWAuthenticate implements MultipleHeaderInterface
 {
-    /** @var string */
+    /** @var string|int|null */
     protected $value;
 
     /**
@@ -51,7 +51,7 @@ class WWWAuthenticate implements MultipleHeaderInterface
         return 'WWW-Authenticate';
     }
 
-    /** @return string */
+    /** @return string|int */
     public function getFieldValue()
     {
         return (string) $this->value;
@@ -63,7 +63,9 @@ class WWWAuthenticate implements MultipleHeaderInterface
         return 'WWW-Authenticate: ' . $this->getFieldValue();
     }
 
-    /** @return string */
+    /**
+     * @return string
+     */
     public function toStringMultipleHeaders(array $headers)
     {
         $strings = [$this->toString()];

@@ -18,7 +18,7 @@ class Age implements HeaderInterface
     /**
      * Estimate of the amount of time in seconds since the response
      *
-     * @var int
+     * @var int|null
      */
     protected $deltaSeconds;
 
@@ -72,7 +72,7 @@ class Age implements HeaderInterface
     /**
      * Set number of seconds
      *
-     * @param int $delta
+     * @param int|null $delta
      * @return $this
      */
     public function setDeltaSeconds($delta)

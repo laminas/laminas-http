@@ -2,8 +2,6 @@
 
 namespace Laminas\Http\Header\Accept\FieldValuePart;
 
-use stdClass;
-
 /**
  * Field Value Part
  *
@@ -21,7 +19,7 @@ abstract class AbstractFieldValuePart
     /**
      * A Field Value Part this Field Value Part matched against.
      *
-     * @var AbstractFieldValuePart
+     * @var AbstractFieldValuePart|null
      */
     protected $matchedAgainst;
 
@@ -67,7 +65,7 @@ abstract class AbstractFieldValuePart
      */
     public function getTypeString()
     {
-        return $this->getInternalValues()->typeString;
+        return (string) $this->getInternalValues()->typeString;
     }
 
     /**
@@ -79,7 +77,7 @@ abstract class AbstractFieldValuePart
     }
 
     /**
-     * @return stdClass $params
+     * @return object $params
      */
     public function getParams()
     {
@@ -91,7 +89,7 @@ abstract class AbstractFieldValuePart
      */
     public function getRaw()
     {
-        return $this->getInternalValues()->raw;
+        return (string) $this->getInternalValues()->raw;
     }
 
     /**

@@ -10,7 +10,7 @@ use function strtolower;
  */
 class KeepAlive implements HeaderInterface
 {
-    /** @var string */
+    /** @var string|null */
     protected $value;
 
     /**

@@ -14,7 +14,7 @@ class AcceptFieldValuePart extends AbstractFieldValuePart
      */
     public function getSubtype()
     {
-        return $this->getInternalValues()->subtype;
+        return (string) $this->getInternalValues()->subtype;
     }
 
     /**
@@ -22,7 +22,7 @@ class AcceptFieldValuePart extends AbstractFieldValuePart
      */
     public function getSubtypeRaw()
     {
-        return $this->getInternalValues()->subtypeRaw;
+        return (string) $this->getInternalValues()->subtypeRaw;
     }
 
     /**
@@ -30,6 +30,6 @@ class AcceptFieldValuePart extends AbstractFieldValuePart
      */
     public function getFormat()
     {
-        return $this->getInternalValues()->format;
+        return (string) $this->getInternalValues()->format;
     }
 }

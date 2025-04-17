@@ -13,10 +13,10 @@ use function preg_match;
  */
 class GenericHeader implements HeaderInterface
 {
-    /** @var string */
+    /** @var string|null */
     protected $fieldName;
 
-    /** @var string */
+    /** @var string|null */
     protected $fieldValue;
 
     /**
@@ -63,7 +63,7 @@ class GenericHeader implements HeaderInterface
      */
     public function __construct($fieldName = null, $fieldValue = null)
     {
-        if ($fieldName) {
+        if ($fieldName !== null) {
             $this->setFieldName($fieldName);
         }
 
@@ -75,13 +75,13 @@ class GenericHeader implements HeaderInterface
     /**
      * Set header field name
      *
-     * @param  string $fieldName
+     * @param  string|null $fieldName
      * @return $this
      * @throws Exception\InvalidArgumentException If the name does not match with RFC 2616 format.
      */
     public function setFieldName($fieldName)
     {
-        if (! is_string($fieldName) || empty($fieldName)) {
+        if (! is_string($fieldName) || $fieldName === '') {
             throw new Exception\InvalidArgumentException('Header name must be a string');
         }
 
@@ -122,7 +122,6 @@ class GenericHeader implements HeaderInterface
      */
     public function setFieldValue($fieldValue)
     {
-        $fieldValue = (string) $fieldValue;
         HeaderValue::assertValid($fieldValue);
 
         if (preg_match('/^\s+$/', $fieldValue)) {

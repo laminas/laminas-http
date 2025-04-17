@@ -30,7 +30,6 @@ final class HeaderValue
      */
     public static function filter($value)
     {
-        $value  = (string) $value;
         $length = strlen($value);
         $string = '';
         for ($i = 0; $i < $length; $i += 1) {
@@ -64,7 +63,7 @@ final class HeaderValue
      *
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
      *
-     * @param string $value
+     * @param string|mixed $value
      * @return bool
      */
     public static function isValid($value)

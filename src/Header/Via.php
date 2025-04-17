@@ -11,7 +11,7 @@ use function strtolower;
  */
 class Via implements HeaderInterface
 {
-    /** @var string */
+    /** @var string|null */
     protected $value;
 
     /**

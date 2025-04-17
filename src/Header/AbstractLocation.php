@@ -28,7 +28,7 @@ abstract class AbstractLocation implements HeaderInterface
     /**
      * URI for this header
      *
-     * @var UriInterface
+     * @var UriInterface|string
      */
     protected $uri;
 

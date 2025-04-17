@@ -100,7 +100,7 @@ class FeaturePolicy implements HeaderInterface
             throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects a valid directive name; received "%s"',
                 __METHOD__,
-                (string) $name
+                $name
             ));
         }
         if (empty($sources)) {
@@ -140,7 +140,7 @@ class FeaturePolicy implements HeaderInterface
             $token = trim($token);
             if ($token) {
                 [$directiveName, $directiveValue] = array_pad(explode(' ', $token, 2), 2, null);
-                if (! isset($header->directives[$directiveName])) {
+                if (null !== $directiveName && ! isset($header->directives[$directiveName])) {
                     $header->setDirective(
                         $directiveName,
                         $directiveValue === null ? [] : [$directiveValue]
@@ -170,6 +170,9 @@ class FeaturePolicy implements HeaderInterface
     public function getFieldValue()
     {
         $directives = [];
+        /**
+         * @var mixed $value
+         */
         foreach ($this->directives as $name => $value) {
             $directives[] = sprintf('%s %s;', $name, $value);
         }

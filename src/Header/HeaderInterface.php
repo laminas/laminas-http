@@ -28,7 +28,7 @@ interface HeaderInterface
     /**
      * Retrieve header value
      *
-     * @return string
+     * @return string|int
      */
     public function getFieldValue();
 

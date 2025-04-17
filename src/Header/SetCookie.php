@@ -9,11 +9,10 @@ use Laminas\Uri\UriFactory;
 use function array_key_exists;
 use function array_pop;
 use function count;
-use function gettype;
 use function gmdate;
+use function is_array;
 use function is_int;
 use function is_numeric;
-use function is_scalar;
 use function is_string;
 use function max;
 use function preg_match;
@@ -70,7 +69,7 @@ class SetCookie implements MultipleHeaderInterface
     /**
      * @deprecated This property is deprecated, and will be removed
      *
-     * @var string
+     * @var string|null
      */
     public $type;
 
@@ -155,15 +154,19 @@ class SetCookie implements MultipleHeaderInterface
      */
     public static function fromString($headerLine, $bypassHeaderFieldName = false)
     {
+        /** @var null|callable(string): SetCookie $setCookieProcessor */
         static $setCookieProcessor = null;
 
         if ($setCookieProcessor === null) {
             $setCookieClass     = static::class;
-            $setCookieProcessor = function ($headerLine) use ($setCookieClass) {
+            $setCookieProcessor = function (string $headerLine) use ($setCookieClass): SetCookie {
                 /** @var SetCookie $header */
                 $header        = new $setCookieClass();
                 $keyValuePairs = preg_split('#;\s*#', $headerLine);
 
+                /**
+                 * @var string $keyValue
+                 */
                 foreach ($keyValuePairs as $keyValue) {
                     if (preg_match('#^(?P<headerKey>[^=]+)=\s*("?)(?P<headerValue>[^"]*)\2#', $keyValue, $matches)) {
                         $headerKey   = $matches['headerKey'];
@@ -233,8 +236,14 @@ class SetCookie implements MultipleHeaderInterface
 
         $multipleHeaders = preg_split('#(?<!Sun|Mon|Tue|Wed|Thu|Fri|Sat),\s*#', $value);
 
+        // Defensive: ensure it's always an array
+        if (! is_array($multipleHeaders)) {
+            $multipleHeaders = [];
+        }
+
         if (count($multipleHeaders) <= 1) {
-            return $setCookieProcessor(array_pop($multipleHeaders));
+            $line = array_pop($multipleHeaders) ?? '';
+            return $setCookieProcessor($line);
         } else {
             $headers = [];
             foreach ($multipleHeaders as $headerLine) {
@@ -271,8 +280,6 @@ class SetCookie implements MultipleHeaderInterface
         $version = null,
         $sameSite = null
     ) {
-        $this->type = 'Cookie';
-
         $this->setName($name)
              ->setValue($value)
              ->setVersion($version)
@@ -294,7 +301,7 @@ class SetCookie implements MultipleHeaderInterface
     }
 
     /**
-     * @param bool $encodeValue
+     * @param bool|null $encodeValue
      */
     public function setEncodeValue($encodeValue)
     {
@@ -320,12 +327,15 @@ class SetCookie implements MultipleHeaderInterface
             return '';
         }
 
-        $value = $this->encodeValue ? urlencode($this->getValue() ?? '') : $this->getValue();
-        if ($this->hasQuoteFieldValue()) {
-            $value = '"' . $value . '"';
-        }
+        $value      = $this->encodeValue ? urlencode($this->getValue() ?? '') : $this->getValue();
+        $fieldValue = '';
+        if (null !== $value) {
+            if ($this->hasQuoteFieldValue()) {
+                $value = '"' . $value . '"';
+            }
 
-        $fieldValue = $name . '=' . $value;
+            $fieldValue = $name . '=' . $value;
+        }
 
         $version = $this->getVersion();
         if ($version !== null) {
@@ -338,17 +348,17 @@ class SetCookie implements MultipleHeaderInterface
         }
 
         $expires = $this->getExpires();
-        if ($expires) {
+        if (null !== $expires) {
             $fieldValue .= '; Expires=' . $expires;
         }
 
         $domain = $this->getDomain();
-        if ($domain) {
+        if (null !== $domain) {
             $fieldValue .= '; Domain=' . $domain;
         }
 
         $path = $this->getPath();
-        if ($path) {
+        if (null !== $path) {
             $fieldValue .= '; Path=' . $path;
         }
 
@@ -375,7 +385,10 @@ class SetCookie implements MultipleHeaderInterface
      */
     public function setName($name)
     {
-        HeaderValue::assertValid($name);
+        if (null !== $name) {
+            HeaderValue::assertValid($name);
+        }
+
         $this->name = $name;
         return $this;
     }
@@ -407,7 +420,7 @@ class SetCookie implements MultipleHeaderInterface
     }
 
     /**
-     * @param  int|null $version
+     * @param  int|null|mixed $version
      * @return $this
      * @throws Exception\InvalidArgumentException
      */
@@ -429,12 +442,12 @@ class SetCookie implements MultipleHeaderInterface
     }
 
     /**
-     * @param  int $maxAge
+     * @param  int|null|string $maxAge
      * @return $this
      */
     public function setMaxAge($maxAge)
     {
-        if ($maxAge === null || ! is_numeric($maxAge)) {
+        if (! is_numeric($maxAge)) {
             return $this;
         }
 
@@ -510,7 +523,10 @@ class SetCookie implements MultipleHeaderInterface
      */
     public function setDomain($domain)
     {
-        HeaderValue::assertValid($domain);
+        if (null !== $domain) {
+            HeaderValue::assertValid($domain);
+        }
+
         $this->domain = $domain;
         return $this;
     }
@@ -529,7 +545,10 @@ class SetCookie implements MultipleHeaderInterface
      */
     public function setPath($path)
     {
-        HeaderValue::assertValid($path);
+        if (null !== $path) {
+            HeaderValue::assertValid($path);
+        }
+
         $this->path = $path;
         return $this;
     }
@@ -548,9 +567,6 @@ class SetCookie implements MultipleHeaderInterface
      */
     public function setSecure($secure)
     {
-        if (null !== $secure) {
-            $secure = (bool) $secure;
-        }
         $this->secure = $secure;
         return $this;
     }
@@ -563,7 +579,7 @@ class SetCookie implements MultipleHeaderInterface
      */
     public function setQuoteFieldValue($quotedValue)
     {
-        $this->quoteFieldValue = (bool) $quotedValue;
+        $this->quoteFieldValue = $quotedValue;
         return $this;
     }
 
@@ -581,9 +597,6 @@ class SetCookie implements MultipleHeaderInterface
      */
     public function setHttponly($httponly)
     {
-        if (null !== $httponly) {
-            $httponly = (bool) $httponly;
-        }
         $this->httponly = $httponly;
         return $this;
     }
@@ -649,7 +662,7 @@ class SetCookie implements MultipleHeaderInterface
         if (! array_key_exists(strtolower($sameSite), self::SAME_SITE_ALLOWED_VALUES)) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'Invalid value provided for SameSite directive: "%s"; expected one of: Strict, Lax or None',
-                is_scalar($sameSite) ? $sameSite : gettype($sameSite)
+                $sameSite
             ));
         }
         $this->sameSite = self::SAME_SITE_ALLOWED_VALUES[strtolower($sameSite)];
@@ -674,11 +687,11 @@ class SetCookie implements MultipleHeaderInterface
      */
     public function isValidForRequest($requestDomain, $path, $isSecure = false)
     {
-        if ($this->getDomain() && (strrpos($requestDomain, $this->getDomain()) === false)) {
+        if (null !== $this->getDomain() && (strrpos($requestDomain, $this->getDomain()) === false)) {
             return false;
         }
 
-        if ($this->getPath() && (strpos($path, $this->getPath()) !== 0)) {
+        if (null !== $this->getPath() && (strpos($path, $this->getPath()) !== 0)) {
             return false;
         }
 
@@ -721,12 +734,12 @@ class SetCookie implements MultipleHeaderInterface
         }
 
         // Check if the domain matches
-        if (! self::matchCookieDomain($this->getDomain(), $uri->getHost())) {
+        if (! self::matchCookieDomain($this->getDomain() ?? '', $uri->getHost() ?? '')) {
             return false;
         }
 
         // Check that path matches using prefix match
-        if (! self::matchCookiePath($this->getPath(), $uri->getPath())) {
+        if (! self::matchCookiePath($this->getPath() ?? '', $uri->getPath() ?? '')) {
             return false;
         }
 

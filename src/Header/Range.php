@@ -11,7 +11,7 @@ use function strtolower;
  */
 class Range implements HeaderInterface
 {
-    /** @var string */
+    /** @var string|null */
     protected $value;
 
     /**

@@ -110,6 +110,7 @@ class Allow implements HeaderInterface
      */
     public function allowMethods($allowedMethods)
     {
+        /** @var string $method */
         foreach ((array) $allowedMethods as $method) {
             $method = trim(strtoupper($method));
             if (preg_match('/\s/', $method)) {
@@ -132,6 +133,7 @@ class Allow implements HeaderInterface
      */
     public function disallowMethods($disallowedMethods)
     {
+        /** @var string $method */
         foreach ((array) $disallowedMethods as $method) {
             $method = trim(strtoupper($method));
             if (preg_match('/\s/', $method)) {
@@ -172,7 +174,7 @@ class Allow implements HeaderInterface
             $this->methods[$method] = false;
         }
 
-        return $this->methods[$method];
+        return (bool) $this->methods[$method];
     }
 
     /**

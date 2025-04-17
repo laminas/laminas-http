@@ -4,7 +4,6 @@ namespace Laminas\Http;
 
 use ArrayIterator;
 use Laminas\Http\Header\HeaderInterface;
-use Laminas\Http\Headers;
 use Laminas\Stdlib\Parameters;
 use Laminas\Stdlib\ParametersInterface;
 use Laminas\Stdlib\RequestInterface;
@@ -16,12 +15,13 @@ use function array_shift;
 use function defined;
 use function explode;
 use function implode;
+use function is_array;
 use function is_string;
 use function parse_str;
 use function parse_url;
 use function preg_match;
 use function sprintf;
-use function stristr;
+use function stripos;
 use function strtoupper;
 
 /**
@@ -53,16 +53,16 @@ class Request extends AbstractMessage implements RequestInterface
     /** @var bool */
     protected $allowCustomMethods = true;
 
-    /** @var string|HttpUri */
+    /** @var string|HttpUri|null */
     protected $uri;
 
-    /** @var ParametersInterface */
+    /** @var ParametersInterface|null*/
     protected $queryParams;
 
-    /** @var ParametersInterface */
+    /** @var ParametersInterface|null */
     protected $postParams;
 
-    /** @var ParametersInterface */
+    /** @var ParametersInterface|null */
     protected $fileParams;
 
     /**
@@ -111,7 +111,7 @@ class Request extends AbstractMessage implements RequestInterface
         $request->setUri($matches['uri']);
 
         $parsedUri = parse_url($matches['uri']);
-        if (array_key_exists('query', $parsedUri)) {
+        if (is_array($parsedUri) && array_key_exists('query', $parsedUri)) {
             $parsedQuery = [];
             parse_str($parsedUri['query'], $parsedQuery);
             $request->setQuery(new Parameters($parsedQuery));
@@ -222,7 +222,7 @@ class Request extends AbstractMessage implements RequestInterface
     /**
      * Return the URI for this request object
      *
-     * @return HttpUri
+     * @return HttpUri|string|null
      */
     public function getUri()
     {
@@ -235,7 +235,7 @@ class Request extends AbstractMessage implements RequestInterface
     /**
      * Return the URI for this request object as a string
      *
-     * @return string
+     * @return string|null
      */
     public function getUriString()
     {
@@ -313,11 +313,14 @@ class Request extends AbstractMessage implements RequestInterface
      * Return the Cookie header, this is the same as calling $request->getHeaders()->get('Cookie');
      *
      * @convenience $request->getHeaders()->get('Cookie');
-     * @return Header\Cookie|bool
+     * @return ArrayIterator|bool|HeaderInterface|null
      */
     public function getCookie()
     {
-        return $this->getHeaders()->get('Cookie');
+        /** @var Headers $headers */
+        $headers = $this->getHeaders();
+
+        return $headers->get('Cookie');
     }
 
     /**
@@ -359,7 +362,7 @@ class Request extends AbstractMessage implements RequestInterface
      *
      * @param  string|null $name    Header name to retrieve, or null to get the whole container.
      * @param  mixed|null  $default Default value to use when the requested header is missing.
-     * @return Headers|bool|HeaderInterface|ArrayIterator
+     * @return Headers|bool|HeaderInterface|ArrayIterator|mixed
      */
     public function getHeaders($name = null, $default = false)
     {
@@ -386,7 +389,7 @@ class Request extends AbstractMessage implements RequestInterface
      *
      * @param string|null           $name            Header name to retrieve, or null to get the whole container.
      * @param mixed|null            $default         Default value to use when the requested header is missing.
-     * @return Headers|bool|HeaderInterface|ArrayIterator
+     * @return Headers|bool|HeaderInterface|ArrayIterator|mixed
      */
     public function getHeader($name, $default = false)
     {
@@ -502,8 +505,19 @@ class Request extends AbstractMessage implements RequestInterface
      */
     public function isXmlHttpRequest()
     {
-        $header = $this->getHeaders()->get('X_REQUESTED_WITH');
-        return false !== $header && $header->getFieldValue() === 'XMLHttpRequest';
+        $headers = $this->getHeaders();
+
+        if (! $headers instanceof Headers) {
+            return false;
+        }
+
+        $header = $headers->get('X_REQUESTED_WITH');
+
+        if (! $header instanceof HeaderInterface) {
+            return false;
+        }
+
+        return (string) $header->getFieldValue() === 'XMLHttpRequest';
     }
 
     /**
@@ -513,8 +527,19 @@ class Request extends AbstractMessage implements RequestInterface
      */
     public function isFlashRequest()
     {
-        $header = $this->getHeaders()->get('USER_AGENT');
-        return false !== $header && stristr($header->getFieldValue(), ' flash');
+        $headers = $this->getHeaders();
+
+        if (! $headers instanceof Headers) {
+            return false;
+        }
+
+        $header = $headers->get('User-Agent');
+
+        if (! $header instanceof HeaderInterface) {
+            return false;
+        }
+
+        return stripos((string) $header->getFieldValue(), ' flash') !== false;
     }
 
     /**
@@ -524,7 +549,7 @@ class Request extends AbstractMessage implements RequestInterface
      */
     public function renderRequestLine()
     {
-        return $this->method . ' ' . (string) $this->uri . ' HTTP/' . $this->version;
+        return $this->method . ' ' . (string) $this->uri . ' HTTP/' . (string) $this->version;
     }
 
     /**
@@ -532,10 +557,13 @@ class Request extends AbstractMessage implements RequestInterface
      */
     public function toString()
     {
-        $str  = $this->renderRequestLine() . "\r\n";
-        $str .= $this->getHeaders()->toString();
-        $str .= "\r\n";
-        $str .= $this->getContent();
+        $str = $this->renderRequestLine() . "\r\n";
+
+        /** @var HeaderInterface $headers */
+        $headers = $this->getHeaders();
+        $str    .= $headers->toString();
+        $str    .= "\r\n";
+        $str    .= (string) $this->getContent();
         return $str;
     }
 
@@ -548,7 +576,7 @@ class Request extends AbstractMessage implements RequestInterface
     }
 
     /**
-     * @param bool $strictMethods
+     * @param bool|null $strictMethods
      */
     public function setAllowCustomMethods($strictMethods)
     {

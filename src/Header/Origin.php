@@ -4,6 +4,7 @@ namespace Laminas\Http\Header;
 
 use Laminas\Uri\UriFactory;
 
+use function count;
 use function explode;
 use function strtolower;
 
@@ -14,7 +15,7 @@ use function strtolower;
  */
 class Origin implements HeaderInterface
 {
-    /** @var string */
+    /** @var string|null */
     protected $value = '';
 
     /**
@@ -23,7 +24,13 @@ class Origin implements HeaderInterface
      */
     public static function fromString($headerLine)
     {
-        [$name, $value] = explode(': ', $headerLine, 2);
+        $parts = explode(': ', $headerLine, 2);
+
+        if (count($parts) < 2) {
+            throw new Exception\InvalidArgumentException('Invalid header line format: "' . $headerLine . '"');
+        }
+
+        [$name, $value] = $parts;
 
         // check to ensure proper header type for this factory
         if (strtolower($name) !== 'origin') {
