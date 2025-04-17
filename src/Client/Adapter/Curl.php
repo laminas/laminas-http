@@ -121,16 +121,16 @@ class Curl implements HttpAdapter, StreamInterface
     /**
      * Response gotten from server
      *
-     * @var string
+     * @var string|null
      */
-    protected $response = null;
+    protected $response;
 
     /**
      * Stream for storing output
      *
-     * @var resource|mixed
+     * @var resource|mixed|null
      */
-    protected $outputStream = null;
+    protected $outputStream;
 
     /**
      * Adapter constructor

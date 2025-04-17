@@ -9,6 +9,9 @@ namespace Laminas\Http\Header\Accept\FieldValuePart;
  */
 class EncodingFieldValuePart extends AbstractFieldValuePart
 {
+    /**
+     * @return string
+     */
     public function getEncoding()
     {
         return (string) $this->getInternalValues()->type;

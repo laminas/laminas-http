@@ -97,9 +97,9 @@ class Socket implements HttpAdapter, StreamInterface
     /**
      * Stream for storing output
      *
-     * @var resource
+     * @var resource|null
      */
-    protected $outStream = null;
+    protected $outStream;
 
     /**
      * Parameters array
@@ -122,9 +122,9 @@ class Socket implements HttpAdapter, StreamInterface
     /**
      * Request method - will be set by write() and might be used by read()
      *
-     * @var string
+     * @var string|null
      */
-    protected $method = null;
+        protected $method;
 
     /**
      * Stream context
@@ -451,7 +451,7 @@ class Socket implements HttpAdapter, StreamInterface
      * @throws AdapterException\RuntimeException
      * @return string Request as string
      */
-    public function write($method, $uri, $httpVer  = '1.1', $headers = [], $body = '')
+    public function write($method, $uri, $httpVer = '1.1', $headers = [], $body = '')
     {
         // Make sure we're properly connected
         if (! $this->socket) {
@@ -692,6 +692,7 @@ class Socket implements HttpAdapter, StreamInterface
      * Set output stream for the response
      *
      * @param resource $stream
+     * @return static
      */
     public function setOutputStream($stream)
     {

@@ -209,6 +209,9 @@ class ContentSecurityPolicy implements MultipleHeaderInterface
         return sprintf('%s: %s', $this->getFieldName(), $this->getFieldValue());
     }
 
+    /**
+     * @return string
+     */
     public function toStringMultipleHeaders(array $headers)
     {
         $strings = [$this->toString()];

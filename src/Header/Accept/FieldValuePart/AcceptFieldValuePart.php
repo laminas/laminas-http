@@ -9,16 +9,25 @@ namespace Laminas\Http\Header\Accept\FieldValuePart;
  */
 class AcceptFieldValuePart extends AbstractFieldValuePart
 {
+    /**
+     * @return string
+     */
     public function getSubtype()
     {
         return (string) $this->getInternalValues()->subtype;
     }
 
+    /**
+     * @return string
+     */
     public function getSubtypeRaw()
     {
         return (string) $this->getInternalValues()->subtypeRaw;
     }
 
+    /**
+     * @return string
+     */
     public function getFormat()
     {
         return (string) $this->getInternalValues()->format;

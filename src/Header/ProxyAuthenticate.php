@@ -63,6 +63,9 @@ class ProxyAuthenticate implements MultipleHeaderInterface
         return 'Proxy-Authenticate: ' . $this->getFieldValue();
     }
 
+    /**
+     * @return string
+     */
     public function toStringMultipleHeaders(array $headers)
     {
         $strings = [$this->toString()];

@@ -38,7 +38,7 @@ interface AdapterInterface
      * @param string        $body
      * @return string Request as text
      */
-    public function write($method, $url , $httpVer = '1.1', $headers = [], $body = '');
+    public function write($method, $url, $httpVer = '1.1', $headers = [], $body = '');
 
     /**
      * Read response from server

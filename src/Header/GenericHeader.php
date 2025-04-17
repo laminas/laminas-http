@@ -13,11 +13,11 @@ use function preg_match;
  */
 class GenericHeader implements HeaderInterface
 {
-    /** @var string */
-    protected $fieldName = null;
+    /** @var string|null */
+    protected $fieldName;
 
-    /** @var string */
-    protected $fieldValue = null;
+    /** @var string|null */
+    protected $fieldValue;
 
     /**
      * Factory to generate a header object from a string

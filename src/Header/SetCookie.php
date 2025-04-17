@@ -69,9 +69,9 @@ class SetCookie implements MultipleHeaderInterface
     /**
      * @deprecated This property is deprecated, and will be removed
      *
-     * @var string
+     * @var string|null
      */
-    public $type = null;
+    public $type;
 
     /**
      * Cookie name
@@ -788,6 +788,7 @@ class SetCookie implements MultipleHeaderInterface
     }
 
     /**
+     * @return string
      * @throws Exception\RuntimeException
      */
     public function toStringMultipleHeaders(array $headers)

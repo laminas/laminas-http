@@ -19,9 +19,9 @@ abstract class AbstractFieldValuePart
     /**
      * A Field Value Part this Field Value Part matched against.
      *
-     * @var AbstractFieldValuePart
+     * @var AbstractFieldValuePart|null
      */
-    protected $matchedAgainst = null;
+    protected $matchedAgainst;
 
     /**
      * @param object $internalValues

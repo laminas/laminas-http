@@ -154,6 +154,8 @@ class Test implements AdapterInterface
 
     /**
      * Return the response set in $this->setResponse()
+     *
+     * @return string
      */
     public function read()
     {
@@ -210,6 +212,7 @@ class Test implements AdapterInterface
      * Sets the position of the response buffer.  Selects which
      * response will be returned on the next call to read().
      *
+     * @param int $index
      * @throws Exception\OutOfRangeException
      */
     public function setResponseIndex($index)

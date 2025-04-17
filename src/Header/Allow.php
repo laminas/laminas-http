@@ -179,6 +179,8 @@ class Allow implements HeaderInterface
 
     /**
      * Return header as string
+     *
+     * @return string
      */
     public function toString()
     {

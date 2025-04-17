@@ -27,6 +27,9 @@ class GenericMultiHeader extends GenericHeader implements MultipleHeaderInterfac
         }
     }
 
+    /**
+     * @return string
+     */
     public function toStringMultipleHeaders(array $headers)
     {
         $name   = $this->getFieldName();

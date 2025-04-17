@@ -18,9 +18,9 @@ class Age implements HeaderInterface
     /**
      * Estimate of the amount of time in seconds since the response
      *
-     * @var int
+     * @var int|null
      */
-    protected $deltaSeconds = null;
+    protected $deltaSeconds;
 
     /**
      * Create Age header from string
