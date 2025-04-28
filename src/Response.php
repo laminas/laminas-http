@@ -10,6 +10,7 @@ use function count;
 use function explode;
 use function function_exists;
 use function gettype;
+use function gzdecode;
 use function gzinflate;
 use function gzuncompress;
 use function hexdec;
@@ -586,7 +587,7 @@ class Response extends AbstractMessage implements ResponseInterface
      */
     protected function decodeGzip($body)
     {
-        if (! function_exists('gzinflate')) {
+        if (! function_exists('gzdecode')) {
             throw new Exception\RuntimeException(
                 'zlib extension is required in order to decode "gzip" encoding'
             );
@@ -601,7 +602,7 @@ class Response extends AbstractMessage implements ResponseInterface
         }
 
         ErrorHandler::start();
-        $return = gzinflate(substr($body, 10));
+        $return = gzdecode($body);
         $test   = ErrorHandler::stop();
         if ($test) {
             throw new Exception\RuntimeException(
