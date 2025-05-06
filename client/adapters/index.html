@@ -301,11 +301,11 @@
             <ul class="toc__list">
                 
                     <li class="toc__entry">
-                        <a href="#the-socket-adapter" class="toc__link nav-link">The Socket adapter</a>
+                        <a href="#the-socket-adapter" class="toc__link nav-link">The Socket Adapter</a>
                     </li>
                 
                     <li class="toc__entry">
-                        <a href="#the-proxy-adapter" class="toc__link nav-link">The Proxy adapter</a>
+                        <a href="#the-proxy-adapter" class="toc__link nav-link">The Proxy Adapter</a>
                     </li>
                 
                     <li class="toc__entry">
@@ -313,11 +313,11 @@
                     </li>
                 
                     <li class="toc__entry">
-                        <a href="#the-test-adapter" class="toc__link nav-link">The Test adapter</a>
+                        <a href="#the-test-adapter" class="toc__link nav-link">The Test Adapter</a>
                     </li>
                 
                     <li class="toc__entry">
-                        <a href="#creating-your-own-connection-adapters" class="toc__link nav-link">Creating your own connection adapters</a>
+                        <a href="#creating-your-own-connection-adapters" class="toc__link nav-link">Creating Your Own Connection Adapters</a>
                     </li>
                 
             </ul>
@@ -387,7 +387,7 @@ the value of the <code>adapter</code> option may be one of:</p>
 <li>an adapter instance</li>
 <li>the fully qualified class name of an adapter</li>
 </ul>
-<h2 id="the-socket-adapter">The Socket adapter</h2>
+<h2 id="the-socket-adapter">The Socket Adapter</h2>
 <p>The default connection adapter used when none is specified is the
 <code>Laminas\Http\Client\Adapter\Socket</code> adapter.  The <code>Socket</code> adapter is based on
 PHP's built-in <code>fsockopen()</code> function, and does not require any special
@@ -466,9 +466,10 @@ via either the client's constructor or <code>setOptions()</code> method:</p>
 </tr>
 </tbody>
 </table></div>
-<blockquote>
-<h3 id="persistent-tcp-connections">Persistent TCP connections</h3>
-<p>Using persistent TCP connections can potentially speed up HTTP requests, but
+<div class="admonition info">
+<p class="admonition-title">Persistent TCP Connections</p>
+<p>
+Using persistent TCP connections can potentially speed up HTTP requests, but
 in most use cases, will have little positive effect and might overload the
 HTTP server you are connecting to. It is recommended to use persistent TCP
 connections only if you connect to the same server very frequently, and are
@@ -479,14 +480,15 @@ this option.</p>
 <p>Additionally, when using persistent connections, we recommend enabling
 Keep-Alive HTTP requests as described in <a href="../intro/#configuration">the client configuration section</a>;
 otherwise persistent connections might have little or no effect.</p>
-<h3 id="https-ssl-stream-parameters">HTTPS SSL stream parameters</h3>
-<p><code>ssltransport</code>, <code>sslcert</code> and <code>sslpassphrase</code> are only relevant when
-connecting using HTTPS.  While the default SSL/TLS settings should work for
-most applications, you might need to change them if the server you are
-connecting to requires special client setup. If so, please read the
-<a href="http://php.net/transports.inet">PHP manual chapter on SSL and TLS transport options</a>.</p>
-</blockquote>
-<h3 id="changing-the-https-transport-layer">Changing the HTTPS transport layer</h3>
+</div>
+<div class="admonition info">
+<p class="admonition-title">HTTPS SSL Stream Parameters</p>
+<p>
+<code>ssltransport</code>, <code>sslcert</code> and <code>sslpassphrase</code> are only relevant when connecting using HTTPS.
+While the default SSL/TLS settings should work for most applications, you might need to change them if the server you are connecting to requires special client setup.
+If so, please read the <a href="http://php.net/transports.inet">PHP manual chapter on SSL and TLS transport options</a>.</p>
+</div>
+<h3 id="changing-the-https-transport-layer">Changing the HTTPS Transport Layer</h3>
 <pre class="highlight"><code class="language-php">use Laminas\Http\Client;
 
 // Set the configuration parameters
@@ -503,7 +505,7 @@ $response = $client-&gt;send();</code></pre>
 <p>The result of the example above will be similar to opening a TCP connection
 using the following PHP command:</p>
 <pre class="highlight"><code class="language-php">fsockopen('tls://www.example.com', 443);</code></pre>
-<h3 id="customizing-and-accessing-the-socket-adapter-stream-context">Customizing and accessing the Socket adapter stream context</h3>
+<h3 id="customizing-and-accessing-the-socket-adapter-stream-context">Customizing and Accessing the Socket Adapter Stream Context</h3>
 <p><code>Laminas\Http\Client\Adapter\Socket</code> provides direct access to the underlying
 <a href="http://php.net/stream.contexts">stream context</a> used to connect to the remote
 server. This allows the user to pass specific options and parameters to the TCP
@@ -522,7 +524,7 @@ stream, and to the SSL wrapper in case of HTTPS connections.</p>
   return it. You can then set or get the value of different context options
   using regular PHP stream context functions.</li>
 </ul>
-<h4 id="setting-stream-context-options-for-the-socket-adapter">Setting stream context options for the Socket adapter</h4>
+<h4 id="setting-stream-context-options-for-the-socket-adapter">Setting Stream Context Options for the Socket Adapter</h4>
 <pre class="highlight"><code class="language-php">use Laminas\Http\Client;
 
 // Array of options
@@ -564,15 +566,14 @@ $response = $client-&gt;send();
 // If everything went well, you can now access the context again:
 $opts = stream_context_get_options($adapter-&gt;getStreamContext());
 echo $opts['ssl']['peer_certificate'];</code></pre>
-<blockquote>
-<h4 id="set-stream-context-options-prior-to-requests">Set stream context options prior to requests</h4>
-<p>Note that you must set any stream context options before using the adapter to
-perform actual requests. If no context is set before performing HTTP requests
-with the <code>Socket</code> adapter, a default stream context will be created. This
-context resource could be accessed after performing any requests using the
-<code>getStreamContext()</code> method.</p>
-</blockquote>
-<h2 id="the-proxy-adapter">The Proxy adapter</h2>
+<div class="admonition info">
+<p class="admonition-title">Set Stream Context Options Prior to Requests</p>
+<p>
+Note that you must set any stream context options before using the adapter to perform actual requests.
+If no context is set before performing HTTP requests with the <code>Socket</code> adapter, a default stream context will be created.
+This context resource could be accessed after performing any requests using the <code>getStreamContext()</code> method.</p>
+</div>
+<h2 id="the-proxy-adapter">The Proxy Adapter</h2>
 <p><code>Laminas\Http\Client\Adapter\Proxy</code> is similar to the default <code>Socket</code> adapter; the
 primary difference is that the connection is made through an HTTP proxy server
 instead of a direct connection to the target server. This allows usage of
@@ -634,7 +635,7 @@ these two options out.</p>
 authentication.  Possible values are similar to the ones accepted by the
 <code>Laminas\Http\Client::setAuth()</code> method. Currently, only basic authentication
 (<code>Laminas\Http\Client::AUTH_BASIC</code>) is supported.</p>
-<h3 id="using-laminashttpclient-behind-a-proxy-server">Using Laminas\Http\Client behind a proxy server</h3>
+<h3 id="using-laminashttpclient-behind-a-proxy-server">Using Laminas\Http\Client Behind a Proxy Server</h3>
 <pre class="highlight"><code class="language-php">use Laminas\Http\Client;
 
 // Set the configuration parameters
@@ -654,13 +655,11 @@ $client = new Client('http://www.example.com', $config);
 connection will fall back to a regular direct connection. This allows you to
 write your application in a way that allows a proxy to be used optionally,
 according to a configuration parameter.</p>
-<blockquote>
-<h3 id="access-to-stream-context">Access to stream context</h3>
-<p>Since the proxy adapter inherits from <code>Laminas\Http\Client\Adapter\Socket</code>, you
-can use the stream context access method (see
-<a href="#setting-stream-context-options-for-the-socket-adapter">above</a>) to set stream
-context options on <code>Proxy</code> connections.</p>
-</blockquote>
+<div class="admonition info">
+<p class="admonition-title">Access to Stream Context</p>
+<p>
+Since the proxy adapter inherits from <code>Laminas\Http\Client\Adapter\Socket</code>, you can use the stream context access method (see&gt; <a href="#setting-stream-context-options-for-the-socket-adapter">above</a>) to set stream context options on <code>Proxy</code> connections.</p>
+</div>
 <h2 id="the-curl-adapter">The cURL Adapter</h2>
 <p>cURL is a standard HTTP client library that is distributed with many operating
 systems and can be used in PHP via the cURL extension. It offers functionality
@@ -668,13 +667,13 @@ for many special cases which can occur for a HTTP client and make it a perfect
 choice for a HTTP adapter. It supports secure connections, proxies, and multiple
 authentication mechanisms. In particular, it is very performant with regards to
 transfering large files.</p>
-<blockquote>
-<h3 id="known-issue-with-libcurl-prior-to-7300">Known issue with libcurl prior to 7.30.0</h3>
-<p>There is an issue with <a href="https://github.com/bagder/curl/pull/60">incorrect headers length detection in libcurl</a>
-prior to 7.30.0. It leads to problems with removing the Transfer-Encoding
-header from the response. We encourage to update libcurl.</p>
-</blockquote>
-<h3 id="setting-curl-options">Setting cURL options</h3>
+<div class="admonition warning">
+<p class="admonition-title">Known Issue with libcurl Prior to 7.30.0</p>
+<p>
+There is an issue with <a href="https://github.com/bagder/curl/pull/60">incorrect headers length detection in libcurl</a> prior to 7.30.0.
+It leads to problems with removing the Transfer-Encoding header from the response. We encourage to update libcurl.</p>
+</div>
+<h3 id="setting-curl-options">Setting cURL Options</h3>
 <pre class="highlight"><code class="language-php">use Laminas\Http\Client;
 
 $config = [
@@ -733,7 +732,7 @@ method are:</p>
 </tr>
 </tbody>
 </table></div>
-<h3 id="transfering-files-by-handle">Transfering files by handle</h3>
+<h3 id="transfering-files-by-handle">Transfering Files by Handle</h3>
 <p>You can use cURL to transfer very large files over HTTP by filehandle.</p>
 <pre class="highlight"><code class="language-php">use Laminas\Http\Client;
 
@@ -751,7 +750,7 @@ $adapter-&gt;setOptions([
     ],
 ]);
 $client-&gt;send();</code></pre>
-<h2 id="the-test-adapter">The Test adapter</h2>
+<h2 id="the-test-adapter">The Test Adapter</h2>
 <p>Testing code that relies on HTTP connections poses difficulties.  For example,
 testing an application that pulls an RSS feed from a remote server will require
 a network connection, which is not always available.</p>
@@ -766,7 +765,7 @@ response as either text or a <code>Laminas\Http\Response</code> object. <code>se
 an individual response to always return from any request; <code>addResponse()</code> allows
 aggregating a sequence of responses. In both cases, responses are returned
 without performing actual HTTP requests.</p>
-<h3 id="testing-against-a-single-http-response-stub">Testing against a single HTTP response stub</h3>
+<h3 id="testing-against-a-single-http-response-stub">Testing Against a Single HTTP Response Stub</h3>
 <pre class="highlight"><code class="language-php">use Laminas\Http\Client;
 
 // Instantiate a new adapter and client
@@ -852,7 +851,7 @@ this. The initial 302 response is set up with the <code>setResponse()</code> met
 200 response to be returned next is added with the <code>addResponse()</code> method. After
 configuring the test adapter, inject the HTTP client containing the adapter into
 your object under test and test its behavior.</p>
-<h3 id="forcing-the-adapter-to-fail">Forcing the adapter to fail</h3>
+<h3 id="forcing-the-adapter-to-fail">Forcing the Adapter to Fail</h3>
 <p>If you need the adapter to fail on demand you can use
 <code>setNextRequestWillFail($flag)</code>. The method will cause the next call to
 <code>connect()</code> to throw an <code>Laminas\Http\Client\Adapter\Exception\RuntimeException</code>.
@@ -879,7 +878,7 @@ try {
 
 // Further requests will work as expected until
 // you call setNextRequestWillFail(true) again</code></pre>
-<h2 id="creating-your-own-connection-adapters">Creating your own connection adapters</h2>
+<h2 id="creating-your-own-connection-adapters">Creating Your Own Connection Adapters</h2>
 <p><code>Laminas\Http\Client</code> has been designed so that you can create and use your own
 connection adapters. You could, for example, create a connection adapter that
 uses persistent sockets, or a connection adapter with caching abilities, and use
@@ -1212,7 +1211,7 @@ $client = new Client([
                         <p>
                             <!--Built with love by the Laminas team with the help of our
                             <a href="https://github.com/laminas/laminas-http/graphs/contributors">contributors</a>.<br>-->
-                            &copy; 2024 <a href="https://getlaminas.org/">Laminas Project</a> a Series of LF Projects, LLC.
+                            &copy; 2025 <a href="https://getlaminas.org/">Laminas Project</a> a Series of LF Projects, LLC.
                         </p>
                     </div>
                 </div>

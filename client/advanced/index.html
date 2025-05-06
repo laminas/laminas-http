@@ -301,35 +301,35 @@
             <ul class="toc__list">
                 
                     <li class="toc__entry">
-                        <a href="#http-redirections" class="toc__link nav-link">HTTP redirections</a>
+                        <a href="#http-redirections" class="toc__link nav-link">HTTP Redirections</a>
                     </li>
                 
                     <li class="toc__entry">
-                        <a href="#adding-cookies-and-using-cookie-persistence" class="toc__link nav-link">Adding cookies and using cookie persistence</a>
+                        <a href="#adding-cookies-and-using-cookie-persistence" class="toc__link nav-link">Adding Cookies and Using Cookie Persistence</a>
                     </li>
                 
                     <li class="toc__entry">
-                        <a href="#setting-custom-request-headers" class="toc__link nav-link">Setting custom request headers</a>
+                        <a href="#setting-custom-request-headers" class="toc__link nav-link">Setting Custom Request Headers</a>
                     </li>
                 
                     <li class="toc__entry">
-                        <a href="#file-uploads" class="toc__link nav-link">File uploads</a>
+                        <a href="#file-uploads" class="toc__link nav-link">File Uploads</a>
                     </li>
                 
                     <li class="toc__entry">
-                        <a href="#sending-raw-post-data" class="toc__link nav-link">Sending raw POST data</a>
+                        <a href="#sending-raw-post-data" class="toc__link nav-link">Sending Raw POST Data</a>
                     </li>
                 
                     <li class="toc__entry">
-                        <a href="#http-authentication" class="toc__link nav-link">HTTP authentication</a>
+                        <a href="#http-authentication" class="toc__link nav-link">HTTP Authentication</a>
                     </li>
                 
                     <li class="toc__entry">
-                        <a href="#sending-multiple-requests-with-the-same-client" class="toc__link nav-link">Sending multiple requests with the same client</a>
+                        <a href="#sending-multiple-requests-with-the-same-client" class="toc__link nav-link">Sending Multiple Requests with the Same Client</a>
                     </li>
                 
                     <li class="toc__entry">
-                        <a href="#data-streaming" class="toc__link nav-link">Data streaming</a>
+                        <a href="#data-streaming" class="toc__link nav-link">Data Streaming</a>
                     </li>
                 
             </ul>
@@ -380,7 +380,7 @@
     
 
     <h1 id="advanced-usage">Advanced Usage</h1>
-<h2 id="http-redirections">HTTP redirections</h2>
+<h2 id="http-redirections">HTTP Redirections</h2>
 <p><code>Laminas\Http\Client</code> automatically handles HTTP redirections, and by default
 will follow up to 5 redirections. This can be changed by setting the
 <code>maxredirects</code> configuration parameter.</p>
@@ -399,7 +399,7 @@ $client-&gt;setOptions(['strictredirects' =&gt; true]);
 $client-&gt;setOptions(['strictredirects' =&gt; false]);</code></pre>
 <p>You can always get the number of redirections done after sending a request
 using the <code>getRedirectionsCount()</code> method.</p>
-<h2 id="adding-cookies-and-using-cookie-persistence">Adding cookies and using cookie persistence</h2>
+<h2 id="adding-cookies-and-using-cookie-persistence">Adding Cookies and Using Cookie Persistence</h2>
 <p><code>Laminas\Http\Client</code> provides an interface for adding cookies to your request, so
 that no direct header modification is required. Cookies can be added using
 either the addCookie() or <code>setCookies()</code> method. <code>addCookie()</code> can accept
@@ -453,7 +453,7 @@ $client-&gt;setUri('http://example.com/read_member_news.php');
 $client-&gt;setCookies($cookies-&gt;getMatchingCookies($client-&gt;getUri()));
 $client-&gt;setMethod('GET');</code></pre>
 <p>See the chapter on <a href="../cookies/">cookies</a> for more detail.</p>
-<h2 id="setting-custom-request-headers">Setting custom request headers</h2>
+<h2 id="setting-custom-request-headers">Setting Custom Request Headers</h2>
 <p>Setting custom headers is performed by first fetching the header container from
 the client's <code>Laminas\Http\Request</code> instance. This <code>Headers</code> container offers a
 number of methods for setting headers:</p>
@@ -498,7 +498,7 @@ $client-&gt;setHeaders([
     ['Accept-Encoding' =&gt; 'gzip,deflate'],
     'X-Powered-By: Laminas',
 ]);</code></pre>
-<h2 id="file-uploads">File uploads</h2>
+<h2 id="file-uploads">File Uploads</h2>
 <p>You can upload files through HTTP using the <code>setFileUpload()</code> method. This
 method takes a file name as the first parameter, a form name as the second
 parameter, and data as a third optional parameter. If the third data parameter
@@ -527,14 +527,13 @@ $client-&gt;send();</code></pre>
 file <code>/tmp/Backup.tar.gz</code> is uploaded to the server and will be available as
 <code>$_FILES['bufile']</code>. The content type will be guessed automatically if
 possible, defaulting to <code>application/octet-stream</code>.</p>
-<blockquote>
-<h3 id="uploading-files">Uploading files</h3>
-<p>When uploading files, the HTTP request <code>Content-Type</code> is automatically set to
-<code>multipart/form-data</code>.  Keep in mind that you must send a POST or PUT request
-in order to upload files; most servers will ignore the request body on other
-request methods.</p>
-</blockquote>
-<h2 id="sending-raw-post-data">Sending raw POST data</h2>
+<div class="admonition info">
+<p class="admonition-title">Uploading files</p>
+<p>
+When uploading files, the HTTP request <code>Content-Type</code> is automatically set to <code>multipart/form-data</code>.
+Keep in mind that you must send a POST or PUT request in order to upload files; most servers will ignore the request body on other request methods.</p>
+</div>
+<h2 id="sending-raw-post-data">Sending Raw POST Data</h2>
 <p>You can send raw POST data via <code>Laminas\Http\Client</code> using the <code>setRawBody()</code>
 method. This method takes one parameter: the data to send in the request body.
 When sending raw POST data, it is advisable to also set the encoding type using
@@ -550,14 +549,13 @@ $client-&gt;setEncType('text/xml');
 $client-&gt;send();</code></pre>
 <p>The data should be available on the server side through PHP's <code>php://input</code>
 stream.</p>
-<blockquote>
-<h3 id="raw-post-data-overrides-other-content">Raw POST data overrides other content</h3>
-<p>Setting raw POST data for a request will override any POST parameters or file
-uploads; you should not try to use both on the same request. Keep in mind
-that most servers will ignore the request body unless you send a POST
-request.</p>
-</blockquote>
-<h2 id="http-authentication">HTTP authentication</h2>
+<div class="admonition info">
+<p class="admonition-title">Raw Post Data Overrides Other Content</p>
+<p>
+Setting raw POST data for a request will override any POST parameters or file uploads; you should not try to use both on the same request.
+Keep in mind that most servers will ignore the request body unless you send a POST request.</p>
+</div>
+<h2 id="http-authentication">HTTP Authentication</h2>
 <p>Currently, <code>Laminas\Http\Client</code> only supports basic HTTP authentication. This feature is utilized
 using the <code>setAuth()</code> method, or by specifying a username and a password in the URI. The <code>setAuth()</code>
 method takes 3 parameters: the user name, the password and an optional authentication type
@@ -572,7 +570,7 @@ $client-&gt;setAuth('shahar', 'myPassword!');
 
 // You can also specify username and password in the URI
 $client-&gt;setUri('http://christer:secret@example.com');</code></pre>
-<h2 id="sending-multiple-requests-with-the-same-client">Sending multiple requests with the same client</h2>
+<h2 id="sending-multiple-requests-with-the-same-client">Sending Multiple Requests with the Same Client</h2>
 <p><code>Laminas\Http\Client</code> was also designed specifically to handle several consecutive
 requests with the same object. This is useful in cases where a script requires
 data to be fetched from several places, or when accessing a specific HTTP
@@ -586,12 +584,12 @@ overhead of opening and closing TCP connections to the server.</p>
 all the request-specific parameters are cleared, you should use the
 <code>resetParameters()</code> method. This ensures that GET and POST parameters, request
 body, and request headers are reset and are not reused in the next request.</p>
-<blockquote>
-<h3 id="resetting-parameters">Resetting parameters</h3>
-<p>Note that cookies are not reset by default when the <code>resetParameters()</code>
-method is used. To clean all cookies as well, use <code>resetParameters(true)</code>, or
-call <code>clearCookies()</code> after calling <code>resetParameters()</code>.</p>
-</blockquote>
+<div class="admonition info">
+<p class="admonition-title">Resetting parameters</p>
+<p>
+Note that cookies are not reset by default when the <code>resetParameters()</code> method is used.
+To clean all cookies as well, use <code>resetParameters(true)</code>, or call <code>clearCookies()</code> after calling <code>resetParameters()</code>.</p>
+</div>
 <p>Another feature designed specifically for consecutive requests is the
 <code>Laminas\Http\Cookies</code> object.  This "Cookie Jar" allow you to save cookies set by
 the server in a request, and send them back on consecutive requests
@@ -602,7 +600,7 @@ consecutive requests might be performed in more than one script in your
 application, it might be a good idea to store the <code>Cookies</code> object in the user's
 session. This way, you will only need to authenticate the user once every
 session.</p>
-<h3 id="performing-consecutive-requests-with-one-client">Performing consecutive requests with one client</h3>
+<h3 id="performing-consecutive-requests-with-one-client">Performing Consecutive Requests with One Client</h3>
 <pre class="highlight"><code class="language-php">use Laminas\Http\Client;
 use Laminas\Http\Cookies;
 
@@ -640,7 +638,7 @@ $response = $client-&gt;setMethod('GET')-&gt;send();
 
 // Store cookies in session, for next page
 $_SESSION['cookiejar'] = $cookieJar;</code></pre>
-<h2 id="data-streaming">Data streaming</h2>
+<h2 id="data-streaming">Data Streaming</h2>
 <p>By default, <code>Laminas\Http\Client</code> accepts and returns data as PHP strings.
 However, in many cases there are big files to be received, thus keeping them in
 memory might be unnecessary or too expensive. For these cases,
@@ -910,7 +908,7 @@ $client-&gt;setStream('my/downloads/myfile')-&gt;send();</code></pre>
                         <p>
                             <!--Built with love by the Laminas team with the help of our
                             <a href="https://github.com/laminas/laminas-http/graphs/contributors">contributors</a>.<br>-->
-                            &copy; 2024 <a href="https://getlaminas.org/">Laminas Project</a> a Series of LF Projects, LLC.
+                            &copy; 2025 <a href="https://getlaminas.org/">Laminas Project</a> a Series of LF Projects, LLC.
                         </p>
                     </div>
                 </div>
