@@ -8,7 +8,7 @@ namespace Laminas\Http;
 class HeaderLoader
 {
     /** @var array Pre-aliased Header plugins */
-    protected array $plugins = [
+    public array $plugins = [
         'accept'                  => Header\Accept::class,
         'acceptcharset'           => Header\AcceptCharset::class,
         'acceptencoding'          => Header\AcceptEncoding::class,
