@@ -2,15 +2,13 @@
 
 namespace Laminas\Http;
 
-use Laminas\Loader\PluginClassLoader;
-
 /**
  * Plugin Class Loader implementation for HTTP headers
  */
-class HeaderLoader extends PluginClassLoader
+class HeaderLoader
 {
     /** @var array Pre-aliased Header plugins */
-    protected $plugins = [
+    protected array $plugins = [
         'accept'                  => Header\Accept::class,
         'acceptcharset'           => Header\AcceptCharset::class,
         'acceptencoding'          => Header\AcceptEncoding::class,
