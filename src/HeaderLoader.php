@@ -2,13 +2,15 @@
 
 namespace Laminas\Http;
 
+use function array_key_exists;
+
 /**
  * Plugin Class Loader implementation for HTTP headers
  */
 class HeaderLoader
 {
     /** @var array Pre-aliased Header plugins */
-    public array $plugins = [
+    protected array $plugins = [
         'accept'                  => Header\Accept::class,
         'acceptcharset'           => Header\AcceptCharset::class,
         'acceptencoding'          => Header\AcceptEncoding::class,
@@ -67,4 +69,13 @@ class HeaderLoader
         'warning'                 => Header\Warning::class,
         'wwwauthenticate'         => Header\WWWAuthenticate::class,
     ];
+
+    public function loader(string $header): string|null
+    {
+        if (! array_key_exists($header, $this->plugins)) {
+            return null;
+        }
+
+        return $this->plugins[$header];
+    }
 }

@@ -239,7 +239,7 @@ class Headers implements Countable, Iterator
 
         // Header exists, and is a multi-value header; append key and header to
         // list (as multi-value headers are aggregated on retrieval)
-        $class = $this->getPluginClassLoader()->plugins[str_replace('-', '', $key)] ?: GenericHeader::class;
+        $class = $this->getPluginClassLoader()->loader(str_replace('-', '', $key)) ?: GenericHeader::class;
         if (in_array(MultipleHeaderInterface::class, class_implements($class, true))) {
             $this->headersKeys[] = $key;
             $this->headers[]     = $header;
@@ -295,7 +295,7 @@ class Headers implements Countable, Iterator
             return false;
         }
 
-        $class = $this->getPluginClassLoader()->plugins[str_replace('-', '', $key)] ?: GenericHeader::class;
+        $class = $this->getPluginClassLoader()->loader(str_replace('-', '', $key)) ?: GenericHeader::class;
 
         if (in_array(MultipleHeaderInterface::class, class_implements($class, true))) {
             $headers = [];
@@ -485,7 +485,7 @@ class Headers implements Countable, Iterator
 
         $key = $this->headersKeys[$index];
         /** @var Header\HeaderInterface $class */
-        $class = $this->getPluginClassLoader()->plugins[str_replace('-', '', $key)];
+        $class = $this->getPluginClassLoader()->loader(str_replace('-', '', $key));
         if ($isGeneric || ! $class) {
             $class = GenericHeader::class;
         }
