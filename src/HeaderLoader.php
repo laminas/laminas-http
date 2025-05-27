@@ -13,7 +13,7 @@ use function class_exists;
 class HeaderLoader
 {
     /** @var array Pre-aliased Header plugins */
-    protected $plugins = [
+    protected array $plugins = [
         'accept'                  => Header\Accept::class,
         'acceptcharset'           => Header\AcceptCharset::class,
         'acceptencoding'          => Header\AcceptEncoding::class,
