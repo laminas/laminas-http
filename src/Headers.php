@@ -43,8 +43,7 @@ use function trim;
  */
 class Headers implements Countable, Iterator
 {
-    /** @var HeaderLoader */
-    protected $pluginClassLoader;
+    private HeaderLoader $pluginClassLoader;
 
     /** @var array key names for $headers array */
     protected $headersKeys = [];
