@@ -355,7 +355,7 @@ class Socket implements HttpAdapter, StreamInterface
                         $this->enableCryptoTransport($this->config['ssltransport'], $this->socket, $host);
                     } catch (AdapterException\RuntimeException $e) {
                         $this->close();
-                        throw  $e;
+                        throw $e;
                     }
                 }
 
