@@ -629,7 +629,7 @@ class ClientTest extends TestCase
     {
         $tmpFile = tempnam(sys_get_temp_dir(), 'stream');
 
-        $client = new Client('https://www.gnu.org/licenses/gpl-3.0.txt');
+        $client = new Client('https://docs.laminas.dev/');
         $client->setAdapter($adapter);
         $client->setStream($tmpFile);
         $client->send();
