@@ -133,10 +133,8 @@ class Headers implements Countable, Iterator
 
     /**
      * Return an instance of a PluginClassLocator, lazyload and inject map if necessary
-     *
-     * @return HeaderLoader
      */
-    public function getPluginClassLoader()
+    public function getPluginClassLoader(): HeaderLoader
     {
         if ($this->pluginClassLoader === null) {
             $this->pluginClassLoader = new HeaderLoader();

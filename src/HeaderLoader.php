@@ -10,9 +10,9 @@ use function class_exists;
 /**
  * Plugin Class Loader implementation for HTTP headers
  */
-class HeaderLoader
+final class HeaderLoader
 {
-    /** @var array Pre-aliased Header plugins */
+    /** @var array<non-empty-string, class-string> */
     protected array $plugins = [
         'accept'                  => Header\Accept::class,
         'acceptcharset'           => Header\AcceptCharset::class,
@@ -73,6 +73,7 @@ class HeaderLoader
         'wwwauthenticate'         => Header\WWWAuthenticate::class,
     ];
 
+    /** @return class-string|null */
     public function loader(string $header): string|null
     {
         if (! array_key_exists($header, $this->plugins)) {
@@ -82,6 +83,10 @@ class HeaderLoader
         return $this->plugins[$header];
     }
 
+    /**
+     * @param non-empty-string $header
+     * @param class-string $class
+     */
     public function registerPlugin(string $header, string $class): void
     {
         if (array_key_exists($header, $this->plugins)) {
@@ -89,7 +94,7 @@ class HeaderLoader
         }
 
         if (! class_exists($class)) {
-            throw new InvalidArgumentException("Class " . $class . ' does not exists');
+            throw new InvalidArgumentException("Class " . $class . ' does not exist');
         }
 
         $this->plugins[$header] = $class;
