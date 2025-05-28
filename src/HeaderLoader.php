@@ -2,15 +2,18 @@
 
 namespace Laminas\Http;
 
-use Laminas\Loader\PluginClassLoader;
+use Laminas\Http\Exception\InvalidArgumentException;
+
+use function array_key_exists;
+use function class_exists;
 
 /**
  * Plugin Class Loader implementation for HTTP headers
  */
-class HeaderLoader extends PluginClassLoader
+final class HeaderLoader
 {
-    /** @var array Pre-aliased Header plugins */
-    protected $plugins = [
+    /** @var array<non-empty-string, class-string> */
+    private array $plugins = [
         'accept'                  => Header\Accept::class,
         'acceptcharset'           => Header\AcceptCharset::class,
         'acceptencoding'          => Header\AcceptEncoding::class,
@@ -69,4 +72,31 @@ class HeaderLoader extends PluginClassLoader
         'warning'                 => Header\Warning::class,
         'wwwauthenticate'         => Header\WWWAuthenticate::class,
     ];
+
+    /** @return class-string|null */
+    public function loader(string $header): string|null
+    {
+        if (! array_key_exists($header, $this->plugins)) {
+            return null;
+        }
+
+        return $this->plugins[$header];
+    }
+
+    /**
+     * @param non-empty-string $header
+     * @param class-string $class
+     */
+    public function registerPlugin(string $header, string $class): void
+    {
+        if (array_key_exists($header, $this->plugins)) {
+            throw new InvalidArgumentException("Plugin already exists");
+        }
+
+        if (! class_exists($class)) {
+            throw new InvalidArgumentException("Class " . $class . ' does not exist');
+        }
+
+        $this->plugins[$header] = $class;
+    }
 }

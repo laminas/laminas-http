@@ -8,7 +8,6 @@ use Iterator;
 use Laminas\Http\Header\Exception;
 use Laminas\Http\Header\GenericHeader;
 use Laminas\Http\Header\MultipleHeaderInterface;
-use Laminas\Loader\PluginClassLocator;
 // phpcs:ignore SlevomatCodingStandard.Namespaces.UnusedUses.UnusedUse
 use ReturnTypeWillChange;
 use Traversable;
@@ -44,8 +43,7 @@ use function trim;
  */
 class Headers implements Countable, Iterator
 {
-    /** @var PluginClassLocator */
-    protected $pluginClassLoader;
+    private HeaderLoader|null $pluginClassLoader = null;
 
     /** @var array key names for $headers array */
     protected $headersKeys = [];
@@ -126,7 +124,7 @@ class Headers implements Countable, Iterator
      *
      * @return $this
      */
-    public function setPluginClassLoader(PluginClassLocator $pluginClassLoader)
+    public function setPluginClassLoader(HeaderLoader $pluginClassLoader)
     {
         $this->pluginClassLoader = $pluginClassLoader;
         return $this;
@@ -134,10 +132,8 @@ class Headers implements Countable, Iterator
 
     /**
      * Return an instance of a PluginClassLocator, lazyload and inject map if necessary
-     *
-     * @return PluginClassLocator
      */
-    public function getPluginClassLoader()
+    public function getPluginClassLoader(): HeaderLoader
     {
         if ($this->pluginClassLoader === null) {
             $this->pluginClassLoader = new HeaderLoader();
@@ -240,7 +236,7 @@ class Headers implements Countable, Iterator
 
         // Header exists, and is a multi-value header; append key and header to
         // list (as multi-value headers are aggregated on retrieval)
-        $class = $this->getPluginClassLoader()->load(str_replace('-', '', $key)) ?: GenericHeader::class;
+        $class = $this->getPluginClassLoader()->loader(str_replace('-', '', $key)) ?: GenericHeader::class;
         if (in_array(MultipleHeaderInterface::class, class_implements($class, true))) {
             $this->headersKeys[] = $key;
             $this->headers[]     = $header;
@@ -296,7 +292,7 @@ class Headers implements Countable, Iterator
             return false;
         }
 
-        $class = $this->getPluginClassLoader()->load(str_replace('-', '', $key)) ?: GenericHeader::class;
+        $class = $this->getPluginClassLoader()->loader(str_replace('-', '', $key)) ?: GenericHeader::class;
 
         if (in_array(MultipleHeaderInterface::class, class_implements($class, true))) {
             $headers = [];
@@ -486,7 +482,7 @@ class Headers implements Countable, Iterator
 
         $key = $this->headersKeys[$index];
         /** @var Header\HeaderInterface $class */
-        $class = $this->getPluginClassLoader()->load(str_replace('-', '', $key));
+        $class = $this->getPluginClassLoader()->loader(str_replace('-', '', $key));
         if ($isGeneric || ! $class) {
             $class = GenericHeader::class;
         }
