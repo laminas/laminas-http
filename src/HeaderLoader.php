@@ -13,7 +13,7 @@ use function class_exists;
 final class HeaderLoader
 {
     /** @var array<non-empty-string, class-string> */
-    protected array $plugins = [
+    private array $plugins = [
         'accept'                  => Header\Accept::class,
         'acceptcharset'           => Header\AcceptCharset::class,
         'acceptencoding'          => Header\AcceptEncoding::class,
