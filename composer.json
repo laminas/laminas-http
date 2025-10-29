@@ -27,7 +27,7 @@
         "laminas/laminas-loader": "^2.10",
         "laminas/laminas-stdlib": "^3.21",
         "laminas/laminas-uri": "^2.13",
-        "laminas/laminas-validator": "^2.15 || ^3.9"
+        "laminas/laminas-validator": "^2.15 || ^3.0"
     },
     "require-dev": {
         "ext-curl": "*",
