@@ -21,10 +21,8 @@ class ContentSecurityPolicy implements MultipleHeaderInterface
 {
     /**
      * Valid directive names
-     *
-     * @var array
      */
-    protected $validDirectiveNames = [
+    protected array $validDirectiveNames = [
         // As per http://www.w3.org/TR/CSP/#directives
         // Fetch directives
         'child-src',
@@ -36,7 +34,6 @@ class ContentSecurityPolicy implements MultipleHeaderInterface
         'manifest-src',
         'media-src',
         'object-src',
-        'prefetch-src',
         'script-src',
         'script-src-elem',
         'script-src-attr',
@@ -47,7 +44,6 @@ class ContentSecurityPolicy implements MultipleHeaderInterface
 
         // Document directives
         'base-uri',
-        'plugin-types',
         'sandbox',
 
         // Navigation directives
@@ -60,8 +56,6 @@ class ContentSecurityPolicy implements MultipleHeaderInterface
         'report-to',
 
         // Other directives
-        'block-all-mixed-content',
-        'require-sri-for',
         'require-trusted-types-for',
         'trusted-types',
         'upgrade-insecure-requests',
