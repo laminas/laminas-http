@@ -27,9 +27,11 @@ use ReflectionProperty;
 use function base64_encode;
 use function count;
 use function file_get_contents;
+use function getenv;
 use function ini_get;
 use function ini_set;
 use function json_encode;
+use function sprintf;
 use function strlen;
 use function sys_get_temp_dir;
 use function tempnam;
@@ -123,6 +125,7 @@ class ClientTest extends TestCase
 
     public function testIfZeroValueCookiesCanBeSet(): void
     {
+        $this->expectNotToPerformAssertions();
         $client = new Client();
         $client->addCookie('test', 0);
         $client->addCookie('test2', '0');
@@ -627,6 +630,14 @@ class ClientTest extends TestCase
     #[DataProvider('adapterWithStreamSupport')]
     public function testStreamCompression(AdapterInterface $adapter): void
     {
+        // Add this check at the beginning
+        if (! getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE')) {
+            $this->markTestSkipped(sprintf(
+                '%s online tests are not enabled',
+                Client::class
+            ));
+        }
+
         $tmpFile = tempnam(sys_get_temp_dir(), 'stream');
 
         $client = new Client('https://www.gnu.org/licenses/gpl-3.0.txt');
