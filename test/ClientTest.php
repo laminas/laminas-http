@@ -629,7 +629,8 @@ class ClientTest extends TestCase
     #[DataProvider('adapterWithStreamSupport')]
     public function testStreamCompression(AdapterInterface $adapter): void
     {
-        if (! filter_var(getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE'), FILTER_VALIDATE_BOOLEAN)) {
+        $online = getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE');
+        if (! $online || ! filter_var($online, FILTER_VALIDATE_BOOLEAN)) {
             $this->markTestSkipped(sprintf(
                 '%s online tests are not enabled',
                 Client::class
