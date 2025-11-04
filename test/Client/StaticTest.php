@@ -496,7 +496,27 @@ class StaticTest extends TestCase
     public function testOpenTempStreamWithValidFileDoesntThrowsException(): void
     {
         $online = getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE');
-        if (! $online || ! filter_var($online, FILTER_VALIDATE_BOOLEAN)) {
+        $onlineType = gettype($online);
+        $onlineValue = var_export($online, true);
+        
+        // Handle both false (variable not set) and string values
+        $isOnline = false;
+        if ($online !== false && $online !== '') {
+            $filterResult = filter_var($online, FILTER_VALIDATE_BOOLEAN);
+            $isOnline = $filterResult === true;
+        }
+        
+        $shouldSkip = ! $isOnline;
+        
+        error_log(sprintf(
+            '[testOpenTempStreamWithValidFileDoesntThrowsException] online=%s (type=%s), isOnline=%s, shouldSkip=%s',
+            $onlineValue,
+            $onlineType,
+            var_export($isOnline, true),
+            var_export($shouldSkip, true)
+        ));
+        
+        if ($shouldSkip) {
             $this->markTestSkipped(sprintf(
                 '%s online tests are not enabled',
                 HTTPClient::class
