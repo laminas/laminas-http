@@ -6,6 +6,8 @@ use ArrayIterator;
 use Laminas\Http\Client;
 use Laminas\Http\Client\Adapter\AdapterInterface;
 use Laminas\Http\Client\Adapter\Curl;
+use Laminas\Http\Client\Adapter\Exception\RuntimeException as AdapterRuntimeException;
+use Laminas\Http\Client\Adapter\Exception\TimeoutException;
 use Laminas\Http\Client\Adapter\Proxy;
 use Laminas\Http\Client\Adapter\Socket;
 use Laminas\Http\Client\Adapter\Test;
@@ -27,17 +29,14 @@ use ReflectionProperty;
 use function base64_encode;
 use function count;
 use function file_get_contents;
-use function filter_var;
-use function getenv;
 use function ini_get;
 use function ini_set;
 use function json_encode;
 use function sprintf;
 use function strlen;
+use function strpos;
 use function sys_get_temp_dir;
 use function tempnam;
-
-use const FILTER_VALIDATE_BOOLEAN;
 
 class ClientTest extends TestCase
 {
@@ -444,7 +443,7 @@ class ClientTest extends TestCase
         $client->setAuth('username', 'password', ExtendedClient::AUTH_CUSTOM);
 
         $reflectedProperty = new ReflectionProperty($client, 'auth');
-        $customAuth = $reflectedProperty->getValue($client);
+        $customAuth        = $reflectedProperty->getValue($client);
 
         $this->assertEquals(
             [
@@ -629,40 +628,34 @@ class ClientTest extends TestCase
     #[DataProvider('adapterWithStreamSupport')]
     public function testStreamCompression(AdapterInterface $adapter): void
     {
-        $online = getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE');
-        $onlineType = gettype($online);
-        $onlineValue = var_export($online, true);
-        
-        // Handle both false (variable not set) and string values
-        $isOnline = false;
-        if ($online !== false && $online !== '') {
-            $filterResult = filter_var($online, FILTER_VALIDATE_BOOLEAN);
-            $isOnline = $filterResult === true;
-        }
-        
-        $shouldSkip = ! $isOnline;
-        
-        error_log(sprintf(
-            '[testStreamCompression] online=%s (type=%s), isOnline=%s, shouldSkip=%s',
-            $onlineValue,
-            $onlineType,
-            var_export($isOnline, true),
-            var_export($shouldSkip, true)
-        ));
-        
-        if ($shouldSkip) {
-            $this->markTestSkipped(sprintf(
-                '%s online tests are not enabled',
-                Client::class
-            ));
-        }
-
         $tmpFile = tempnam(sys_get_temp_dir(), 'stream');
 
         $client = new Client('https://www.gnu.org/licenses/gpl-3.0.txt');
         $client->setAdapter($adapter);
         $client->setStream($tmpFile);
-        $client->send();
+
+        try {
+            $client->send();
+        } catch (TimeoutException $e) {
+            $this->markTestSkipped(sprintf(
+                'Network timeout connecting to www.gnu.org: %s',
+                $e->getMessage()
+            ));
+        } catch (AdapterRuntimeException $e) {
+            // Check if it's a connection timeout/failure
+            if (
+                strpos($e->getMessage(), 'Unable to connect') !== false ||
+                strpos($e->getMessage(), 'Connection timed out') !== false ||
+                strpos($e->getMessage(), 'timed out') !== false
+            ) {
+                $this->markTestSkipped(sprintf(
+                    'Network connection failed: %s',
+                    $e->getMessage()
+                ));
+            }
+            // Re-throw if it's a different kind of runtime exception
+            throw $e;
+        }
 
         $response = $client->getResponse();
 
