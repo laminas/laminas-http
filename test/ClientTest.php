@@ -6,8 +6,6 @@ use ArrayIterator;
 use Laminas\Http\Client;
 use Laminas\Http\Client\Adapter\AdapterInterface;
 use Laminas\Http\Client\Adapter\Curl;
-use Laminas\Http\Client\Adapter\Exception\RuntimeException as AdapterRuntimeException;
-use Laminas\Http\Client\Adapter\Exception\TimeoutException;
 use Laminas\Http\Client\Adapter\Proxy;
 use Laminas\Http\Client\Adapter\Socket;
 use Laminas\Http\Client\Adapter\Test;
@@ -32,9 +30,7 @@ use function file_get_contents;
 use function ini_get;
 use function ini_set;
 use function json_encode;
-use function sprintf;
 use function strlen;
-use function strpos;
 use function sys_get_temp_dir;
 use function tempnam;
 
@@ -126,7 +122,6 @@ class ClientTest extends TestCase
 
     public function testIfZeroValueCookiesCanBeSet(): void
     {
-        $this->expectNotToPerformAssertions();
         $client = new Client();
         $client->addCookie('test', 0);
         $client->addCookie('test2', '0');
@@ -630,32 +625,10 @@ class ClientTest extends TestCase
     {
         $tmpFile = tempnam(sys_get_temp_dir(), 'stream');
 
-        $client = new Client('https://www.gnu.org/licenses/gpl-3.0.txt');
+        $client = new Client('https://docs.laminas.dev/');
         $client->setAdapter($adapter);
         $client->setStream($tmpFile);
-
-        try {
-            $client->send();
-        } catch (TimeoutException $e) {
-            $this->markTestSkipped(sprintf(
-                'Network timeout connecting to www.gnu.org: %s',
-                $e->getMessage()
-            ));
-        } catch (AdapterRuntimeException $e) {
-            // Check if it's a connection timeout/failure
-            if (
-                strpos($e->getMessage(), 'Unable to connect') !== false ||
-                strpos($e->getMessage(), 'Connection timed out') !== false ||
-                strpos($e->getMessage(), 'timed out') !== false
-            ) {
-                $this->markTestSkipped(sprintf(
-                    'Network connection failed: %s',
-                    $e->getMessage()
-                ));
-            }
-            // Re-throw if it's a different kind of runtime exception
-            throw $e;
-        }
+        $client->send();
 
         $response = $client->getResponse();
 
