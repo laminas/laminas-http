@@ -27,6 +27,7 @@ use ReflectionProperty;
 use function base64_encode;
 use function count;
 use function file_get_contents;
+use function filter_var;
 use function getenv;
 use function ini_get;
 use function ini_set;
@@ -35,6 +36,8 @@ use function sprintf;
 use function strlen;
 use function sys_get_temp_dir;
 use function tempnam;
+
+use const FILTER_VALIDATE_BOOLEAN;
 
 class ClientTest extends TestCase
 {
@@ -90,7 +93,6 @@ class ClientTest extends TestCase
     public function testAcceptEncodingHeaderWorksProperly(): void
     {
         $method = new ReflectionMethod(Client::class, 'prepareHeaders');
-        $method->setAccessible(true);
 
         $requestString = 'GET http://www.domain.com/index.php HTTP/1.1' . "\r\n"
             . 'Host: domain.com' . "\r\n"
@@ -393,7 +395,6 @@ class ClientTest extends TestCase
 
         $client                   = new Client();
         $prepareHeadersReflection = new ReflectionMethod($client, 'prepareHeaders');
-        $prepareHeadersReflection->setAccessible(true);
 
         $request = new Request();
         $request->getHeaders()->addHeaderLine('content-type', 'application/json');
@@ -419,7 +420,6 @@ class ClientTest extends TestCase
 
         $client                   = new Client();
         $prepareHeadersReflection = new ReflectionMethod($client, 'prepareHeaders');
-        $prepareHeadersReflection->setAccessible(true);
 
         $request = new Request();
         $request->getHeaders()->addHeaderLine('Authorization: Digest');
@@ -444,7 +444,6 @@ class ClientTest extends TestCase
         $client->setAuth('username', 'password', ExtendedClient::AUTH_CUSTOM);
 
         $reflectedProperty = new ReflectionProperty($client, 'auth');
-        $reflectedProperty->setAccessible(true);
         $customAuth = $reflectedProperty->getValue($client);
 
         $this->assertEquals(
@@ -630,8 +629,7 @@ class ClientTest extends TestCase
     #[DataProvider('adapterWithStreamSupport')]
     public function testStreamCompression(AdapterInterface $adapter): void
     {
-        // Add this check at the beginning
-        if (! getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE')) {
+        if (! filter_var(getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE'), FILTER_VALIDATE_BOOLEAN)) {
             $this->markTestSkipped(sprintf(
                 '%s online tests are not enabled',
                 Client::class
@@ -654,7 +652,6 @@ class ClientTest extends TestCase
     {
         $client = new Client();
         $r      = new ReflectionProperty($client, 'config');
-        $r->setAccessible(true);
         $config = $r->getValue($client);
         $this->assertIsArray($config);
         $this->assertArrayHasKey('useragent', $config);

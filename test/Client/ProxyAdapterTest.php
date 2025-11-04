@@ -105,6 +105,7 @@ class ProxyAdapterTest extends SocketTest
 
     public function testGetLastRequest(): void
     {
+        $this->expectNotToPerformAssertions();
         // This test will never work for the proxy adapter (and shouldn't!)
         // because the proxy server modifies the request which is sent back in
         // the TRACE response

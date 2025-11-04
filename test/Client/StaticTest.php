@@ -28,6 +28,7 @@ use function fclose;
 use function file;
 use function file_get_contents;
 use function filesize;
+use function filter_var;
 use function getenv;
 use function gettype;
 use function is_file;
@@ -41,6 +42,7 @@ use function unlink;
 use function urlencode;
 
 use const DIRECTORY_SEPARATOR;
+use const FILTER_VALIDATE_BOOLEAN;
 
 /**
  * This Testsuite includes all Laminas_Http_Client tests that do not rely
@@ -493,12 +495,13 @@ class StaticTest extends TestCase
     #[Group('Laminas-9685')]
     public function testOpenTempStreamWithValidFileDoesntThrowsException(): void
     {
-        if (! getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE')) {
+        if (! filter_var(getenv('TESTS_LAMINAS_HTTP_CLIENT_ONLINE'), FILTER_VALIDATE_BOOLEAN)) {
             $this->markTestSkipped(sprintf(
                 '%s online tests are not enabled',
                 HTTPClient::class
             ));
         }
+        $this->expectNotToPerformAssertions();
         $url    = 'http://www.example.com/';
         $config = [
             'outputstream' => realpath(__DIR__ . '/_files/laminas_http_client_stream.file'),
