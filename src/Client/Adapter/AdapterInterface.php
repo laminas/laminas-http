@@ -51,6 +51,7 @@ interface AdapterInterface
 
     /**
      * Close the connection to the server
+     *
      * @return void
      */
     public function close();
