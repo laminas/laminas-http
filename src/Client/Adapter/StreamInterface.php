@@ -15,6 +15,7 @@ interface StreamInterface
      * This function sets output stream where the result will be stored.
      *
      * @param resource $stream Stream to write the output to
+     * @return self
      */
     public function setOutputStream($stream);
 }
