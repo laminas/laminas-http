@@ -88,7 +88,6 @@ class ClientTest extends TestCase
     public function testAcceptEncodingHeaderWorksProperly(): void
     {
         $method = new ReflectionMethod(Client::class, 'prepareHeaders');
-        $method->setAccessible(true);
 
         $requestString = 'GET http://www.domain.com/index.php HTTP/1.1' . "\r\n"
             . 'Host: domain.com' . "\r\n"
@@ -390,7 +389,6 @@ class ClientTest extends TestCase
 
         $client                   = new Client();
         $prepareHeadersReflection = new ReflectionMethod($client, 'prepareHeaders');
-        $prepareHeadersReflection->setAccessible(true);
 
         $request = new Request();
         $request->getHeaders()->addHeaderLine('content-type', 'application/json');
@@ -416,7 +414,6 @@ class ClientTest extends TestCase
 
         $client                   = new Client();
         $prepareHeadersReflection = new ReflectionMethod($client, 'prepareHeaders');
-        $prepareHeadersReflection->setAccessible(true);
 
         $request = new Request();
         $request->getHeaders()->addHeaderLine('Authorization: Digest');
@@ -441,8 +438,7 @@ class ClientTest extends TestCase
         $client->setAuth('username', 'password', ExtendedClient::AUTH_CUSTOM);
 
         $reflectedProperty = new ReflectionProperty($client, 'auth');
-        $reflectedProperty->setAccessible(true);
-        $customAuth = $reflectedProperty->getValue($client);
+        $customAuth        = $reflectedProperty->getValue($client);
 
         $this->assertEquals(
             [
@@ -629,7 +625,7 @@ class ClientTest extends TestCase
     {
         $tmpFile = tempnam(sys_get_temp_dir(), 'stream');
 
-        $client = new Client('https://www.gnu.org/licenses/gpl-3.0.txt');
+        $client = new Client('https://docs.laminas.dev/');
         $client->setAdapter($adapter);
         $client->setStream($tmpFile);
         $client->send();
@@ -643,7 +639,6 @@ class ClientTest extends TestCase
     {
         $client = new Client();
         $r      = new ReflectionProperty($client, 'config');
-        $r->setAccessible(true);
         $config = $r->getValue($client);
         $this->assertIsArray($config);
         $this->assertArrayHasKey('useragent', $config);

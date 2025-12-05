@@ -185,6 +185,7 @@ class SocketTest extends CommonHttpTests
     #[DataProvider('provideValidTimeoutConfig')]
     public function testPassValidTimeout(int|string $timeout): void
     {
+        $this->expectNotToPerformAssertions();
         $adapter = new Adapter\Socket();
         $adapter->setOptions(['timeout' => $timeout]);
 
@@ -332,6 +333,7 @@ class SocketTest extends CommonHttpTests
     #[RunInSeparateProcess]
     public function testAllowsZeroWrittenBytes(): void
     {
+        $this->expectNotToPerformAssertions();
         $this->adapter->connect('localhost');
         require_once __DIR__ . '/_files/fwrite.php';
         $this->adapter->write('GET', new Uri('tcp://localhost:80/'), '1.1', [], 'test body');

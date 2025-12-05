@@ -499,6 +499,7 @@ class StaticTest extends TestCase
                 HTTPClient::class
             ));
         }
+        $this->expectNotToPerformAssertions();
         $url    = 'http://www.example.com/';
         $config = [
             'outputstream' => realpath(__DIR__ . '/_files/laminas_http_client_stream.file'),

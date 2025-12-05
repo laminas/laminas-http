@@ -17,6 +17,7 @@ class GenericHeaderTest extends TestCase
     #[DataProvider('validFieldNameChars')]
     public function testValidFieldName(string $name): void
     {
+        $this->expectNotToPerformAssertions();
         try {
             new GenericHeader($name);
         } catch (InvalidArgumentException $e) {
