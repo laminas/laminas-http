@@ -50,8 +50,8 @@ final class CurlTest extends TestCase
     #[DataProvider('floatHttpVersions')]
     public function testWriteCanHandleFloatHttpVersion(int $expectedCurlOption, float $version): void
     {
-        $this->adapter->connect('example.org');
-        $this->adapter->write('GET', new Uri('http://example.org:80/'), $version);
+        $this->adapter->connect('getlaminas.org');
+        $this->adapter->write('GET', new Uri('http://getlaminas.org:80/'), $version);
         $handle = $this->adapter->getHandle();
         self::assertNotNull($handle);
         self::assertEquals($expectedCurlOption, curl_getinfo($handle, CURLINFO_HTTP_VERSION));
@@ -60,8 +60,8 @@ final class CurlTest extends TestCase
     #[DataProvider('httpVersions')]
     public function testWriteCanHandleStringHttpVersion(int $expectedCurlOption, string $version): void
     {
-        $this->adapter->connect('example.org');
-        $this->adapter->write('GET', new Uri('http://example.org:80/'), $version);
+        $this->adapter->connect('getlaminas.org');
+        $this->adapter->write('GET', new Uri('http://getlaminas.org:80/'), $version);
         $handle = $this->adapter->getHandle();
         self::assertNotNull($handle);
         self::assertEquals($expectedCurlOption, curl_getinfo($handle, CURLINFO_HTTP_VERSION));

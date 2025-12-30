@@ -57,21 +57,25 @@ class TestAdapterTest extends TestCase
 
     public function testSetConfigReturnsQuietly(): void
     {
+        $this->expectNotToPerformAssertions();
         $this->adapter->setOptions(['foo' => 'bar']);
     }
 
     public function testConnectReturnsQuietly(): void
     {
+        $this->expectNotToPerformAssertions();
         $this->adapter->connect('http://foo');
     }
 
     public function testCloseReturnsQuietly(): void
     {
+        $this->expectNotToPerformAssertions();
         $this->adapter->close();
     }
 
     public function testFailRequestOnDemand(): void
     {
+        $this->expectNotToPerformAssertions();
         $this->adapter->setNextRequestWillFail(true);
 
         try {

@@ -132,6 +132,8 @@ class AcceptTest extends TestCase
 
     public function testPrios(): void
     {
+        $this->expectNotToPerformAssertions();
+
         $values = [
             'invalidPrio' => false,
             '-0.0001'     => false,
@@ -458,6 +460,7 @@ class AcceptTest extends TestCase
 
     public function testGetEmptyFieldValue(): void
     {
+        $this->expectNotToPerformAssertions();
         $accept = new Accept();
         $accept->getFieldValue();
     }

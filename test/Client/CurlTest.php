@@ -131,6 +131,7 @@ class CurlTest extends CommonHttpTests
     #[DataProvider('provideValidTimeoutConfig')]
     public function testPassValidTimeout(int|string $timeout): void
     {
+        $this->expectNotToPerformAssertions();
         $adapter = new Adapter\Curl();
         $adapter->setOptions(['timeout' => $timeout]);
 

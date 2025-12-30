@@ -16,6 +16,7 @@ interface AdapterInterface
      * Set the configuration array for the adapter
      *
      * @param array $options
+     * @return void
      */
     public function setOptions($options = []);
 
@@ -25,6 +26,7 @@ interface AdapterInterface
      * @param string  $host
      * @param int     $port
      * @param  bool $secure
+     * @return void
      */
     public function connect($host, $port = 80, $secure = false);
 
@@ -49,6 +51,8 @@ interface AdapterInterface
 
     /**
      * Close the connection to the server
+     *
+     * @return void
      */
     public function close();
 }
