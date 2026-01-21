@@ -10,11 +10,49 @@ namespace Laminas\Http\Header;
 class ContentSecurityPolicyReportOnly extends ContentSecurityPolicy
 {
     /**
-     * Get the header name
-     *
-     * @return string
+     * Valid directive names
      */
-    public function getFieldName()
+    protected array $validDirectiveNames = [
+        // As per http://www.w3.org/TR/CSP/#directives
+        // Fetch directives
+        'child-src',
+        'connect-src',
+        'default-src',
+        'font-src',
+        'frame-src',
+        'img-src',
+        'manifest-src',
+        'media-src',
+        'object-src',
+        'script-src',
+        'script-src-elem',
+        'script-src-attr',
+        'style-src',
+        'style-src-elem',
+        'style-src-attr',
+        'worker-src',
+
+        // Document directives
+        'base-uri',
+
+        // Navigation directives
+        'form-action',
+        'frame-ancestors',
+        'navigate-to',
+
+        // Reporting directives
+        'report-uri',
+        'report-to',
+
+        // Other directives
+        'require-trusted-types-for',
+        'trusted-types',
+    ];
+
+    /**
+     * Get the header name
+     */
+    public function getFieldName(): string
     {
         return 'Content-Security-Policy-Report-Only';
     }

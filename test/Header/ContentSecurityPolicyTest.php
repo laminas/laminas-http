@@ -64,10 +64,10 @@ class ContentSecurityPolicyTest extends TestCase
     public function testContentSecurityPolicySetDirective(): void
     {
         $csp = new ContentSecurityPolicy();
-        $csp->setDirective('default-src', ['https://*.google.com', 'http://foo.com'])
+        $csp->setDirective('default-src', ['https://*.google.com', 'https://foo.com'])
             ->setDirective('img-src', ["'self'"])
             ->setDirective('script-src', ['https://*.googleapis.com', 'https://*.bar.com']);
-        $header = 'Content-Security-Policy: default-src https://*.google.com http://foo.com; '
+        $header = 'Content-Security-Policy: default-src https://*.google.com https://foo.com; '
                 . 'img-src \'self\'; script-src https://*.googleapis.com https://*.bar.com;';
         $this->assertEquals($header, $csp->toString());
     }
@@ -100,7 +100,7 @@ class ContentSecurityPolicyTest extends TestCase
     }
 
     /**
-     * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     * @see https://en.wikipedia.org/wiki/HTTP_response_splitting
      */
     #[Group('ZF2015-04')]
     public function testPreventsCRLFAttackViaFromString(): void
@@ -110,7 +110,7 @@ class ContentSecurityPolicyTest extends TestCase
     }
 
     /**
-     * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
+     * @see https://en.wikipedia.org/wiki/HTTP_response_splitting
      */
     #[Group('ZF2015-04')]
     public function testPreventsCRLFAttackViaDirective(): void
@@ -196,29 +196,25 @@ class ContentSecurityPolicyTest extends TestCase
             ['child-src', ["'self'"], "Content-Security-Policy: child-src 'self';"],
             ['manifest-src', ["'self'"], "Content-Security-Policy: manifest-src 'self';"],
             ['worker-src', ["'self'"], "Content-Security-Policy: worker-src 'self';"],
-            ['prefetch-src', ["'self'"], "Content-Security-Policy: prefetch-src 'self';"],
             ['script-src-elem', ["'self'"], "Content-Security-Policy: script-src-elem 'self';"],
             ['script-src-attr', ["'self'"], "Content-Security-Policy: script-src-attr 'self';"],
             ['style-src-elem', ["'self'"], "Content-Security-Policy: style-src-elem 'self';"],
             ['style-src-attr', ["'self'"], "Content-Security-Policy: style-src-attr 'self';"],
             ['base-uri', ["'self'", "'unsafe-inline'"], "Content-Security-Policy: base-uri 'self' 'unsafe-inline';"],
-            ['plugin-types', ['text/csv'], 'Content-Security-Policy: plugin-types text/csv;'],
             [
                 'form-action',
-                ['http://*.example.com', "'self'"],
-                "Content-Security-Policy: form-action http://*.example.com 'self';",
+                ['https://*.example.com', "'self'"],
+                "Content-Security-Policy: form-action https://*.example.com 'self';",
             ],
             [
                 'frame-ancestors',
-                ['http://*.example.com', "'self'"],
-                "Content-Security-Policy: frame-ancestors http://*.example.com 'self';",
+                ['https://*.example.com', "'self'"],
+                "Content-Security-Policy: frame-ancestors https://*.example.com 'self';",
             ],
             ['navigate-to', ['example.com'], 'Content-Security-Policy: navigate-to example.com;'],
             ['sandbox', ['allow-forms'], 'Content-Security-Policy: sandbox allow-forms;'],
 
             // Other directives
-            ['block-all-mixed-content', [], 'Content-Security-Policy: block-all-mixed-content;'],
-            ['require-sri-for', ['script', 'style'], 'Content-Security-Policy: require-sri-for script style;'],
             ['require-trusted-types-for', ['script'], 'Content-Security-Policy: require-trusted-types-for script;'],
             ['trusted-types', ['*'], 'Content-Security-Policy: trusted-types *;'],
             ['upgrade-insecure-requests', [], 'Content-Security-Policy: upgrade-insecure-requests;'],
